@@ -1,351 +1,376 @@
-`MODEL_RELATION_PLAN.md` kita lanjutkan sebagai **dikunci**, dengan catatan tetap mengikuti `DATABASE_PLAN.md` jika ada konflik.
-
-Commit dulu:
-
-```bash id="wrp55b"
-git add docs/MODEL_RELATION_PLAN.md
-git commit -m "docs: add model relation plan"
-```
-
-Sekarang lanjut ke file berikutnya: **`docs/STATUS_RULES.md`**.
-
-Buat file:
-
-```bash id="yclvfp"
-touch docs/STATUS_RULES.md
-```
-
-Lalu isi dengan draft berikut.
-
 # STATUS_RULES.md
 
 ## Purpose
 
-Dokumen ini berisi aturan role, status, label status, nilai status yang valid, dan transisi status untuk project:
+Dokumen ini berisi aturan role, status, dan transisi status untuk project:
 
 Sistem Informasi Pra-Pendaftaran Perkara Berbasis Web pada TNY Law Firm.
 
-Dokumen ini wajib diikuti saat membuat validation rule, controller, service, seeder, middleware, query filter, badge status, dan tampilan UI.
+Dokumen ini wajib diikuti saat membuat migration, model, validation, controller, service, middleware, UI label, filter laporan, dan logic perubahan status.
 
-AI agent tidak boleh membuat role atau status baru tanpa persetujuan pemilik project.
+AI agent tidak boleh membuat status baru, role baru, atau transisi status baru tanpa persetujuan pemilik project.
 
 ---
 
-## General Rules
+## Source of Truth
+
+Dokumen ini harus konsisten dengan:
+
+1. `AGENTS.md`
+2. `docs/PROJECT_CONTEXT.md`
+3. `docs/DATABASE_PLAN.md`
+4. `docs/MODEL_RELATION_PLAN.md`
+5. `docs/VALIDATION_RULES.md`
+6. `docs/SECURITY_RULES.md`
+7. `docs/FEATURE_LIST.md`
+8. `docs/ROUTES_PLAN.md`
+
+Jika ada konflik struktur tabel, ikuti:
+
+```text
+docs/DATABASE_PLAN.md
+```
+
+Jika ada konflik proses validasi, ikuti:
+
+```text
+docs/VALIDATION_RULES.md
+```
+
+---
+
+## General Status Rules
 
 Aturan umum:
 
-1. Semua role dan status disimpan di database dalam bentuk slug lowercase.
-2. Jangan menggunakan database `ENUM`.
-3. Role dan status menggunakan tipe `VARCHAR`.
-4. Validasi nilai role dan status dilakukan pada level aplikasi Laravel.
-5. Label status untuk tampilan UI dibuat di level aplikasi.
-6. Jangan menyimpan label UI seperti `Menunggu Verifikasi` langsung ke database.
-7. Jangan membuat status baru tanpa persetujuan.
-8. Setiap perubahan `status_pengajuan` wajib dicatat pada tabel `riwayat_status`.
-9. Transisi status harus mengikuti aturan pada dokumen ini.
-10. Jika ada konflik dengan `DATABASE_PLAN.md`, ikuti `DATABASE_PLAN.md`.
+1. Semua role dan status disimpan sebagai slug lowercase.
+2. Jangan menyimpan label UI ke database.
+3. Jangan menggunakan database `ENUM`.
+4. Semua status menggunakan `VARCHAR`.
+5. Label status untuk tampilan dibuat di layer aplikasi.
+6. Jangan membuat status baru tanpa persetujuan.
+7. Jangan membuat transisi status baru tanpa persetujuan.
+8. Semua perubahan `status_pengajuan` wajib dicatat pada `riwayat_status`.
+9. Field waktu perubahan status menggunakan `created_at` pada `riwayat_status`.
+10. Jangan menambahkan kolom `tanggal_status`.
 
 ---
 
 # Role Rules
 
-## Role User
+## User Role
 
-Role disimpan pada:
+Kolom:
 
 ```text
 users.role
 ```
 
-Nilai role yang valid:
+Role yang valid:
 
-| Slug         | Label UI   | Deskripsi                                        |
-| ------------ | ---------- | ------------------------------------------------ |
-| `klien`      | Klien      | Pengguna yang mengajukan pra-pendaftaran perkara |
-| `admin`      | Admin      | Pengguna yang mengelola data utama sistem        |
-| `staf_legal` | Staf Legal | Pengguna yang memverifikasi berkas perkara       |
+| Slug         | Label UI   | Keterangan                                                   |
+| ------------ | ---------- | ------------------------------------------------------------ |
+| `klien`      | Klien      | Pengguna yang mengajukan pra-pendaftaran perkara             |
+| `admin`      | Admin      | Pengelola sistem, data master, jadwal, pengguna, dan laporan |
+| `staf_legal` | Staf Legal | Petugas yang melakukan verifikasi berkas perkara             |
 
 Aturan:
 
-1. Registrasi publik hanya boleh membuat akun dengan role `klien`.
-2. Akun Admin awal dapat dibuat melalui seeder.
-3. Akun Staf Legal dibuat atau dikelola oleh Admin.
-4. User tidak boleh mengubah role miliknya sendiri melalui form publik.
-5. Role harus digunakan untuk middleware dan pembatasan akses halaman.
+1. Registrasi publik hanya boleh membuat role `klien`.
+2. Admin dapat membuat akun `staf_legal`.
+3. Role `admin` awal dapat dibuat melalui seeder.
+4. Jangan membuat role baru di luar daftar valid.
+5. Jangan menerima role dari form registrasi publik.
+6. Role digunakan untuk middleware dan pembatasan akses fitur.
 
 ---
 
-# Status Akun
+## Account Status
 
-Status akun disimpan pada:
+Kolom:
 
 ```text
 users.status_akun
 ```
 
-Nilai status akun yang valid:
+Status akun yang valid:
 
-| Slug       | Label UI | Deskripsi                              |
-| ---------- | -------- | -------------------------------------- |
-| `aktif`    | Aktif    | Akun dapat digunakan untuk login       |
-| `nonaktif` | Nonaktif | Akun tidak dapat digunakan untuk login |
+| Slug       | Label UI | Keterangan                                        |
+| ---------- | -------- | ------------------------------------------------- |
+| `aktif`    | Aktif    | Akun dapat login dan mengakses sistem sesuai role |
+| `nonaktif` | Nonaktif | Akun tidak dapat login atau mengakses sistem      |
 
 Aturan:
 
-1. Status default registrasi publik adalah `aktif`.
-2. Akun dengan status `nonaktif` tidak boleh mengakses sistem.
-3. Perubahan status akun hanya boleh dilakukan oleh Admin.
+1. Registrasi publik menghasilkan `status_akun = aktif`.
+2. Akun yang dibuat Admin dapat diberi status `aktif` atau `nonaktif`.
+3. Akun `nonaktif` tidak boleh login.
 4. Jangan membuat status akun baru tanpa persetujuan.
 
 ---
 
-# Status Pengajuan
+# Pra-Pendaftaran Status Rules
 
-Status pengajuan disimpan pada:
+## Status Pengajuan
+
+Kolom:
 
 ```text
 pra_pendaftaran_perkara.status_pengajuan
 ```
 
-Nilai status pengajuan yang valid:
+Status pengajuan yang valid:
 
-| Slug                        | Label UI                  | Deskripsi                                                           |
-| --------------------------- | ------------------------- | ------------------------------------------------------------------- |
-| `menunggu_verifikasi`       | Menunggu Verifikasi       | Pengajuan baru dikirim dan menunggu pemeriksaan Staf Legal          |
-| `berkas_tidak_lengkap`      | Berkas Tidak Lengkap      | Berkas sudah diperiksa tetapi masih ada kekurangan                  |
-| `menunggu_verifikasi_ulang` | Menunggu Verifikasi Ulang | Klien sudah mengunggah ulang dokumen dan menunggu pemeriksaan ulang |
-| `berkas_lengkap`            | Berkas Lengkap            | Berkas sudah dinyatakan lengkap oleh Staf Legal                     |
-| `jadwal_dipilih`            | Jadwal Dipilih            | Klien sudah memilih jadwal konsultasi                               |
-| `selesai`                   | Selesai                   | Proses pra-pendaftaran dan konsultasi dinyatakan selesai            |
-
-Aturan:
-
-1. Status awal pengajuan baru adalah `menunggu_verifikasi`.
-2. Status awal wajib dicatat pada `riwayat_status`.
-3. Setiap perubahan status wajib dicatat pada `riwayat_status`.
-4. Klien tidak boleh mengubah status pengajuan secara langsung.
-5. Staf Legal dapat mengubah status melalui proses verifikasi.
-6. Sistem dapat mengubah status saat Klien mengunggah ulang dokumen atau memilih jadwal konsultasi.
-7. Admin dapat melihat status pengajuan untuk kebutuhan monitoring dan laporan.
-8. Status disimpan sebagai slug, bukan label UI.
+| Slug                        | Label UI                  | Keterangan                                                         |
+| --------------------------- | ------------------------- | ------------------------------------------------------------------ |
+| `menunggu_verifikasi`       | Menunggu Verifikasi       | Pengajuan baru dikirim dan menunggu pemeriksaan Staf Legal         |
+| `berkas_tidak_lengkap`      | Berkas Tidak Lengkap      | Berkas dinyatakan belum lengkap dan perlu perbaikan                |
+| `menunggu_verifikasi_ulang` | Menunggu Verifikasi Ulang | Klien sudah mengunggah ulang dokumen dan menunggu verifikasi ulang |
+| `berkas_lengkap`            | Berkas Lengkap            | Berkas sudah valid dan Klien dapat memilih jadwal konsultasi       |
+| `jadwal_dipilih`            | Jadwal Dipilih            | Klien sudah memilih jadwal konsultasi                              |
+| `selesai`                   | Selesai                   | Konsultasi atau proses pra-pendaftaran telah diselesaikan          |
 
 ---
 
-## Transisi Status Pengajuan
+## Status Pengajuan Transition Flow
 
 Transisi status yang valid:
 
-| Dari Status                 | Ke Status                   | Pemicu                                        | Aktor          |
-| --------------------------- | --------------------------- | --------------------------------------------- | -------------- |
-| -                           | `menunggu_verifikasi`       | Klien membuat pengajuan baru                  | Klien / Sistem |
-| `menunggu_verifikasi`       | `berkas_lengkap`            | Berkas dinyatakan lengkap                     | Staf Legal     |
-| `menunggu_verifikasi`       | `berkas_tidak_lengkap`      | Berkas dinyatakan tidak lengkap               | Staf Legal     |
-| `berkas_tidak_lengkap`      | `menunggu_verifikasi_ulang` | Klien mengunggah ulang dokumen                | Klien / Sistem |
-| `menunggu_verifikasi_ulang` | `berkas_lengkap`            | Berkas hasil unggah ulang dinyatakan lengkap  | Staf Legal     |
-| `menunggu_verifikasi_ulang` | `berkas_tidak_lengkap`      | Berkas hasil unggah ulang masih belum lengkap | Staf Legal     |
-| `berkas_lengkap`            | `jadwal_dipilih`            | Klien memilih jadwal konsultasi               | Klien / Sistem |
-| `jadwal_dipilih`            | `selesai`                   | Proses konsultasi diselesaikan                | Admin / Sistem |
+```text
+menunggu_verifikasi
+    -> berkas_lengkap
+    -> jadwal_dipilih
+    -> selesai
+```
 
-Transisi yang tidak boleh dilakukan:
+```text
+menunggu_verifikasi
+    -> berkas_tidak_lengkap
+    -> menunggu_verifikasi_ulang
+    -> berkas_lengkap
+    -> jadwal_dipilih
+    -> selesai
+```
 
-1. `menunggu_verifikasi` langsung ke `jadwal_dipilih`.
-2. `berkas_tidak_lengkap` langsung ke `berkas_lengkap` tanpa proses verifikasi ulang.
-3. `berkas_tidak_lengkap` langsung ke `jadwal_dipilih`.
-4. `menunggu_verifikasi_ulang` langsung ke `jadwal_dipilih`.
-5. `berkas_lengkap` kembali ke `menunggu_verifikasi` tanpa alasan dan persetujuan.
-6. `selesai` kembali ke status sebelumnya tanpa persetujuan.
+Transisi detail:
+
+| Dari                        | Ke                          | Dipicu Oleh    | Keterangan                                    |
+| --------------------------- | --------------------------- | -------------- | --------------------------------------------- |
+| -                           | `menunggu_verifikasi`       | Klien / Sistem | Pengajuan baru dibuat                         |
+| `menunggu_verifikasi`       | `berkas_lengkap`            | Staf Legal     | Berkas dinyatakan lengkap                     |
+| `menunggu_verifikasi`       | `berkas_tidak_lengkap`      | Staf Legal     | Berkas dinyatakan tidak lengkap               |
+| `berkas_tidak_lengkap`      | `menunggu_verifikasi_ulang` | Klien / Sistem | Klien melakukan unggah ulang dokumen          |
+| `menunggu_verifikasi_ulang` | `berkas_lengkap`            | Staf Legal     | Berkas hasil unggah ulang dinyatakan lengkap  |
+| `menunggu_verifikasi_ulang` | `berkas_tidak_lengkap`      | Staf Legal     | Berkas hasil unggah ulang masih tidak lengkap |
+| `berkas_lengkap`            | `jadwal_dipilih`            | Klien / Sistem | Klien memilih jadwal konsultasi               |
+| `jadwal_dipilih`            | `selesai`                   | Admin / Sistem | Admin menandai konsultasi selesai             |
+
+Aturan:
+
+1. Pengajuan baru selalu dimulai dari `menunggu_verifikasi`.
+2. Klien hanya boleh memilih jadwal jika status pengajuan `berkas_lengkap`.
+3. Setelah Klien memilih jadwal, status pengajuan menjadi `jadwal_dipilih`.
+4. Setelah Admin menandai konsultasi selesai, status pengajuan menjadi `selesai`.
+5. Semua perubahan status pengajuan wajib masuk ke `riwayat_status`.
+6. Jangan mengubah status pengajuan langsung dari request Klien.
+7. Status pengajuan ditentukan server berdasarkan proses bisnis.
+8. Jangan melewati alur status tanpa alasan yang disetujui.
 
 ---
 
-# Status Dokumen
+# Dokumen Perkara Status Rules
 
-Status dokumen disimpan pada:
+## Status Dokumen
+
+Kolom:
 
 ```text
 dokumen_perkara.status_dokumen
 ```
 
-Nilai status dokumen yang valid:
+Status dokumen yang valid:
 
-| Slug              | Label UI        | Deskripsi                                          |
-| ----------------- | --------------- | -------------------------------------------------- |
-| `terkirim`        | Terkirim        | Dokumen berhasil diunggah dan menunggu pemeriksaan |
-| `valid`           | Valid           | Dokumen sudah diperiksa dan dinyatakan valid       |
-| `perlu_perbaikan` | Perlu Perbaikan | Dokumen bermasalah dan perlu diunggah ulang        |
-| `diganti`         | Diganti         | Dokumen lama sudah diganti dengan dokumen baru     |
+| Slug              | Label UI        | Keterangan                                      |
+| ----------------- | --------------- | ----------------------------------------------- |
+| `terkirim`        | Terkirim        | Dokumen baru diunggah oleh Klien                |
+| `valid`           | Valid           | Dokumen sudah diverifikasi dan dinyatakan valid |
+| `perlu_perbaikan` | Perlu Perbaikan | Dokumen perlu diperbaiki atau diunggah ulang    |
+| `diganti`         | Diganti         | Dokumen lama sudah diganti oleh dokumen baru    |
+
+---
+
+## Status Dokumen Transition Flow
+
+Transisi valid:
+
+| Dari              | Ke                | Dipicu Oleh    | Keterangan                                   |
+| ----------------- | ----------------- | -------------- | -------------------------------------------- |
+| -                 | `terkirim`        | Klien / Sistem | Dokumen pertama kali diunggah                |
+| `terkirim`        | `valid`           | Staf Legal     | Dokumen dinyatakan benar                     |
+| `terkirim`        | `perlu_perbaikan` | Staf Legal     | Dokumen bermasalah dan perlu diperbaiki      |
+| `perlu_perbaikan` | `diganti`         | Klien / Sistem | Klien mengunggah ulang dokumen pengganti     |
+| -                 | `terkirim`        | Klien / Sistem | Record dokumen baru dibuat saat unggah ulang |
 
 Aturan:
 
-1. Status awal dokumen baru adalah `terkirim`.
-2. Jika dokumen dinyatakan benar, status dapat menjadi `valid`.
-3. Jika dokumen bermasalah, status dapat menjadi `perlu_perbaikan`.
-4. Jika Klien mengunggah ulang dokumen, dokumen lama diberi status `diganti`.
-5. Dokumen baru hasil unggah ulang diberi status `terkirim`.
+1. Dokumen baru selalu berstatus `terkirim`.
+2. Dokumen yang valid diberi status `valid`.
+3. Dokumen yang bermasalah diberi status `perlu_perbaikan`.
+4. Saat Klien re-upload, dokumen lama menjadi `diganti`.
+5. Saat Klien re-upload, dokumen baru dibuat sebagai record baru dengan status `terkirim`.
 6. File lama tidak boleh ditimpa.
-7. Status dokumen tidak boleh menggunakan label UI.
+7. Jangan membuat status dokumen baru tanpa persetujuan.
 
 ---
 
-## Transisi Status Dokumen
+# Verifikasi Berkas Status Rules
 
-Transisi status dokumen yang valid:
+## Status Verifikasi
 
-| Dari Status       | Ke Status         | Pemicu                              | Aktor          |
-| ----------------- | ----------------- | ----------------------------------- | -------------- |
-| -                 | `terkirim`        | Dokumen pertama kali diunggah       | Klien / Sistem |
-| `terkirim`        | `valid`           | Dokumen dinyatakan valid            | Staf Legal     |
-| `terkirim`        | `perlu_perbaikan` | Dokumen bermasalah                  | Staf Legal     |
-| `perlu_perbaikan` | `diganti`         | Klien mengunggah dokumen pengganti  | Klien / Sistem |
-| -                 | `terkirim`        | Dokumen pengganti berhasil diunggah | Klien / Sistem |
-| `terkirim`        | `perlu_perbaikan` | Dokumen pengganti masih bermasalah  | Staf Legal     |
-| `terkirim`        | `valid`           | Dokumen pengganti dinyatakan valid  | Staf Legal     |
-
-Aturan tambahan:
-
-1. Dokumen dengan status `diganti` tidak boleh digunakan sebagai dokumen aktif.
-2. Dokumen dengan status `valid` tidak perlu diunggah ulang.
-3. Dokumen dengan status `perlu_perbaikan` menjadi dasar Klien untuk unggah ulang.
-
----
-
-# Status Verifikasi Berkas
-
-Status verifikasi disimpan pada:
+Kolom:
 
 ```text
 verifikasi_berkas.status_verifikasi
 ```
 
-Nilai status verifikasi yang valid:
+Status verifikasi yang valid:
 
-| Slug                   | Label UI             | Deskripsi                                        |
+| Slug                   | Label UI             | Keterangan                                       |
 | ---------------------- | -------------------- | ------------------------------------------------ |
 | `berkas_lengkap`       | Berkas Lengkap       | Hasil verifikasi menyatakan berkas lengkap       |
 | `berkas_tidak_lengkap` | Berkas Tidak Lengkap | Hasil verifikasi menyatakan berkas belum lengkap |
 
 Aturan:
 
-1. Status verifikasi hanya dibuat melalui proses verifikasi oleh Staf Legal.
-2. Jika status verifikasi `berkas_lengkap`, maka `status_pengajuan` menjadi `berkas_lengkap`.
-3. Jika status verifikasi `berkas_tidak_lengkap`, maka `status_pengajuan` menjadi `berkas_tidak_lengkap`.
-4. Verifikasi wajib mencatat `tanggal_verifikasi`.
-5. Catatan umum utama disimpan pada `verifikasi_berkas.catatan_umum`.
-6. Catatan per dokumen disimpan pada `catatan_verifikasi`.
-7. Jangan menduplikasi catatan umum yang sama ke dua tempat.
+1. Verifikasi hanya dilakukan oleh role `staf_legal`.
+2. `id_user` pada `verifikasi_berkas` adalah Staf Legal yang melakukan verifikasi.
+3. `tanggal_verifikasi` diisi oleh server.
+4. Jika `status_verifikasi = berkas_lengkap`, maka `status_pengajuan` menjadi `berkas_lengkap`.
+5. Jika `status_verifikasi = berkas_tidak_lengkap`, maka `status_pengajuan` menjadi `berkas_tidak_lengkap`.
+6. Jika berkas tidak lengkap, wajib ada `catatan_umum` atau minimal satu catatan per dokumen.
+7. Catatan umum utama disimpan pada `verifikasi_berkas.catatan_umum`.
+8. Catatan per dokumen disimpan pada `catatan_verifikasi`.
+9. Proses verifikasi wajib menggunakan database transaction.
 
 ---
 
-# Status Perbaikan Catatan
+# Catatan Verifikasi Status Rules
 
-Status perbaikan disimpan pada:
+## Status Perbaikan
+
+Kolom:
 
 ```text
 catatan_verifikasi.status_perbaikan
 ```
 
-Nilai status perbaikan yang valid:
+Status perbaikan yang valid:
 
-| Slug               | Label UI         | Deskripsi                                            |
-| ------------------ | ---------------- | ---------------------------------------------------- |
-| `belum_diperbaiki` | Belum Diperbaiki | Catatan belum ditindaklanjuti oleh Klien             |
-| `sudah_diperbaiki` | Sudah Diperbaiki | Klien sudah mengunggah ulang dokumen terkait catatan |
+| Slug               | Label UI         | Keterangan                                                    |
+| ------------------ | ---------------- | ------------------------------------------------------------- |
+| `belum_diperbaiki` | Belum Diperbaiki | Catatan perbaikan belum ditindaklanjuti Klien                 |
+| `sudah_diperbaiki` | Sudah Diperbaiki | Klien sudah mengunggah ulang dokumen terkait catatan tersebut |
 
 Aturan:
 
-1. Jika catatan dibuat karena dokumen bermasalah, status awal adalah `belum_diperbaiki`.
-2. Saat Klien mengunggah ulang dokumen terkait, status berubah menjadi `sudah_diperbaiki`.
-3. Catatan umum tambahan tanpa dokumen juga dapat memiliki status perbaikan, tetapi tidak boleh menduplikasi `catatan_umum`.
-4. Perubahan status perbaikan harus dilakukan dalam proses unggah ulang dokumen jika relevan.
+1. Catatan baru untuk dokumen bermasalah memiliki status `belum_diperbaiki`.
+2. Saat Klien mengunggah ulang dokumen terkait, status catatan berubah menjadi `sudah_diperbaiki`.
+3. `id_dokumen` pada `catatan_verifikasi` boleh nullable untuk catatan tambahan umum jika diperlukan.
+4. Catatan umum utama tetap disimpan pada `verifikasi_berkas.catatan_umum`.
+5. Jangan menggandakan catatan umum yang sama pada `catatan_verifikasi`.
+6. Jangan membuat status perbaikan baru tanpa persetujuan.
 
 ---
 
-# Status Slot Jadwal
+# Jadwal Konsultasi Status Rules
 
-Status slot jadwal disimpan pada:
+## Status Slot Jadwal
+
+Kolom:
 
 ```text
 jadwal_konsultasi.status_slot
 ```
 
-Nilai status slot yang valid:
+Status slot yang valid:
 
-| Slug          | Label UI    | Deskripsi                                     |
-| ------------- | ----------- | --------------------------------------------- |
-| `tersedia`    | Tersedia    | Slot dapat dipilih oleh Klien                 |
-| `terisi`      | Terisi      | Slot sudah dipilih dan memiliki booking aktif |
-| `tidak_aktif` | Tidak Aktif | Slot tidak tersedia untuk dipilih             |
+| Slug          | Label UI    | Keterangan                                      |
+| ------------- | ----------- | ----------------------------------------------- |
+| `tersedia`    | Tersedia    | Jadwal dapat dipilih Klien                      |
+| `terisi`      | Terisi      | Jadwal sudah dipilih dan memiliki booking aktif |
+| `tidak_aktif` | Tidak Aktif | Jadwal tidak dapat dipilih                      |
 
 Aturan:
 
-1. Status awal slot jadwal baru adalah `tersedia`.
-2. Slot dengan status `tersedia` dapat dipilih oleh Klien yang pengajuannya `berkas_lengkap`.
-3. Slot yang berhasil dipilih berubah menjadi `terisi`.
-4. Slot `terisi` tidak boleh dipilih ulang.
-5. Slot `tidak_aktif` tidak boleh dipilih.
-6. Perubahan status slot dilakukan oleh Admin atau sistem sesuai proses booking.
+1. Jadwal baru default berstatus `tersedia`.
+2. Admin boleh membuat jadwal dengan status `tersedia` atau `tidak_aktif`.
+3. Admin tidak boleh memilih status `terisi` saat membuat jadwal baru.
+4. Status `terisi` hanya diberikan oleh sistem setelah booking berhasil.
+5. Jadwal dengan status `terisi` tidak boleh dipilih lagi oleh Klien.
+6. Jadwal dengan status `tidak_aktif` tidak boleh dipilih oleh Klien.
+7. Jadwal yang sudah memiliki booking aktif tidak boleh diubah sembarangan.
+8. Jangan membuat status slot baru tanpa persetujuan.
 
 ---
 
-# Status Booking Konsultasi
+# Booking Konsultasi Status Rules
 
-Status booking disimpan pada:
+## Status Booking
+
+Kolom:
 
 ```text
 booking_konsultasi.status_booking
 ```
 
-Nilai status booking yang valid:
+Status booking yang valid:
 
-| Slug         | Label UI   | Deskripsi                        |
-| ------------ | ---------- | -------------------------------- |
-| `aktif`      | Aktif      | Booking konsultasi masih aktif   |
-| `dibatalkan` | Dibatalkan | Booking dibatalkan               |
-| `selesai`    | Selesai    | Booking konsultasi sudah selesai |
-
-Aturan:
-
-1. Status awal booking baru adalah `aktif`.
-2. `tanggal_booking` wajib diisi saat booking dibuat.
-3. Satu pengajuan hanya boleh memiliki satu booking aktif.
-4. Satu slot jadwal hanya boleh memiliki satu booking aktif.
-5. Booking hanya dapat dibuat jika status pengajuan adalah `berkas_lengkap`.
-6. Setelah booking berhasil, status pengajuan menjadi `jadwal_dipilih`.
-7. Setelah booking berhasil, status slot jadwal menjadi `terisi`.
-8. Perubahan status pengajuan wajib dicatat pada `riwayat_status`.
+| Slug         | Label UI   | Keterangan                                                          |
+| ------------ | ---------- | ------------------------------------------------------------------- |
+| `aktif`      | Aktif      | Booking konsultasi aktif dan sedang menunggu pelaksanaan konsultasi |
+| `dibatalkan` | Dibatalkan | Booking dibatalkan jika fitur pembatalan disetujui                  |
+| `selesai`    | Selesai    | Konsultasi sudah selesai                                            |
 
 ---
 
-## Transisi Status Booking Konsultasi
+## Status Booking Transition Flow
 
-Transisi status booking yang valid:
+Transisi valid:
 
-| Dari Status | Ke Status    | Pemicu                                                   | Aktor          |
-| ----------- | ------------ | -------------------------------------------------------- | -------------- |
-| -           | `aktif`      | Klien berhasil memilih jadwal konsultasi                 | Klien / Sistem |
-| `aktif`     | `selesai`    | Konsultasi telah selesai dilakukan                       | Admin / Sistem |
-| `aktif`     | `dibatalkan` | Booking dibatalkan sesuai persetujuan atau aturan sistem | Admin / Sistem |
+| Dari    | Ke           | Dipicu Oleh           | Keterangan                                  |
+| ------- | ------------ | --------------------- | ------------------------------------------- |
+| -       | `aktif`      | Klien / Sistem        | Booking dibuat setelah Klien memilih jadwal |
+| `aktif` | `selesai`    | Admin / Sistem        | Admin menandai konsultasi selesai           |
+| `aktif` | `dibatalkan` | Sistem / Role terkait | Hanya jika fitur pembatalan disetujui       |
 
 Aturan:
 
-1. Booking baru selalu dibuat dengan status `aktif`.
-2. Status `selesai` digunakan jika konsultasi sudah selesai.
-3. Status `dibatalkan` hanya boleh digunakan jika fitur pembatalan disetujui atau diimplementasikan.
-4. Jika booking menjadi `selesai`, status pengajuan dapat berubah menjadi `selesai` dan wajib dicatat pada `riwayat_status`.
-5. Slot jadwal yang sudah pernah digunakan untuk booking tidak boleh digunakan ulang tanpa aturan khusus yang disetujui.
-6. Jika fitur pembatalan belum masuk fase implementasi, AI agent tidak boleh membuat fitur pembatalan booking secara otomatis.
+1. Booking baru selalu berstatus `aktif`.
+2. Booking hanya boleh dibuat jika `status_pengajuan = berkas_lengkap`.
+3. Booking hanya boleh dibuat pada jadwal dengan `status_slot = tersedia`.
+4. Satu pengajuan hanya boleh memiliki satu booking aktif.
+5. Satu slot jadwal hanya boleh memiliki satu booking aktif.
+6. Setelah booking berhasil, status jadwal menjadi `terisi`.
+7. Setelah booking berhasil, status pengajuan menjadi `jadwal_dipilih`.
+8. Setelah konsultasi selesai, status booking menjadi `selesai`.
+9. Setelah konsultasi selesai, status pengajuan terkait menjadi `selesai`.
+10. Perubahan status pengajuan wajib dicatat pada `riwayat_status`.
+11. Fitur pembatalan booking tidak dibuat pada fase awal kecuali disetujui.
+12. Jika booking `selesai`, slot tidak otomatis menjadi `tersedia` kembali kecuali ada aturan baru yang disetujui.
 
 ---
 
 # Riwayat Status Rules
 
-Riwayat status disimpan pada:
+## Riwayat Status
+
+Tabel:
 
 ```text
 riwayat_status
 ```
 
-Kolom status disimpan pada:
+Kolom status:
 
 ```text
 riwayat_status.status
@@ -353,32 +378,33 @@ riwayat_status.status
 
 Aturan:
 
-1. Setiap perubahan `pra_pendaftaran_perkara.status_pengajuan` wajib membuat record baru pada `riwayat_status`.
-2. Tidak menggunakan kolom `tanggal_status`.
-3. Waktu perubahan status menggunakan `created_at`.
-4. `id_user` adalah user yang menyebabkan perubahan status.
-5. Jika perubahan dilakukan otomatis oleh sistem karena aksi user, `id_user` tetap menggunakan user yang melakukan aksi.
-6. `keterangan` boleh diisi untuk menjelaskan perubahan status.
-7. Status pada `riwayat_status.status` harus sama dengan status baru pada `pra_pendaftaran_perkara.status_pengajuan`.
+1. Setiap perubahan `pra_pendaftaran_perkara.status_pengajuan` wajib membuat record `riwayat_status`.
+2. `id_pendaftaran` berisi pengajuan yang statusnya berubah.
+3. `id_user` berisi user yang melakukan atau memicu perubahan status.
+4. `status` berisi status pengajuan terbaru.
+5. `keterangan` boleh diisi deskripsi perubahan status.
+6. Waktu perubahan memakai `created_at`.
+7. Jangan menambahkan kolom `tanggal_status`.
+8. Jangan membuat riwayat status untuk status dokumen, status slot, atau status booking kecuali perubahan tersebut juga mengubah `status_pengajuan`.
 
-Contoh penggunaan:
+Contoh keterangan:
 
-| Aksi                                       | Status Baru                 | id_user       |
-| ------------------------------------------ | --------------------------- | ------------- |
-| Klien membuat pengajuan                    | `menunggu_verifikasi`       | ID Klien      |
-| Staf Legal menyatakan berkas lengkap       | `berkas_lengkap`            | ID Staf Legal |
-| Staf Legal menyatakan berkas tidak lengkap | `berkas_tidak_lengkap`      | ID Staf Legal |
-| Klien mengunggah ulang dokumen             | `menunggu_verifikasi_ulang` | ID Klien      |
-| Klien memilih jadwal konsultasi            | `jadwal_dipilih`            | ID Klien      |
-| Admin menyelesaikan proses                 | `selesai`                   | ID Admin      |
+| Status                      | Contoh Keterangan                                    |
+| --------------------------- | ---------------------------------------------------- |
+| `menunggu_verifikasi`       | Pengajuan pra-pendaftaran berhasil dikirim           |
+| `berkas_tidak_lengkap`      | Berkas perlu diperbaiki berdasarkan hasil verifikasi |
+| `menunggu_verifikasi_ulang` | Klien telah mengunggah ulang dokumen                 |
+| `berkas_lengkap`            | Berkas dinyatakan lengkap oleh Staf Legal            |
+| `jadwal_dipilih`            | Klien telah memilih jadwal konsultasi                |
+| `selesai`                   | Konsultasi telah diselesaikan oleh Admin             |
 
 ---
 
-# UI Label Mapping
+# Status Label UI
 
-AI agent boleh membuat helper, enum-like class, constant class, atau config file untuk mapping label UI, selama tidak menggunakan database ENUM.
+Status disimpan di database sebagai slug. Label untuk UI dibuat di aplikasi.
 
-Contoh mapping:
+Contoh mapping label:
 
 ```php
 [
@@ -393,87 +419,87 @@ Contoh mapping:
 
 Aturan:
 
-1. Mapping label hanya untuk tampilan UI.
-2. Database tetap menyimpan slug.
-3. Jangan menyimpan label UI ke database.
-4. Jangan membuat status baru hanya untuk kebutuhan warna badge.
-5. Warna badge UI tidak boleh menjadi nilai database.
+1. Database menyimpan slug.
+2. UI menampilkan label.
+3. Jangan menyimpan label seperti `Menunggu Verifikasi` ke database.
+4. Jangan mencampur huruf besar/kecil pada status database.
 
 ---
 
-# Validation Rules
+# Validation Rules Reference
 
-Setiap input status harus divalidasi menggunakan daftar slug yang sah.
+Gunakan validasi server-side untuk memastikan status valid.
 
-Contoh Laravel validation:
+Contoh validasi role:
 
 ```php
-'in:menunggu_verifikasi,berkas_tidak_lengkap,menunggu_verifikasi_ulang,berkas_lengkap,jadwal_dipilih,selesai'
+'role' => ['required', Rule::in(['klien', 'admin', 'staf_legal'])]
 ```
 
-Jika menggunakan constant class, validasi boleh menggunakan daftar dari constant tersebut.
+Contoh validasi status akun:
 
-Aturan:
+```php
+'status_akun' => ['required', Rule::in(['aktif', 'nonaktif'])]
+```
 
-1. Jangan menerima status bebas dari request tanpa validasi.
-2. Jangan mempercayai status dari hidden input.
-3. Status penting harus ditentukan oleh server berdasarkan proses bisnis.
-4. Role penting harus ditentukan oleh server berdasarkan otorisasi.
+Contoh validasi status pengajuan:
+
+```php
+'status_pengajuan' => [
+    'required',
+    Rule::in([
+        'menunggu_verifikasi',
+        'berkas_tidak_lengkap',
+        'menunggu_verifikasi_ulang',
+        'berkas_lengkap',
+        'jadwal_dipilih',
+        'selesai',
+    ]),
+]
+```
+
+Catatan:
+
+1. Jangan menerima status penting dari request publik.
+2. Status penting harus ditentukan oleh server berdasarkan proses bisnis.
+3. Input status dari Admin atau Staf Legal tetap harus divalidasi.
+4. Transisi status harus dicek, bukan hanya mengecek apakah status masuk daftar valid.
 
 ---
 
-# Transaction Rules for Status Changes
+# Transaction Rules
 
-Perubahan status harus menggunakan database transaction jika melibatkan lebih dari satu tabel.
+Gunakan database transaction pada proses yang mengubah lebih dari satu tabel.
 
 Wajib transaction untuk:
 
-1. Membuat pengajuan baru:
-
-   * `pra_pendaftaran_perkara`
-   * `dokumen_perkara`
-   * `riwayat_status`
-
-2. Verifikasi berkas:
-
-   * `verifikasi_berkas`
-   * `catatan_verifikasi`
-   * `dokumen_perkara`
-   * `pra_pendaftaran_perkara`
-   * `riwayat_status`
-
-3. Unggah ulang dokumen:
-
-   * `dokumen_perkara`
-   * `catatan_verifikasi`
-   * `pra_pendaftaran_perkara`
-   * `riwayat_status`
-
-4. Booking konsultasi:
-
-   * `booking_konsultasi`
-   * `jadwal_konsultasi`
-   * `pra_pendaftaran_perkara`
-   * `riwayat_status`
-
-Jika salah satu perubahan gagal, semua perubahan harus rollback.
+1. Membuat pra-pendaftaran, dokumen, dan riwayat status.
+2. Verifikasi berkas, update status pengajuan, update status dokumen, catatan verifikasi, dan riwayat status.
+3. Unggah ulang dokumen, update dokumen lama, dokumen baru, update catatan, update status pengajuan, dan riwayat status.
+4. Booking konsultasi, update status jadwal, update status pengajuan, dan riwayat status.
+5. Penyelesaian konsultasi, update booking, update status pengajuan, dan riwayat status.
 
 ---
 
-# Forbidden Status Actions
+# Forbidden Status Practices
 
 AI agent tidak boleh:
 
-1. Membuat status baru tanpa persetujuan.
-2. Menggunakan database `ENUM`.
-3. Menyimpan label UI ke database.
-4. Mengubah status pengajuan tanpa mencatat `riwayat_status`.
-5. Mengubah status berdasarkan input user tanpa validasi server-side.
-6. Mengizinkan Klien mengubah status pengajuan secara langsung.
-7. Mengizinkan booking jika status pengajuan belum `berkas_lengkap`.
-8. Mengizinkan slot `terisi` dipilih ulang.
-9. Mengizinkan dokumen lama ditimpa saat unggah ulang.
-10. Menghapus riwayat status untuk menyembunyikan perubahan.
+1. Membuat role baru tanpa persetujuan.
+2. Membuat status baru tanpa persetujuan.
+3. Membuat transisi status baru tanpa persetujuan.
+4. Menggunakan database `ENUM`.
+5. Menyimpan label UI ke database.
+6. Mengubah status pengajuan tanpa mencatat `riwayat_status`.
+7. Menerima `status_pengajuan` dari form Klien.
+8. Menerima `status_booking` dari form Klien.
+9. Membuat status slot `terisi` dari form create jadwal Admin.
+10. Mengubah status jadwal menjadi `tersedia` jika masih ada booking aktif.
+11. Menghapus atau menimpa dokumen lama saat re-upload.
+12. Membuat fitur pembatalan booking tanpa persetujuan.
+13. Membuat status `selesai` tanpa aturan transisi yang jelas.
+14. Membuat field `tanggal_status`.
+15. Membuat field `uploaded_at`.
 
 ---
 
@@ -481,12 +507,12 @@ AI agent tidak boleh:
 
 AI agent wajib mengikuti aturan berikut:
 
-1. Gunakan slug lowercase untuk database.
-2. Gunakan label manusia hanya untuk UI.
-3. Validasi semua status pada server-side.
-4. Catat semua perubahan status pengajuan ke `riwayat_status`.
-5. Gunakan transaction untuk proses multi-tabel.
-6. Jangan membuat status, role, atau transisi baru tanpa persetujuan.
-7. Selalu cocokkan implementasi status dengan `DATABASE_PLAN.md`, `MODEL_RELATION_PLAN.md`, `VALIDATION_RULES.md`, dan `SECURITY_RULES.md`.
-
-Setelah kamu validasi, baru kita revisi dan kunci `STATUS_RULES.md`.
+1. Gunakan slug lowercase untuk semua role dan status.
+2. Gunakan label hanya untuk tampilan UI.
+3. Jangan membuat status baru.
+4. Jangan membuat role baru.
+5. Jangan membuat transisi baru.
+6. Validasi semua status menggunakan daftar valid.
+7. Perubahan `status_pengajuan` wajib dicatat di `riwayat_status`.
+8. Proses multi-tabel wajib menggunakan transaction.
+9. Cocokkan implementasi dengan `DATABASE_PLAN.md`, `MODEL_RELATION_PLAN.md`, dan `VALIDATION_RULES.md`.
