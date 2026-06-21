@@ -112,12 +112,13 @@ Fitur/pekerjaan:
 1. Menyesuaikan Laravel Breeze agar menggunakan field `nama`.
 2. Menyesuaikan model `User` agar menggunakan custom primary key `id_user`.
 3. Memastikan field `role`, `no_telepon`, dan `status_akun` pada tabel `users` digunakan dengan benar untuk autentikasi dan role access.
-4. Membuat middleware role.
-5. Membuat redirect dashboard berdasarkan role.
-6. Membuat layout dasar untuk Klien.
-7. Membuat layout dasar untuk Admin.
-8. Membuat layout dasar untuk Staf Legal.
-9. Melindungi route berdasarkan role.
+4. Menyediakan Forgot Password / Reset Password untuk pemulihan password akun melalui mekanisme Laravel Breeze.
+5. Membuat middleware role.
+6. Membuat redirect dashboard berdasarkan role.
+7. Membuat layout dasar untuk Klien.
+8. Membuat layout dasar untuk Admin.
+9. Membuat layout dasar untuk Staf Legal.
+10. Melindungi route berdasarkan role.
 
 Role yang digunakan:
 
@@ -132,6 +133,7 @@ Output fase ini:
 3. Logout berjalan.
 4. User diarahkan ke dashboard sesuai role.
 5. Setiap role hanya dapat mengakses halaman yang sesuai.
+6. Forgot Password / Reset Password tersedia untuk pemulihan password akun.
 
 ---
 

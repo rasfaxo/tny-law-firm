@@ -52,10 +52,11 @@ Aturan umum route:
 6. Jangan membuat aksi sensitif menggunakan method `GET`.
 7. Jangan hanya menyembunyikan menu di Blade tanpa melindungi route.
 8. Jangan membuat route debug di production.
-9. Jangan membuat route fitur email, payment, e-Court, export PDF, atau export Excel tanpa persetujuan.
-10. Jangan membuat route password reset berbasis email jika fitur email belum disetujui.
-11. Nama route harus konsisten dan mudah dipanggil dari Blade.
-12. Gunakan prefix route berdasarkan role agar struktur aplikasi rapi.
+9. Jangan membuat route fitur email lain seperti notifikasi perkara, reminder jadwal, atau broadcast status tanpa persetujuan.
+10. Route forgot password / reset password bawaan Laravel Breeze boleh aktif karena fitur ini sudah disetujui.
+11. Jangan membuat route payment, e-Court, export PDF, atau export Excel tanpa persetujuan.
+12. Nama route harus konsisten dan mudah dipanggil dari Blade.
+13. Gunakan prefix route berdasarkan role agar struktur aplikasi rapi.
 
 ---
 
@@ -113,14 +114,19 @@ Route publik hanya untuk halaman yang memang boleh diakses tanpa login.
 | POST   | `/login`    | Breeze default | Breeze     | Proses login                                  |
 | GET    | `/register` | `register`     | Breeze     | Menampilkan form registrasi Klien             |
 | POST   | `/register` | Breeze default | Breeze     | Proses registrasi Klien                       |
+| GET    | `/forgot-password` | `password.request` | Breeze     | Menampilkan form minta link reset password |
+| POST   | `/forgot-password` | `password.email` | Breeze     | Mengirim link reset password ke email |
+| GET    | `/reset-password/{token}` | `password.reset` | Breeze     | Menampilkan form reset password |
+| POST   | `/reset-password` | `password.update` | Breeze     | Memproses reset password |
 
 Aturan:
 
 1. Registrasi publik hanya membuat akun role `klien`.
 2. Form registrasi tidak boleh menerima `role`.
 3. Form registrasi tidak boleh menerima `status_akun`.
-4. Password reset berbasis email tidak dibuat pada fase awal kecuali disetujui.
-5. Jika route password reset bawaan Breeze muncul, route tersebut harus direview dan boleh dinonaktifkan sampai fitur email disetujui.
+4. Route forgot password / reset password bawaan Breeze boleh aktif.
+5. Link forgot password boleh tampil di halaman login.
+6. Route ini hanya untuk pemulihan password akun, bukan untuk fitur email lain.
 
 ---
 
@@ -634,7 +640,7 @@ AI agent tidak boleh:
 2. Membuat route Klien tanpa ownership check.
 3. Membuat route dokumen tanpa authorization check.
 4. Membuat route delete data penting tanpa aturan.
-5. Membuat route password reset email tanpa persetujuan.
+5. Membuat route email lain seperti notifikasi perkara, reminder jadwal, atau broadcast status tanpa persetujuan.
 6. Membuat route export PDF/Excel tanpa persetujuan.
 7. Membuat route payment atau e-Court.
 8. Membuat route yang menerima status penting dari request tanpa validasi.

@@ -133,6 +133,15 @@ DB_PASSWORD=production_password
 
 FILESYSTEM_DISK=public
 
+MAIL_MAILER=smtp
+MAIL_HOST=smtp.example.com
+MAIL_PORT=587
+MAIL_USERNAME=your-email@example.com
+MAIL_PASSWORD=your-email-password
+MAIL_ENCRYPTION=tls
+MAIL_FROM_ADDRESS=no-reply@example.com
+MAIL_FROM_NAME="TNY Law Firm"
+
 LOG_CHANNEL=stack
 LOG_LEVEL=error
 ```
@@ -246,7 +255,7 @@ Aturan:
 5. Jangan membuat tabel `laporan`.
 6. Jangan menggunakan database `ENUM`.
 7. Tabel `migrations` boleh ada sebagai metadata internal Laravel.
-8. Tabel auxiliary Laravel seperti `sessions`, `cache`, `jobs`, `failed_jobs`, atau `password_reset_tokens` hanya boleh dibuat jika sudah direview dan disetujui.
+8. Tabel auxiliary Laravel seperti `sessions`, `cache`, `jobs`, dan `failed_jobs` tetap perlu direview jika digunakan; `password_reset_tokens` boleh digunakan untuk forgot password dan tidak dihitung sebagai tabel domain.
 
 ---
 
@@ -466,12 +475,12 @@ Aturan:
 
 ## Queue, Jobs, Cache, and Session Tables
 
-Pada fase awal, sistem tidak membutuhkan queue, job, atau email otomatis.
+Pada fase awal, sistem tidak membutuhkan queue, job, atau email otomatis lain selain forgot password.
 
 Aturan:
 
 1. Jangan membuat tabel `jobs` atau `failed_jobs` tanpa persetujuan.
-2. Jangan membuat tabel `password_reset_tokens` tanpa persetujuan.
+2. Tabel `password_reset_tokens` boleh digunakan untuk forgot password melalui Laravel Breeze.
 3. Jangan membuat tabel `sessions` berbasis database tanpa persetujuan.
 4. Jangan membuat tabel `cache` berbasis database tanpa persetujuan.
 5. Jika fitur tersebut diperlukan kemudian, harus direview dan disetujui terlebih dahulu.
@@ -481,14 +490,15 @@ Aturan:
 
 ## Password Reset and Email
 
-Fitur email otomatis tidak termasuk fase awal.
+Email di production hanya digunakan untuk forgot password / reset password.
 
 Aturan:
 
-1. Jangan mengaktifkan password reset berbasis email tanpa persetujuan.
-2. Jangan mengonfigurasi SMTP production tanpa persetujuan.
-3. Jangan membuat fitur notifikasi email tanpa persetujuan.
-4. Jika route password reset bawaan Breeze tersedia, route tersebut harus direview dan boleh dinonaktifkan sampai fitur email disetujui.
+1. Forgot password diperbolehkan karena sudah disetujui dan harus mengikuti Laravel Breeze.
+2. SMTP production wajib dikonfigurasi agar link reset benar-benar dapat terkirim.
+3. Credential email harus disimpan di `.env` dan tidak boleh di-commit ke Git.
+4. Jika SMTP belum siap, forgot password tidak bisa digunakan secara nyata di production.
+5. Email tidak boleh dipakai untuk notifikasi perkara, reminder jadwal, broadcast status, atau email lain di luar reset password.
 
 ---
 

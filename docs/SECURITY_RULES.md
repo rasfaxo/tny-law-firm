@@ -94,6 +94,19 @@ Aturan:
 
 ---
 
+## Forgot Password / Reset Password
+
+Aturan:
+
+1. Forgot password diperbolehkan karena sudah disetujui.
+2. Implementasi wajib mengikuti mekanisme bawaan Laravel Breeze.
+3. Fitur ini hanya untuk reset password akun.
+4. Token reset password disimpan melalui tabel `password_reset_tokens`.
+5. Password baru wajib divalidasi, di-hash, dan disimpan dalam bentuk hash.
+6. Email hanya digunakan untuk pengiriman link reset password.
+
+---
+
 # Role-Based Access Control
 
 ## Role Access Matrix
@@ -413,7 +426,7 @@ Aturan:
 1. Session login menggunakan mekanisme Laravel.
 2. Jika menggunakan session berbasis database, tabel `sessions` harus direview dan disetujui karena bukan bagian dari 10 tabel domain skripsi.
 3. Jika fitur remember me membutuhkan `remember_token`, penambahan kolom harus disetujui terlebih dahulu.
-4. Jika fitur password reset membutuhkan email dan `password_reset_tokens`, fitur tersebut harus dinonaktifkan atau disesuaikan sampai disetujui.
+4. Forgot password diperbolehkan; gunakan `password_reset_tokens` sesuai mekanisme Laravel Breeze.
 
 ---
 
@@ -478,7 +491,7 @@ AI agent tidak boleh:
 9. Menerima `status_pengajuan` dari form Klien.
 10. Menerima `tanggal_booking` dari form booking.
 11. Menggunakan `$request->all()` untuk data sensitif.
-12. Membuat fitur password reset berbasis email tanpa persetujuan.
+12. Membuat fitur email lain seperti notifikasi perkara, reminder jadwal, atau broadcast status tanpa persetujuan.
 13. Membuat export PDF/Excel tanpa persetujuan.
 14. Membuat tabel atau kolom baru tanpa persetujuan.
 15. Menjalankan migration sebelum direview.

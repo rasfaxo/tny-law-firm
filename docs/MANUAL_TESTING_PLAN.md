@@ -203,6 +203,41 @@ Expected result:
 
 ---
 
+## 1.4 Forgot Password / Reset Password
+
+Tujuan:
+
+Memastikan user dapat meminta link reset password, mengganti password, dan memakai password baru.
+
+Langkah testing:
+
+1. Buka halaman login.
+2. Klik link forgot password.
+3. Masukkan email akun yang valid dan kirim link reset.
+4. Cek email terkirim.
+5. Buka link reset dari email.
+6. Isi password baru dan konfirmasi password.
+7. Submit form reset.
+8. Login menggunakan password baru.
+9. Coba login menggunakan password lama.
+
+Expected result:
+
+1. Link reset password terkirim ke email yang valid.
+2. Form reset password dapat dibuka dari link email.
+3. Password berhasil diganti.
+4. Login dengan password baru berhasil.
+5. Password lama tidak bisa dipakai lagi.
+
+Negative test:
+
+1. Email kosong harus gagal.
+2. Email tidak valid harus gagal.
+3. Konfirmasi password berbeda harus gagal.
+4. Token invalid atau expired harus gagal.
+
+---
+
 # Testing Area 2 - Role Access
 
 ## 2.1 Akses Route Berdasarkan Role
@@ -1114,7 +1149,7 @@ Expected result:
 2. Tidak ada tabel `laporan`.
 3. Tidak ada kolom yang tidak disetujui.
 4. Tabel `migrations` boleh ada sebagai metadata internal Laravel.
-5. Tabel auxiliary Laravel lain seperti `sessions`, `cache`, `jobs`, atau `password_reset_tokens` hanya boleh ada jika sudah disetujui.
+5. Tabel auxiliary Laravel lain seperti `sessions`, `cache`, `jobs`, atau `failed_jobs` harus direview jika digunakan; `password_reset_tokens` boleh digunakan untuk forgot password dan tidak dihitung sebagai tabel domain.
 
 ---
 

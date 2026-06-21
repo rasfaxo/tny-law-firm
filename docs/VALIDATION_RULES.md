@@ -144,6 +144,41 @@ Aturan:
 
 ---
 
+## Forgot Password
+
+Field:
+
+| Field   | Validation                      |
+| ------- | ------------------------------- |
+| `email` | required, email, exists:users,email |
+
+Aturan:
+
+1. Email harus terdaftar pada akun yang valid.
+2. Proses forgot password mengikuti Laravel Breeze.
+3. Email hanya digunakan untuk reset password.
+
+---
+
+## Reset Password
+
+Field:
+
+| Field                   | Validation                        |
+| ----------------------- | --------------------------------- |
+| `token`                 | required, string                  |
+| `email`                 | required, email, exists:users,email |
+| `password`              | required, confirmed, min:8        |
+| `password_confirmation` | required_with:password             |
+
+Aturan:
+
+1. Token harus valid dan belum expired sesuai mekanisme Laravel Breeze.
+2. Password baru wajib di-hash sebelum disimpan.
+3. Reset password hanya untuk pemulihan password akun.
+
+---
+
 # User and Account Validation
 
 ## Admin Membuat Akun Staf Legal

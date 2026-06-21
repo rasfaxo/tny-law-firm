@@ -130,29 +130,12 @@ Kolom `remember_token` tidak termasuk dalam rancangan database skripsi final. Ji
 
 ## Laravel Default Auxiliary Tables Rule
 
-- Laravel default auxiliary tables such as `password_reset_tokens`, `sessions`, `cache`, `jobs`, or `failed_jobs` are not part of the locked thesis database schema.
-- Do not create or migrate these auxiliary tables unless explicitly reviewed and approved by the project owner.
-
-- Because email feature is not included in the initial phase, password reset features that depend on `password_reset_tokens` must be disabled or adjusted unless approved.
-- If session, cache, queue, or job features require database tables later, those tables must be discussed and approved separately.
-
-- The locked thesis domain database schema only contains the ten core application tables listed in this document.
-- The `migrations` table is a Laravel internal metadata table used only to track executed migration files.
-
-- The `migrations` table is allowed as a framework requirement, but it is not part of the thesis domain database schema, ERD, LRS, report query, or application feature design.
-
-- Do not treat the `migrations` table as an application table.
-
-- Is database schema.
-
-- Do not create or migrate these auxiliary tables unless explicitly reviewed and approved by the project owner.
-
-- Because email feature is not included in the initial phase, password reset features that depend on `password_reset_tokens` must be disabled or adjusted unless approved.
-
-- If session, cache, queue, or job features require database tables later, those tables must be discussed and approved separately.
-
-- The locked thesis database schema only contains the ten core tables listed in this document.
-
+- Laravel internal auxiliary tables such as `migrations` remain allowed for framework metadata.
+- `password_reset_tokens` is allowed as an auxiliary Laravel table only for forgot password / reset password via Laravel Breeze.
+- `password_reset_tokens` is not part of the 10 core domain tables, is not counted as a domain table, and does not enter the main ERD/LRS.
+- Auxiliary tables such as `sessions`, `cache`, `jobs`, and `failed_jobs` remain outside the locked thesis schema unless separately reviewed and approved.
+- The locked thesis domain database schema tetap berisi sepuluh tabel inti yang tercantum pada dokumen ini.
+- Larangan tabel `laporan` tetap berlaku.
 
 ---
 
