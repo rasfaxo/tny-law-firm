@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Admin\KategoriPerkaraController;
 use App\Http\Controllers\Admin\StafLegalController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\ProfileController;
@@ -69,6 +70,35 @@ Route::middleware(["auth", "active_account", "role:admin"])
             StafLegalController::class,
             "updatePassword",
         ])->name("staf-legal.password");
+
+        Route::get("/kategori-perkara", [
+            KategoriPerkaraController::class,
+            "index",
+        ])->name("kategori-perkara.index");
+        Route::get("/kategori-perkara/create", [
+            KategoriPerkaraController::class,
+            "create",
+        ])->name("kategori-perkara.create");
+        Route::post("/kategori-perkara", [
+            KategoriPerkaraController::class,
+            "store",
+        ])->name("kategori-perkara.store");
+        Route::get("/kategori-perkara/{kategoriPerkara}", [
+            KategoriPerkaraController::class,
+            "show",
+        ])->name("kategori-perkara.show");
+        Route::get("/kategori-perkara/{kategoriPerkara}/edit", [
+            KategoriPerkaraController::class,
+            "edit",
+        ])->name("kategori-perkara.edit");
+        Route::put("/kategori-perkara/{kategoriPerkara}", [
+            KategoriPerkaraController::class,
+            "update",
+        ])->name("kategori-perkara.update");
+        Route::delete("/kategori-perkara/{kategoriPerkara}", [
+            KategoriPerkaraController::class,
+            "destroy",
+        ])->name("kategori-perkara.destroy");
     });
 
 Route::middleware(["auth", "active_account", "role:staf_legal"])
