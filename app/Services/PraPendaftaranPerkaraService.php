@@ -1,0 +1,36 @@
+<?php
+
+namespace App\Services;
+
+use App\Models\PraPendaftaranPerkara;
+use App\Models\RiwayatStatus;
+use Illuminate\Support\Facades\DB;
+
+class PraPendaftaranPerkaraService
+{
+    /**
+     * @param array{id_kategori: mixed, judul_perkara: string, kronologi: string} $data
+     */
+    public function createForKlien(array $data, int $userId): PraPendaftaranPerkara
+    {
+        return DB::transaction(function () use ($data, $userId): PraPendaftaranPerkara {
+            $pengajuan = PraPendaftaranPerkara::create([
+                "id_user" => $userId,
+                "id_kategori" => $data["id_kategori"],
+                "judul_perkara" => $data["judul_perkara"],
+                "kronologi" => $data["kronologi"],
+                "status_pengajuan" => "menunggu_verifikasi",
+                "tanggal_pengajuan" => now(),
+            ]);
+
+            RiwayatStatus::create([
+                "id_pendaftaran" => $pengajuan->id_pendaftaran,
+                "id_user" => $userId,
+                "status" => "menunggu_verifikasi",
+                "keterangan" => "Pengajuan pra-pendaftaran perkara dibuat oleh klien",
+            ]);
+
+            return $pengajuan;
+        });
+    }
+}

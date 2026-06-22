@@ -3,6 +3,7 @@
 use App\Http\Controllers\Admin\KategoriPerkaraController;
 use App\Http\Controllers\Admin\StafLegalController;
 use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\Klien\PraPendaftaranPerkaraController;
 use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
 
@@ -30,6 +31,23 @@ Route::middleware(["auth", "active_account", "role:klien"])
         Route::get("/dashboard", [DashboardController::class, "klien"])->name(
             "dashboard",
         );
+
+        Route::get("/pra-pendaftaran", [
+            PraPendaftaranPerkaraController::class,
+            "index",
+        ])->name("pra-pendaftaran.index");
+        Route::get("/pra-pendaftaran/create", [
+            PraPendaftaranPerkaraController::class,
+            "create",
+        ])->name("pra-pendaftaran.create");
+        Route::post("/pra-pendaftaran", [
+            PraPendaftaranPerkaraController::class,
+            "store",
+        ])->name("pra-pendaftaran.store");
+        Route::get("/pra-pendaftaran/{praPendaftaranPerkara}", [
+            PraPendaftaranPerkaraController::class,
+            "show",
+        ])->name("pra-pendaftaran.show");
     });
 
 Route::middleware(["auth", "active_account", "role:admin"])

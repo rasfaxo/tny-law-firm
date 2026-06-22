@@ -23,8 +23,11 @@
                 <!-- Navigation Links -->
                 <div class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
                     @if ($user->isKlien())
-                        <x-nav-link :href="route('klien.dashboard')" :active="request()->routeIs('klien.*')">
+                        <x-nav-link :href="route('klien.dashboard')" :active="request()->routeIs('klien.dashboard')">
                             {{ __('Dashboard Klien') }}
+                        </x-nav-link>
+                        <x-nav-link :href="route('klien.pra-pendaftaran.index')" :active="request()->routeIs('klien.pra-pendaftaran.*')">
+                            {{ __('Pra-Pendaftaran Saya') }}
                         </x-nav-link>
                     @elseif ($user->isAdmin())
                         <x-nav-link :href="route('admin.dashboard')" :active="request()->routeIs('admin.dashboard')">
@@ -94,8 +97,11 @@
     <div :class="{'block': open, 'hidden': ! open}" class="hidden sm:hidden">
         <div class="pt-2 pb-3 space-y-1">
             @if ($user->isKlien())
-                <x-responsive-nav-link :href="route('klien.dashboard')" :active="request()->routeIs('klien.*')">
+                <x-responsive-nav-link :href="route('klien.dashboard')" :active="request()->routeIs('klien.dashboard')">
                     {{ __('Dashboard Klien') }}
+                </x-responsive-nav-link>
+                <x-responsive-nav-link :href="route('klien.pra-pendaftaran.index')" :active="request()->routeIs('klien.pra-pendaftaran.*')">
+                    {{ __('Pra-Pendaftaran Saya') }}
                 </x-responsive-nav-link>
             @elseif ($user->isAdmin())
                 <x-responsive-nav-link :href="route('admin.dashboard')" :active="request()->routeIs('admin.dashboard')">
