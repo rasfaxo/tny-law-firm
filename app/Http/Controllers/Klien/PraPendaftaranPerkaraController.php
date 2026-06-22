@@ -61,11 +61,13 @@ class PraPendaftaranPerkaraController extends Controller
 
         $praPendaftaranPerkara->load([
             "kategori",
-            "riwayatStatus" => fn ($query) => $query
-                ->with("user")
-                ->oldest(),
+            "dokumenPerkara" => fn($query) => $query->latest(),
+            "riwayatStatus" => fn($query) => $query->with("user")->oldest(),
         ]);
 
-        return view("klien.pra-pendaftaran.show", compact("praPendaftaranPerkara"));
+        return view(
+            "klien.pra-pendaftaran.show",
+            compact("praPendaftaranPerkara"),
+        );
     }
 }

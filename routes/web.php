@@ -3,6 +3,7 @@
 use App\Http\Controllers\Admin\KategoriPerkaraController;
 use App\Http\Controllers\Admin\StafLegalController;
 use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\Klien\DokumenPerkaraController;
 use App\Http\Controllers\Klien\PraPendaftaranPerkaraController;
 use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
@@ -48,6 +49,19 @@ Route::middleware(["auth", "active_account", "role:klien"])
             PraPendaftaranPerkaraController::class,
             "show",
         ])->name("pra-pendaftaran.show");
+
+        Route::get("/pra-pendaftaran/{praPendaftaranPerkara}/dokumen/create", [
+            DokumenPerkaraController::class,
+            "create",
+        ])->name("dokumen.create");
+        Route::post("/pra-pendaftaran/{praPendaftaranPerkara}/dokumen", [
+            DokumenPerkaraController::class,
+            "store",
+        ])->name("dokumen.store");
+        Route::get("/dokumen/{dokumenPerkara}", [
+            DokumenPerkaraController::class,
+            "show",
+        ])->name("dokumen.show");
     });
 
 Route::middleware(["auth", "active_account", "role:admin"])
