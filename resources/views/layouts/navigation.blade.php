@@ -27,8 +27,11 @@
                             {{ __('Dashboard Klien') }}
                         </x-nav-link>
                     @elseif ($user->isAdmin())
-                        <x-nav-link :href="route('admin.dashboard')" :active="request()->routeIs('admin.*')">
+                        <x-nav-link :href="route('admin.dashboard')" :active="request()->routeIs('admin.dashboard')">
                             {{ __('Dashboard Admin') }}
+                        </x-nav-link>
+                        <x-nav-link :href="route('admin.staf-legal.index')" :active="request()->routeIs('admin.staf-legal.*')">
+                            {{ __('Staf Legal') }}
                         </x-nav-link>
                     @elseif ($user->isStafLegal())
                         <x-nav-link :href="route('staf-legal.dashboard')" :active="request()->routeIs('staf-legal.*')">
@@ -92,8 +95,11 @@
                     {{ __('Dashboard Klien') }}
                 </x-responsive-nav-link>
             @elseif ($user->isAdmin())
-                <x-responsive-nav-link :href="route('admin.dashboard')" :active="request()->routeIs('admin.*')">
+                <x-responsive-nav-link :href="route('admin.dashboard')" :active="request()->routeIs('admin.dashboard')">
                     {{ __('Dashboard Admin') }}
+                </x-responsive-nav-link>
+                <x-responsive-nav-link :href="route('admin.staf-legal.index')" :active="request()->routeIs('admin.staf-legal.*')">
+                    {{ __('Staf Legal') }}
                 </x-responsive-nav-link>
             @elseif ($user->isStafLegal())
                 <x-responsive-nav-link :href="route('staf-legal.dashboard')" :active="request()->routeIs('staf-legal.*')">

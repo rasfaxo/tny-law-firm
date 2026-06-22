@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Admin\StafLegalController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
@@ -37,6 +38,37 @@ Route::middleware(["auth", "active_account", "role:admin"])
         Route::get("/dashboard", [DashboardController::class, "admin"])->name(
             "dashboard",
         );
+
+        Route::get("/staf-legal", [StafLegalController::class, "index"])->name(
+            "staf-legal.index",
+        );
+        Route::get("/staf-legal/create", [
+            StafLegalController::class,
+            "create",
+        ])->name("staf-legal.create");
+        Route::post("/staf-legal", [StafLegalController::class, "store"])->name(
+            "staf-legal.store",
+        );
+        Route::get("/staf-legal/{user}", [
+            StafLegalController::class,
+            "show",
+        ])->name("staf-legal.show");
+        Route::get("/staf-legal/{user}/edit", [
+            StafLegalController::class,
+            "edit",
+        ])->name("staf-legal.edit");
+        Route::put("/staf-legal/{user}", [
+            StafLegalController::class,
+            "update",
+        ])->name("staf-legal.update");
+        Route::patch("/staf-legal/{user}/status", [
+            StafLegalController::class,
+            "updateStatus",
+        ])->name("staf-legal.status");
+        Route::patch("/staf-legal/{user}/password", [
+            StafLegalController::class,
+            "updatePassword",
+        ])->name("staf-legal.password");
     });
 
 Route::middleware(["auth", "active_account", "role:staf_legal"])
