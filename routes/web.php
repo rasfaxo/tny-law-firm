@@ -6,6 +6,7 @@ use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\Klien\DokumenPerkaraController;
 use App\Http\Controllers\Klien\PraPendaftaranPerkaraController;
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\StafLegal\VerifikasiBerkasController;
 use Illuminate\Support\Facades\Route;
 
 Route::get("/", function () {
@@ -141,6 +142,23 @@ Route::middleware(["auth", "active_account", "role:staf_legal"])
             DashboardController::class,
             "stafLegal",
         ])->name("dashboard");
+
+        Route::get("/verifikasi-berkas", [
+            VerifikasiBerkasController::class,
+            "index",
+        ])->name("verifikasi-berkas.index");
+        Route::get("/verifikasi-berkas/{praPendaftaranPerkara}", [
+            VerifikasiBerkasController::class,
+            "show",
+        ])->name("verifikasi-berkas.show");
+        Route::post("/verifikasi-berkas/{praPendaftaranPerkara}", [
+            VerifikasiBerkasController::class,
+            "store",
+        ])->name("verifikasi-berkas.store");
+        Route::get("/dokumen/{dokumenPerkara}", [
+            VerifikasiBerkasController::class,
+            "showDokumen",
+        ])->name("dokumen.show");
     });
 
 require __DIR__ . "/auth.php";

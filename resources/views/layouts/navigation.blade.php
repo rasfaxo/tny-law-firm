@@ -40,8 +40,11 @@
                             {{ __('Kategori Perkara') }}
                         </x-nav-link>
                     @elseif ($user->isStafLegal())
-                        <x-nav-link :href="route('staf-legal.dashboard')" :active="request()->routeIs('staf-legal.*')">
+                        <x-nav-link :href="route('staf-legal.dashboard')" :active="request()->routeIs('staf-legal.dashboard')">
                             {{ __('Dashboard Staf Legal') }}
+                        </x-nav-link>
+                        <x-nav-link :href="route('staf-legal.verifikasi-berkas.index')" :active="request()->routeIs('staf-legal.verifikasi-berkas.*')">
+                            {{ __('Verifikasi Berkas') }}
                         </x-nav-link>
                     @endif
                 </div>
@@ -114,8 +117,11 @@
                     {{ __('Kategori Perkara') }}
                 </x-responsive-nav-link>
             @elseif ($user->isStafLegal())
-                <x-responsive-nav-link :href="route('staf-legal.dashboard')" :active="request()->routeIs('staf-legal.*')">
+                <x-responsive-nav-link :href="route('staf-legal.dashboard')" :active="request()->routeIs('staf-legal.dashboard')">
                     {{ __('Dashboard Staf Legal') }}
+                </x-responsive-nav-link>
+                <x-responsive-nav-link :href="route('staf-legal.verifikasi-berkas.index')" :active="request()->routeIs('staf-legal.verifikasi-berkas.*')">
+                    {{ __('Verifikasi Berkas') }}
                 </x-responsive-nav-link>
             @endif
         </div>
