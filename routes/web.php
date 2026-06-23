@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Admin\JadwalKonsultasiController;
 use App\Http\Controllers\Admin\KategoriPerkaraController;
 use App\Http\Controllers\Admin\StafLegalController;
 use App\Http\Controllers\DashboardController;
@@ -142,6 +143,35 @@ Route::middleware(["auth", "active_account", "role:admin"])
             KategoriPerkaraController::class,
             "destroy",
         ])->name("kategori-perkara.destroy");
+
+        Route::get("/jadwal-konsultasi", [
+            JadwalKonsultasiController::class,
+            "index",
+        ])->name("jadwal-konsultasi.index");
+        Route::get("/jadwal-konsultasi/create", [
+            JadwalKonsultasiController::class,
+            "create",
+        ])->name("jadwal-konsultasi.create");
+        Route::post("/jadwal-konsultasi", [
+            JadwalKonsultasiController::class,
+            "store",
+        ])->name("jadwal-konsultasi.store");
+        Route::get("/jadwal-konsultasi/{jadwalKonsultasi}", [
+            JadwalKonsultasiController::class,
+            "show",
+        ])->name("jadwal-konsultasi.show");
+        Route::get("/jadwal-konsultasi/{jadwalKonsultasi}/edit", [
+            JadwalKonsultasiController::class,
+            "edit",
+        ])->name("jadwal-konsultasi.edit");
+        Route::put("/jadwal-konsultasi/{jadwalKonsultasi}", [
+            JadwalKonsultasiController::class,
+            "update",
+        ])->name("jadwal-konsultasi.update");
+        Route::patch("/jadwal-konsultasi/{jadwalKonsultasi}/status", [
+            JadwalKonsultasiController::class,
+            "updateStatus",
+        ])->name("jadwal-konsultasi.status");
     });
 
 Route::middleware(["auth", "active_account", "role:staf_legal"])
