@@ -51,9 +51,9 @@ class StoreVerifikasiBerkasRequest extends FormRequest
                 }
 
                 $allowedDocumentIds = $pengajuan
-                    ->dokumenPerkara()
+                    ->dokumenAktif()
                     ->pluck("id_dokumen")
-                    ->map(fn ($id) => (string) $id)
+                    ->map(fn($id) => (string) $id)
                     ->all();
 
                 $submittedDocumentIds = array_keys($dokumen);
@@ -94,7 +94,7 @@ class StoreVerifikasiBerkasRequest extends FormRequest
                         ->errors()
                         ->add(
                             "dokumen",
-                            "Semua dokumen pada pengajuan harus diberi status verifikasi.",
+                            "Semua dokumen aktif pada pengajuan harus diberi status verifikasi.",
                         );
                 }
 
@@ -113,14 +113,19 @@ class StoreVerifikasiBerkasRequest extends FormRequest
                     return;
                 }
 
-                if ($this->input("status_verifikasi") !== "berkas_tidak_lengkap") {
+                if (
+                    $this->input("status_verifikasi") !== "berkas_tidak_lengkap"
+                ) {
                     return;
                 }
 
                 $hasPerluPerbaikan = false;
 
                 foreach ($dokumen as $documentId => $document) {
-                    if (($document["status_dokumen"] ?? null) !== "perlu_perbaikan") {
+                    if (
+                        ($document["status_dokumen"] ?? null) !==
+                        "perlu_perbaikan"
+                    ) {
                         continue;
                     }
 

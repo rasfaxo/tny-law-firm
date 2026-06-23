@@ -4,6 +4,7 @@ use App\Http\Controllers\Admin\KategoriPerkaraController;
 use App\Http\Controllers\Admin\StafLegalController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\Klien\DokumenPerkaraController;
+use App\Http\Controllers\Klien\PerbaikanDokumenController;
 use App\Http\Controllers\Klien\PraPendaftaranPerkaraController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\StafLegal\VerifikasiBerkasController;
@@ -63,6 +64,15 @@ Route::middleware(["auth", "active_account", "role:klien"])
             DokumenPerkaraController::class,
             "show",
         ])->name("dokumen.show");
+
+        Route::get("/catatan-verifikasi/{catatanVerifikasi}/perbaikan", [
+            PerbaikanDokumenController::class,
+            "create",
+        ])->name("perbaikan-dokumen.create");
+        Route::post("/catatan-verifikasi/{catatanVerifikasi}/perbaikan", [
+            PerbaikanDokumenController::class,
+            "store",
+        ])->name("perbaikan-dokumen.store");
     });
 
 Route::middleware(["auth", "active_account", "role:admin"])

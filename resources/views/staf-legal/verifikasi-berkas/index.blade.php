@@ -29,7 +29,7 @@
                                     <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Klien</th>
                                     <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Kategori</th>
                                     <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
-                                    <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Dokumen</th>
+                                    <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Dokumen Aktif</th>
                                     <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Tanggal Pengajuan</th>
                                     <th class="px-4 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">Aksi</th>
                                 </tr>
@@ -41,11 +41,9 @@
                                         <td class="px-4 py-3 whitespace-nowrap text-gray-700">{{ $item->klien?->nama ?? '-' }}</td>
                                         <td class="px-4 py-3 whitespace-nowrap text-gray-700">{{ $item->kategori?->nama_kategori ?? '-' }}</td>
                                         <td class="px-4 py-3 whitespace-nowrap text-gray-700">
-                                            <span class="inline-flex rounded-full bg-yellow-100 px-2 text-xs font-semibold leading-5 text-yellow-800">
-                                                {{ str_replace('_', ' ', ucfirst($item->status_pengajuan)) }}
-                                            </span>
+                                            <x-status-badge :status="$item->status_pengajuan" color="yellow" />
                                         </td>
-                                        <td class="px-4 py-3 whitespace-nowrap text-gray-700">{{ $item->dokumen_perkara_count }}</td>
+                                        <td class="px-4 py-3 whitespace-nowrap text-gray-700">{{ $item->dokumen_aktif_count }}</td>
                                         <td class="px-4 py-3 whitespace-nowrap text-gray-700">
                                             {{ $item->tanggal_pengajuan?->format('d M Y H:i') ?? '-' }}
                                         </td>

@@ -61,7 +61,15 @@ class PraPendaftaranPerkaraController extends Controller
 
         $praPendaftaranPerkara->load([
             "kategori",
-            "dokumenPerkara" => fn($query) => $query->latest(),
+            "dokumenAktif" => fn($query) => $query->latest(),
+            "riwayatDokumen" => fn($query) => $query->latest(),
+            "verifikasiBerkas" => fn($query) => $query->latest(
+                "tanggal_verifikasi",
+            ),
+            "verifikasiBerkas.catatanVerifikasi" => fn($query) => $query
+                ->whereNotNull("id_dokumen")
+                ->latest(),
+            "verifikasiBerkas.catatanVerifikasi.dokumenPerkara",
             "riwayatStatus" => fn($query) => $query->with("user")->oldest(),
         ]);
 

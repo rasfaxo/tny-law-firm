@@ -19,7 +19,7 @@ class VerifikasiBerkasController extends Controller
     {
         $pengajuan = PraPendaftaranPerkara::query()
             ->with(["klien", "kategori"])
-            ->withCount("dokumenPerkara")
+            ->withCount("dokumenAktif")
             ->whereIn(
                 "status_pengajuan",
                 VerifikasiBerkasService::verifiableStatuses(),
@@ -45,7 +45,8 @@ class VerifikasiBerkasController extends Controller
         $praPendaftaranPerkara->load([
             "klien",
             "kategori",
-            "dokumenPerkara" => fn($query) => $query->oldest(),
+            "dokumenAktif" => fn($query) => $query->oldest(),
+            "riwayatDokumen" => fn($query) => $query->oldest(),
         ]);
 
         return view(

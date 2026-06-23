@@ -34,9 +34,7 @@
                     <div>
                         <div class="text-sm font-medium text-gray-500">Status Pengajuan</div>
                         <div class="mt-1">
-                            <span class="inline-flex rounded-full bg-yellow-100 px-2 text-xs font-semibold leading-5 text-yellow-800">
-                                {{ str_replace('_', ' ', ucfirst($praPendaftaranPerkara->status_pengajuan)) }}
-                            </span>
+                            <x-status-badge :status="$praPendaftaranPerkara->status_pengajuan" color="yellow" />
                         </div>
                     </div>
 
@@ -61,7 +59,7 @@
             <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
                 <div class="p-6 text-gray-900">
                     <div class="flex items-center justify-between gap-4">
-                        <h3 class="text-lg font-medium text-gray-900">{{ __('Dokumen Perkara') }}</h3>
+                        <h3 class="text-lg font-medium text-gray-900">{{ __('Dokumen Aktif') }}</h3>
 
                         @if ($praPendaftaranPerkara->status_pengajuan === 'menunggu_verifikasi')
                             <a href="{{ route('klien.dokumen.create', $praPendaftaranPerkara) }}" class="inline-flex items-center px-4 py-2 bg-gray-800 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-gray-700 focus:bg-gray-700 active:bg-gray-900 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 transition ease-in-out duration-150">
@@ -82,14 +80,12 @@
                                 </tr>
                             </thead>
                             <tbody class="bg-white divide-y divide-gray-200">
-                                @forelse ($praPendaftaranPerkara->dokumenPerkara as $dokumen)
+                                @forelse ($praPendaftaranPerkara->dokumenAktif as $dokumen)
                                     <tr>
                                         <td class="px-4 py-3 font-medium text-gray-900">{{ $dokumen->nama_dokumen }}</td>
                                         <td class="px-4 py-3 whitespace-nowrap text-gray-700">{{ $dokumen->jenis_dokumen }}</td>
                                         <td class="px-4 py-3 whitespace-nowrap text-gray-700">
-                                            <span class="inline-flex rounded-full bg-blue-100 px-2 text-xs font-semibold leading-5 text-blue-800">
-                                                {{ str_replace('_', ' ', ucfirst($dokumen->status_dokumen)) }}
-                                            </span>
+                                            <x-status-badge :status="$dokumen->status_dokumen" />
                                         </td>
                                         <td class="px-4 py-3 whitespace-nowrap text-gray-700">{{ $dokumen->created_at?->format('d M Y H:i') ?? '-' }}</td>
                                         <td class="px-4 py-3 whitespace-nowrap text-right text-sm font-medium">
@@ -101,7 +97,7 @@
                                 @empty
                                     <tr>
                                         <td colspan="5" class="px-4 py-8 text-center text-gray-500">
-                                            {{ __('Belum ada dokumen perkara yang diunggah.') }}
+                                            {{ __('Belum ada dokumen aktif.') }}
                                         </td>
                                     </tr>
                                 @endforelse
@@ -110,6 +106,124 @@
                     </div>
                 </div>
             </div>
+
+            <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
+                <div class="p-6 text-gray-900">
+                    <h3 class="text-lg font-medium text-gray-900">{{ __('Riwayat Dokumen') }}</h3>
+                    <p class="mt-1 text-sm text-gray-500">
+                        {{ __('Dokumen lama yang sudah diganti tetap disimpan sebagai histori dan bersifat read-only.') }}
+                    </p>
+
+                    <div class="mt-4 overflow-x-auto">
+                        <table class="min-w-full divide-y divide-gray-200">
+                            <thead class="bg-gray-50">
+                                <tr>
+                                    <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Nama Dokumen</th>
+                                    <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Jenis</th>
+                                    <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
+                                    <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Tanggal Upload</th>
+                                    <th class="px-4 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">Aksi</th>
+                                </tr>
+                            </thead>
+                            <tbody class="bg-white divide-y divide-gray-200">
+                                @forelse ($praPendaftaranPerkara->riwayatDokumen as $dokumen)
+                                    <tr>
+                                        <td class="px-4 py-3 font-medium text-gray-900">{{ $dokumen->nama_dokumen }}</td>
+                                        <td class="px-4 py-3 whitespace-nowrap text-gray-700">{{ $dokumen->jenis_dokumen }}</td>
+                                        <td class="px-4 py-3 whitespace-nowrap text-gray-700">
+                                            <x-status-badge :status="$dokumen->status_dokumen" color="gray" />
+                                        </td>
+                                        <td class="px-4 py-3 whitespace-nowrap text-gray-700">{{ $dokumen->created_at?->format('d M Y H:i') ?? '-' }}</td>
+                                        <td class="px-4 py-3 whitespace-nowrap text-right text-sm font-medium">
+                                            <a href="{{ route('klien.dokumen.show', $dokumen) }}" class="text-indigo-600 hover:text-indigo-900">
+                                                {{ __('Lihat/Unduh') }}
+                                            </a>
+                                        </td>
+                                    </tr>
+                                @empty
+                                    <tr>
+                                        <td colspan="5" class="px-4 py-8 text-center text-gray-500">
+                                            {{ __('Belum ada riwayat dokumen.') }}
+                                        </td>
+                                    </tr>
+                                @endforelse
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            @if ($praPendaftaranPerkara->status_pengajuan === 'berkas_tidak_lengkap')
+                @php
+                    $catatanPerbaikan = $praPendaftaranPerkara->verifikasiBerkas
+                        ->flatMap(fn ($verifikasi) => $verifikasi->catatanVerifikasi);
+                @endphp
+
+                <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
+                    <div class="p-6 text-gray-900">
+                        <h3 class="text-lg font-medium text-gray-900">{{ __('Catatan Perbaikan Dokumen') }}</h3>
+                        <p class="mt-1 text-sm text-gray-500">
+                            {{ __('Unggah dokumen pengganti hanya untuk catatan yang masih belum diperbaiki.') }}
+                        </p>
+
+                        <div class="mt-4 overflow-x-auto">
+                            <table class="min-w-full divide-y divide-gray-200">
+                                <thead class="bg-gray-50">
+                                    <tr>
+                                        <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Dokumen</th>
+                                        <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Catatan</th>
+                                        <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status Perbaikan</th>
+                                        <th class="px-4 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">Aksi</th>
+                                    </tr>
+                                </thead>
+                                <tbody class="bg-white divide-y divide-gray-200">
+                                    @forelse ($catatanPerbaikan as $catatan)
+                                        @php
+                                            $dokumenCatatan = $catatan->dokumenPerkara;
+                                            $bisaUploadPerbaikan = $catatan->status_perbaikan === 'belum_diperbaiki'
+                                                && $dokumenCatatan
+                                                && $dokumenCatatan->status_dokumen === 'perlu_perbaikan';
+                                        @endphp
+                                        <tr>
+                                            <td class="px-4 py-3 text-gray-700">
+                                                <div class="font-medium text-gray-900">{{ $dokumenCatatan?->nama_dokumen ?? '-' }}</div>
+                                                <div class="mt-1 text-sm text-gray-500">
+                                                    {{ $dokumenCatatan?->jenis_dokumen ?? '-' }}
+                                                    &middot;
+                                                    @if ($dokumenCatatan)
+                                                        <x-status-badge :status="$dokumenCatatan->status_dokumen" color="gray" />
+                                                    @else
+                                                        -
+                                                    @endif
+                                                </div>
+                                            </td>
+                                            <td class="px-4 py-3 text-gray-700 whitespace-pre-line">{{ $catatan->isi_catatan }}</td>
+                                            <td class="px-4 py-3 whitespace-nowrap text-gray-700">
+                                                <x-status-badge :status="$catatan->status_perbaikan" color="orange" />
+                                            </td>
+                                            <td class="px-4 py-3 whitespace-nowrap text-right text-sm font-medium">
+                                                @if ($bisaUploadPerbaikan)
+                                                    <a href="{{ route('klien.perbaikan-dokumen.create', $catatan) }}" class="text-indigo-600 hover:text-indigo-900">
+                                                        {{ __('Upload Pengganti') }}
+                                                    </a>
+                                                @else
+                                                    <span class="text-gray-400">{{ __('Tidak tersedia') }}</span>
+                                                @endif
+                                            </td>
+                                        </tr>
+                                    @empty
+                                        <tr>
+                                            <td colspan="4" class="px-4 py-8 text-center text-gray-500">
+                                                {{ __('Belum ada catatan perbaikan dokumen.') }}
+                                            </td>
+                                        </tr>
+                                    @endforelse
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            @endif
 
             <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
                 <div class="p-6 text-gray-900">

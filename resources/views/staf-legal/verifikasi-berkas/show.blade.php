@@ -44,9 +44,7 @@
                         <div>
                             <div class="text-sm font-medium text-gray-500">Status Pengajuan</div>
                             <div class="mt-1">
-                                <span class="inline-flex rounded-full bg-yellow-100 px-2 text-xs font-semibold leading-5 text-yellow-800">
-                                    {{ str_replace('_', ' ', ucfirst($praPendaftaranPerkara->status_pengajuan)) }}
-                                </span>
+                                <x-status-badge :status="$praPendaftaranPerkara->status_pengajuan" color="yellow" />
                             </div>
                         </div>
 
@@ -68,7 +66,7 @@
 
                 <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
                     <div class="p-6 text-gray-900">
-                        <h3 class="text-lg font-medium text-gray-900">{{ __('Dokumen Perkara') }}</h3>
+                        <h3 class="text-lg font-medium text-gray-900">{{ __('Dokumen Aktif') }}</h3>
                         <p class="mt-1 text-sm text-gray-500">
                             {{ __('Buka dokumen melalui link aman, lalu tetapkan status valid atau perlu perbaikan.') }}
                         </p>
@@ -85,7 +83,7 @@
                                     </tr>
                                 </thead>
                                 <tbody class="bg-white divide-y divide-gray-200">
-                                    @forelse ($praPendaftaranPerkara->dokumenPerkara as $dokumen)
+                                    @forelse ($praPendaftaranPerkara->dokumenAktif as $dokumen)
                                         @php
                                             $oldStatus = old("dokumen.{$dokumen->id_dokumen}.status_dokumen", $dokumen->status_dokumen === 'perlu_perbaikan' ? 'perlu_perbaikan' : 'valid');
                                         @endphp
@@ -93,9 +91,7 @@
                                             <td class="px-4 py-3 font-medium text-gray-900">{{ $dokumen->nama_dokumen }}</td>
                                             <td class="px-4 py-3 whitespace-nowrap text-gray-700">{{ $dokumen->jenis_dokumen }}</td>
                                             <td class="px-4 py-3 whitespace-nowrap text-gray-700">
-                                                <span class="inline-flex rounded-full bg-blue-100 px-2 text-xs font-semibold leading-5 text-blue-800">
-                                                    {{ str_replace('_', ' ', ucfirst($dokumen->status_dokumen)) }}
-                                                </span>
+                                                <x-status-badge :status="$dokumen->status_dokumen" />
                                             </td>
                                             <td class="px-4 py-3 whitespace-nowrap text-sm font-medium">
                                                 <a href="{{ route('staf-legal.dokumen.show', $dokumen) }}" class="text-indigo-600 hover:text-indigo-900">
@@ -122,7 +118,53 @@
                                     @empty
                                         <tr>
                                             <td colspan="5" class="px-4 py-8 text-center text-gray-500">
-                                                {{ __('Belum ada dokumen perkara yang diunggah.') }}
+                                                {{ __('Belum ada dokumen aktif untuk diverifikasi.') }}
+                                            </td>
+                                        </tr>
+                                    @endforelse
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
+                    <div class="p-6 text-gray-900">
+                        <h3 class="text-lg font-medium text-gray-900">{{ __('Riwayat Dokumen') }}</h3>
+                        <p class="mt-1 text-sm text-gray-500">
+                            {{ __('Dokumen yang sudah diganti ditampilkan sebagai riwayat read-only dan tidak ikut proses verifikasi utama.') }}
+                        </p>
+
+                        <div class="mt-4 overflow-x-auto">
+                            <table class="min-w-full divide-y divide-gray-200">
+                                <thead class="bg-gray-50">
+                                    <tr>
+                                        <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Nama Dokumen</th>
+                                        <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Jenis</th>
+                                        <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
+                                        <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Tanggal Upload</th>
+                                        <th class="px-4 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">Aksi</th>
+                                    </tr>
+                                </thead>
+                                <tbody class="bg-white divide-y divide-gray-200">
+                                    @forelse ($praPendaftaranPerkara->riwayatDokumen as $dokumen)
+                                        <tr>
+                                            <td class="px-4 py-3 font-medium text-gray-900">{{ $dokumen->nama_dokumen }}</td>
+                                            <td class="px-4 py-3 whitespace-nowrap text-gray-700">{{ $dokumen->jenis_dokumen }}</td>
+                                            <td class="px-4 py-3 whitespace-nowrap text-gray-700">
+                                                <x-status-badge :status="$dokumen->status_dokumen" color="gray" />
+                                            </td>
+                                            <td class="px-4 py-3 whitespace-nowrap text-gray-700">{{ $dokumen->created_at?->format('d M Y H:i') ?? '-' }}</td>
+                                            <td class="px-4 py-3 whitespace-nowrap text-right text-sm font-medium">
+                                                <a href="{{ route('staf-legal.dokumen.show', $dokumen) }}" class="text-indigo-600 hover:text-indigo-900">
+                                                    {{ __('Lihat/Unduh') }}
+                                                </a>
+                                            </td>
+                                        </tr>
+                                    @empty
+                                        <tr>
+                                            <td colspan="5" class="px-4 py-8 text-center text-gray-500">
+                                                {{ __('Belum ada riwayat dokumen.') }}
                                             </td>
                                         </tr>
                                     @endforelse

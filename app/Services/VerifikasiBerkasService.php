@@ -42,14 +42,22 @@ class VerifikasiBerkasService
                 ->lockForUpdate()
                 ->firstOrFail();
 
-            if (!in_array($lockedPengajuan->status_pengajuan, self::VERIFIABLE_STATUSES, true)) {
+            if (
+                !in_array(
+                    $lockedPengajuan->status_pengajuan,
+                    self::VERIFIABLE_STATUSES,
+                    true,
+                )
+            ) {
                 throw ValidationException::withMessages([
-                    "status_verifikasi" => "Pengajuan ini tidak dapat diverifikasi pada status saat ini.",
+                    "status_verifikasi" =>
+                        "Pengajuan ini tidak dapat diverifikasi pada status saat ini.",
                 ]);
             }
 
             $documents = DokumenPerkara::query()
                 ->where("id_pendaftaran", $lockedPengajuan->id_pendaftaran)
+                ->aktif()
                 ->lockForUpdate()
                 ->get()
                 ->keyBy("id_dokumen");
@@ -123,7 +131,8 @@ class VerifikasiBerkasService
     {
         return match ($status) {
             "berkas_lengkap" => "Berkas diverifikasi lengkap oleh Staf Legal.",
-            "berkas_tidak_lengkap" => "Berkas diverifikasi tidak lengkap oleh Staf Legal.",
+            "berkas_tidak_lengkap"
+                => "Berkas diverifikasi tidak lengkap oleh Staf Legal.",
             default => "Status pengajuan diperbarui oleh Staf Legal.",
         };
     }
