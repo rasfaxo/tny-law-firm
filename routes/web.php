@@ -4,6 +4,7 @@ use App\Http\Controllers\Admin\JadwalKonsultasiController;
 use App\Http\Controllers\Admin\KategoriPerkaraController;
 use App\Http\Controllers\Admin\StafLegalController;
 use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\Klien\BookingKonsultasiController;
 use App\Http\Controllers\Klien\DokumenPerkaraController;
 use App\Http\Controllers\Klien\PerbaikanDokumenController;
 use App\Http\Controllers\Klien\PraPendaftaranPerkaraController;
@@ -74,6 +75,15 @@ Route::middleware(["auth", "active_account", "role:klien"])
             PerbaikanDokumenController::class,
             "store",
         ])->name("perbaikan-dokumen.store");
+
+        Route::get("/pra-pendaftaran/{praPendaftaranPerkara}/booking/create", [
+            BookingKonsultasiController::class,
+            "create",
+        ])->name("booking-konsultasi.create");
+        Route::post("/pra-pendaftaran/{praPendaftaranPerkara}/booking", [
+            BookingKonsultasiController::class,
+            "store",
+        ])->name("booking-konsultasi.store");
     });
 
 Route::middleware(["auth", "active_account", "role:admin"])

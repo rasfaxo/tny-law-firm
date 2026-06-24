@@ -70,6 +70,7 @@ class PraPendaftaranPerkaraController extends Controller
                 ->whereNotNull("id_dokumen")
                 ->latest(),
             "verifikasiBerkas.catatanVerifikasi.dokumenPerkara",
+            "bookingAktif.jadwalKonsultasi",
             "riwayatStatus" => fn($query) => $query->with("user")->oldest(),
         ]);
 

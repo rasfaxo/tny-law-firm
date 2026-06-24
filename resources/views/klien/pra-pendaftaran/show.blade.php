@@ -56,6 +56,62 @@
                 </div>
             </div>
 
+            @php
+                $bookingAktif = $praPendaftaranPerkara->bookingAktif;
+            @endphp
+
+            @if ($bookingAktif || $praPendaftaranPerkara->status_pengajuan === 'berkas_lengkap')
+                <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
+                    <div class="p-6 text-gray-900">
+                        <div class="flex items-center justify-between gap-4">
+                            <h3 class="text-lg font-medium text-gray-900">{{ __('Jadwal Konsultasi') }}</h3>
+
+                            @if (!$bookingAktif && $praPendaftaranPerkara->status_pengajuan === 'berkas_lengkap')
+                                <a href="{{ route('klien.booking-konsultasi.create', $praPendaftaranPerkara) }}" class="inline-flex items-center px-4 py-2 bg-gray-800 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-gray-700 focus:bg-gray-700 active:bg-gray-900 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 transition ease-in-out duration-150">
+                                    {{ __('Pilih Jadwal Konsultasi') }}
+                                </a>
+                            @endif
+                        </div>
+
+                        @if ($bookingAktif)
+                            @php
+                                $jadwalBooking = $bookingAktif->jadwalKonsultasi;
+                            @endphp
+
+                            <dl class="mt-4 grid grid-cols-1 gap-4 sm:grid-cols-2">
+                                <div>
+                                    <dt class="text-sm font-medium text-gray-500">Status Booking</dt>
+                                    <dd class="mt-1">
+                                        <x-status-badge :status="$bookingAktif->status_booking" color="green" />
+                                    </dd>
+                                </div>
+                                <div>
+                                    <dt class="text-sm font-medium text-gray-500">Tanggal Booking</dt>
+                                    <dd class="mt-1 text-gray-900">{{ $bookingAktif->tanggal_booking?->format('d M Y H:i') ?? '-' }}</dd>
+                                </div>
+                                <div>
+                                    <dt class="text-sm font-medium text-gray-500">Tanggal Konsultasi</dt>
+                                    <dd class="mt-1 text-gray-900">{{ $jadwalBooking?->tanggal?->format('d M Y') ?? '-' }}</dd>
+                                </div>
+                                <div>
+                                    <dt class="text-sm font-medium text-gray-500">Waktu Konsultasi</dt>
+                                    <dd class="mt-1 text-gray-900">
+                                        {{ $jadwalBooking ? substr((string) $jadwalBooking->waktu_mulai, 0, 5) : '-' }}
+                                        @if ($jadwalBooking)
+                                            - {{ substr((string) $jadwalBooking->waktu_selesai, 0, 5) }}
+                                        @endif
+                                    </dd>
+                                </div>
+                            </dl>
+                        @else
+                            <p class="mt-4 text-sm text-gray-500">
+                                {{ __('Berkas sudah lengkap. Silakan pilih jadwal konsultasi yang tersedia.') }}
+                            </p>
+                        @endif
+                    </div>
+                </div>
+            @endif
+
             <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
                 <div class="p-6 text-gray-900">
                     <div class="flex items-center justify-between gap-4">
