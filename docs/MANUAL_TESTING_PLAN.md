@@ -922,30 +922,34 @@ Negative test:
 
 ---
 
-## 13.2 Klien Membuat Booking
+## 13.2 Klien Membuat Booking Online
 
 Tujuan:
 
-Memastikan Klien dapat memilih jadwal konsultasi.
+Memastikan Klien dapat memilih jadwal konsultasi dengan metode `online`.
 
 Langkah testing:
 
 1. Login sebagai Klien.
 2. Buka pengajuan dengan status `berkas_lengkap`.
 3. Pilih jadwal yang `tersedia`.
-4. Submit booking.
-5. Cek database.
+4. Pilih metode konsultasi `online`.
+5. Isi `catatan_preferensi_klien` jika fitur ini tersedia.
+6. Submit booking.
+7. Cek database.
 
 Expected result:
 
 1. Booking masuk ke `booking_konsultasi`.
 2. `id_user` booking adalah ID Klien.
 3. `status_booking` awal `aktif`.
-4. `tanggal_booking` diisi server.
-5. Jadwal berubah menjadi `terisi`.
-6. Status pengajuan berubah menjadi `jadwal_dipilih`.
-7. Record baru masuk ke `riwayat_status`.
-8. Proses menggunakan transaction.
+4. `metode_konsultasi` bernilai `online`.
+5. `status_konfirmasi_konsultasi` awal `menunggu_konfirmasi`.
+6. `tanggal_booking` diisi server.
+7. Jadwal berubah menjadi `terisi`.
+8. Status pengajuan berubah menjadi `jadwal_dipilih`.
+9. Record baru masuk ke `riwayat_status`.
+10. Proses menggunakan transaction.
 
 Negative test:
 
@@ -955,7 +959,223 @@ Negative test:
 4. Jadwal `tidak_aktif` tidak boleh dipilih.
 5. Booking untuk pengajuan milik Klien lain harus ditolak.
 6. `status_booking` dari request tidak boleh diterima.
-7. `tanggal_booking` dari request tidak boleh diterima.
+7. `status_konfirmasi_konsultasi` dari request Klien tidak boleh diterima.
+8. `tanggal_booking` dari request tidak boleh diterima.
+
+---
+
+## 13.3 Klien Membuat Booking Offline
+
+Tujuan:
+
+Memastikan Klien dapat memilih jadwal konsultasi dengan metode `offline`.
+
+Langkah testing:
+
+1. Login sebagai Klien.
+2. Buka pengajuan dengan status `berkas_lengkap`.
+3. Pilih jadwal yang `tersedia`.
+4. Pilih metode konsultasi `offline`.
+5. Submit booking.
+6. Cek database.
+
+Expected result:
+
+1. Booking berhasil dibuat.
+2. `metode_konsultasi` bernilai `offline`.
+3. `status_konfirmasi_konsultasi` awal `menunggu_konfirmasi`.
+4. Slot jadwal berubah menjadi `terisi`.
+5. Status pengajuan tetap mengikuti alur `jadwal_dipilih`.
+
+Negative test:
+
+1. Booking tanpa memilih metode konsultasi harus gagal.
+2. Nilai metode selain `online` atau `offline` harus gagal.
+
+---
+
+## 13.4 Admin Konfirmasi Konsultasi Online
+
+Tujuan:
+
+Memastikan Admin dapat mengonfirmasi detail konsultasi online dengan link manual.
+
+Langkah testing:
+
+1. Login sebagai Admin.
+2. Buka data booking dengan `metode_konsultasi = online`.
+3. Isi `link_konsultasi`.
+4. Isi `catatan_konsultasi` jika diperlukan.
+5. Simpan konfirmasi.
+6. Cek database.
+
+Expected result:
+
+1. `status_konfirmasi_konsultasi` berubah menjadi `terkonfirmasi`.
+2. `link_konsultasi` tersimpan.
+3. `dikonfirmasi_pada` terisi.
+4. `id_admin_konfirmasi` berisi ID Admin login.
+5. `lokasi_konsultasi` tidak menjadi field utama untuk metode online.
+
+Negative test:
+
+1. Role selain Admin tidak boleh mengakses aksi konfirmasi.
+2. Booking online tanpa `link_konsultasi` harus gagal.
+
+---
+
+## 13.5 Admin Konfirmasi Konsultasi Offline
+
+Tujuan:
+
+Memastikan Admin dapat mengonfirmasi detail konsultasi offline dengan lokasi manual.
+
+Langkah testing:
+
+1. Login sebagai Admin.
+2. Buka data booking dengan `metode_konsultasi = offline`.
+3. Isi `lokasi_konsultasi`.
+4. Isi `catatan_konsultasi` jika diperlukan.
+5. Simpan konfirmasi.
+6. Cek database.
+
+Expected result:
+
+1. `status_konfirmasi_konsultasi` berubah menjadi `terkonfirmasi`.
+2. `lokasi_konsultasi` tersimpan.
+3. `dikonfirmasi_pada` terisi.
+4. `id_admin_konfirmasi` berisi ID Admin login.
+5. `link_konsultasi` tidak menjadi field utama untuk metode offline.
+
+Negative test:
+
+1. Role selain Admin tidak boleh mengakses aksi konfirmasi.
+2. Booking offline tanpa `lokasi_konsultasi` harus gagal.
+
+---
+
+## 13.6 Klien Melihat Informasi Konsultasi
+
+Tujuan:
+
+Memastikan Klien dapat melihat informasi teknis konsultasi miliknya setelah dikonfirmasi Admin.
+
+Langkah testing:
+
+1. Login sebagai Klien pemilik booking.
+2. Buka halaman detail pengajuan atau booking.
+3. Lihat status konfirmasi konsultasi.
+4. Jika metode `online`, cek tampilan link konsultasi.
+5. Jika metode `offline`, cek tampilan lokasi konsultasi.
+
+Expected result:
+
+1. Klien melihat status `menunggu_konfirmasi` sebelum Admin mengonfirmasi.
+2. Setelah Admin mengonfirmasi, Klien melihat status `terkonfirmasi`.
+3. Link konsultasi online hanya terlihat pada booking milik sendiri.
+4. Lokasi konsultasi offline hanya terlihat pada booking milik sendiri.
+5. `catatan_konsultasi` tampil jika ada.
+
+Negative test:
+
+1. Klien lain tidak boleh melihat link/lokasi booking yang bukan miliknya.
+2. Staf Legal tidak boleh melihat detail link/lokasi konsultasi tanpa otorisasi khusus.
+
+---
+
+## 13.7 Klien Mengajukan Reschedule
+
+Tujuan:
+
+Memastikan Klien dapat membuat permintaan reschedule tanpa langsung mengubah booking lama.
+
+Langkah testing:
+
+1. Login sebagai Klien pemilik booking aktif.
+2. Buka aksi ajukan reschedule.
+3. Isi `alasan_reschedule`.
+4. Isi `preferensi_jadwal` dan `preferensi_metode` jika tersedia.
+5. Submit form.
+6. Cek database.
+
+Expected result:
+
+1. Record baru masuk ke `permintaan_reschedule`.
+2. `status_reschedule` awal `menunggu_persetujuan`.
+3. Booking lama tetap `aktif`.
+4. Slot lama tetap `terisi`.
+5. Status pengajuan tetap `jadwal_dipilih`.
+
+Negative test:
+
+1. Klien tidak boleh mengajukan reschedule untuk booking milik orang lain.
+2. `status_reschedule` dari request Klien tidak boleh diterima.
+3. `id_jadwal_baru` dan `id_booking_baru` tidak boleh diisi oleh Klien.
+
+---
+
+## 13.8 Admin Menolak Reschedule
+
+Tujuan:
+
+Memastikan penolakan reschedule tidak mengubah booking lama.
+
+Langkah testing:
+
+1. Login sebagai Admin.
+2. Buka permintaan reschedule dengan status `menunggu_persetujuan`.
+3. Pilih aksi tolak.
+4. Isi `catatan_admin` jika diperlukan.
+5. Simpan keputusan.
+6. Cek database.
+
+Expected result:
+
+1. `status_reschedule` berubah menjadi `ditolak`.
+2. `tanggal_keputusan` terisi.
+3. Booking lama tetap `aktif`.
+4. Slot lama tetap `terisi`.
+5. Status pengajuan tetap `jadwal_dipilih`.
+
+Negative test:
+
+1. Role selain Admin tidak boleh menolak reschedule.
+2. Permintaan yang sudah diproses tidak boleh diproses ulang sembarangan.
+
+---
+
+## 13.9 Admin Menyetujui Reschedule
+
+Tujuan:
+
+Memastikan persetujuan reschedule membatalkan booking lama dan membuat booking baru aktif.
+
+Langkah testing:
+
+1. Login sebagai Admin.
+2. Buka permintaan reschedule dengan status `menunggu_persetujuan`.
+3. Pilih slot baru yang `tersedia`.
+4. Simpan persetujuan.
+5. Cek database pada `permintaan_reschedule`, `booking_konsultasi`, `jadwal_konsultasi`, dan `riwayat_status`.
+
+Expected result:
+
+1. `status_reschedule` berubah menjadi `disetujui`.
+2. `tanggal_keputusan` terisi.
+3. Booking lama berubah menjadi `dibatalkan`.
+4. Slot lama berubah menjadi `tersedia`.
+5. Booking baru dibuat dengan status `aktif`.
+6. Slot baru berubah menjadi `terisi`.
+7. `id_jadwal_baru` dan `id_booking_baru` terisi pada `permintaan_reschedule`.
+8. Status pengajuan tetap `jadwal_dipilih`.
+9. Record baru masuk ke `riwayat_status` dengan keterangan perubahan jadwal.
+10. Proses berjalan dalam transaction.
+
+Negative test:
+
+1. Role selain Admin tidak boleh menyetujui reschedule.
+2. Slot baru yang tidak `tersedia` harus ditolak.
+3. Jika salah satu perubahan multi-tabel gagal, perubahan lain harus rollback.
 
 ---
 
@@ -1142,10 +1362,11 @@ Cek tabel domain:
 8. `riwayat_status`
 9. `jadwal_konsultasi`
 10. `booking_konsultasi`
+11. `permintaan_reschedule`
 
 Expected result:
 
-1. Sepuluh tabel domain tersedia.
+1. Sebelas tabel domain tersedia.
 2. Tidak ada tabel `laporan`.
 3. Tidak ada kolom yang tidak disetujui.
 4. Tabel `migrations` boleh ada sebagai metadata internal Laravel.
@@ -1173,6 +1394,22 @@ Expected status pengajuan:
 4. `berkas_lengkap`
 5. `jadwal_dipilih`
 6. `selesai`
+
+Expected metode konsultasi:
+
+1. `online`
+2. `offline`
+
+Expected status konfirmasi konsultasi:
+
+1. `menunggu_konfirmasi`
+2. `terkonfirmasi`
+
+Expected status reschedule:
+
+1. `menunggu_persetujuan`
+2. `disetujui`
+3. `ditolak`
 
 Expected result:
 

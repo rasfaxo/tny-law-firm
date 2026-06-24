@@ -125,6 +125,10 @@ Aturan:
 | Kelola kategori perkara                            |    No |         No |   Yes |
 | Kelola jadwal konsultasi                           |    No |         No |   Yes |
 | Memilih jadwal konsultasi                          |   Yes |         No |    No |
+| Melihat booking konsultasi milik sendiri           |   Yes |         No |    No |
+| Melihat permintaan reschedule milik sendiri        |   Yes |         No |    No |
+| Mengonfirmasi detail konsultasi                    |    No |         No |   Yes |
+| Menyetujui / menolak reschedule                    |    No |         No |   Yes |
 | Laporan pra-pendaftaran                            |    No |         No |   Yes |
 
 ---
@@ -171,7 +175,9 @@ Aturan:
 3. Klien hanya boleh melihat pengajuan miliknya sendiri.
 4. Klien hanya boleh mengunggah ulang dokumen untuk pengajuan miliknya sendiri.
 5. Klien hanya boleh membuat booking untuk pengajuan miliknya sendiri.
-6. Klien tidak boleh mengakses data Klien lain walaupun mengetahui ID dari URL.
+6. Klien hanya boleh melihat booking konsultasi miliknya sendiri.
+7. Klien hanya boleh melihat dan mengajukan reschedule untuk booking miliknya sendiri.
+8. Klien tidak boleh mengakses data Klien lain walaupun mengetahui ID dari URL.
 
 Contoh ownership check:
 
@@ -197,9 +203,11 @@ Aturan:
 1. Admin dapat melihat data administratif seluruh pengajuan.
 2. Admin dapat melihat laporan pra-pendaftaran.
 3. Admin dapat mengelola pengguna, kategori perkara, dan jadwal konsultasi.
-4. Admin tidak mengambil alih proses verifikasi berkas milik Staf Legal.
-5. Admin tidak boleh mengubah status pengajuan sembarangan di luar alur sistem.
-6. Admin tidak boleh menghapus data penting jika sudah memiliki relasi.
+4. Admin dapat mengonfirmasi detail konsultasi untuk booking yang valid.
+5. Admin dapat menyetujui atau menolak permintaan reschedule sesuai alur sistem.
+6. Admin tidak mengambil alih proses verifikasi berkas milik Staf Legal.
+7. Admin tidak boleh mengubah status pengajuan sembarangan di luar alur sistem.
+8. Admin tidak boleh menghapus data penting jika sudah memiliki relasi.
 
 ---
 
@@ -214,6 +222,25 @@ Aturan:
 5. Staf Legal tidak boleh mengakses fitur kelola pengguna Admin.
 6. Staf Legal tidak boleh mengakses fitur laporan Admin.
 7. Staf Legal tidak boleh mengubah jadwal konsultasi.
+8. Staf Legal tidak boleh mengonfirmasi detail konsultasi.
+9. Staf Legal tidak boleh memproses permintaan reschedule.
+
+---
+
+# Consultation and Reschedule Access Security
+
+## Booking Konsultasi dan Reschedule
+
+Aturan:
+
+1. Klien hanya boleh melihat booking konsultasi miliknya sendiri.
+2. Klien hanya boleh melihat permintaan reschedule miliknya sendiri.
+3. Admin boleh melihat data booking dan reschedule untuk kebutuhan administratif.
+4. Staf Legal tidak boleh mengakses detail link/lokasi konsultasi kecuali ada kebutuhan yang disetujui secara khusus.
+5. Link konsultasi online hanya boleh ditampilkan kepada Klien pemilik booking dan Admin.
+6. Lokasi konsultasi offline hanya boleh ditampilkan kepada Klien pemilik booking dan Admin.
+7. Data konfirmasi konsultasi tidak boleh dibuka lintas ownership.
+8. Permintaan reschedule harus selalu dicek terhadap kepemilikan booking dan role pemroses.
 
 ---
 
@@ -343,6 +370,9 @@ Aturan:
 8. Jangan menerima `role` dari request publik.
 9. Jangan menerima `status_pengajuan` dari form Klien.
 10. Jangan menerima `tanggal_booking` dari request.
+11. Jangan menerima `status_konfirmasi_konsultasi`, `dikonfirmasi_pada`, atau `id_admin_konfirmasi` dari request Klien.
+12. Jangan menerima `status_reschedule`, `id_jadwal_baru`, `id_booking_baru`, atau `tanggal_keputusan` dari request Klien.
+13. Field konfirmasi detail konsultasi hanya boleh diproses pada route dan role Admin yang sah.
 
 ---
 
@@ -369,7 +399,7 @@ Aturan:
 1. Setiap model wajib mengatur `$fillable`.
 2. Jangan menggunakan `$guarded = []` tanpa alasan dan persetujuan.
 3. Jangan memasukkan field sensitif ke `$fillable` jika tidak perlu.
-4. Field seperti `role`, `status_akun`, `status_pengajuan`, `status_booking`, dan `file_path` hanya boleh diisi oleh server sesuai proses bisnis.
+4. Field seperti `role`, `status_akun`, `status_pengajuan`, `status_booking`, `status_konfirmasi_konsultasi`, `dikonfirmasi_pada`, `id_admin_konfirmasi`, `status_reschedule`, `id_jadwal_baru`, `id_booking_baru`, dan `file_path` hanya boleh diisi oleh server sesuai proses bisnis atau oleh Admin pada alur yang sah.
 5. Jangan menggunakan `$request->all()` langsung untuk create/update data sensitif.
 
 Hindari:
@@ -402,8 +432,10 @@ Aturan:
 4. Status dokumen ditentukan oleh proses upload, verifikasi, atau re-upload.
 5. Status slot `terisi` hanya boleh diberikan oleh sistem setelah booking berhasil.
 6. Status booking `aktif` dibuat oleh sistem saat booking berhasil.
-7. Status booking `dibatalkan` tidak boleh dibuat otomatis jika fitur pembatalan belum disetujui.
-8. Semua perubahan status multi-tabel wajib menggunakan transaction.
+7. Status konfirmasi konsultasi ditentukan oleh Admin dan server sesuai proses bisnis.
+8. Status reschedule ditentukan oleh server berdasarkan keputusan Admin.
+9. Status booking `dibatalkan` digunakan pada alur reschedule yang disetujui dan tidak boleh dipakai bebas di luar alur yang sah.
+10. Semua perubahan status multi-tabel wajib menggunakan transaction.
 
 ---
 
@@ -424,7 +456,7 @@ Aturan:
 Aturan:
 
 1. Session login menggunakan mekanisme Laravel.
-2. Jika menggunakan session berbasis database, tabel `sessions` harus direview dan disetujui karena bukan bagian dari 10 tabel domain skripsi.
+2. Jika menggunakan session berbasis database, tabel `sessions` harus direview dan disetujui karena bukan bagian dari 11 tabel domain skripsi.
 3. Jika fitur remember me membutuhkan `remember_token`, penambahan kolom harus disetujui terlebih dahulu.
 4. Forgot password diperbolehkan; gunakan `password_reset_tokens` sesuai mekanisme Laravel Breeze.
 

@@ -154,6 +154,8 @@ Aturan:
 4. `APP_KEY` dibuat menggunakan `php artisan key:generate`.
 5. Credential database tidak boleh hardcode di source code.
 6. Jangan membagikan file `.env`.
+7. Konfigurasi `MAIL_*` hanya digunakan untuk forgot password / reset password yang sudah disetujui.
+8. Jangan menambahkan konfigurasi email lain untuk notifikasi konsultasi, reminder jadwal, atau broadcast status tanpa persetujuan.
 
 ---
 
@@ -217,6 +219,18 @@ Aturan:
 1. Production menggunakan hasil build, bukan `npm run dev`.
 2. Jangan menjalankan `npm audit fix --force` tanpa persetujuan.
 3. Jika package frontend berubah, review dulu `package.json` dan `package-lock.json`.
+
+---
+
+## Konsultasi Online/Offline Deployment Notes
+
+Aturan:
+
+1. Sistem tidak memiliki integrasi Zoom, Google Meet, atau video meeting otomatis.
+2. Link konsultasi online diisi manual oleh Admin melalui aplikasi.
+3. Sistem tidak menyediakan chat internal, video call internal, integrasi kalender eksternal, pembayaran, atau integrasi e-Court.
+4. Tidak ada konfigurasi deployment tambahan untuk fitur konsultasi selain konfigurasi aplikasi Laravel standar.
+5. Tidak ada konfigurasi email tambahan selain forgot password / reset password yang sudah disetujui.
 
 ---
 

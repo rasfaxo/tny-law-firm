@@ -280,16 +280,34 @@ Aturan:
 3. Klien hanya boleh booking untuk pengajuan miliknya sendiri.
 4. Booking hanya boleh jika `status_pengajuan = berkas_lengkap`.
 5. Jadwal hanya boleh dipilih jika `status_slot = tersedia`.
-6. Satu pengajuan hanya boleh memiliki satu booking aktif.
-7. Satu slot jadwal hanya boleh memiliki satu booking aktif.
-8. Booking baru berstatus `aktif`.
-9. `tanggal_booking` diisi server.
-10. Slot berubah menjadi `terisi`.
-11. Status pengajuan berubah menjadi `jadwal_dipilih`.
-12. Perubahan status wajib dicatat pada `riwayat_status`.
-13. Proses wajib menggunakan transaction.
+6. Request booking wajib membawa `metode_konsultasi` dan boleh membawa `catatan_preferensi_klien`.
+7. Satu pengajuan hanya boleh memiliki satu booking aktif.
+8. Satu slot jadwal hanya boleh memiliki satu booking aktif.
+9. Booking baru berstatus `aktif`.
+10. `status_konfirmasi_konsultasi` awal adalah `menunggu_konfirmasi`.
+11. `tanggal_booking` diisi server.
+12. Slot berubah menjadi `terisi`.
+13. Status pengajuan berubah menjadi `jadwal_dipilih`.
+14. Perubahan status wajib dicatat pada `riwayat_status`.
+15. Proses wajib menggunakan transaction.
 
 ---
+
+## Permintaan Reschedule Klien
+
+| Method | URI                                           | Name                                     | Controller                                      | Purpose                           |
+| ------ | --------------------------------------------- | ---------------------------------------- | ----------------------------------------------- | --------------------------------- |
+| POST   | `/klien/booking-konsultasi/{booking}/reschedule` | `klien.booking-konsultasi.reschedule.store` | `Klien\RescheduleKonsultasiController@store` | Mengajukan permintaan reschedule |
+
+Aturan:
+
+1. `{booking}` mengacu pada `booking_konsultasi.id_booking`.
+2. Klien hanya boleh mengajukan reschedule untuk booking miliknya sendiri.
+3. Booking yang diajukan harus masih berstatus `aktif`.
+4. Saat permintaan dibuat, booking lama tetap `aktif`, slot lama tetap `terisi`, dan status pengajuan tetap `jadwal_dipilih`.
+5. Record `permintaan_reschedule` baru memiliki status `menunggu_persetujuan`.
+6. Route ini wajib menggunakan ownership check.
+7. Aksi sensitif tidak boleh menggunakan method `GET`.
 
 # Staf Legal Routes
 
@@ -472,6 +490,46 @@ Aturan:
 
 ---
 
+## Konfirmasi Detail Konsultasi
+
+| Method    | URI                                              | Name                                 | Controller                                    | Purpose                                   |
+| --------- | ------------------------------------------------ | ------------------------------------ | --------------------------------------------- | ----------------------------------------- |
+| PATCH     | `/admin/booking-konsultasi/{booking}/konfirmasi` | `admin.booking-konsultasi.konfirmasi` | `Admin\BookingKonsultasiController@konfirmasi` | Mengonfirmasi link/lokasi konsultasi     |
+
+Aturan:
+
+1. Route ini hanya boleh diakses Admin.
+2. `{booking}` mengacu pada `booking_konsultasi.id_booking`.
+3. Booking yang dikonfirmasi harus masih valid untuk dikonfirmasi.
+4. Jika metode `online`, Admin mengisi `link_konsultasi`.
+5. Jika metode `offline`, Admin mengisi `lokasi_konsultasi`.
+6. Admin boleh menambahkan `catatan_konsultasi`.
+7. Setelah berhasil, `status_konfirmasi_konsultasi` menjadi `terkonfirmasi`.
+8. `dikonfirmasi_pada` dan `id_admin_konfirmasi` diisi server.
+
+---
+
+## Permintaan Reschedule Admin
+
+| Method | URI                                              | Name                                        | Controller                                        | Purpose                                  |
+| ------ | ------------------------------------------------ | ------------------------------------------- | ------------------------------------------------- | ---------------------------------------- |
+| GET    | `/admin/permintaan-reschedule`                   | `admin.permintaan-reschedule.index`         | `Admin\PermintaanRescheduleController@index`     | Daftar permintaan reschedule             |
+| GET    | `/admin/permintaan-reschedule/{reschedule}`      | `admin.permintaan-reschedule.show`          | `Admin\PermintaanRescheduleController@show`      | Detail permintaan reschedule             |
+| PATCH  | `/admin/permintaan-reschedule/{reschedule}/setujui` | `admin.permintaan-reschedule.setujui`    | `Admin\PermintaanRescheduleController@setujui`   | Menyetujui permintaan reschedule         |
+| PATCH  | `/admin/permintaan-reschedule/{reschedule}/tolak`   | `admin.permintaan-reschedule.tolak`      | `Admin\PermintaanRescheduleController@tolak`     | Menolak permintaan reschedule            |
+
+Aturan:
+
+1. Route ini hanya boleh diakses Admin.
+2. `{reschedule}` mengacu pada `permintaan_reschedule.id_reschedule`.
+3. Hanya permintaan dengan status `menunggu_persetujuan` yang boleh diproses.
+4. Jika disetujui, Admin memilih slot baru, booking lama menjadi `dibatalkan`, slot lama menjadi `tersedia`, dan booking baru dibuat dengan status `aktif`.
+5. Jika ditolak, booking lama tetap `aktif` dan slot lama tetap `terisi`.
+6. Persetujuan reschedule wajib menggunakan transaction.
+7. Aksi persetujuan dan penolakan tidak boleh menggunakan method `GET`.
+
+---
+
 ## Penyelesaian Konsultasi
 
 | Method | URI                                           | Name                               | Controller                                  | Purpose                     |
@@ -572,6 +630,7 @@ Daftar route parameter:
 | `{dokumen}`     | `DokumenPerkara`        | `id_dokumen`     |
 | `{jadwal}`      | `JadwalKonsultasi`      | `id_jadwal`      |
 | `{booking}`     | `BookingKonsultasi`     | `id_booking`     |
+| `{reschedule}`  | `PermintaanReschedule`  | `id_reschedule`  |
 | `{verifikasi}`  | `VerifikasiBerkas`      | `id_verifikasi`  |
 | `{catatan}`     | `CatatanVerifikasi`     | `id_catatan`     |
 
@@ -609,7 +668,8 @@ app/Http/Controllers/
 │   ├── PraPendaftaranStatusController.php
 │   ├── DokumenReuploadController.php
 │   ├── JadwalKonsultasiController.php
-│   └── BookingKonsultasiController.php
+│   ├── BookingKonsultasiController.php
+│   └── RescheduleKonsultasiController.php
 ├── StafLegal/
 │   ├── DashboardController.php
 │   ├── PengajuanController.php
@@ -621,6 +681,7 @@ app/Http/Controllers/
     ├── PraPendaftaranController.php
     ├── JadwalKonsultasiController.php
     ├── BookingKonsultasiController.php
+    ├── PermintaanRescheduleController.php
     └── LaporanPraPendaftaranController.php
 ```
 
@@ -628,7 +689,7 @@ Aturan:
 
 1. Jangan menaruh semua logic di satu controller besar.
 2. Controller boleh memanggil service class untuk proses kompleks.
-3. Proses multi-tabel seperti pengajuan, verifikasi, re-upload, booking, dan penyelesaian konsultasi sebaiknya memakai service class dan transaction.
+3. Proses multi-tabel seperti pengajuan, verifikasi, re-upload, booking, konfirmasi detail konsultasi yang saling bergantung, persetujuan reschedule, dan penyelesaian konsultasi sebaiknya memakai service class dan transaction.
 
 ---
 

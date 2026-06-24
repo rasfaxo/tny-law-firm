@@ -581,10 +581,12 @@ Aturan:
 
 Field:
 
-| Field            | Validation                                              |
-| ---------------- | ------------------------------------------------------- |
-| `id_pendaftaran` | required, exists:pra_pendaftaran_perkara,id_pendaftaran |
-| `id_jadwal`      | required, exists:jadwal_konsultasi,id_jadwal            |
+| Field                       | Validation                                              |
+| --------------------------- | ------------------------------------------------------- |
+| `id_pendaftaran`            | required, exists:pra_pendaftaran_perkara,id_pendaftaran |
+| `id_jadwal`                 | required, exists:jadwal_konsultasi,id_jadwal            |
+| `metode_konsultasi`         | required, in:online,offline                             |
+| `catatan_preferensi_klien`  | nullable, string                                        |
 
 Aturan:
 
@@ -595,13 +597,100 @@ Aturan:
 5. Satu pengajuan hanya boleh memiliki satu booking aktif.
 6. Satu slot jadwal hanya boleh memiliki satu booking aktif.
 7. Booking baru memiliki status `aktif`.
-8. `tanggal_booking` diisi oleh server.
-9. Setelah booking berhasil, `status_slot` menjadi `terisi`.
-10. Setelah booking berhasil, `status_pengajuan` menjadi `jadwal_dipilih`.
-11. Perubahan status pengajuan wajib dicatat pada `riwayat_status`.
-12. Proses booking wajib menggunakan database transaction.
-13. Jangan menerima `status_booking` dari request.
-14. Jangan menerima `tanggal_booking` dari request.
+8. `metode_konsultasi` wajib salah satu dari `online` atau `offline`.
+9. `status_konfirmasi_konsultasi` diisi server sebagai `menunggu_konfirmasi`.
+10. `tanggal_booking` diisi oleh server.
+11. Setelah booking berhasil, `status_slot` menjadi `terisi`.
+12. Setelah booking berhasil, `status_pengajuan` menjadi `jadwal_dipilih`.
+13. Perubahan status pengajuan wajib dicatat pada `riwayat_status`.
+14. Proses booking wajib menggunakan database transaction.
+15. Jangan menerima `status_booking` dari request.
+16. Jangan menerima `status_konfirmasi_konsultasi` dari request Klien.
+17. Jangan menerima `tanggal_booking`, `link_konsultasi`, `lokasi_konsultasi`, `dikonfirmasi_pada`, atau `id_admin_konfirmasi` dari request Klien.
+18. `catatan_preferensi_klien` hanya bersifat preferensi dan tidak menggantikan konfirmasi final dari Admin.
+
+---
+
+## Konfirmasi Detail Konsultasi oleh Admin
+
+Field:
+
+| Field                  | Validation              |
+| ---------------------- | ----------------------- |
+| `link_konsultasi`      | nullable, url           |
+| `lokasi_konsultasi`    | nullable, string        |
+| `catatan_konsultasi`   | nullable, string        |
+
+Aturan:
+
+1. Hanya Admin yang boleh mengonfirmasi detail konsultasi.
+2. Booking yang dikonfirmasi harus milik data booking yang valid.
+3. Jika `metode_konsultasi = online`, `link_konsultasi` wajib diisi dan `lokasi_konsultasi` tidak menjadi field utama.
+4. Jika `metode_konsultasi = offline`, `lokasi_konsultasi` wajib diisi dan `link_konsultasi` tidak menjadi field utama.
+5. `status_konfirmasi_konsultasi` diubah server-side menjadi `terkonfirmasi`.
+6. `dikonfirmasi_pada` diisi server.
+7. `id_admin_konfirmasi` diisi dari Admin yang sedang login.
+8. Klien tidak boleh mengirim field konfirmasi Admin.
+
+---
+
+## Pengajuan Reschedule oleh Klien
+
+Field:
+
+| Field                  | Validation              |
+| ---------------------- | ----------------------- |
+| `alasan_reschedule`    | required, string        |
+| `preferensi_jadwal`    | nullable, string        |
+| `preferensi_metode`    | nullable, in:online,offline |
+
+Aturan:
+
+1. Hanya Klien pemilik booking yang boleh mengajukan reschedule.
+2. Booking yang diajukan reschedule harus masih berstatus `aktif`.
+3. Saat pengajuan dibuat, booking lama tetap `aktif`, slot lama tetap `terisi`, dan status pengajuan tetap `jadwal_dipilih`.
+4. `status_reschedule` diisi server-side sebagai `menunggu_persetujuan`.
+5. `tanggal_pengajuan` diisi server.
+6. Klien tidak boleh mengirim `id_user`, `status_reschedule`, `id_jadwal_baru`, `id_booking_baru`, atau `tanggal_keputusan`.
+
+---
+
+## Admin Menyetujui Reschedule
+
+Field:
+
+| Field               | Validation                                   |
+| ------------------- | -------------------------------------------- |
+| `id_jadwal_baru`    | required, exists:jadwal_konsultasi,id_jadwal |
+| `catatan_admin`     | nullable, string                             |
+
+Aturan:
+
+1. Hanya Admin yang boleh menyetujui reschedule.
+2. Permintaan yang diproses harus masih berstatus `menunggu_persetujuan`.
+3. `id_jadwal_baru` harus mengacu pada slot yang valid dan tersedia.
+4. Saat persetujuan diproses, booking lama menjadi `dibatalkan`, slot lama menjadi `tersedia`, booking baru dibuat dengan status `aktif`, dan slot baru menjadi `terisi`.
+5. `status_reschedule` diisi server-side sebagai `disetujui`.
+6. `tanggal_keputusan` diisi server.
+7. Proses persetujuan wajib menggunakan database transaction.
+
+---
+
+## Admin Menolak Reschedule
+
+Field:
+
+| Field               | Validation           |
+| ------------------- | -------------------- |
+| `catatan_admin`     | nullable, string     |
+
+Aturan:
+
+1. Hanya Admin yang boleh menolak reschedule.
+2. Permintaan yang diproses harus masih berstatus `menunggu_persetujuan`.
+3. Saat penolakan diproses, booking lama tetap `aktif`, slot lama tetap `terisi`, dan status pengajuan tetap `jadwal_dipilih`.
+4. `status_reschedule` diisi server-side sebagai `ditolak`.
+5. `tanggal_keputusan` diisi server.
 
 ---
 
@@ -664,12 +753,14 @@ AI agent tidak boleh:
 2. Menerima `status_pengajuan` bebas dari form Klien.
 3. Menerima `id_user` dari form Klien untuk kepemilikan data.
 4. Menerima `file_path` dari request.
-5. Menggunakan file original name sebagai nama file final.
-6. Melewati validasi MIME dan ukuran file.
-7. Mengubah status berdasarkan hidden input tanpa validasi server-side.
-8. Membuat status baru tanpa mengikuti `STATUS_RULES.md`.
-9. Membuat field validasi untuk kolom yang tidak ada di `DATABASE_PLAN.md`.
-10. Menjalankan logic multi-tabel tanpa transaction.
+5. Menerima `status_konfirmasi_konsultasi`, `dikonfirmasi_pada`, atau `id_admin_konfirmasi` dari request Klien.
+6. Menerima `status_reschedule`, `id_jadwal_baru`, `id_booking_baru`, atau `tanggal_keputusan` dari request Klien.
+7. Menggunakan file original name sebagai nama file final.
+8. Melewati validasi MIME dan ukuran file.
+9. Mengubah status berdasarkan hidden input tanpa validasi server-side.
+10. Membuat status baru tanpa mengikuti `STATUS_RULES.md`.
+11. Membuat field validasi untuk kolom yang tidak ada di `DATABASE_PLAN.md`.
+12. Menjalankan logic multi-tabel tanpa transaction.
 
 ---
 

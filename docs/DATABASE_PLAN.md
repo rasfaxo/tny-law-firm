@@ -132,9 +132,9 @@ Kolom `remember_token` tidak termasuk dalam rancangan database skripsi final. Ji
 
 - Laravel internal auxiliary tables such as `migrations` remain allowed for framework metadata.
 - `password_reset_tokens` is allowed as an auxiliary Laravel table only for forgot password / reset password via Laravel Breeze.
-- `password_reset_tokens` is not part of the 10 core domain tables, is not counted as a domain table, and does not enter the main ERD/LRS.
+- `password_reset_tokens` is not part of the 11 core domain tables, is not counted as a domain table, and does not enter the main ERD/LRS.
 - Auxiliary tables such as `sessions`, `cache`, `jobs`, and `failed_jobs` remain outside the locked thesis schema unless separately reviewed and approved.
-- The locked thesis domain database schema tetap berisi sepuluh tabel inti yang tercantum pada dokumen ini.
+- The locked thesis domain database schema tetap berisi sebelas tabel inti yang tercantum pada dokumen ini.
 - Larangan tabel `laporan` tetap berlaku.
 
 ---
@@ -153,6 +153,7 @@ Gunakan hanya tabel berikut:
 8. `riwayat_status`
 9. `jadwal_konsultasi`
 10. `booking_konsultasi`
+11. `permintaan_reschedule`
 
 Jangan membuat tabel:
 
@@ -176,6 +177,7 @@ laporan
 | `riwayat_status`          | `id_riwayat`     |
 | `jadwal_konsultasi`       | `id_jadwal`      |
 | `booking_konsultasi`      | `id_booking`     |
+| `permintaan_reschedule`   | `id_reschedule`  |
 
 ---
 
@@ -485,16 +487,24 @@ Fungsi:
 
 Menyimpan data booking konsultasi Klien.
 
-| Field             | Type            | Key       | Nullable | Description                  |
-| ----------------- | --------------- | --------- | -------- | ---------------------------- |
-| `id_booking`      | BIGINT UNSIGNED | PK        | No       | ID booking                   |
-| `id_pendaftaran`  | BIGINT UNSIGNED | FK, INDEX | No       | Relasi ke pengajuan          |
-| `id_jadwal`       | BIGINT UNSIGNED | FK, INDEX | No       | Relasi ke jadwal             |
-| `id_user`         | BIGINT UNSIGNED | FK, INDEX | No       | Klien yang melakukan booking |
-| `status_booking`  | VARCHAR(30)     | INDEX     | No       | Status booking               |
-| `tanggal_booking` | DATETIME        | INDEX     | No       | Tanggal booking              |
-| `created_at`      | TIMESTAMP       |           | Yes      | Timestamp Laravel            |
-| `updated_at`      | TIMESTAMP       |           | Yes      | Timestamp Laravel            |
+| Field                          | Type            | Key       | Nullable | Description                  |
+| ------------------------------ | --------------- | --------- | -------- | ---------------------------- |
+| `id_booking`                   | BIGINT UNSIGNED | PK        | No       | ID booking                   |
+| `id_pendaftaran`               | BIGINT UNSIGNED | FK, INDEX | No       | Relasi ke pengajuan          |
+| `id_jadwal`                    | BIGINT UNSIGNED | FK, INDEX | No       | Relasi ke jadwal             |
+| `id_user`                      | BIGINT UNSIGNED | FK, INDEX | No       | Klien yang melakukan booking |
+| `status_booking`               | VARCHAR(30)     | INDEX     | No       | Status booking               |
+| `tanggal_booking`              | DATETIME        | INDEX     | No       | Tanggal booking              |
+| `metode_konsultasi`            | VARCHAR(30)     |           | No       | `online` atau `offline`      |
+| `status_konfirmasi_konsultasi` | VARCHAR(50)     | INDEX     | No       | Status konfirmasi Admin      |
+| `link_konsultasi`              | TEXT            |           | Yes      | Diisi Admin jika online      |
+| `lokasi_konsultasi`            | TEXT            |           | Yes      | Diisi Admin jika offline     |
+| `catatan_konsultasi`           | TEXT            |           | Yes      | Instruksi final dari Admin   |
+| `catatan_preferensi_klien`     | TEXT            |           | Yes      | Preferensi Klien saat booking|
+| `dikonfirmasi_pada`            | DATETIME        |           | Yes      | Waktu Admin konfirmasi       |
+| `id_admin_konfirmasi`          | BIGINT UNSIGNED | FK, INDEX | Yes      | Admin yang konfirmasi        |
+| `created_at`                   | TIMESTAMP       |           | Yes      | Timestamp Laravel            |
+| `updated_at`                   | TIMESTAMP       |           | Yes      | Timestamp Laravel            |
 
 Relasi:
 
@@ -502,6 +512,7 @@ Relasi:
 booking_konsultasi.id_pendaftaran → pra_pendaftaran_perkara.id_pendaftaran
 booking_konsultasi.id_jadwal → jadwal_konsultasi.id_jadwal
 booking_konsultasi.id_user → users.id_user
+booking_konsultasi.id_admin_konfirmasi → users.id_user
 ```
 
 Aturan:
@@ -509,15 +520,68 @@ Aturan:
 1. `id_user` adalah Klien yang melakukan booking.
 2. Booking baru memiliki status awal `aktif`.
 3. `tanggal_booking` wajib diisi saat booking dibuat.
-4. Satu pengajuan hanya boleh memiliki satu booking aktif.
-5. Satu slot jadwal yang sudah `terisi` tidak boleh dipilih ulang.
-6. Setelah booking berhasil, status pengajuan menjadi `jadwal_dipilih`.
-7. Perubahan status wajib dicatat pada `riwayat_status`.
-8. Jangan mengganti `id_booking` menjadi `booking_konsultasi_id`.
+4. `metode_konsultasi` wajib berisi `online` atau `offline`.
+5. `status_konfirmasi_konsultasi` default adalah `menunggu_konfirmasi` saat booking dibuat oleh Klien.
+6. `catatan_preferensi_klien` boleh diisi Klien sebagai preferensi tambahan saat booking.
+7. `link_konsultasi` nullable dan hanya diisi Admin jika metode `online`.
+8. `lokasi_konsultasi` nullable dan hanya diisi Admin jika metode `offline`.
+9. `catatan_konsultasi` nullable dan digunakan Admin untuk instruksi final konsultasi.
+10. `dikonfirmasi_pada` dan `id_admin_konfirmasi` hanya diisi setelah Admin mengonfirmasi detail konsultasi.
+11. Satu pengajuan hanya boleh memiliki satu booking aktif.
+12. Satu slot jadwal yang sudah `terisi` tidak boleh dipilih ulang.
+13. Setelah booking berhasil, status pengajuan menjadi `jadwal_dipilih`.
+14. Perubahan status wajib dicatat pada `riwayat_status`.
+15. Jangan mengganti `id_booking` menjadi `booking_konsultasi_id`.
 
 Catatan constraint:
 
 Karena MySQL tidak mendukung partial unique index sederhana untuk “satu booking aktif”, aturan satu booking aktif lebih aman diterapkan pada service layer menggunakan transaction dan pengecekan status. Unique constraint tambahan hanya boleh dibuat setelah direview.
+
+---
+
+## 11. `permintaan_reschedule`
+
+Fungsi:
+
+Menyimpan pengajuan reschedule jadwal konsultasi oleh Klien yang membutuhkan persetujuan Admin.
+
+| Field               | Type            | Key       | Nullable | Description                             |
+| ------------------- | --------------- | --------- | -------- | --------------------------------------- |
+| `id_reschedule`     | BIGINT UNSIGNED | PK        | No       | ID reschedule                           |
+| `id_booking`        | BIGINT UNSIGNED | FK, INDEX | No       | Relasi ke booking lama                  |
+| `id_user`           | BIGINT UNSIGNED | FK, INDEX | No       | Klien yang mengajukan                   |
+| `alasan_reschedule` | TEXT            |           | No       | Alasan dari Klien                       |
+| `preferensi_jadwal` | TEXT            |           | Yes      | Preferensi waktu dari Klien             |
+| `preferensi_metode` | VARCHAR(30)     |           | Yes      | `online` atau `offline`                 |
+| `status_reschedule` | VARCHAR(50)     | INDEX     | No       | Status: `menunggu_persetujuan`, dll     |
+| `id_jadwal_baru`    | BIGINT UNSIGNED | FK, INDEX | Yes      | Jadwal pengganti dari Admin             |
+| `id_booking_baru`   | BIGINT UNSIGNED | FK, INDEX | Yes      | Booking pengganti yang baru dibuat      |
+| `catatan_admin`     | TEXT            |           | Yes      | Alasan tolak/terima dari Admin          |
+| `tanggal_pengajuan` | DATETIME        |           | No       | Waktu Klien mengajukan reschedule       |
+| `tanggal_keputusan` | DATETIME        |           | Yes      | Waktu Admin menyetujui/menolak          |
+| `created_at`        | TIMESTAMP       |           | Yes      | Timestamp Laravel                       |
+| `updated_at`        | TIMESTAMP       |           | Yes      | Timestamp Laravel                       |
+
+Relasi:
+
+```text
+permintaan_reschedule.id_booking → booking_konsultasi.id_booking
+permintaan_reschedule.id_user → users.id_user
+permintaan_reschedule.id_jadwal_baru → jadwal_konsultasi.id_jadwal
+permintaan_reschedule.id_booking_baru → booking_konsultasi.id_booking
+```
+
+Aturan:
+
+1. `id_user` adalah Klien yang mengajukan.
+2. Record baru selalu dimulai dengan `status_reschedule = menunggu_persetujuan`.
+3. Saat permintaan masih menunggu, booking lama tetap `aktif`, slot lama tetap `terisi`, dan status pengajuan tetap `jadwal_dipilih`.
+4. Jika disetujui, Admin memilih `id_jadwal_baru`, sistem membuat `id_booking_baru`, booking lama menjadi `dibatalkan`, dan slot lama kembali `tersedia`.
+5. Jika ditolak, booking lama tetap `aktif` dan slot lama tetap `terisi`.
+6. `preferensi_metode` nullable dan hanya boleh berisi `online` atau `offline`.
+7. `tanggal_pengajuan` diisi saat Klien mengajukan reschedule.
+8. `tanggal_keputusan` diisi saat Admin menyetujui atau menolak reschedule.
+9. Status `status_reschedule` mengikuti `docs/STATUS_RULES.md`.
 
 ---
 
@@ -533,6 +597,11 @@ Gunakan foreign key berikut sesuai kebutuhan:
 4. `id_dokumen`
 5. `id_verifikasi`
 6. `id_jadwal`
+7. `id_booking`
+8. `id_reschedule`
+9. `id_admin_konfirmasi`
+10. `id_jadwal_baru`
+11. `id_booking_baru`
 
 Jangan mengganti foreign key menjadi format default Laravel seperti:
 
@@ -564,6 +633,10 @@ Relasi utama:
 12. `verifikasi_berkas` has many `catatan_verifikasi`.
 13. `dokumen_perkara` has many `catatan_verifikasi`.
 14. `jadwal_konsultasi` has zero or one active `booking_konsultasi`.
+15. `booking_konsultasi` has many `permintaan_reschedule`.
+16. `permintaan_reschedule` belongs to `users` (Klien).
+17. `permintaan_reschedule` belongs to `jadwal_konsultasi` (jadwal baru).
+18. `permintaan_reschedule` belongs to `booking_konsultasi` (booking baru).
 
 Detail implementasi relasi Eloquent ditulis pada:
 
@@ -604,6 +677,15 @@ Gunakan index pada kolom yang sering digunakan untuk filter dan relasi:
 25. `booking_konsultasi.id_user`.
 26. `booking_konsultasi.status_booking`.
 27. `booking_konsultasi.tanggal_booking`.
+28. `booking_konsultasi.metode_konsultasi`.
+29. `booking_konsultasi.status_konfirmasi_konsultasi`.
+30. `booking_konsultasi.id_admin_konfirmasi`.
+31. `permintaan_reschedule.id_booking`.
+32. `permintaan_reschedule.id_user`.
+33. `permintaan_reschedule.status_reschedule`.
+34. `permintaan_reschedule.id_jadwal_baru`.
+35. `permintaan_reschedule.id_booking_baru`.
+36. `permintaan_reschedule.tanggal_pengajuan`.
 
 Jangan menambahkan unique constraint untuk aturan bisnis yang masih harus fleksibel tanpa persetujuan.
 
@@ -634,7 +716,9 @@ Gunakan database transaction untuk proses berikut:
 3. Membuat catatan verifikasi umum atau per dokumen.
 4. Mengunggah ulang dokumen.
 5. Booking jadwal konsultasi.
-6. Mengubah status pengajuan dan mencatat riwayat status.
+6. Mengonfirmasi detail konsultasi oleh Admin jika proses juga memperbarui metadata booking yang saling bergantung.
+7. Menyetujui permintaan reschedule yang membatalkan booking lama, membebaskan slot lama, membuat booking baru, dan mengisi relasi booking baru.
+8. Mengubah status pengajuan dan mencatat riwayat status.
 
 Jika salah satu proses gagal, seluruh perubahan harus rollback.
 

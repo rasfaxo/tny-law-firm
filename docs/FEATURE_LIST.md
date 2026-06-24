@@ -77,12 +77,13 @@ Fitur/pekerjaan:
 8. Membuat migration `riwayat_status`.
 9. Membuat migration `jadwal_konsultasi`.
 10. Membuat migration `booking_konsultasi`.
-11. Membuat model Eloquent untuk setiap tabel.
-12. Menambahkan `protected $table` dan `protected $primaryKey` pada setiap model.
-13. Membuat relasi model sesuai `docs/MODEL_RELATION_PLAN.md`.
-14. Membuat seeder Admin.
-15. Membuat seeder Staf Legal.
-16. Membuat seeder kategori perkara awal.
+11. Membuat migration `permintaan_reschedule`.
+12. Membuat model Eloquent untuk setiap tabel.
+13. Menambahkan `protected $table` dan `protected $primaryKey` pada setiap model.
+14. Membuat relasi model sesuai `docs/MODEL_RELATION_PLAN.md`.
+15. Membuat seeder Admin.
+16. Membuat seeder Staf Legal.
+17. Membuat seeder kategori perkara awal.
 
 Aturan penting:
 
@@ -253,26 +254,36 @@ Fitur:
 
 1. Melihat jadwal konsultasi tersedia.
 2. Memilih jadwal konsultasi.
-3. Membuat booking konsultasi.
+3. Memilih metode konsultasi (online/offline).
+4. Membuat booking konsultasi.
+5. Melihat status konfirmasi detail konsultasi dari Admin.
+6. Mengajukan permintaan reschedule jika jadwal atau metode perlu diubah.
+7. Melihat hasil persetujuan/penolakan reschedule dari Admin.
 
 Data terkait:
 
 1. `jadwal_konsultasi`
 2. `booking_konsultasi`
-3. `pra_pendaftaran_perkara`
-4. `riwayat_status`
+3. `permintaan_reschedule`
+4. `pra_pendaftaran_perkara`
+5. `riwayat_status`
 
 Aturan:
 
 1. Klien hanya dapat memilih jadwal jika status pengajuan adalah `berkas_lengkap`.
-2. Satu pengajuan hanya boleh memiliki satu booking konsultasi aktif.
-3. Slot jadwal yang sudah terisi tidak boleh dipilih ulang.
-4. Setelah booking berhasil, status pengajuan menjadi `jadwal_dipilih`.
-5. Perubahan status wajib dicatat pada `riwayat_status`.
-6. Proses booking wajib menggunakan database transaction.
-7. Slot jadwal yang berhasil dipilih harus diubah menjadi `terisi`.
-8. Booking baru harus memiliki status `aktif`.
-9. Field `tanggal_booking` wajib diisi saat booking dibuat.
+2. Saat booking, Klien wajib memilih `metode_konsultasi` yaitu `online` atau `offline`.
+3. Klien boleh mengisi `catatan_preferensi_klien` sebagai preferensi tambahan.
+4. Satu pengajuan hanya boleh memiliki satu booking konsultasi aktif.
+5. Slot jadwal yang sudah terisi tidak boleh dipilih ulang.
+6. Setelah booking berhasil, status pengajuan menjadi `jadwal_dipilih`.
+7. Status konfirmasi detail konsultasi awal adalah `menunggu_konfirmasi`.
+8. Perubahan status wajib dicatat pada `riwayat_status`.
+9. Proses booking wajib menggunakan database transaction.
+10. Slot jadwal yang berhasil dipilih harus diubah menjadi `terisi`.
+11. Booking baru harus memiliki status `aktif`.
+12. Field `tanggal_booking` wajib diisi saat booking dibuat.
+13. Klien dapat mengajukan reschedule dan menunggu keputusan Admin sebelum booking lama berubah.
+14. Tidak ada chat internal, video call internal, integrasi Zoom/Google Meet otomatis, notifikasi email konsultasi, atau integrasi kalender eksternal.
 
 ---
 
@@ -461,17 +472,26 @@ Fitur:
 2. Membuat slot jadwal.
 3. Mengubah slot jadwal.
 4. Mengubah status slot jadwal.
+5. Mengonfirmasi detail teknis konsultasi (mengisi link untuk online atau lokasi untuk offline).
+6. Memproses (menyetujui/menolak) permintaan reschedule dari Klien.
+7. Membatalkan booking lama dan membuat booking baru jika reschedule disetujui.
 
 Data terkait:
 
 1. `jadwal_konsultasi`
 2. `booking_konsultasi`
+3. `permintaan_reschedule`
 
 Aturan:
 
 1. Jadwal dibuat oleh Admin.
 2. Slot yang sudah terisi tidak boleh dihapus sembarangan.
 3. Status slot menggunakan slug sesuai `STATUS_RULES.md`.
+4. Admin mengonfirmasi detail teknis konsultasi dengan mengisi manual link konsultasi online atau lokasi konsultasi offline.
+5. Admin dapat menambahkan `catatan_konsultasi` sebagai instruksi final.
+6. Admin dapat menyetujui atau menolak permintaan reschedule Klien sesuai alur yang dikunci.
+7. Jika reschedule disetujui, booking lama dibatalkan, slot lama dibuka kembali, dan booking baru dibuat pada slot baru.
+8. Tidak ada chat internal, video call internal, integrasi Zoom/Google Meet otomatis, notifikasi email konsultasi, atau integrasi kalender eksternal.
 
 ---
 
