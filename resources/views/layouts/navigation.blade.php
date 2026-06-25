@@ -42,6 +42,9 @@
                         <x-nav-link :href="route('admin.jadwal-konsultasi.index')" :active="request()->routeIs('admin.jadwal-konsultasi.*')">
                             {{ __('Jadwal Konsultasi') }}
                         </x-nav-link>
+                        <x-nav-link :href="route('admin.booking-konsultasi.index')" :active="request()->routeIs('admin.booking-konsultasi.*')">
+                            {{ __('Booking Konsultasi') }}
+                        </x-nav-link>
                     @elseif ($user->isStafLegal())
                         <x-nav-link :href="route('staf-legal.dashboard')" :active="request()->routeIs('staf-legal.dashboard')">
                             {{ __('Dashboard Staf Legal') }}
@@ -121,6 +124,9 @@
                 </x-responsive-nav-link>
                 <x-responsive-nav-link :href="route('admin.jadwal-konsultasi.index')" :active="request()->routeIs('admin.jadwal-konsultasi.*')">
                     {{ __('Jadwal Konsultasi') }}
+                </x-responsive-nav-link>
+                <x-responsive-nav-link :href="route('admin.booking-konsultasi.index')" :active="request()->routeIs('admin.booking-konsultasi.*')">
+                    {{ __('Booking Konsultasi') }}
                 </x-responsive-nav-link>
             @elseif ($user->isStafLegal())
                 <x-responsive-nav-link :href="route('staf-legal.dashboard')" :active="request()->routeIs('staf-legal.dashboard')">

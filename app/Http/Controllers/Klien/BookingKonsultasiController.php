@@ -17,7 +17,10 @@ class BookingKonsultasiController extends Controller
         Request $request,
         PraPendaftaranPerkara $praPendaftaranPerkara,
     ): View|RedirectResponse {
-        $this->ensureOwnedByKlien($praPendaftaranPerkara, $request->user()->id_user);
+        $this->ensureOwnedByKlien(
+            $praPendaftaranPerkara,
+            $request->user()->id_user,
+        );
 
         $praPendaftaranPerkara->load("bookingAktif.jadwalKonsultasi");
 
@@ -53,11 +56,14 @@ class BookingKonsultasiController extends Controller
         PraPendaftaranPerkara $praPendaftaranPerkara,
         BookingKonsultasiService $service,
     ): RedirectResponse {
-        $this->ensureOwnedByKlien($praPendaftaranPerkara, $request->user()->id_user);
+        $this->ensureOwnedByKlien(
+            $praPendaftaranPerkara,
+            $request->user()->id_user,
+        );
 
         $service->book(
             $praPendaftaranPerkara,
-            (int) $request->validated("id_jadwal"),
+            $request->validated(),
             $request->user()->id_user,
         );
 

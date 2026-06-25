@@ -4,6 +4,7 @@ namespace App\Http\Requests\Klien;
 
 use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rule;
 
 class StoreBookingKonsultasiRequest extends FormRequest
 {
@@ -24,6 +25,11 @@ class StoreBookingKonsultasiRequest extends FormRequest
     {
         return [
             "id_jadwal" => ["required", "exists:jadwal_konsultasi,id_jadwal"],
+            "metode_konsultasi" => [
+                "required",
+                Rule::in(["online", "offline"]),
+            ],
+            "catatan_preferensi_klien" => ["nullable", "string", "max:1000"],
         ];
     }
 }

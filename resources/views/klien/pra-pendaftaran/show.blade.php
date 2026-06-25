@@ -64,7 +64,7 @@
                 <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
                     <div class="p-6 text-gray-900">
                         <div class="flex items-center justify-between gap-4">
-                            <h3 class="text-lg font-medium text-gray-900">{{ __('Jadwal Konsultasi') }}</h3>
+                            <h3 class="text-lg font-medium text-gray-900">{{ __('Informasi Konsultasi') }}</h3>
 
                             @if (!$bookingAktif && $praPendaftaranPerkara->status_pengajuan === 'berkas_lengkap')
                                 <a href="{{ route('klien.booking-konsultasi.create', $praPendaftaranPerkara) }}" class="inline-flex items-center px-4 py-2 bg-gray-800 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-gray-700 focus:bg-gray-700 active:bg-gray-900 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 transition ease-in-out duration-150">
@@ -76,13 +76,35 @@
                         @if ($bookingAktif)
                             @php
                                 $jadwalBooking = $bookingAktif->jadwalKonsultasi;
+                                $metodeBooking = $bookingAktif->metode_konsultasi ?? 'offline';
+                                $statusKonfirmasi = $bookingAktif->status_konfirmasi_konsultasi ?? 'menunggu_konfirmasi';
+                                $metodeColor = $metodeBooking === 'online' ? 'blue' : 'gray';
+                                $konfirmasiColor = $statusKonfirmasi === 'terkonfirmasi' ? 'green' : 'yellow';
                             @endphp
+
+                            @if ($statusKonfirmasi === 'menunggu_konfirmasi')
+                                <div class="mt-4 rounded-md bg-yellow-50 p-4 text-sm text-yellow-700">
+                                    {{ __('Informasi teknis konsultasi sedang menunggu konfirmasi Admin. Admin akan melengkapi link/lokasi konsultasi sebelum jadwal berlangsung.') }}
+                                </div>
+                            @endif
 
                             <dl class="mt-4 grid grid-cols-1 gap-4 sm:grid-cols-2">
                                 <div>
                                     <dt class="text-sm font-medium text-gray-500">Status Booking</dt>
                                     <dd class="mt-1">
                                         <x-status-badge :status="$bookingAktif->status_booking" color="green" />
+                                    </dd>
+                                </div>
+                                <div>
+                                    <dt class="text-sm font-medium text-gray-500">Metode Konsultasi</dt>
+                                    <dd class="mt-1">
+                                        <x-status-badge :status="$metodeBooking" :color="$metodeColor" />
+                                    </dd>
+                                </div>
+                                <div>
+                                    <dt class="text-sm font-medium text-gray-500">Status Konfirmasi Konsultasi</dt>
+                                    <dd class="mt-1">
+                                        <x-status-badge :status="$statusKonfirmasi" :color="$konfirmasiColor" />
                                     </dd>
                                 </div>
                                 <div>
@@ -101,6 +123,37 @@
                                             - {{ substr((string) $jadwalBooking->waktu_selesai, 0, 5) }}
                                         @endif
                                     </dd>
+                                </div>
+                                <div class="sm:col-span-2">
+                                    <dt class="text-sm font-medium text-gray-500">Catatan Preferensi Klien</dt>
+                                    <dd class="mt-1 whitespace-pre-line text-gray-900">{{ $bookingAktif->catatan_preferensi_klien ?: '-' }}</dd>
+                                </div>
+
+                                @if ($metodeBooking === 'online')
+                                    <div class="sm:col-span-2">
+                                        <dt class="text-sm font-medium text-gray-500">Link Konsultasi</dt>
+                                        <dd class="mt-1 text-gray-900">
+                                            @if ($bookingAktif->link_konsultasi)
+                                                <a href="{{ $bookingAktif->link_konsultasi }}" class="text-indigo-600 hover:text-indigo-900" target="_blank" rel="noopener noreferrer">
+                                                    {{ $bookingAktif->link_konsultasi }}
+                                                </a>
+                                            @else
+                                                {{ __('Link konsultasi belum tersedia.') }}
+                                            @endif
+                                        </dd>
+                                    </div>
+                                @else
+                                    <div class="sm:col-span-2">
+                                        <dt class="text-sm font-medium text-gray-500">Lokasi Konsultasi</dt>
+                                        <dd class="mt-1 whitespace-pre-line text-gray-900">
+                                            {{ $bookingAktif->lokasi_konsultasi ?: __('Lokasi konsultasi belum tersedia.') }}
+                                        </dd>
+                                    </div>
+                                @endif
+
+                                <div class="sm:col-span-2">
+                                    <dt class="text-sm font-medium text-gray-500">Catatan Konsultasi dari Admin</dt>
+                                    <dd class="mt-1 whitespace-pre-line text-gray-900">{{ $bookingAktif->catatan_konsultasi ?: '-' }}</dd>
                                 </div>
                             </dl>
                         @else

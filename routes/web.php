@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Admin\BookingKonsultasiController as AdminBookingKonsultasiController;
 use App\Http\Controllers\Admin\JadwalKonsultasiController;
 use App\Http\Controllers\Admin\KategoriPerkaraController;
 use App\Http\Controllers\Admin\StafLegalController;
@@ -182,6 +183,19 @@ Route::middleware(["auth", "active_account", "role:admin"])
             JadwalKonsultasiController::class,
             "updateStatus",
         ])->name("jadwal-konsultasi.status");
+
+        Route::get("/booking-konsultasi", [
+            AdminBookingKonsultasiController::class,
+            "index",
+        ])->name("booking-konsultasi.index");
+        Route::get("/booking-konsultasi/{bookingKonsultasi}", [
+            AdminBookingKonsultasiController::class,
+            "show",
+        ])->name("booking-konsultasi.show");
+        Route::patch("/booking-konsultasi/{bookingKonsultasi}/konfirmasi", [
+            AdminBookingKonsultasiController::class,
+            "confirm",
+        ])->name("booking-konsultasi.konfirmasi");
     });
 
 Route::middleware(["auth", "active_account", "role:staf_legal"])

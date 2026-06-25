@@ -11,14 +11,17 @@ use Illuminate\Validation\ValidationException;
 
 class BookingKonsultasiService
 {
+    /**
+     * @param array{id_jadwal: int|string, metode_konsultasi: string, catatan_preferensi_klien?: string|null} $data
+     */
     public function book(
         PraPendaftaranPerkara $praPendaftaranPerkara,
-        int $jadwalId,
+        array $data,
         int $klienId,
     ): BookingKonsultasi {
         return DB::transaction(function () use (
             $praPendaftaranPerkara,
-            $jadwalId,
+            $data,
             $klienId,
         ): BookingKonsultasi {
             $pengajuan = PraPendaftaranPerkara::query()
@@ -29,7 +32,7 @@ class BookingKonsultasiService
             $this->ensureCanBook($pengajuan, $klienId);
 
             $jadwal = JadwalKonsultasi::query()
-                ->whereKey($jadwalId)
+                ->whereKey((int) $data["id_jadwal"])
                 ->lockForUpdate()
                 ->firstOrFail();
 
@@ -44,6 +47,15 @@ class BookingKonsultasiService
                 "id_jadwal" => $jadwal->id_jadwal,
                 "id_user" => $klienId,
                 "status_booking" => "aktif",
+                "metode_konsultasi" => $data["metode_konsultasi"],
+                "status_konfirmasi_konsultasi" => "menunggu_konfirmasi",
+                "link_konsultasi" => null,
+                "lokasi_konsultasi" => null,
+                "catatan_konsultasi" => null,
+                "catatan_preferensi_klien" =>
+                    $data["catatan_preferensi_klien"] ?? null,
+                "dikonfirmasi_pada" => null,
+                "id_admin_konfirmasi" => null,
                 "tanggal_booking" => now(),
             ]);
 
@@ -72,13 +84,15 @@ class BookingKonsultasiService
     ): void {
         if ($pengajuan->id_user !== $klienId) {
             throw ValidationException::withMessages([
-                "id_jadwal" => "Pengajuan ini tidak dapat dibooking oleh akun ini.",
+                "id_jadwal" =>
+                    "Pengajuan ini tidak dapat dibooking oleh akun ini.",
             ]);
         }
 
         if ($pengajuan->status_pengajuan !== "berkas_lengkap") {
             throw ValidationException::withMessages([
-                "id_jadwal" => "Jadwal konsultasi hanya dapat dipilih saat status pengajuan berkas lengkap.",
+                "id_jadwal" =>
+                    "Jadwal konsultasi hanya dapat dipilih saat status pengajuan berkas lengkap.",
             ]);
         }
 
@@ -89,7 +103,8 @@ class BookingKonsultasiService
 
         if ($hasActiveBooking) {
             throw ValidationException::withMessages([
-                "id_jadwal" => "Pengajuan ini sudah memiliki booking konsultasi aktif.",
+                "id_jadwal" =>
+                    "Pengajuan ini sudah memiliki booking konsultasi aktif.",
             ]);
         }
     }
