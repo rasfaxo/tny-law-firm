@@ -2,12 +2,14 @@
 
 use App\Http\Controllers\Admin\BookingKonsultasiController as AdminBookingKonsultasiController;
 use App\Http\Controllers\Admin\JadwalKonsultasiController;
+use App\Http\Controllers\Admin\PermintaanRescheduleController as AdminPermintaanRescheduleController;
 use App\Http\Controllers\Admin\KategoriPerkaraController;
 use App\Http\Controllers\Admin\StafLegalController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\Klien\BookingKonsultasiController;
 use App\Http\Controllers\Klien\DokumenPerkaraController;
 use App\Http\Controllers\Klien\PerbaikanDokumenController;
+use App\Http\Controllers\Klien\PermintaanRescheduleController;
 use App\Http\Controllers\Klien\PraPendaftaranPerkaraController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\StafLegal\VerifikasiBerkasController;
@@ -85,6 +87,19 @@ Route::middleware(["auth", "active_account", "role:klien"])
             BookingKonsultasiController::class,
             "store",
         ])->name("booking-konsultasi.store");
+
+        Route::get(
+            "/booking-konsultasi/{bookingKonsultasi}/reschedule/create",
+            [PermintaanRescheduleController::class, "create"],
+        )->name("permintaan-reschedule.create");
+        Route::post("/booking-konsultasi/{bookingKonsultasi}/reschedule", [
+            PermintaanRescheduleController::class,
+            "store",
+        ])->name("permintaan-reschedule.store");
+        Route::get("/permintaan-reschedule/{permintaanReschedule}", [
+            PermintaanRescheduleController::class,
+            "show",
+        ])->name("permintaan-reschedule.show");
     });
 
 Route::middleware(["auth", "active_account", "role:admin"])
@@ -196,6 +211,23 @@ Route::middleware(["auth", "active_account", "role:admin"])
             AdminBookingKonsultasiController::class,
             "confirm",
         ])->name("booking-konsultasi.konfirmasi");
+
+        Route::get("/permintaan-reschedule", [
+            AdminPermintaanRescheduleController::class,
+            "index",
+        ])->name("permintaan-reschedule.index");
+        Route::get("/permintaan-reschedule/{permintaanReschedule}", [
+            AdminPermintaanRescheduleController::class,
+            "show",
+        ])->name("permintaan-reschedule.show");
+        Route::patch("/permintaan-reschedule/{permintaanReschedule}/setujui", [
+            AdminPermintaanRescheduleController::class,
+            "approve",
+        ])->name("permintaan-reschedule.setujui");
+        Route::patch("/permintaan-reschedule/{permintaanReschedule}/tolak", [
+            AdminPermintaanRescheduleController::class,
+            "reject",
+        ])->name("permintaan-reschedule.tolak");
     });
 
 Route::middleware(["auth", "active_account", "role:staf_legal"])

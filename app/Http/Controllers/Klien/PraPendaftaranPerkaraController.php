@@ -72,6 +72,16 @@ class PraPendaftaranPerkaraController extends Controller
             "verifikasiBerkas.catatanVerifikasi.dokumenPerkara",
             "bookingAktif.adminKonfirmasi",
             "bookingAktif.jadwalKonsultasi",
+            "bookingAktif.permintaanReschedule" => fn($query) => $query->latest(
+                "tanggal_pengajuan",
+            ),
+            "bookingAktif.permintaanReschedule.bookingBaru.jadwalKonsultasi",
+            "bookingAktif.permintaanReschedule.jadwalBaru",
+            "bookingKonsultasi.permintaanReschedule" => fn(
+                $query,
+            ) => $query->latest("tanggal_pengajuan"),
+            "bookingKonsultasi.permintaanReschedule.bookingBaru.jadwalKonsultasi",
+            "bookingKonsultasi.permintaanReschedule.jadwalBaru",
             "riwayatStatus" => fn($query) => $query->with("user")->oldest(),
         ]);
 

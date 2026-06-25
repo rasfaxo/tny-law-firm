@@ -67,4 +67,13 @@ class BookingKonsultasi extends Model
     {
         return $this->belongsTo(User::class, "id_admin_konfirmasi", "id_user");
     }
+
+    public function permintaanReschedule()
+    {
+        return $this->hasMany(
+            PermintaanReschedule::class,
+            "id_booking",
+            "id_booking",
+        );
+    }
 }
