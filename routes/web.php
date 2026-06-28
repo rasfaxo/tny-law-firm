@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Admin\BookingKonsultasiController as AdminBookingKonsultasiController;
 use App\Http\Controllers\Admin\JadwalKonsultasiController;
+use App\Http\Controllers\Admin\LaporanController;
 use App\Http\Controllers\Admin\PermintaanRescheduleController as AdminPermintaanRescheduleController;
 use App\Http\Controllers\Admin\KategoriPerkaraController;
 use App\Http\Controllers\Admin\StafLegalController;
@@ -109,6 +110,30 @@ Route::middleware(["auth", "active_account", "role:admin"])
         Route::get("/dashboard", [DashboardController::class, "admin"])->name(
             "dashboard",
         );
+
+        Route::get("/laporan", [LaporanController::class, "index"])->name(
+            "laporan.index",
+        );
+        Route::get("/laporan/pra-pendaftaran", [
+            LaporanController::class,
+            "praPendaftaran",
+        ])->name("laporan.pra-pendaftaran");
+        Route::get("/laporan/verifikasi-berkas", [
+            LaporanController::class,
+            "verifikasiBerkas",
+        ])->name("laporan.verifikasi-berkas");
+        Route::get("/laporan/booking-konsultasi", [
+            LaporanController::class,
+            "bookingKonsultasi",
+        ])->name("laporan.booking-konsultasi");
+        Route::get("/laporan/reschedule-konsultasi", [
+            LaporanController::class,
+            "rescheduleKonsultasi",
+        ])->name("laporan.reschedule-konsultasi");
+        Route::get("/laporan/pengajuan-selesai", [
+            LaporanController::class,
+            "pengajuanSelesai",
+        ])->name("laporan.pengajuan-selesai");
 
         Route::get("/staf-legal", [StafLegalController::class, "index"])->name(
             "staf-legal.index",

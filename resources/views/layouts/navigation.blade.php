@@ -48,6 +48,9 @@
                         <x-nav-link :href="route('admin.permintaan-reschedule.index')" :active="request()->routeIs('admin.permintaan-reschedule.*')">
                             {{ __('Permintaan Reschedule') }}
                         </x-nav-link>
+                        <x-nav-link :href="route('admin.laporan.index')" :active="request()->routeIs('admin.laporan.*')">
+                            {{ __('Laporan') }}
+                        </x-nav-link>
                     @elseif ($user->isStafLegal())
                         <x-nav-link :href="route('staf-legal.dashboard')" :active="request()->routeIs('staf-legal.dashboard')">
                             {{ __('Dashboard Staf Legal') }}
@@ -133,6 +136,9 @@
                 </x-responsive-nav-link>
                 <x-responsive-nav-link :href="route('admin.permintaan-reschedule.index')" :active="request()->routeIs('admin.permintaan-reschedule.*')">
                     {{ __('Permintaan Reschedule') }}
+                </x-responsive-nav-link>
+                <x-responsive-nav-link :href="route('admin.laporan.index')" :active="request()->routeIs('admin.laporan.*')">
+                    {{ __('Laporan') }}
                 </x-responsive-nav-link>
             @elseif ($user->isStafLegal())
                 <x-responsive-nav-link :href="route('staf-legal.dashboard')" :active="request()->routeIs('staf-legal.dashboard')">
