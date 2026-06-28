@@ -2,10 +2,13 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
 class BookingKonsultasi extends Model
 {
+    use HasFactory;
+
     protected $table = "booking_konsultasi";
 
     protected $primaryKey = "id_booking";

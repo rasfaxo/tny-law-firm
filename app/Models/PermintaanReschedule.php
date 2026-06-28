@@ -2,10 +2,13 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
 class PermintaanReschedule extends Model
 {
+    use HasFactory;
+
     protected $table = "permintaan_reschedule";
 
     protected $primaryKey = "id_reschedule";

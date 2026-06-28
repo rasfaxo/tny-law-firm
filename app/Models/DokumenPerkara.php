@@ -3,10 +3,13 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
 class DokumenPerkara extends Model
 {
+    use HasFactory;
+
     protected $table = "dokumen_perkara";
 
     protected $primaryKey = "id_dokumen";
