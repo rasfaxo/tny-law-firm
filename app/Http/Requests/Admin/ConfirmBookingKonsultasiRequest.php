@@ -14,7 +14,7 @@ class ConfirmBookingKonsultasiRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return true;
+        return $this->user()?->isAdmin() ?? false;
     }
 
     /**
@@ -25,9 +25,10 @@ class ConfirmBookingKonsultasiRequest extends FormRequest
     public function rules(): array
     {
         $booking = $this->route("bookingKonsultasi");
-        $metode = $booking instanceof BookingKonsultasi
-            ? $booking->metode_konsultasi
-            : null;
+        $metode =
+            $booking instanceof BookingKonsultasi
+                ? $booking->metode_konsultasi
+                : null;
 
         return [
             "link_konsultasi" => [

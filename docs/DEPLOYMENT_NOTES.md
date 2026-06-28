@@ -770,3 +770,60 @@ AI agent wajib mengikuti aturan berikut:
 8. Pastikan dokumen perkara tetap dilindungi authorization.
 9. Pastikan `APP_DEBUG=false` pada production.
 10. Selalu cocokkan deployment dengan `SECURITY_RULES.md`, `DATABASE_PLAN.md`, dan `MANUAL_TESTING_PLAN.md`.
+
+---
+
+## Fase 13 Final Deployment Checklist
+
+Checklist ini digunakan untuk persiapan demo dan deployment final setelah audit Fase 13.
+
+Kebutuhan server:
+
+1. PHP 8.x dan extension Laravel yang dibutuhkan.
+2. Composer.
+3. Node.js dan npm.
+4. MySQL.
+5. Apache/Nginx dengan document root mengarah ke folder `public`.
+6. Permission tulis untuk `storage` dan `bootstrap/cache`.
+
+Contoh command deployment awal setelah source code tersedia dan `.env` sudah disiapkan:
+
+```bash
+composer install --no-dev --optimize-autoloader
+npm install
+npm run build
+cp .env.example .env
+php artisan key:generate
+php artisan migrate --force
+php artisan db:seed --force
+php artisan storage:link
+php artisan config:cache
+php artisan route:cache
+php artisan view:cache
+```
+
+Catatan penting:
+
+1. `cp .env.example .env` hanya contoh untuk environment baru; isi `.env` production harus disesuaikan manual dan tidak boleh di-commit.
+2. `php artisan migrate --force` hanya boleh dijalankan setelah seluruh migration direview dan disetujui.
+3. `php artisan db:seed --force` hanya boleh dipakai untuk seed data awal yang memang disetujui, bukan data dummy production.
+4. Jangan menjalankan `php artisan migrate:fresh`, `php artisan migrate:refresh`, `php artisan migrate:rollback`, atau `php artisan db:wipe` di production.
+5. Jalankan `php artisan storage:link` agar storage public tersedia, tetapi dokumen perkara tetap harus diakses melalui controller dengan authorization.
+6. Jika route/config/view masih sering berubah di local, jangan menjalankan cache production di local; command cache ditujukan untuk deployment yang sudah stabil.
+7. Sistem tidak memiliki integrasi Zoom/Google Meet otomatis, chat internal, payment, integrasi kalender, atau e-Court.
+8. Tidak ada queue atau cron wajib untuk fitur utama saat ini selain kebutuhan framework/default environment jika nanti dipilih secara sadar.
+
+Akun demo lokal/presentasi yang dapat disiapkan:
+
+| Role       | Email                  | Password demo |
+| ---------- | ---------------------- | ------------- |
+| Admin      | admin@example.com      | password      |
+| Staf Legal | staflegal@example.com  | password      |
+| Klien      | klien@example.com      | password      |
+
+Aturan akun demo:
+
+1. Akun demo hanya untuk local/demo, bukan password production.
+2. Password production harus diganti dan tidak boleh ditulis di dokumentasi publik.
+3. Pastikan akun demo memiliki role sesuai slug final: `admin`, `staf_legal`, dan `klien`.
+4. Pastikan akun demo berstatus `aktif` sebelum digunakan untuk presentasi.

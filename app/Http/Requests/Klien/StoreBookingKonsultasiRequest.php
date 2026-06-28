@@ -13,7 +13,7 @@ class StoreBookingKonsultasiRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return true;
+        return $this->user()?->isKlien() ?? false;
     }
 
     /**

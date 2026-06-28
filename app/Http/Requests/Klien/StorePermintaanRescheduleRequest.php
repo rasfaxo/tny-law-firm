@@ -9,7 +9,7 @@ class StorePermintaanRescheduleRequest extends FormRequest
 {
     public function authorize(): bool
     {
-        return true;
+        return $this->user()?->isKlien() ?? false;
     }
 
     public function rules(): array
@@ -17,7 +17,10 @@ class StorePermintaanRescheduleRequest extends FormRequest
         return [
             "alasan_reschedule" => ["required", "string", "max:2000"],
             "preferensi_jadwal" => ["nullable", "string", "max:2000"],
-            "preferensi_metode" => ["nullable", Rule::in(["online", "offline"])],
+            "preferensi_metode" => [
+                "nullable",
+                Rule::in(["online", "offline"]),
+            ],
         ];
     }
 }
