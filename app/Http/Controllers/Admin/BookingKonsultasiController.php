@@ -6,7 +6,10 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\Admin\ConfirmBookingKonsultasiRequest;
 use App\Models\BookingKonsultasi;
 use App\Services\KonfirmasiKonsultasiService;
+use App\Services\SelesaikanKonsultasiService;
 use Illuminate\Http\RedirectResponse;
+use Illuminate\Http\Request;
+use Illuminate\Validation\ValidationException;
 use Illuminate\View\View;
 
 class BookingKonsultasiController extends Controller
@@ -34,6 +37,9 @@ class BookingKonsultasiController extends Controller
             "adminKonfirmasi",
             "jadwalKonsultasi",
             "klien",
+            "permintaanReschedule" => fn($query) => $query->latest(
+                "tanggal_pengajuan",
+            ),
             "praPendaftaranPerkara.kategori",
         ]);
 
@@ -57,5 +63,26 @@ class BookingKonsultasiController extends Controller
         return redirect()
             ->route("admin.booking-konsultasi.show", $bookingKonsultasi)
             ->with("success", "Informasi konsultasi berhasil dikonfirmasi.");
+    }
+
+    public function selesai(
+        Request $request,
+        BookingKonsultasi $bookingKonsultasi,
+        SelesaikanKonsultasiService $service,
+    ): RedirectResponse {
+        try {
+            $service->selesaikan($bookingKonsultasi, $request->user()->id_user);
+        } catch (ValidationException $exception) {
+            $message = collect($exception->errors())->flatten()->first();
+
+            return back()->with(
+                "error",
+                $message ?: "Konsultasi tidak dapat diselesaikan.",
+            );
+        }
+
+        return redirect()
+            ->route("admin.booking-konsultasi.show", $bookingKonsultasi)
+            ->with("success", "Konsultasi berhasil ditandai selesai.");
     }
 }

@@ -12,9 +12,26 @@
         $statusKonfirmasi = $bookingKonsultasi->status_konfirmasi_konsultasi ?? 'menunggu_konfirmasi';
         $metodeColor = $metode === 'online' ? 'blue' : 'gray';
         $konfirmasiColor = $statusKonfirmasi === 'terkonfirmasi' ? 'green' : 'yellow';
-        $bookingColor = $bookingKonsultasi->status_booking === 'aktif' ? 'green' : 'gray';
+        $bookingColor = match ($bookingKonsultasi->status_booking) {
+            'aktif' => 'green',
+            'selesai' => 'blue',
+            'dibatalkan' => 'red',
+            default => 'gray',
+        };
+        $pengajuanColor = match ($pengajuan?->status_pengajuan) {
+            'selesai' => 'green',
+            'jadwal_dipilih' => 'blue',
+            null => 'gray',
+            default => 'yellow',
+        };
+        $permintaanRescheduleMenunggu = $bookingKonsultasi->permintaanReschedule
+            ->firstWhere('status_reschedule', 'menunggu_persetujuan');
         $canConfirm = $bookingKonsultasi->status_booking === 'aktif'
             && $pengajuan?->status_pengajuan === 'jadwal_dipilih';
+        $canComplete = $bookingKonsultasi->status_booking === 'aktif'
+            && $pengajuan?->status_pengajuan === 'jadwal_dipilih'
+            && $statusKonfirmasi === 'terkonfirmasi'
+            && !$permintaanRescheduleMenunggu;
     @endphp
 
     <div class="py-12">
@@ -75,7 +92,7 @@
                             <div>
                                 <dt class="text-sm font-medium text-gray-500">Status Pengajuan</dt>
                                 <dd class="mt-1">
-                                    <x-status-badge :status="$pengajuan?->status_pengajuan ?? '-'" color="yellow" />
+                                    <x-status-badge :status="$pengajuan?->status_pengajuan ?? '-'" :color="$pengajuanColor" />
                                 </dd>
                             </div>
                         </dl>
@@ -210,6 +227,43 @@
                         <p class="mt-4 text-sm text-gray-500">
                             {{ __('Booking ini tidak dapat dikonfirmasi karena booking tidak aktif atau pengajuan tidak berstatus jadwal dipilih.') }}
                         </p>
+                    @endif
+                </div>
+            </div>
+
+            <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
+                <div class="p-6 text-gray-900">
+                    <h3 class="text-lg font-medium text-gray-900">{{ __('Selesaikan Konsultasi') }}</h3>
+
+                    @if ($canComplete)
+                        <p class="mt-2 text-sm text-gray-500">
+                            {{ __('Pastikan konsultasi sudah terlaksana sebelum menandai booking sebagai selesai.') }}
+                        </p>
+
+                        <form method="POST" action="{{ route('admin.booking-konsultasi.selesai', $bookingKonsultasi) }}" class="mt-4">
+                            @csrf
+                            @method('PATCH')
+
+                            <x-primary-button>
+                                {{ __('Tandai Konsultasi Selesai') }}
+                            </x-primary-button>
+                        </form>
+                    @else
+                        <div class="mt-4 rounded-md bg-gray-50 p-4 text-sm text-gray-700">
+                            @if ($bookingKonsultasi->status_booking === 'selesai')
+                                {{ __('Booking ini sudah selesai.') }}
+                            @elseif ($bookingKonsultasi->status_booking === 'dibatalkan')
+                                {{ __('Booking ini sudah dibatalkan.') }}
+                            @elseif ($statusKonfirmasi !== 'terkonfirmasi')
+                                {{ __('Detail konsultasi belum dikonfirmasi Admin.') }}
+                            @elseif ($permintaanRescheduleMenunggu)
+                                {{ __('Masih ada permintaan reschedule yang menunggu persetujuan.') }}
+                            @elseif ($pengajuan?->status_pengajuan !== 'jadwal_dipilih')
+                                {{ __('Pengajuan belum berada pada status jadwal dipilih.') }}
+                            @else
+                                {{ __('Booking ini belum dapat diselesaikan.') }}
+                            @endif
+                        </div>
                     @endif
                 </div>
             </div>

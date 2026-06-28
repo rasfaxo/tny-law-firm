@@ -77,6 +77,8 @@ class PraPendaftaranPerkaraController extends Controller
             ),
             "bookingAktif.permintaanReschedule.bookingBaru.jadwalKonsultasi",
             "bookingAktif.permintaanReschedule.jadwalBaru",
+            "bookingTerakhir.adminKonfirmasi",
+            "bookingTerakhir.jadwalKonsultasi",
             "bookingKonsultasi.permintaanReschedule" => fn(
                 $query,
             ) => $query->latest("tanggal_pengajuan"),

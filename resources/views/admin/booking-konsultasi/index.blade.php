@@ -25,6 +25,7 @@
                                     <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Metode</th>
                                     <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Konfirmasi</th>
                                     <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Booking</th>
+                                    <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Pengajuan</th>
                                     <th class="px-4 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">Aksi</th>
                                 </tr>
                             </thead>
@@ -35,7 +36,18 @@
                                         $jadwal = $booking->jadwalKonsultasi;
                                         $metodeColor = $booking->metode_konsultasi === 'online' ? 'blue' : 'gray';
                                         $konfirmasiColor = $booking->status_konfirmasi_konsultasi === 'terkonfirmasi' ? 'green' : 'yellow';
-                                        $bookingColor = $booking->status_booking === 'aktif' ? 'green' : 'gray';
+                                        $bookingColor = match ($booking->status_booking) {
+                                            'aktif' => 'green',
+                                            'selesai' => 'blue',
+                                            'dibatalkan' => 'red',
+                                            default => 'gray',
+                                        };
+                                        $pengajuanColor = match ($pengajuan?->status_pengajuan) {
+                                            'selesai' => 'green',
+                                            'jadwal_dipilih' => 'blue',
+                                            null => 'gray',
+                                            default => 'yellow',
+                                        };
                                     @endphp
                                     <tr>
                                         <td class="px-4 py-3 whitespace-nowrap text-gray-700">
@@ -63,6 +75,9 @@
                                         <td class="px-4 py-3 whitespace-nowrap text-gray-700">
                                             <x-status-badge :status="$booking->status_booking" :color="$bookingColor" />
                                         </td>
+                                        <td class="px-4 py-3 whitespace-nowrap text-gray-700">
+                                            <x-status-badge :status="$pengajuan?->status_pengajuan ?? '-'" :color="$pengajuanColor" />
+                                        </td>
                                         <td class="px-4 py-3 whitespace-nowrap text-right text-sm font-medium">
                                             <a href="{{ route('admin.booking-konsultasi.show', $booking) }}" class="text-indigo-600 hover:text-indigo-900">
                                                 {{ __('Detail') }}
@@ -71,7 +86,7 @@
                                     </tr>
                                 @empty
                                     <tr>
-                                        <td colspan="7" class="px-4 py-8 text-center text-gray-500">
+                                        <td colspan="8" class="px-4 py-8 text-center text-gray-500">
                                             {{ __('Belum ada booking konsultasi.') }}
                                         </td>
                                     </tr>

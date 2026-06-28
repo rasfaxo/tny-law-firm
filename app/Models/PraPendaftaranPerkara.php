@@ -117,4 +117,13 @@ class PraPendaftaranPerkara extends Model
             "id_pendaftaran",
         )->where("status_booking", "aktif");
     }
+
+    public function bookingTerakhir()
+    {
+        return $this->hasOne(
+            BookingKonsultasi::class,
+            "id_pendaftaran",
+            "id_pendaftaran",
+        )->latestOfMany("tanggal_booking");
+    }
 }

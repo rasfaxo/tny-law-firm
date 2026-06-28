@@ -58,6 +58,7 @@
 
             @php
                 $bookingAktif = $praPendaftaranPerkara->bookingAktif;
+                $bookingTampil = $bookingAktif ?: $praPendaftaranPerkara->bookingTerakhir;
                 $semuaPermintaanReschedule = $praPendaftaranPerkara->bookingKonsultasi
                     ->flatMap(fn ($booking) => $booking->permintaanReschedule);
                 $permintaanRescheduleTerakhir = $semuaPermintaanReschedule->sortByDesc('tanggal_pengajuan')->first();
@@ -72,7 +73,7 @@
                     && !$permintaanRescheduleMenunggu;
             @endphp
 
-            @if ($bookingAktif || $praPendaftaranPerkara->status_pengajuan === 'berkas_lengkap')
+            @if ($bookingTampil || $praPendaftaranPerkara->status_pengajuan === 'berkas_lengkap' || $praPendaftaranPerkara->status_pengajuan === 'selesai')
                 <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
                     <div class="p-6 text-gray-900">
                         <div class="flex items-center justify-between gap-4">
@@ -89,18 +90,30 @@
                             @endif
                         </div>
 
-                        @if ($bookingAktif)
+                        @if ($bookingTampil)
                             @php
-                                $jadwalBooking = $bookingAktif->jadwalKonsultasi;
-                                $metodeBooking = $bookingAktif->metode_konsultasi ?? 'offline';
-                                $statusKonfirmasi = $bookingAktif->status_konfirmasi_konsultasi ?? 'menunggu_konfirmasi';
+                                $jadwalBooking = $bookingTampil->jadwalKonsultasi;
+                                $metodeBooking = $bookingTampil->metode_konsultasi ?? 'offline';
+                                $statusKonfirmasi = $bookingTampil->status_konfirmasi_konsultasi ?? 'menunggu_konfirmasi';
                                 $metodeColor = $metodeBooking === 'online' ? 'blue' : 'gray';
                                 $konfirmasiColor = $statusKonfirmasi === 'terkonfirmasi' ? 'green' : 'yellow';
+                                $bookingColor = match ($bookingTampil->status_booking) {
+                                    'aktif' => 'green',
+                                    'selesai' => 'blue',
+                                    'dibatalkan' => 'red',
+                                    default => 'gray',
+                                };
                             @endphp
 
                             @if ($statusKonfirmasi === 'menunggu_konfirmasi')
                                 <div class="mt-4 rounded-md bg-yellow-50 p-4 text-sm text-yellow-700">
                                     {{ __('Informasi teknis konsultasi sedang menunggu konfirmasi Admin. Admin akan melengkapi link/lokasi konsultasi sebelum jadwal berlangsung.') }}
+                                </div>
+                            @endif
+
+                            @if ($praPendaftaranPerkara->status_pengajuan === 'selesai')
+                                <div class="mt-4 rounded-md bg-green-50 p-4 text-sm text-green-700">
+                                    {{ __('Konsultasi telah selesai. Terima kasih telah menggunakan layanan pra-pendaftaran perkara TNY Law Firm.') }}
                                 </div>
                             @endif
 
@@ -145,7 +158,7 @@
                                 <div>
                                     <dt class="text-sm font-medium text-gray-500">Status Booking</dt>
                                     <dd class="mt-1">
-                                        <x-status-badge :status="$bookingAktif->status_booking" color="green" />
+                                        <x-status-badge :status="$bookingTampil->status_booking" :color="$bookingColor" />
                                     </dd>
                                 </div>
                                 <div>
@@ -162,7 +175,7 @@
                                 </div>
                                 <div>
                                     <dt class="text-sm font-medium text-gray-500">Tanggal Booking</dt>
-                                    <dd class="mt-1 text-gray-900">{{ $bookingAktif->tanggal_booking?->format('d M Y H:i') ?? '-' }}</dd>
+                                    <dd class="mt-1 text-gray-900">{{ $bookingTampil->tanggal_booking?->format('d M Y H:i') ?? '-' }}</dd>
                                 </div>
                                 <div>
                                     <dt class="text-sm font-medium text-gray-500">Tanggal Konsultasi</dt>
@@ -179,16 +192,16 @@
                                 </div>
                                 <div class="sm:col-span-2">
                                     <dt class="text-sm font-medium text-gray-500">Catatan Preferensi Klien</dt>
-                                    <dd class="mt-1 whitespace-pre-line text-gray-900">{{ $bookingAktif->catatan_preferensi_klien ?: '-' }}</dd>
+                                    <dd class="mt-1 whitespace-pre-line text-gray-900">{{ $bookingTampil->catatan_preferensi_klien ?: '-' }}</dd>
                                 </div>
 
                                 @if ($metodeBooking === 'online')
                                     <div class="sm:col-span-2">
                                         <dt class="text-sm font-medium text-gray-500">Link Konsultasi</dt>
                                         <dd class="mt-1 text-gray-900">
-                                            @if ($bookingAktif->link_konsultasi)
-                                                <a href="{{ $bookingAktif->link_konsultasi }}" class="text-indigo-600 hover:text-indigo-900" target="_blank" rel="noopener noreferrer">
-                                                    {{ $bookingAktif->link_konsultasi }}
+                                            @if ($bookingTampil->link_konsultasi)
+                                                <a href="{{ $bookingTampil->link_konsultasi }}" class="text-indigo-600 hover:text-indigo-900" target="_blank" rel="noopener noreferrer">
+                                                    {{ $bookingTampil->link_konsultasi }}
                                                 </a>
                                             @else
                                                 {{ __('Link konsultasi belum tersedia.') }}
@@ -199,19 +212,23 @@
                                     <div class="sm:col-span-2">
                                         <dt class="text-sm font-medium text-gray-500">Lokasi Konsultasi</dt>
                                         <dd class="mt-1 whitespace-pre-line text-gray-900">
-                                            {{ $bookingAktif->lokasi_konsultasi ?: __('Lokasi konsultasi belum tersedia.') }}
+                                            {{ $bookingTampil->lokasi_konsultasi ?: __('Lokasi konsultasi belum tersedia.') }}
                                         </dd>
                                     </div>
                                 @endif
 
                                 <div class="sm:col-span-2">
                                     <dt class="text-sm font-medium text-gray-500">Catatan Konsultasi dari Admin</dt>
-                                    <dd class="mt-1 whitespace-pre-line text-gray-900">{{ $bookingAktif->catatan_konsultasi ?: '-' }}</dd>
+                                    <dd class="mt-1 whitespace-pre-line text-gray-900">{{ $bookingTampil->catatan_konsultasi ?: '-' }}</dd>
                                 </div>
                             </dl>
                         @else
                             <p class="mt-4 text-sm text-gray-500">
-                                {{ __('Berkas sudah lengkap. Silakan pilih jadwal konsultasi yang tersedia.') }}
+                                @if ($praPendaftaranPerkara->status_pengajuan === 'selesai')
+                                    {{ __('Konsultasi telah selesai. Terima kasih telah menggunakan layanan pra-pendaftaran perkara TNY Law Firm.') }}
+                                @else
+                                    {{ __('Berkas sudah lengkap. Silakan pilih jadwal konsultasi yang tersedia.') }}
+                                @endif
                             </p>
                         @endif
                     </div>

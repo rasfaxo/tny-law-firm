@@ -1,381 +1,570 @@
-# PATCH FINAL — UI_PRD.md
+# UI/UX Product Requirements Document (PRD)
+## Sistem Informasi Pra-Pendaftaran Perkara Berbasis Web pada TNY Law Firm
 
-## Final UI Branding, Landing Page, and Prototype Direction
+## 1. Document Purpose
 
-## 1. Final UI Decision Summary
+Dokumen ini menjadi Product Requirements Document (PRD) utama untuk perancangan UI/UX **Sistem Informasi Pra-Pendaftaran Perkara Berbasis Web pada TNY Law Firm**.
 
-Berdasarkan keputusan terbaru, UI sistem menggunakan ketentuan final berikut:
+PRD ini digunakan sebagai acuan kerja untuk membuat desain antarmuka di dengan format **native editable design**. Seluruh elemen desain harus dapat diedit langsung, termasuk frame, text, card, button, input, table, badge, modal, sidebar, icon, dan komponen UI lainnya.
 
-| Item                        | Keputusan                                 |
-| --------------------------- | ----------------------------------------- |
-| Logo resmi TNY Law Firm     | Sudah ada                                 |
-| Warna brand resmi           | Belum ditentukan                          |
-| Style UI                    | Modern Corporate                          |
-| Landing page publik         | Wajib dibuat                              |
-| Output tahap awal           | Desain statis di MCP Paper                |
-| Implementasi Blade/Tailwind | Dilakukan setelah desain statis disetujui |
+Dokumen ini digunakan oleh:
 
-Keputusan ini menjadi acuan final untuk pembuatan desain UI dan prototype sistem.
+1. Product Manager.
+2. UX Designer.
+3. UI Designer.
+4. Frontend Developer.
+5. Figma App di ChatGPT.
+6. Figma AI Pro.
+7. Tim implementasi Laravel.
+8. Tim akademik skripsi.
 
----
-
-# 2. Branding Requirements
-
-## 2.1 Logo
-
-TNY Law Firm sudah memiliki logo resmi.
-
-Logo resmi wajib digunakan pada:
-
-1. Landing page.
-2. Login page.
-3. Register Klien page.
-4. Sidebar aplikasi.
-5. Header aplikasi.
-6. Print layout laporan jika diperlukan.
-
-Jika file logo belum tersedia saat proses desain dimulai, gunakan placeholder sementara berupa teks:
-
-```text
-TNY Law Firm
-```
-
-Setelah file logo tersedia, placeholder wajib diganti dengan logo resmi.
-
-## 2.2 Brand Color
-
-Warna brand resmi TNY Law Firm belum ditentukan.
-
-Untuk tahap desain awal, gunakan color palette sementara yang memiliki karakter modern corporate dan sesuai dengan konteks firma hukum.
-
-Color palette sementara:
-
-| Token          | Nama Warna     | Hex       | Penggunaan                                       |
-| -------------- | -------------- | --------- | ------------------------------------------------ |
-| Primary        | Corporate Navy | `#1E3A5F` | Sidebar, primary button, active menu, link utama |
-| Secondary      | Slate Gray     | `#64748B` | Teks sekunder, border, icon muted                |
-| Accent         | Modern Blue    | `#2563EB` | CTA ringan, highlight, focus ring                |
-| Success        | Green          | `#16A34A` | Berkas lengkap, dokumen valid, success alert     |
-| Warning        | Amber          | `#F59E0B` | Menunggu verifikasi, peringatan                  |
-| Error          | Red            | `#DC2626` | Error, berkas tidak lengkap, perlu perbaikan     |
-| Background     | Soft Gray      | `#F8FAFC` | Background halaman                               |
-| Surface        | White          | `#FFFFFF` | Card, table, modal                               |
-| Text Primary   | Dark Slate     | `#0F172A` | Teks utama                                       |
-| Text Secondary | Slate          | `#475569` | Teks pendukung                                   |
-
-Aturan penggunaan warna:
-
-1. Warna ini bersifat sementara sampai warna brand resmi ditentukan.
-2. Jangan menggunakan warna acak pada setiap halaman.
-3. Semua status badge harus mengikuti warna status yang konsisten.
-4. Jika warna brand resmi tersedia di kemudian hari, hanya design token yang boleh disesuaikan tanpa mengubah struktur UI.
-5. UI harus tetap memiliki kontras yang baik dan mudah dibaca.
+PRD ini berfungsi sebagai **single source of truth** untuk perancangan UI/UX sistem.
 
 ---
 
-# 3. Visual Style Direction
+## 2. Product Overview
 
-## 3.1 UI Style
+### 2.1 Nama Sistem
 
-Gaya UI final yang digunakan adalah:
+**Sistem Informasi Pra-Pendaftaran Perkara Berbasis Web pada TNY Law Firm**
 
-```text
-Modern Corporate
-```
+### 2.2 Latar Belakang
 
-## 3.2 Karakter Visual
+TNY Law Firm membutuhkan sistem berbasis web untuk membantu proses pra-pendaftaran perkara secara lebih terstruktur. Sistem ini memungkinkan Klien melakukan pengajuan awal perkara, mengunggah dokumen pendukung, memantau status verifikasi, memilih jadwal konsultasi, menentukan metode konsultasi, dan mengajukan reschedule apabila berhalangan hadir.
 
-UI harus memiliki karakter:
+Sistem juga membantu Staf Legal memverifikasi kelengkapan dokumen dan membantu Admin mengelola data pengguna, kategori perkara, jadwal konsultasi, booking konsultasi, permintaan reschedule, serta laporan pra-pendaftaran.
 
-1. Profesional.
-2. Modern.
-3. Bersih.
-4. Formal tetapi tidak kaku.
-5. Cocok untuk firma hukum.
-6. Mudah dibaca.
-7. Fokus pada data, status, dokumen, dan alur kerja.
-8. Tidak terlalu dekoratif.
-9. Tidak terlalu banyak animasi.
-10. Tidak menggunakan gaya playful, casual, marketplace, atau social app.
+### 2.3 Tujuan Sistem
 
-## 3.3 Design Mood
+Tujuan sistem:
 
-Desain harus memberi kesan:
+1. Memudahkan Klien melakukan pra-pendaftaran perkara secara online.
+2. Memudahkan Klien mengunggah dokumen pendukung secara terstruktur.
+3. Memudahkan Klien memantau status pengajuan dan catatan verifikasi.
+4. Memudahkan Staf Legal memverifikasi kelengkapan berkas.
+5. Memudahkan Klien memilih jadwal dan metode konsultasi.
+6. Memungkinkan Admin mengonfirmasi detail teknis konsultasi.
+7. Memungkinkan Klien mengajukan reschedule tanpa langsung mengubah jadwal lama.
+8. Memungkinkan Admin menyetujui atau menolak permintaan reschedule.
+9. Memudahkan Admin memantau data pra-pendaftaran dan konsultasi.
+10. Menghasilkan rancangan UI/UX yang profesional, formal, dan sesuai kebutuhan firma hukum.
 
-1. Terpercaya.
-2. Rapi.
-3. Aman.
-4. Terstruktur.
-5. Profesional.
-6. Sesuai kebutuhan layanan hukum.
-7. Sesuai kebutuhan akademik skripsi.
+### 2.4 Target Pengguna
+
+Target pengguna sistem:
+
+1. Klien.
+2. Staf Legal.
+3. Admin.
 
 ---
 
-# 4. Landing Page Requirement
+## 3. Product Scope
 
-## 4.1 Status Landing Page
+### 3.1 Fitur Wajib
 
-Landing page publik wajib dibuat.
+Fitur wajib yang harus didukung UI:
 
-Landing page berada pada route:
+1. Landing page publik.
+2. Login.
+3. Register Klien.
+4. Dashboard Klien.
+5. Profil Klien.
+6. Pengajuan pra-pendaftaran perkara.
+7. Upload dokumen perkara.
+8. Detail pengajuan Klien.
+9. Status dan catatan verifikasi.
+10. Unggah ulang dokumen.
+11. Pilih jadwal konsultasi.
+12. Pilih metode konsultasi online/offline.
+13. Catatan preferensi konsultasi dari Klien.
+14. Detail booking konsultasi Klien.
+15. Informasi link konsultasi online atau lokasi konsultasi offline.
+16. Ajukan reschedule konsultasi.
+17. Detail permintaan reschedule Klien.
+18. Dashboard Staf Legal.
+19. Daftar pengajuan untuk verifikasi.
+20. Detail pengajuan Staf Legal.
+21. Form verifikasi berkas.
+22. Dashboard Admin.
+23. Kelola pengguna.
+24. Kelola kategori perkara.
+25. Kelola data pra-pendaftaran.
+26. Kelola jadwal konsultasi.
+27. Daftar booking konsultasi.
+28. Detail booking konsultasi Admin.
+29. Form konfirmasi detail konsultasi.
+30. Daftar permintaan reschedule.
+31. Detail permintaan reschedule.
+32. Form setujui reschedule.
+33. Form tolak reschedule.
+34. Tandai konsultasi selesai.
+35. Laporan pra-pendaftaran.
+36. Print browser laporan.
+37. Akses dokumen melalui mekanisme yang aman.
+38. Empty state, loading state, error state, dan success state.
+39. Badge status.
+40. Modal konfirmasi.
+41. Table filter dan pagination.
+
+### 3.2 Fitur Opsional
+
+Fitur berikut bersifat opsional dan hanya dibuat jika disetujui:
+
+1. Dark mode.
+2. Export PDF.
+3. Export Excel.
+4. Email notification.
+5. Integrasi kalender eksternal.
+6. Integrasi video meeting otomatis.
+7. Landing page marketing yang lebih lengkap.
+
+### 3.3 Fitur yang Tidak Dibuat
+
+Sistem tidak menyediakan:
+
+1. Chat internal.
+2. Video call internal.
+3. Integrasi Zoom otomatis.
+4. Integrasi Google Meet otomatis.
+5. Notifikasi email baru di luar kebutuhan reset password.
+6. Integrasi kalender eksternal.
+7. Pembayaran.
+8. e-Court integration.
+9. Digital signature.
+10. Rating atau testimoni konsultasi.
+11. Manajemen perkara lanjutan setelah konsultasi.
+12. Export PDF/Excel tanpa persetujuan.
+
+Link konsultasi online diisi manual oleh Admin.
+
+---
+
+## 4. User Roles
+
+## 4.1 Klien
+
+### Deskripsi
+
+Klien adalah pengguna eksternal yang melakukan pra-pendaftaran perkara melalui sistem.
+
+### Tujuan Penggunaan
+
+Klien menggunakan sistem untuk mengajukan pra-pendaftaran perkara, mengunggah dokumen, memantau status, memilih jadwal konsultasi, melihat detail teknis konsultasi, dan mengajukan reschedule apabila diperlukan.
+
+### Hak Akses UI
+
+Klien dapat:
+
+1. Register.
+2. Login.
+3. Mengelola profil sendiri.
+4. Membuat pengajuan pra-pendaftaran perkara.
+5. Mengunggah dokumen.
+6. Melihat daftar pengajuan miliknya.
+7. Melihat detail pengajuan miliknya.
+8. Melihat status dan catatan verifikasi.
+9. Mengunggah ulang dokumen yang perlu perbaikan.
+10. Memilih jadwal konsultasi jika berkas lengkap.
+11. Memilih metode konsultasi online/offline.
+12. Menulis catatan preferensi konsultasi.
+13. Melihat detail booking konsultasi.
+14. Melihat link/lokasi konsultasi setelah dikonfirmasi Admin.
+15. Mengajukan reschedule.
+16. Melihat status permintaan reschedule.
+17. Logout.
+
+---
+
+## 4.2 Staf Legal
+
+### Deskripsi
+
+Staf Legal adalah pengguna internal yang bertugas memverifikasi berkas pengajuan Klien.
+
+### Tujuan Penggunaan
+
+Staf Legal menggunakan sistem untuk memeriksa pengajuan, melihat dokumen, memberikan status verifikasi, dan menulis catatan perbaikan.
+
+### Hak Akses UI
+
+Staf Legal dapat:
+
+1. Login.
+2. Melihat dashboard Staf Legal.
+3. Melihat daftar pengajuan yang perlu diverifikasi.
+4. Melihat detail pengajuan.
+5. Melihat dokumen.
+6. Mengisi form verifikasi berkas.
+7. Memberikan catatan umum.
+8. Memberikan catatan per dokumen.
+9. Logout.
+
+---
+
+## 4.3 Admin
+
+### Deskripsi
+
+Admin adalah pengguna internal yang mengelola operasional sistem.
+
+### Tujuan Penggunaan
+
+Admin menggunakan sistem untuk mengelola pengguna, kategori perkara, jadwal konsultasi, booking konsultasi, permintaan reschedule, penyelesaian konsultasi, dan laporan pra-pendaftaran.
+
+### Hak Akses UI
+
+Admin dapat:
+
+1. Login.
+2. Melihat dashboard Admin.
+3. Mengelola pengguna.
+4. Membuat akun Staf Legal.
+5. Mengelola kategori perkara.
+6. Melihat data pra-pendaftaran.
+7. Mengelola jadwal konsultasi.
+8. Melihat daftar booking konsultasi.
+9. Mengonfirmasi detail konsultasi.
+10. Mengisi link konsultasi online.
+11. Mengisi lokasi konsultasi offline.
+12. Menulis catatan konsultasi.
+13. Melihat permintaan reschedule.
+14. Menyetujui reschedule.
+15. Menolak reschedule.
+16. Menandai konsultasi selesai jika syarat terpenuhi.
+17. Melihat laporan pra-pendaftaran.
+18. Print browser laporan.
+19. Logout.
+
+---
+
+## 5. Information Architecture
+
+### 5.1 Public Area
 
 ```text
 /
+├── Landing Page
+├── Login
+└── Register
 ```
 
-Landing page menjadi halaman awal sistem sebelum user login.
-
-## 4.2 Tujuan Landing Page
-
-Landing page bertujuan untuk:
-
-1. Memberikan kesan profesional terhadap TNY Law Firm.
-2. Menjelaskan fungsi sistem pra-pendaftaran perkara.
-3. Mengarahkan Klien baru untuk melakukan registrasi.
-4. Mengarahkan user yang sudah memiliki akun untuk login.
-5. Menjelaskan alur singkat layanan secara visual.
-6. Menjadi halaman publik yang mendukung kebutuhan presentasi sistem dalam skripsi.
-
-## 4.3 Struktur Landing Page
-
-Landing page minimal memiliki bagian berikut:
-
-1. Public header.
-2. Logo TNY Law Firm.
-3. Navigation menu.
-4. Hero section.
-5. Section alur layanan.
-6. Section manfaat sistem.
-7. Section role pengguna.
-8. Call to action.
-9. Footer.
-
-## 4.4 Public Header
-
-Header publik harus menampilkan:
-
-1. Logo TNY Law Firm.
-2. Nama sistem atau nama firma.
-3. Menu navigasi:
-
-   * Beranda
-   * Alur Layanan
-   * Tentang Sistem
-   * Login
-   * Daftar
-4. Button utama untuk daftar.
-5. Button atau link untuk login.
-
-## 4.5 Hero Section
-
-Hero section harus menampilkan judul utama:
+### 5.2 Klien Area
 
 ```text
-Pra-Pendaftaran Perkara Lebih Mudah dan Terstruktur
+/klien
+├── Dashboard
+├── Profil Saya
+│   ├── Lihat Profil
+│   └── Edit Profil
+├── Pengajuan
+│   ├── Daftar Pengajuan
+│   ├── Buat Pengajuan
+│   ├── Detail Pengajuan
+│   ├── Status dan Catatan
+│   └── Unggah Ulang Dokumen
+├── Jadwal Konsultasi
+│   ├── Pilih Jadwal Konsultasi
+│   ├── Konfirmasi Booking
+│   └── Detail Booking Konsultasi
+├── Reschedule
+│   ├── Ajukan Reschedule
+│   └── Detail Permintaan Reschedule
+└── Logout
 ```
 
-Deskripsi hero:
+### 5.3 Staf Legal Area
 
 ```text
-Sistem ini membantu Klien melakukan pra-pendaftaran perkara, mengunggah dokumen pendukung, memantau status verifikasi, dan memilih jadwal konsultasi secara online.
+/staf-legal
+├── Dashboard
+├── Pengajuan Verifikasi
+│   ├── Daftar Pengajuan
+│   ├── Detail Pengajuan
+│   └── Form Verifikasi Berkas
+└── Logout
 ```
 
-CTA utama:
+### 5.4 Admin Area
 
 ```text
-Daftar sebagai Klien
+/admin
+├── Dashboard
+├── Staf Legal / Pengguna
+│   ├── Daftar Pengguna
+│   ├── Tambah User
+│   ├── Detail User
+│   └── Edit User
+├── Kategori Perkara
+│   ├── Daftar Kategori
+│   ├── Tambah Kategori
+│   └── Edit Kategori
+├── Data Pra-Pendaftaran
+│   ├── Daftar Pengajuan
+│   └── Detail Pengajuan
+├── Jadwal Konsultasi
+│   ├── Daftar Jadwal
+│   ├── Tambah Jadwal
+│   └── Edit Jadwal
+├── Booking Konsultasi
+│   ├── Daftar Booking
+│   ├── Detail Booking
+│   └── Form Konfirmasi Detail Konsultasi
+├── Permintaan Reschedule
+│   ├── Daftar Permintaan
+│   ├── Detail Permintaan
+│   ├── Form Setujui Reschedule
+│   └── Form Tolak Reschedule
+├── Laporan
+│   ├── Laporan Pra-Pendaftaran
+│   └── Print Browser Layout
+└── Logout
 ```
-
-CTA sekunder:
-
-```text
-Masuk ke Sistem
-```
-
-## 4.6 Alur Layanan pada Landing Page
-
-Landing page harus menampilkan alur layanan singkat:
-
-1. Registrasi akun.
-2. Lengkapi profil.
-3. Ajukan pra-pendaftaran perkara.
-4. Unggah dokumen pendukung.
-5. Tunggu verifikasi Staf Legal.
-6. Unggah ulang dokumen jika diperlukan.
-7. Pilih jadwal konsultasi jika berkas lengkap.
-8. Konsultasi selesai.
-
-## 4.7 Manfaat Sistem
-
-Section manfaat sistem dapat menampilkan poin berikut:
-
-1. Pengajuan perkara lebih terstruktur.
-2. Dokumen pendukung tersimpan lebih rapi.
-3. Klien dapat memantau status pengajuan.
-4. Staf Legal dapat memverifikasi berkas secara sistematis.
-5. Admin dapat memantau data pra-pendaftaran.
-6. Jadwal konsultasi dapat dipilih setelah berkas lengkap.
-
-## 4.8 Role Pengguna pada Landing Page
-
-Tampilkan ringkasan role:
-
-1. Klien: mengajukan pra-pendaftaran dan memantau status.
-2. Staf Legal: memverifikasi dokumen dan memberikan catatan.
-3. Admin: mengelola data pengguna, kategori, jadwal, dan laporan.
-
-## 4.9 Batasan Landing Page
-
-Landing page tidak boleh menampilkan atau menjanjikan fitur berikut:
-
-1. e-Court.
-2. Payment.
-3. Digital signature.
-4. Video conference.
-5. Chat online.
-6. Email notification.
-7. Export PDF.
-8. Export Excel.
-9. Manajemen perkara setelah konsultasi.
-10. Fitur lain di luar scope skripsi.
 
 ---
 
-# 5. Prototype Output Decision
+## 6. Core User Flow
 
-## 5.1 Output Tahap Awal
+## 6.1 Login Flow
 
-Tahap awal UI dibuat sebagai:
+1. User membuka halaman Login.
+2. User mengisi email dan password.
+3. Sistem memvalidasi input.
+4. Sistem mengecek status akun.
+5. User diarahkan ke dashboard sesuai role.
+6. Jika gagal, UI menampilkan error.
 
-```text
-Desain statis di MCP Paper
-```
+## 6.2 Register Klien Flow
 
-Bukan langsung implementasi Blade/Tailwind.
+1. User membuka halaman Register.
+2. User mengisi data registrasi.
+3. UI tidak menampilkan input role atau status akun.
+4. Sistem membuat akun Klien aktif.
+5. User diarahkan sesuai alur autentikasi.
 
-## 5.2 Tujuan Prototype Statis
+## 6.3 Pengajuan Pra-Pendaftaran Flow
 
-Prototype statis digunakan untuk:
+1. Klien membuka halaman Buat Pengajuan.
+2. Klien memilih kategori perkara.
+3. Klien mengisi judul dan kronologi.
+4. Klien mengunggah dokumen pendukung.
+5. Pengajuan dikirim dengan status awal `menunggu_verifikasi`.
+6. Klien dapat memantau status pengajuan.
 
-1. Menyusun struktur visual sistem.
-2. Memvalidasi layout setiap role.
-3. Memastikan navigasi sesuai rancangan.
-4. Memastikan seluruh halaman wajib tersedia.
-5. Menjadi acuan sebelum implementasi Laravel Blade.
-6. Mempermudah penyusunan dokumentasi skripsi.
-7. Mempermudah presentasi desain antarmuka.
-8. Menghindari perubahan besar saat implementasi kode.
+## 6.4 Verifikasi Berkas Flow
 
-## 5.3 Batasan Prototype Statis
+1. Staf Legal membuka daftar pengajuan.
+2. Staf Legal membuka detail pengajuan.
+3. Staf Legal memeriksa dokumen.
+4. Staf Legal menentukan status berkas lengkap atau tidak lengkap.
+5. Staf Legal mengisi catatan jika berkas tidak lengkap.
+6. Klien melihat hasil verifikasi dan catatan.
 
-Pada tahap desain statis:
+## 6.5 Booking Konsultasi Flow
 
-1. Tidak perlu membuat logic backend.
-2. Tidak perlu membuat database.
-3. Tidak perlu membuat controller.
-4. Tidak perlu membuat migration.
-5. Tidak perlu membuat Blade final.
-6. Tidak perlu membuat route Laravel.
-7. Tidak perlu membuat validasi server-side.
-8. Tidak perlu membuat interaksi kompleks.
-9. Fokus pada layout, komponen, navigasi, state, dan alur visual.
+1. Klien dapat memilih jadwal jika status pengajuan `berkas_lengkap`.
+2. Klien memilih slot jadwal tersedia.
+3. Klien memilih metode konsultasi:
+   - online,
+   - offline.
+4. Klien mengisi catatan preferensi jika diperlukan.
+5. Klien mengonfirmasi booking.
+6. Booking dibuat dengan status `aktif`.
+7. Detail konsultasi berstatus `menunggu_konfirmasi`.
+8. Admin mengonfirmasi detail teknis konsultasi.
+9. Klien dapat melihat link atau lokasi konsultasi setelah dikonfirmasi.
 
-## 5.4 Tahap Setelah Prototype Disetujui
+## 6.6 Konfirmasi Detail Konsultasi Admin Flow
 
-Setelah desain statis di MCP Paper disetujui, implementasi dapat dilanjutkan ke:
+1. Admin membuka daftar booking konsultasi.
+2. Admin membuka detail booking.
+3. Admin melihat metode konsultasi dan catatan preferensi Klien.
+4. Jika metode online, Admin mengisi link konsultasi.
+5. Jika metode offline, Admin mengisi lokasi konsultasi.
+6. Admin dapat menulis catatan konsultasi.
+7. Status konfirmasi menjadi `terkonfirmasi`.
 
-```text
-Laravel Blade + Tailwind CSS
-```
+## 6.7 Reschedule Flow
 
-Implementasi wajib mengikuti:
+1. Klien membuka detail booking.
+2. Klien mengajukan reschedule jika booking masih aktif dan tidak ada reschedule pending.
+3. Klien mengisi alasan reschedule.
+4. Klien memilih preferensi jadwal baru.
+5. Klien memilih preferensi metode baru.
+6. Permintaan reschedule berstatus `menunggu_persetujuan`.
+7. Jadwal lama tetap berlaku sampai Admin menyetujui perubahan.
+8. Admin menyetujui atau menolak permintaan.
+9. Jika disetujui, booking lama dibatalkan dan booking baru dibuat.
+10. Jika ditolak, booking lama tetap aktif dan jadwal lama tetap berlaku.
 
-1. `AGENTS.md`
-2. `docs/UI_PRD.md`
-3. `docs/PROJECT_CONTEXT.md`
-4. `docs/FEATURE_LIST.md`
-5. `docs/ROUTES_PLAN.md`
-6. `docs/STATUS_RULES.md`
-7. `docs/VALIDATION_RULES.md`
-8. `docs/SECURITY_RULES.md`
-9. `docs/MANUAL_TESTING_PLAN.md`
+## 6.8 Selesaikan Konsultasi Flow
+
+Admin hanya dapat menandai konsultasi selesai jika:
+
+1. booking aktif,
+2. pengajuan berstatus `jadwal_dipilih`,
+3. detail konsultasi sudah `terkonfirmasi`,
+4. tidak ada permintaan reschedule yang masih `menunggu_persetujuan`.
 
 ---
 
-# 6. MCP Paper Output Requirements
+## 7. Screen Inventory
 
-## 6.1 Screen yang Wajib Dibuat di MCP Paper
+## 7.1 Public & Auth
 
-MCP Paper harus menghasilkan desain statis untuk halaman berikut:
+1. Landing Page - Desktop.
+2. Login Page - Desktop.
+3. Register Page - Desktop.
 
-### Public and Authentication
+## 7.2 Klien
 
-1. Landing page.
-2. Login page.
-3. Register Klien page.
+1. Dashboard Klien - Desktop.
+2. Profil Klien - Desktop.
+3. Edit Profil Klien - Desktop.
+4. Daftar Pengajuan Klien - Desktop.
+5. Buat Pengajuan - Desktop.
+6. Detail Pengajuan Klien - Desktop.
+7. Status dan Catatan - Desktop.
+8. Unggah Ulang Dokumen - Desktop.
+9. Pilih Jadwal Konsultasi - Desktop.
+10. Detail Booking Konsultasi - Desktop.
+11. Ajukan Reschedule - Desktop.
+12. Detail Permintaan Reschedule Klien - Desktop.
 
-### Shared Layout
+## 7.3 Staf Legal
 
-1. Guest layout.
-2. Authenticated app layout.
-3. Sidebar role-based.
-4. Header authenticated.
-5. Footer.
-6. Flash message.
-7. Empty state.
-8. Error state.
-9. Loading state.
+1. Dashboard Staf Legal - Desktop.
+2. Daftar Pengajuan Verifikasi - Desktop.
+3. Detail Pengajuan Staf Legal - Desktop.
+4. Form Verifikasi Berkas - Desktop.
 
-### Klien
+## 7.4 Admin
 
-1. Dashboard Klien.
-2. Profil Klien.
-3. Edit Profil Klien.
-4. Daftar pengajuan Klien.
-5. Buat pengajuan pra-pendaftaran.
-6. Detail pengajuan Klien.
-7. Status dan catatan pengajuan.
-8. Timeline riwayat status.
-9. Form unggah ulang dokumen.
-10. Pilih jadwal konsultasi.
-11. Konfirmasi booking.
-12. Detail booking konsultasi.
+1. Dashboard Admin - Desktop.
+2. Daftar Pengguna - Desktop.
+3. Tambah User - Desktop.
+4. Detail User - Desktop.
+5. Edit User - Desktop.
+6. Daftar Kategori Perkara - Desktop.
+7. Tambah Kategori - Desktop.
+8. Edit Kategori - Desktop.
+9. Daftar Data Pra-Pendaftaran - Desktop.
+10. Detail Data Pra-Pendaftaran - Desktop.
+11. Daftar Jadwal Konsultasi - Desktop.
+12. Tambah Jadwal Konsultasi - Desktop.
+13. Edit Jadwal Konsultasi - Desktop.
+14. Daftar Booking Konsultasi - Desktop.
+15. Detail Booking Konsultasi Admin - Desktop.
+16. Form Konfirmasi Detail Konsultasi - Desktop.
+17. Daftar Permintaan Reschedule - Desktop.
+18. Detail Permintaan Reschedule - Desktop.
+19. Form Setujui Reschedule - Desktop.
+20. Form Tolak Reschedule - Desktop.
+21. Laporan Pra-Pendaftaran - Desktop.
+22. Print Browser Layout - Desktop.
 
-### Staf Legal
+## 7.5 Document Access
 
-1. Dashboard Staf Legal.
-2. Daftar pengajuan untuk verifikasi.
-3. Detail pengajuan.
-4. Form verifikasi berkas.
+1. View Dokumen.
+2. Download Dokumen action representation.
+3. Access denied state.
+4. File not found state.
+5. Loading document state.
 
-### Admin
+---
 
-1. Dashboard Admin.
-2. Daftar pengguna.
-3. Tambah user.
-4. Detail user.
-5. Edit user.
-6. Daftar kategori perkara.
-7. Tambah kategori.
-8. Edit kategori.
-9. Daftar data pra-pendaftaran.
-10. Detail data pra-pendaftaran.
-11. Daftar jadwal konsultasi.
-12. Tambah jadwal konsultasi.
-13. Edit jadwal konsultasi.
-14. Penyelesaian konsultasi.
-15. Laporan pra-pendaftaran.
-16. Print browser layout.
+## 8. Figma Design Requirements
 
-### Document Access
+### 8.1 Output Format
 
-1. View dokumen.
-2. Download dokumen state atau action representation.
+Seluruh desain harus dibuat sebagai **native editable Figma design**.
 
-## 6.2 Komponen UI yang Wajib Ditampilkan
+Tidak boleh berupa:
 
-Prototype harus menampilkan komponen berikut:
+1. Screenshot.
+2. PNG.
+3. JPG.
+4. Flat image.
+5. Mockup tunggal yang tidak bisa diedit.
+6. Komponen yang digabung menjadi satu image.
+
+Semua elemen harus dapat diedit langsung.
+
+### 8.2 Figma Page Structure
+
+Gunakan struktur page berikut:
+
+```text
+00 - Cover
+01 - Design System
+02 - Public & Auth
+03 - Klien
+04 - Staf Legal
+05 - Admin
+06 - Consultation & Reschedule
+07 - Prototype Flow
+08 - Notes & Handoff
+```
+
+### 8.3 Design Direction
+
+Gaya visual:
+
+1. Modern corporate.
+2. Legal professional.
+3. Clean.
+4. Formal.
+5. Web app oriented.
+6. Banyak whitespace.
+7. Tidak seperti slide presentasi.
+8. Tidak playful.
+9. Tidak marketplace-like.
+10. Tidak terlalu dekoratif.
+
+### 8.4 Desktop-First
+
+Tahap awal desain fokus pada desktop.
+
+Tablet dan mobile dibuat setelah desktop disetujui.
+
+---
+
+## 9. Design System
+
+### 9.1 Color Palette
+
+| Token | Hex | Usage |
+|---|---|---|
+| Primary Navy | `#1E3A5F` | Sidebar, primary button, active menu |
+| Accent Blue | `#2563EB` | CTA, focus, highlight |
+| Success Green | `#16A34A` | Success, valid, terkonfirmasi |
+| Warning Amber | `#F59E0B` | Pending, waiting |
+| Error Red | `#DC2626` | Error, rejected, invalid |
+| Background | `#F8FAFC` | App background |
+| Surface | `#FFFFFF` | Card, modal, table |
+| Border | `#E2E8F0` | Divider, input border |
+| Text Primary | `#0F172A` | Main text |
+| Text Secondary | `#475569` | Supporting text |
+
+### 9.2 Typography
+
+Gunakan font modern yang mudah dibaca:
+
+1. Inter.
+2. Plus Jakarta Sans.
+3. System font.
+
+Hierarchy:
+
+1. H1: 32px / bold.
+2. H2: 24px / semibold.
+3. H3: 20px / semibold.
+4. Body: 14–16px.
+5. Caption: 12px.
+
+### 9.3 Component Standards
+
+Komponen wajib:
 
 1. Button.
 2. Input.
@@ -384,255 +573,379 @@ Prototype harus menampilkan komponen berikut:
 5. File upload.
 6. Table.
 7. Card.
-8. Badge status.
+8. Badge.
 9. Alert.
-10. Modal konfirmasi.
-11. Timeline.
-12. Pagination.
-13. Filter form.
-14. Empty state.
-15. Loading state.
-16. Error state.
-17. Success message.
-18. Sidebar.
-19. Header.
-20. Footer.
+10. Modal.
+11. Sidebar.
+12. Header.
+13. Timeline.
+14. Pagination.
+15. Empty state.
+16. Loading state.
+17. Error state.
+18. Success state.
 
 ---
 
-# 7. Updated Page Priority
+## 10. Status Badge Requirements
 
-## Priority 1 — Public and Authentication UI
+### 10.1 Status Pengajuan
 
-1. Landing page.
-2. Login page.
-3. Register Klien page.
-4. Guest layout.
-5. Basic branding with official logo or temporary placeholder.
+| Slug | Label |
+|---|---|
+| `menunggu_verifikasi` | Menunggu Verifikasi |
+| `berkas_tidak_lengkap` | Berkas Tidak Lengkap |
+| `menunggu_verifikasi_ulang` | Menunggu Verifikasi Ulang |
+| `berkas_lengkap` | Berkas Lengkap |
+| `jadwal_dipilih` | Jadwal Dipilih |
+| `selesai` | Selesai |
 
-## Priority 2 — App Shell
+### 10.2 Status Dokumen
 
-1. Authenticated layout.
-2. Sidebar role-based.
-3. Header.
-4. Footer.
-5. Flash message.
-6. Status badge component.
-7. Empty state component.
-8. Modal confirmation component.
+| Slug | Label |
+|---|---|
+| `terkirim` | Terkirim |
+| `valid` | Valid |
+| `perlu_perbaikan` | Perlu Perbaikan |
+| `diganti` | Diganti |
 
-## Priority 3 — Klien Core Flow
+### 10.3 Metode Konsultasi
 
-1. Dashboard Klien.
-2. Profil Klien.
-3. Daftar pengajuan.
-4. Buat pengajuan.
-5. Detail pengajuan.
-6. Status dan catatan.
-7. Unggah ulang dokumen.
-8. Pilih jadwal konsultasi.
-9. Konfirmasi booking.
-10. Detail booking.
+| Slug | Label |
+|---|---|
+| `online` | Online |
+| `offline` | Offline |
 
-## Priority 4 — Staf Legal Core Flow
+### 10.4 Status Konfirmasi Konsultasi
 
-1. Dashboard Staf Legal.
-2. Daftar pengajuan.
-3. Detail pengajuan.
-4. Form verifikasi berkas.
+| Slug | Label |
+|---|---|
+| `menunggu_konfirmasi` | Menunggu Konfirmasi |
+| `terkonfirmasi` | Terkonfirmasi |
 
-## Priority 5 — Admin Core Flow
+### 10.5 Status Reschedule
 
-1. Dashboard Admin.
-2. Kelola pengguna.
-3. Kelola kategori perkara.
-4. Kelola data pra-pendaftaran.
-5. Kelola jadwal konsultasi.
-6. Penyelesaian konsultasi.
-7. Laporan pra-pendaftaran.
-8. Print browser layout.
+| Slug | Label |
+|---|---|
+| `menunggu_persetujuan` | Menunggu Persetujuan |
+| `disetujui` | Disetujui |
+| `ditolak` | Ditolak |
 
----
+### 10.6 Status Booking
 
-# 8. UI State Requirements
-
-Setiap halaman utama harus memiliki state berikut:
-
-## 8.1 Default State
-
-Tampilan normal ketika data tersedia.
-
-## 8.2 Empty State
-
-Tampilan ketika belum ada data.
-
-Contoh:
-
-```text
-Belum ada pengajuan pra-pendaftaran.
-```
-
-## 8.3 Loading State
-
-Tampilan saat data sedang dimuat atau form sedang diproses.
-
-Contoh:
-
-```text
-Memuat data...
-```
-
-atau button disabled:
-
-```text
-Memproses...
-```
-
-## 8.4 Error State
-
-Tampilan ketika terjadi error atau validasi gagal.
-
-Contoh:
-
-```text
-Data gagal dimuat.
-```
-
-```text
-Field ini wajib diisi.
-```
-
-## 8.5 Success State
-
-Tampilan ketika aksi berhasil.
-
-Contoh:
-
-```text
-Data berhasil disimpan.
-```
-
-```text
-Pengajuan berhasil dikirim.
-```
+| Slug | Label |
+|---|---|
+| `aktif` | Aktif |
+| `dibatalkan` | Dibatalkan |
+| `selesai` | Selesai |
 
 ---
 
-# 9. Status Badge Rules for UI
+## 11. Key Page Requirements
 
-Status tidak boleh ditulis bebas. UI harus menggunakan mapping status berikut.
+## 11.1 Landing Page
 
-## 9.1 Status Pengajuan
+Landing page harus berisi:
 
-| Slug                        | Label UI                  | Badge   |
-| --------------------------- | ------------------------- | ------- |
-| `menunggu_verifikasi`       | Menunggu Verifikasi       | Warning |
-| `berkas_tidak_lengkap`      | Berkas Tidak Lengkap      | Error   |
-| `menunggu_verifikasi_ulang` | Menunggu Verifikasi Ulang | Warning |
-| `berkas_lengkap`            | Berkas Lengkap            | Success |
-| `jadwal_dipilih`            | Jadwal Dipilih            | Primary |
-| `selesai`                   | Selesai                   | Neutral |
+1. Header publik.
+2. Logo TNY Law Firm atau placeholder.
+3. CTA Login.
+4. CTA Register.
+5. Hero section.
+6. Section layanan pra-pendaftaran.
+7. Section alur singkat.
+8. CTA penutup.
+9. Footer.
 
-## 9.2 Status Dokumen
+Landing page tidak perlu menampilkan section manfaat sistem atau role pengguna.
 
-| Slug              | Label UI        | Badge   |
-| ----------------- | --------------- | ------- |
-| `terkirim`        | Terkirim        | Warning |
-| `valid`           | Valid           | Success |
-| `perlu_perbaikan` | Perlu Perbaikan | Error   |
-| `diganti`         | Diganti         | Neutral |
+Headline:
 
-## 9.3 Status Slot Jadwal
+```text
+Portal Pra-Pendaftaran Perkara TNY Law Firm
+```
 
-| Slug          | Label UI    | Badge   |
-| ------------- | ----------- | ------- |
-| `tersedia`    | Tersedia    | Success |
-| `terisi`      | Terisi      | Primary |
-| `tidak_aktif` | Tidak Aktif | Neutral |
+Subheadline:
 
-## 9.4 Status Booking
+```text
+Ajukan pra-pendaftaran perkara, unggah dokumen pendukung, pantau status verifikasi, dan pilih jadwal konsultasi melalui satu sistem yang terstruktur.
+```
 
-| Slug         | Label UI   | Badge   |
-| ------------ | ---------- | ------- |
-| `aktif`      | Aktif      | Primary |
-| `dibatalkan` | Dibatalkan | Error   |
-| `selesai`    | Selesai    | Success |
+### 11.2 Login Page
+
+Login wajib memiliki:
+
+1. Logo atau placeholder.
+2. Email input.
+3. Password input.
+4. Link visual Lupa Password.
+5. Button Login.
+6. Link Register.
+7. Error/loading state.
+
+### 11.3 Register Page
+
+Register wajib memiliki:
+
+1. Nama.
+2. Email.
+3. Nomor telepon.
+4. Password.
+5. Confirm password.
+6. Button Register.
+7. Link Login.
+8. Error/loading state.
+
+Register tidak boleh menampilkan input role atau status akun.
+
+### 11.4 Pilih Jadwal Konsultasi
+
+Wajib memiliki:
+
+1. Daftar jadwal tersedia.
+2. Filter tanggal.
+3. Pilihan metode online/offline.
+4. Catatan preferensi Klien.
+5. Modal konfirmasi booking.
+6. Informasi bahwa link/lokasi dikonfirmasi Admin.
+
+Copy modal:
+
+```text
+Pastikan jadwal dan metode konsultasi sudah sesuai. Detail teknis konsultasi seperti link online atau lokasi offline akan dikonfirmasi oleh Admin.
+```
+
+### 11.5 Detail Booking Klien
+
+Wajib menampilkan:
+
+1. Status booking.
+2. Metode konsultasi.
+3. Status konfirmasi konsultasi.
+4. Tanggal dan waktu.
+5. Link konsultasi jika online.
+6. Lokasi konsultasi jika offline.
+7. Catatan Admin.
+8. Catatan preferensi Klien.
+9. Tombol Ajukan Reschedule jika memenuhi syarat.
+10. Informasi reschedule pending jika ada.
+
+Copy menunggu konfirmasi:
+
+```text
+Informasi teknis konsultasi sedang menunggu konfirmasi Admin. Admin akan melengkapi link atau lokasi konsultasi sebelum jadwal berlangsung.
+```
+
+Copy reschedule:
+
+```text
+Jika Anda berhalangan hadir, Anda dapat mengajukan reschedule. Jadwal lama tetap berlaku sampai Admin menyetujui perubahan.
+```
+
+### 11.6 Ajukan Reschedule
+
+Wajib memiliki:
+
+1. Informasi booking lama.
+2. Alasan reschedule.
+3. Preferensi jadwal baru.
+4. Preferensi metode baru.
+5. Button Ajukan Reschedule.
+6. Informasi bahwa jadwal lama tetap berlaku.
+
+Copy:
+
+```text
+Selama permintaan reschedule masih menunggu persetujuan Admin, jadwal lama tetap berlaku.
+```
+
+### 11.7 Admin Detail Booking
+
+Wajib menampilkan:
+
+1. Data Klien.
+2. Data pengajuan.
+3. Data jadwal.
+4. Metode konsultasi.
+5. Catatan preferensi Klien.
+6. Status konfirmasi konsultasi.
+7. Link konsultasi jika online.
+8. Lokasi konsultasi jika offline.
+9. Catatan Admin.
+10. Tombol konfirmasi detail konsultasi.
+11. Tombol tandai konsultasi selesai jika memenuhi syarat.
+12. Alert alasan jika belum bisa selesai.
+
+### 11.8 Admin Reschedule
+
+Daftar dan detail reschedule wajib mendukung:
+
+1. Status reschedule.
+2. Data Klien.
+3. Data pengajuan.
+4. Booking lama.
+5. Alasan Klien.
+6. Preferensi jadwal baru.
+7. Preferensi metode baru.
+8. Aksi Setujui.
+9. Aksi Tolak.
+
+Form setujui:
+
+1. Pilih jadwal baru tersedia.
+2. Metode konsultasi baru.
+3. Catatan Admin opsional.
+
+Form tolak:
+
+1. Catatan Admin wajib.
 
 ---
 
-# 10. Responsive Prototype Requirements
+## 12. Accessibility Requirements
 
-## 10.1 Desktop
-
-Desktop layout harus menampilkan:
-
-1. Sidebar penuh.
-2. Header penuh.
-3. Content area luas.
-4. Table dalam format penuh.
-5. Dashboard card 3–4 kolom.
-6. Form dengan lebar nyaman.
-
-## 10.2 Tablet
-
-Tablet layout harus menampilkan:
-
-1. Sidebar collapsible.
-2. Card 2 kolom.
-3. Table horizontal scroll jika diperlukan.
-4. Form full width dalam content area.
-
-## 10.3 Mobile
-
-Mobile layout harus menampilkan:
-
-1. Sidebar sebagai drawer.
-2. Header dengan hamburger menu.
-3. Card 1 kolom.
-4. Table dapat berubah menjadi card list atau horizontal scroll.
-5. Button utama full width.
-6. Modal responsive.
-7. Form 1 kolom.
-
----
-
-# 11. Accessibility Requirements for Prototype
-
-Prototype harus memperhatikan:
+Desain harus memperhatikan:
 
 1. Kontras teks memadai.
-2. Label form terlihat jelas.
+2. Label form jelas.
 3. Error message dekat dengan field.
 4. Button memiliki teks jelas.
 5. Icon tidak berdiri sendiri tanpa label.
 6. Focus state harus dirancang.
 7. Modal memiliki close action.
-8. Warna status tidak menjadi satu-satunya penanda; tetap gunakan label teks.
+8. Warna status tidak menjadi satu-satunya penanda.
 
 ---
 
-# 12. Final Instruction for Codex and MCP Paper
+## 13. Figma AI Pro Usage Guidance
 
-Codex harus menggunakan MCP Paper terlebih dahulu untuk membuat desain statis.
+Figma AI Pro dapat digunakan untuk:
 
-Instruksi utama:
+1. Merapikan spacing.
+2. Merapikan visual hierarchy.
+3. Membuat komponen reusable.
+4. Menamai layer secara konsisten.
+5. Membuat auto layout.
+6. Mengatur responsive behavior.
+7. Membantu membuat variasi state.
 
-1. Gunakan logo resmi TNY Law Firm jika file tersedia.
-2. Jika logo belum tersedia, gunakan placeholder teks “TNY Law Firm”.
-3. Gunakan gaya modern corporate.
-4. Gunakan warna sementara corporate navy sampai warna brand resmi ditentukan.
-5. Buat landing page publik.
-6. Buat desain statis terlebih dahulu, bukan implementasi Blade/Tailwind langsung.
-7. Jangan membuat logic backend.
-8. Jangan membuat database, migration, controller, atau route pada tahap prototype statis.
-9. Jangan membuat fitur di luar scope sistem.
-10. Jangan membuat role baru.
-11. Jangan membuat status baru.
-12. Jangan membuat route baru.
-13. Jangan membuat halaman tambahan tanpa persetujuan.
-14. Pastikan seluruh screen inventory tercakup dalam prototype.
-15. Pastikan desain mendukung alur Klien, Staf Legal, dan Admin.
-16. Pastikan desain mendukung kebutuhan blackbox testing skripsi.
-17. Setelah desain statis disetujui, baru lanjut ke implementasi Laravel Blade + Tailwind CSS.
+Figma AI Pro tidak boleh digunakan untuk:
+
+1. Menambah fitur bisnis baru.
+2. Mengubah role.
+3. Mengubah status.
+4. Mengubah alur sistem.
+5. Menambahkan integrasi di luar scope.
 
 ---
+
+## 14. Design Phase Plan
+
+### Fase 0 — Figma Setup
+
+1. Buat struktur page Figma.
+2. Buat cover.
+3. Buat catatan scope dan batasan.
+
+### Fase 1 — Design System
+
+1. Color tokens.
+2. Typography.
+3. Component library.
+4. Badge status.
+5. Table, card, form, modal.
+
+### Fase 2 — Public & Auth
+
+1. Landing Page.
+2. Login.
+3. Register.
+
+### Fase 3 — App Shell
+
+1. Sidebar Klien.
+2. Sidebar Staf Legal.
+3. Sidebar Admin.
+4. Header internal.
+
+### Fase 4 — UI Klien Core
+
+1. Dashboard.
+2. Profil.
+3. Pengajuan.
+4. Dokumen.
+5. Status dan catatan.
+
+### Fase 5 — Consultation & Reschedule Klien
+
+1. Pilih jadwal.
+2. Detail booking.
+3. Ajukan reschedule.
+4. Detail reschedule.
+
+### Fase 6 — UI Staf Legal
+
+1. Dashboard.
+2. Daftar pengajuan.
+3. Detail pengajuan.
+4. Form verifikasi.
+
+### Fase 7 — UI Admin Core
+
+1. Dashboard.
+2. Pengguna.
+3. Kategori.
+4. Data pra-pendaftaran.
+5. Jadwal.
+6. Laporan.
+
+### Fase 8 — Admin Consultation & Reschedule
+
+1. Booking konsultasi.
+2. Konfirmasi detail konsultasi.
+3. Permintaan reschedule.
+4. Setujui/tolak reschedule.
+5. Selesaikan konsultasi.
+
+### Fase 9 — Prototype Flow
+
+1. Hubungkan alur utama Klien.
+2. Hubungkan alur verifikasi Staf Legal.
+3. Hubungkan alur konsultasi dan reschedule Admin.
+
+### Fase 10 — Responsive Design
+
+1. Tablet.
+2. Mobile.
+3. Prioritas halaman utama.
+
+### Fase 11 — Final Review and Handoff
+
+1. Review kelengkapan halaman.
+2. Review konsistensi status.
+3. Review role navigation.
+4. Review component naming.
+5. Review readiness untuk implementasi Laravel.
+
+---
+
+## 15. Acceptance Criteria
+
+Desain dianggap selesai jika:
+
+1. Semua halaman wajib tersedia.
+2. Semua frame desktop tersedia.
+3. Semua elemen native editable.
+4. Semua role memiliki navigasi sesuai hak akses.
+5. Semua status badge tersedia.
+6. Tidak ada fitur di luar scope.
+7. Tidak ada raw file path.
+8. Tidak ada role baru.
+9. Tidak ada status baru di luar rancangan.
+10. Desain terlihat modern corporate dan legal professional.
+11. Landing page tidak terlihat seperti slide presentasi.
+12. App internal terlihat seperti web app profesional.
+13. Alur konsultasi online/offline jelas.
+14. Alur reschedule jelas.
+15. Admin flow untuk konfirmasi dan penyelesaian konsultasi jelas.
+16. Desain siap dipakai untuk skripsi, presentasi, dan implementasi Laravel.

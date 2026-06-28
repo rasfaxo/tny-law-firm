@@ -211,6 +211,10 @@ Route::middleware(["auth", "active_account", "role:admin"])
             AdminBookingKonsultasiController::class,
             "confirm",
         ])->name("booking-konsultasi.konfirmasi");
+        Route::patch("/booking-konsultasi/{bookingKonsultasi}/selesai", [
+            AdminBookingKonsultasiController::class,
+            "selesai",
+        ])->name("booking-konsultasi.selesai");
 
         Route::get("/permintaan-reschedule", [
             AdminPermintaanRescheduleController::class,
