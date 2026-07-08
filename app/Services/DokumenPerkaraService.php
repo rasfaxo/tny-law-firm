@@ -21,7 +21,7 @@ class DokumenPerkaraService
         PraPendaftaranPerkara $pengajuan,
         array $data,
     ): DokumenPerkara {
-        $filePath = $data["file"]->store("dokumen-perkara", "public");
+        $filePath = $data["file"]->store("dokumen-perkara", "local");
 
         if ($filePath === false) {
             throw new RuntimeException("File dokumen gagal disimpan.");
@@ -42,7 +42,7 @@ class DokumenPerkaraService
                 ]);
             });
         } catch (Throwable $exception) {
-            Storage::disk("public")->delete($filePath);
+            Storage::disk("local")->delete($filePath);
 
             throw $exception;
         }

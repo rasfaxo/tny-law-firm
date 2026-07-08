@@ -24,10 +24,12 @@ class PerbaikanDokumenService
         UploadedFile $file,
         int $klienId,
     ): DokumenPerkara {
-        $filePath = $file->store("dokumen-perkara", "public");
+        $filePath = $file->store("dokumen-perkara", "local");
 
         if ($filePath === false) {
-            throw new RuntimeException("File dokumen pengganti gagal disimpan.");
+            throw new RuntimeException(
+                "File dokumen pengganti gagal disimpan.",
+            );
         }
 
         try {
@@ -43,7 +45,8 @@ class PerbaikanDokumenService
 
                 if ($catatan->id_dokumen === null) {
                     throw ValidationException::withMessages([
-                        "file" => "Catatan verifikasi ini tidak terhubung dengan dokumen perkara.",
+                        "file" =>
+                            "Catatan verifikasi ini tidak terhubung dengan dokumen perkara.",
                     ]);
                 }
 
@@ -93,14 +96,15 @@ class PerbaikanDokumenService
                         "id_pendaftaran" => $pengajuan->id_pendaftaran,
                         "id_user" => $klienId,
                         "status" => "menunggu_verifikasi_ulang",
-                        "keterangan" => "Dokumen perbaikan telah diunggah oleh klien dan menunggu verifikasi ulang",
+                        "keterangan" =>
+                            "Dokumen perbaikan telah diunggah oleh klien dan menunggu verifikasi ulang",
                     ]);
                 }
 
                 return $dokumenBaru;
             });
         } catch (Throwable $exception) {
-            Storage::disk("public")->delete($filePath);
+            Storage::disk("local")->delete($filePath);
 
             throw $exception;
         }
@@ -120,7 +124,8 @@ class PerbaikanDokumenService
 
         if ($pengajuan->status_pengajuan !== "berkas_tidak_lengkap") {
             throw ValidationException::withMessages([
-                "file" => "Dokumen hanya dapat diperbaiki saat status pengajuan berkas tidak lengkap.",
+                "file" =>
+                    "Dokumen hanya dapat diperbaiki saat status pengajuan berkas tidak lengkap.",
             ]);
         }
 
@@ -149,7 +154,9 @@ class PerbaikanDokumenService
         return CatatanVerifikasi::query()
             ->where("status_perbaikan", "belum_diperbaiki")
             ->whereNotNull("id_dokumen")
-            ->whereHas("verifikasiBerkas", function ($query) use ($pengajuan): void {
+            ->whereHas("verifikasiBerkas", function ($query) use (
+                $pengajuan,
+            ): void {
                 $query->where("id_pendaftaran", $pengajuan->id_pendaftaran);
             })
             ->exists();

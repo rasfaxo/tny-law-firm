@@ -29,7 +29,7 @@ class User extends Authenticatable
         "status_akun",
     ];
 
-    protected $hidden = ["password"];
+    protected $hidden = ["password", "remember_token"];
 
     protected function casts(): array
     {

@@ -8,8 +8,12 @@ use Illuminate\Support\Facades\DB;
 
 class PraPendaftaranPerkaraService
 {
+    public function __construct(
+        private DokumenPerkaraService $dokumenService
+    ) {}
+
     /**
-     * @param array{id_kategori: mixed, judul_perkara: string, kronologi: string} $data
+     * @param array{id_kategori: mixed, judul_perkara: string, kronologi: string, nama_dokumen: string, jenis_dokumen: string, file_dokumen: \Illuminate\Http\UploadedFile} $data
      */
     public function createForKlien(array $data, int $userId): PraPendaftaranPerkara
     {
@@ -28,6 +32,13 @@ class PraPendaftaranPerkaraService
                 "id_user" => $userId,
                 "status" => "menunggu_verifikasi",
                 "keterangan" => "Pengajuan pra-pendaftaran perkara dibuat oleh klien",
+            ]);
+
+            // Save initial document
+            $this->dokumenService->storeForPengajuan($pengajuan, [
+                "nama_dokumen" => $data["nama_dokumen"],
+                "jenis_dokumen" => $data["jenis_dokumen"],
+                "file" => $data["file_dokumen"],
             ]);
 
             return $pengajuan;

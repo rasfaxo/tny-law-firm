@@ -123,4 +123,21 @@ return [
         'store' => env('APP_MAINTENANCE_STORE', 'database'),
     ],
 
+    /*
+    |--------------------------------------------------------------------------
+    | Admin Bootstrap
+    |--------------------------------------------------------------------------
+    |
+    | Konfigurasi terkait akun admin bawaan yang dibuat oleh AdminSeeder.
+    | Password default admin HARUS didefinisikan via ADMIN_DEFAULT_PASSWORD
+    | di file .env. Setelah `php artisan config:cache` dijalankan, env()
+    | tidak dapat dipanggil langsung dari kode runtime, sehingga seluruh
+    | pembacaan wajib melalui config() di bawah ini.
+    |
+    */
+
+    'admin' => [
+        'default_password' => env('ADMIN_DEFAULT_PASSWORD'),
+    ],
+
 ];

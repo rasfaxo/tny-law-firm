@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use App\Enums\StatusPengajuan;
 use App\Models\CatatanVerifikasi;
 use App\Models\DokumenPerkara;
 use App\Models\PraPendaftaranPerkara;
@@ -13,6 +14,8 @@ use Throwable;
 
 class VerifikasiBerkasService
 {
+    // Dipindahkan ke StatusPengajuan::verifiableStatuses() agar satu source of truth.
+    // Const ini dipertahankan untuk backward compat internal service.
     private const VERIFIABLE_STATUSES = [
         "menunggu_verifikasi",
         "menunggu_verifikasi_ulang",
@@ -98,7 +101,9 @@ class VerifikasiBerkasService
                     CatatanVerifikasi::create([
                         "id_verifikasi" => $verifikasi->id_verifikasi,
                         "id_dokumen" => $dokumen->id_dokumen,
-                        "isi_catatan" => $documentData["catatan"],
+                        // Gunakan ?? '' sebagai safety net; validasi form sudah
+                        // memastikan catatan wajib saat status perlu_perbaikan.
+                        "isi_catatan" => $documentData["catatan"] ?? "",
                         "status_perbaikan" => "belum_diperbaiki",
                     ]);
                 }
@@ -124,7 +129,7 @@ class VerifikasiBerkasService
      */
     public static function verifiableStatuses(): array
     {
-        return self::VERIFIABLE_STATUSES;
+        return StatusPengajuan::verifiableStatuses();
     }
 
     private function riwayatKeterangan(string $status): string
