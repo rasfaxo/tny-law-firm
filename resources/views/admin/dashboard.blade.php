@@ -1,16 +1,4 @@
-<x-app-layout>
-    <x-slot name="header">
-        <div class="flex items-center gap-1 text-xxs font-semibold text-gray-400 uppercase tracking-wider mb-1">
-            <span>Admin</span>
-            <svg class="h-3 w-3 text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
-            </svg>
-            <span class="text-gray-600">Dashboard</span>
-        </div>
-        <h2 class="font-extrabold text-2xl text-navy-dark leading-tight">
-            {{ __('Dashboard Admin') }}
-        </h2>
-    </x-slot>
+<x-app-layout title="Dashboard Admin" :breadcrumbs="[['label' => 'Admin'], ['label' => 'Dashboard']]">
 
     @php
         $berkasTidakLengkap = \App\Models\PraPendaftaranPerkara::where('status_pengajuan', 'berkas_tidak_lengkap')->count();

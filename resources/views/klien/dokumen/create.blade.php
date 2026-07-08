@@ -1,32 +1,12 @@
-<x-app-layout>
-    <x-slot name="header">
-        <div class="flex items-center gap-1 text-xxs font-semibold text-gray-400 uppercase tracking-wider mb-1">
-            <span>Klien</span>
-            <svg class="h-3 w-3 text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
-            </svg>
-            <a href="{{ route('klien.pra-pendaftaran.index') }}" class="hover:underline">Pengajuan</a>
-            <svg class="h-3 w-3 text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
-            </svg>
-            <a href="{{ route('klien.pra-pendaftaran.show', $praPendaftaranPerkara) }}" class="hover:underline text-gray-600 font-mono">PP-{{ str_pad($praPendaftaranPerkara->id_pendaftaran, 3, '0', STR_PAD_LEFT) }}</a>
-            <svg class="h-3 w-3 text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
-            </svg>
-            <span>Upload Dokumen</span>
-        </div>
-        <h2 class="font-extrabold text-2xl text-navy-dark leading-tight">
-            {{ __('Upload Dokumen Perkara') }}
-        </h2>
-    </x-slot>
+<x-app-layout title="Upload Dokumen Perkara" :breadcrumbs="[['label' => 'Klien'], ['label' => 'Pengajuan', 'url' => route('klien.pra-pendaftaran.index')], ['label' => 'PP-' . str_pad($praPendaftaranPerkara->id_pendaftaran, 3, '0', STR_PAD_LEFT), 'url' => route('klien.pra-pendaftaran.show', $praPendaftaranPerkara)], ['label' => 'Upload Dokumen']]">
 
-    <div class="max-w-2xl mx-auto">
-        <form method="POST" action="{{ route('klien.dokumen.store', $praPendaftaranPerkara) }}" enctype="multipart/form-data" class="bg-white border border-[#E2E8F0] rounded-2xl shadow-sm overflow-hidden space-y-6">
+    <div class="max-w-2xl mx-auto" x-data="{ isSubmitting: false }">
+        <form method="POST" action="{{ route('klien.dokumen.store', $praPendaftaranPerkara) }}" enctype="multipart/form-data" class="bg-white border border-[#E2E8F0] rounded-2xl shadow-sm overflow-hidden space-y-6" @submit="isSubmitting = true">
             @csrf
 
             <!-- Header Info Panel -->
             <div class="p-6 sm:p-8 border-b border-[#F1F5F9] bg-[#F8FAFC]/50 space-y-2">
-                <span class="block text-xxs font-bold text-gray-400 uppercase tracking-wider">Perkara Pengajuan</span>
+                <span class="block text-xs font-bold text-gray-400 uppercase tracking-wider">Perkara Pengajuan</span>
                 <h3 class="font-bold text-navy-dark text-lg">{{ $praPendaftaranPerkara->judul_perkara }}</h3>
                 <div class="flex items-center gap-2 pt-1">
                     <x-status-badge :status="$praPendaftaranPerkara->status_pengajuan" />
@@ -35,7 +15,7 @@
 
             <div class="p-6 sm:p-8 pt-0 space-y-6">
                 @if ($errors->any())
-                    <div class="rounded-xl bg-red-50 border border-red-200 p-4 flex gap-3 text-sm text-red-700 shadow-sm">
+                    <div class="rounded-xl bg-red-50 border border-red-200 p-4 flex gap-3 text-sm text-red-700 shadow-sm" x-init="$nextTick(() => { $el.scrollIntoView({ behavior: 'smooth', block: 'start' }); })">
                         <svg class="h-5 w-5 text-red-500 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path>
                         </svg>
@@ -76,7 +56,7 @@
                         
                         <p id="upload-instruction" class="mt-3 text-sm font-bold text-navy-dark group-hover:text-accent-blue transition">Pilih file atau tarik dokumen ke sini</p>
                         <p id="file-name-display" class="mt-2 text-xs text-accent-blue font-bold hidden"></p>
-                        <p class="mt-1 text-xxs text-gray-400 font-medium">Format: PDF, JPG, JPEG, PNG (Maksimal 5 MB)</p>
+                        <p class="mt-1 text-xs text-gray-400 font-medium">Format: PDF, JPG, JPEG, PNG (Maksimal 5 MB)</p>
                     </div>
                     <x-input-error class="mt-2" :messages="$errors->get('file')" />
                 </div>
@@ -95,8 +75,17 @@
                 <a href="{{ route('klien.pra-pendaftaran.show', $praPendaftaranPerkara) }}" class="bg-white border border-[#E2E8F0] hover:bg-gray-50 text-gray-700 font-bold text-sm px-6 py-2.5 rounded-xl transition shadow-sm">
                     Batal
                 </a>
-                <button type="submit" class="bg-[#1e3a8a] hover:bg-blue-900 text-white font-bold text-sm px-8 py-2.5 rounded-xl transition shadow-md shadow-blue-900/20">
-                    Upload Dokumen
+                <button type="submit" 
+                        :disabled="isSubmitting"
+                        class="bg-[#1e3a8a] hover:bg-blue-900 text-white font-bold text-sm px-8 py-2.5 rounded-xl transition shadow-md shadow-blue-900/20 flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed">
+                    <span x-show="!isSubmitting">Upload Dokumen</span>
+                    <span x-show="isSubmitting" class="flex items-center gap-2">
+                        <svg class="animate-spin h-4 w-4 text-white" fill="none" viewBox="0 0 24 24">
+                            <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                            <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                        </svg>
+                        <span>Mengupload...</span>
+                    </span>
                 </button>
             </div>
         </form>

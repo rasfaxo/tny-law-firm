@@ -1,20 +1,4 @@
-<x-app-layout>
-    <x-slot name="header">
-        <div class="flex items-center gap-1 text-xxs font-semibold text-gray-400 uppercase tracking-wider mb-1">
-            <span>Klien</span>
-            <svg class="h-3 w-3 text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
-            </svg>
-            <a href="{{ route('klien.booking-konsultasi.index') }}" class="hover:underline">Jadwal Konsultasi</a>
-            <svg class="h-3 w-3 text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
-            </svg>
-            <span class="text-gray-600 font-mono">RS-{{ str_pad($permintaanReschedule->id_reschedule, 3, '0', STR_PAD_LEFT) }}</span>
-        </div>
-        <h2 class="font-extrabold text-2xl text-navy-dark leading-tight">
-            {{ __('Detail Permintaan Reschedule') }}
-        </h2>
-    </x-slot>
+<x-app-layout title="Detail Permintaan Reschedule" :breadcrumbs="[['label' => 'Klien'], ['label' => 'Jadwal Konsultasi', 'url' => route('klien.booking-konsultasi.index')], ['label' => 'RS-' . str_pad($permintaanReschedule->id_reschedule, 3, '0', STR_PAD_LEFT)]]">
 
     @php
         $bookingLama = $permintaanReschedule->bookingLama;

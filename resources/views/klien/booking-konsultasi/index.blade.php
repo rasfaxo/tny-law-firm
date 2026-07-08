@@ -1,16 +1,4 @@
-<x-app-layout>
-    <x-slot name="header">
-        <div class="flex items-center gap-1 text-xxs font-semibold text-gray-400 uppercase tracking-wider mb-1">
-            <span>Klien</span>
-            <svg class="h-3 w-3 text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
-            </svg>
-            <span>Jadwal Konsultasi</span>
-        </div>
-        <h2 class="font-extrabold text-2xl text-navy-dark leading-tight">
-            {{ __('Jadwal Konsultasi') }}
-        </h2>
-    </x-slot>
+<x-app-layout title="Jadwal Konsultasi" :breadcrumbs="[['label' => 'Klien'], ['label' => 'Jadwal Konsultasi']]">
 
     <div class="space-y-6">
         <!-- Search and Filter Bar -->
@@ -48,17 +36,18 @@
 
         <!-- Bookings List Table -->
         <div class="bg-white border border-[#E2E8F0] rounded-2xl shadow-sm overflow-hidden">
-            <div class="overflow-x-auto">
+            <!-- Desktop Table Layout -->
+            <div class="hidden md:block overflow-x-auto">
                 <table class="min-w-full divide-y divide-gray-200">
                     <thead class="bg-[#F8FAFC]">
                         <tr>
-                            <th class="px-6 py-4 text-left text-xxs font-bold text-gray-400 uppercase tracking-wider">No. Booking</th>
-                            <th class="px-6 py-4 text-left text-xxs font-bold text-gray-400 uppercase tracking-wider">Perkara</th>
-                            <th class="px-6 py-4 text-left text-xxs font-bold text-gray-400 uppercase tracking-wider">Kategori</th>
-                            <th class="px-6 py-4 text-left text-xxs font-bold text-gray-400 uppercase tracking-wider">Tanggal & Waktu</th>
-                            <th class="px-6 py-4 text-left text-xxs font-bold text-gray-400 uppercase tracking-wider">Metode</th>
-                            <th class="px-6 py-4 text-left text-xxs font-bold text-gray-400 uppercase tracking-wider">Status</th>
-                            <th class="px-6 py-4 text-right text-xxs font-bold text-gray-400 uppercase tracking-wider">Aksi</th>
+                            <th class="px-6 py-4 text-left text-xs font-bold text-gray-400 uppercase tracking-wider">No. Booking</th>
+                            <th class="px-6 py-4 text-left text-xs font-bold text-gray-400 uppercase tracking-wider">Perkara</th>
+                            <th class="px-6 py-4 text-left text-xs font-bold text-gray-400 uppercase tracking-wider">Kategori</th>
+                            <th class="px-6 py-4 text-left text-xs font-bold text-gray-400 uppercase tracking-wider">Tanggal & Waktu</th>
+                            <th class="px-6 py-4 text-left text-xs font-bold text-gray-400 uppercase tracking-wider">Metode</th>
+                            <th class="px-6 py-4 text-left text-xs font-bold text-gray-400 uppercase tracking-wider">Status</th>
+                            <th class="px-6 py-4 text-right text-xs font-bold text-gray-400 uppercase tracking-wider">Aksi</th>
                         </tr>
                     </thead>
                     <tbody class="bg-white divide-y divide-gray-100">
@@ -87,12 +76,12 @@
                                     <div class="text-sm font-bold text-navy-dark">
                                         {{ $jadwal?->tanggal?->translatedFormat('d M Y') ?? '-' }}
                                     </div>
-                                    <div class="text-xxs text-gray-400 font-medium">
+                                    <div class="text-xs text-gray-400 font-medium">
                                         {{ $jadwal ? substr((string) $jadwal->waktu_mulai, 0, 5) . ' - ' . substr((string) $jadwal->waktu_selesai, 0, 5) : '-' }} WIB
                                     </div>
                                 </td>
                                 <td class="px-6 py-4 whitespace-nowrap">
-                                    <span class="inline-flex text-xxs font-bold px-2 py-0.5 rounded uppercase tracking-wider
+                                    <span class="inline-flex text-xs font-bold px-2 py-0.5 rounded uppercase tracking-wider
                                         {{ $booking->metode_konsultasi === 'online' ? 'bg-blue-50 text-blue-700' : 'bg-gray-100 text-gray-700' }}">
                                         {{ $booking->metode_konsultasi }}
                                     </span>
@@ -119,6 +108,53 @@
                         @endforelse
                     </tbody>
                 </table>
+            </div>
+
+            <!-- Mobile Card Layout -->
+            <div class="block md:hidden divide-y divide-gray-100 bg-white">
+                @forelse ($bookingKonsultasi as $booking)
+                    @php
+                        $jadwal = $booking->jadwalKonsultasi;
+                        $perkara = $booking->praPendaftaranPerkara;
+                    @endphp
+                    <div class="p-4 space-y-3">
+                        <div class="flex justify-between items-center">
+                            <span class="text-xs font-bold text-accent-blue font-mono">
+                                BK-{{ str_pad($booking->id_booking, 3, '0', STR_PAD_LEFT) }}
+                            </span>
+                            <x-status-badge :status="$booking->status_booking" />
+                        </div>
+                        <div>
+                            <h4 class="font-bold text-navy-dark text-sm">{{ $perkara->judul_perkara }}</h4>
+                            <p class="text-xs text-gray-500 mt-1">Kategori: {{ $perkara->kategori?->nama_kategori ?? '-' }}</p>
+                        </div>
+                        <div class="flex justify-between items-center pt-2 border-t border-gray-100">
+                            <div class="text-xs text-gray-400 font-medium">
+                                <div>{{ $jadwal?->tanggal?->translatedFormat('d M Y') ?? '-' }}</div>
+                                <div class="text-[10px] text-gray-400 mt-0.5">
+                                    {{ $jadwal ? substr((string) $jadwal->waktu_mulai, 0, 5) . ' - ' . substr((string) $jadwal->waktu_selesai, 0, 5) : '-' }} WIB
+                                </div>
+                            </div>
+                            <div class="flex items-center gap-2">
+                                <span class="inline-flex text-[10px] font-bold px-2 py-0.5 rounded uppercase tracking-wider
+                                    {{ $booking->metode_konsultasi === 'online' ? 'bg-blue-50 text-blue-700' : 'bg-gray-100 text-gray-700' }}">
+                                    {{ $booking->metode_konsultasi }}
+                                </span>
+                                <a href="{{ route('klien.booking-konsultasi.show', $booking) }}" class="bg-white border border-[#E2E8F0] hover:border-accent-blue text-navy-dark hover:text-accent-blue font-bold text-xs px-3 py-1.5 rounded-xl transition shadow-sm">
+                                    Detail
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                @empty
+                    <div class="p-8 text-center">
+                        <svg class="mx-auto h-10 w-10 text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
+                        </svg>
+                        <h3 class="mt-2 text-sm font-bold text-navy-dark">Belum ada jadwal konsultasi</h3>
+                        <p class="mt-1 text-xs text-gray-500">Anda belum memiliki jadwal konsultasi terdaftar saat ini.</p>
+                    </div>
+                @endforelse
             </div>
 
             @if($bookingKonsultasi->hasPages())

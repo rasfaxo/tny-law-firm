@@ -1,16 +1,4 @@
-<x-app-layout>
-    <x-slot name="header">
-        <div class="flex items-center gap-1 text-xxs font-semibold text-gray-400 uppercase tracking-wider mb-1">
-            <span>Klien</span>
-            <svg class="h-3 w-3 text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
-            </svg>
-            <span class="text-gray-600">Dashboard</span>
-        </div>
-        <h2 class="font-extrabold text-2xl text-navy-dark leading-tight">
-            {{ __('Dashboard Klien') }}
-        </h2>
-    </x-slot>
+<x-app-layout title="Dashboard Klien" :breadcrumbs="[['label' => 'Klien'], ['label' => 'Dashboard']]">
 
     <div class="space-y-6">
         <!-- Jumbotron Sambutan -->
@@ -128,16 +116,17 @@
                         </a>
                     </div>
 
-                    <div class="overflow-x-auto">
+                    <!-- Desktop Table Layout -->
+                    <div class="hidden md:block overflow-x-auto">
                         <table class="min-w-full divide-y divide-[#F1F5F9]">
                             <thead class="bg-[#F8FAFC]">
                                 <tr>
-                                    <th class="px-6 py-4 text-left text-xxs font-bold text-gray-400 uppercase tracking-wider">Kode</th>
-                                    <th class="px-6 py-4 text-left text-xxs font-bold text-gray-400 uppercase tracking-wider">Judul Perkara</th>
-                                    <th class="px-6 py-4 text-left text-xxs font-bold text-gray-400 uppercase tracking-wider">Kategori</th>
-                                    <th class="px-6 py-4 text-left text-xxs font-bold text-gray-400 uppercase tracking-wider">Status</th>
-                                    <th class="px-6 py-4 text-left text-xxs font-bold text-gray-400 uppercase tracking-wider">Tanggal</th>
-                                    <th class="px-6 py-4 text-right text-xxs font-bold text-gray-400 uppercase tracking-wider">Aksi</th>
+                                    <th class="px-6 py-4 text-left text-xs font-bold text-gray-400 uppercase tracking-wider">Kode</th>
+                                    <th class="px-6 py-4 text-left text-xs font-bold text-gray-400 uppercase tracking-wider">Judul Perkara</th>
+                                    <th class="px-6 py-4 text-left text-xs font-bold text-gray-400 uppercase tracking-wider">Kategori</th>
+                                    <th class="px-6 py-4 text-left text-xs font-bold text-gray-400 uppercase tracking-wider">Status</th>
+                                    <th class="px-6 py-4 text-left text-xs font-bold text-gray-400 uppercase tracking-wider">Tanggal</th>
+                                    <th class="px-6 py-4 text-right text-xs font-bold text-gray-400 uppercase tracking-wider">Aksi</th>
                                 </tr>
                             </thead>
                             <tbody class="bg-white divide-y divide-[#F1F5F9]">
@@ -177,6 +166,37 @@
                             </tbody>
                         </table>
                     </div>
+
+                    <!-- Mobile Card Layout -->
+                    <div class="block md:hidden divide-y divide-[#F1F5F9] bg-white">
+                        @forelse ($pengajuanTerbaru as $pengajuan)
+                            <div class="p-4 space-y-3">
+                                <div class="flex justify-between items-center">
+                                    <span class="text-xs font-bold font-mono text-navy-primary">
+                                        PP-{{ str_pad($pengajuan->id_pendaftaran, 3, '0', STR_PAD_LEFT) }}
+                                    </span>
+                                    <x-status-badge :status="$pengajuan->status_pengajuan" />
+                                </div>
+                                <div>
+                                    <h4 class="font-bold text-navy-dark text-sm">{{ $pengajuan->judul_perkara }}</h4>
+                                    <p class="text-xs text-gray-500 mt-1">Kategori: {{ $pengajuan->kategori?->nama_kategori ?? '-' }}</p>
+                                </div>
+                                <div class="flex justify-between items-center pt-2 border-t border-gray-100">
+                                    <span class="text-xs text-gray-400 font-medium">{{ $pengajuan->tanggal_pengajuan?->format('d M Y') ?? '-' }}</span>
+                                    <a href="{{ route('klien.pra-pendaftaran.show', $pengajuan) }}" class="inline-flex items-center gap-1 text-xs font-bold text-accent-blue hover:underline">
+                                        <span>Detail</span>
+                                        <svg class="h-3 w-3 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+                                        </svg>
+                                    </a>
+                                </div>
+                            </div>
+                        @empty
+                            <div class="p-6 text-center text-sm text-gray-400">
+                                Belum ada pengajuan pra-pendaftaran perkara.
+                            </div>
+                        @endforelse
+                    </div>
                 </div>
 
                 <!-- Card Permintaan Reschedule Saya -->
@@ -186,15 +206,16 @@
                         <p class="text-xs text-gray-400 mt-1">Status pengajuan permohonan pemindahan jadwal konsultasi Anda</p>
                     </div>
 
-                    <div class="overflow-x-auto">
+                    <!-- Desktop Table Layout -->
+                    <div class="hidden md:block overflow-x-auto">
                         <table class="min-w-full divide-y divide-[#F1F5F9]">
                             <thead class="bg-[#F8FAFC]">
                                 <tr>
-                                    <th class="px-6 py-4 text-left text-xxs font-bold text-gray-400 uppercase tracking-wider">Perkara</th>
-                                    <th class="px-6 py-4 text-left text-xxs font-bold text-gray-400 uppercase tracking-wider">Status Reschedule</th>
-                                    <th class="px-6 py-4 text-left text-xxs font-bold text-gray-400 uppercase tracking-wider">Diajukan Pada</th>
-                                    <th class="px-6 py-4 text-left text-xxs font-bold text-gray-400 uppercase tracking-wider">Catatan Admin</th>
-                                    <th class="px-6 py-4 text-right text-xxs font-bold text-gray-400 uppercase tracking-wider">Aksi</th>
+                                    <th class="px-6 py-4 text-left text-xs font-bold text-gray-400 uppercase tracking-wider">Perkara</th>
+                                    <th class="px-6 py-4 text-left text-xs font-bold text-gray-400 uppercase tracking-wider">Status Reschedule</th>
+                                    <th class="px-6 py-4 text-left text-xs font-bold text-gray-400 uppercase tracking-wider">Diajukan Pada</th>
+                                    <th class="px-6 py-4 text-left text-xs font-bold text-gray-400 uppercase tracking-wider">Catatan Admin</th>
+                                    <th class="px-6 py-4 text-right text-xs font-bold text-gray-400 uppercase tracking-wider">Aksi</th>
                                 </tr>
                             </thead>
                             <tbody class="bg-white divide-y divide-[#F1F5F9]">
@@ -230,6 +251,41 @@
                                 @endforelse
                             </tbody>
                         </table>
+                    </div>
+
+                    <!-- Mobile Card Layout -->
+                    <div class="block md:hidden divide-y divide-[#F1F5F9] bg-white">
+                        @forelse ($permintaanRescheduleSaya as $reschedule)
+                            <div class="p-4 space-y-3">
+                                <div class="flex justify-between items-center">
+                                    <span class="text-xs font-semibold text-gray-400 font-mono">Reschedule</span>
+                                    <x-status-badge :status="$reschedule->status_reschedule" />
+                                </div>
+                                <div>
+                                    <h4 class="font-bold text-navy-dark text-sm">
+                                        {{ $reschedule->bookingLama?->praPendaftaranPerkara?->judul_perkara ?? '-' }}
+                                    </h4>
+                                    @if($reschedule->catatan_admin)
+                                        <p class="text-xs text-gray-500 mt-1 bg-gray-50 p-2 rounded-lg border border-gray-100">
+                                            <strong>Catatan Admin:</strong> {{ $reschedule->catatan_admin }}
+                                        </p>
+                                    @endif
+                                </div>
+                                <div class="flex justify-between items-center pt-2 border-t border-gray-100">
+                                    <span class="text-xs text-gray-400 font-medium">Diajukan: {{ $reschedule->tanggal_pengajuan?->format('d M Y') ?? '-' }}</span>
+                                    <a href="{{ route('klien.permintaan-reschedule.show', $reschedule) }}" class="inline-flex items-center gap-1 text-xs font-bold text-accent-blue hover:underline">
+                                        <span>Detail</span>
+                                        <svg class="h-3 w-3 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+                                        </svg>
+                                    </a>
+                                </div>
+                            </div>
+                        @empty
+                            <div class="p-6 text-center text-sm text-gray-400">
+                                Belum ada permintaan reschedule jadwal.
+                            </div>
+                        @endforelse
                     </div>
                 </div>
             </div>

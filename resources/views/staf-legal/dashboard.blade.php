@@ -1,13 +1,4 @@
-<x-app-layout>
-    <x-slot name="header">
-        <div class="flex items-center gap-[4px] text-sm text-[#94a3b8]">
-            <span>Staf Legal</span>
-            <svg class="h-[12px] w-[12px] text-[#94a3b8]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
-            </svg>
-            <span class="text-[#475569] font-medium">Dashboard</span>
-        </div>
-    </x-slot>
+<x-app-layout title="Dashboard Staf Legal" :breadcrumbs="[['label' => 'Staf Legal'], ['label' => 'Dashboard']]">
 
     @php
         $totalPengajuan = ($statistics['Pengajuan Menunggu Verifikasi'] ?? 0)

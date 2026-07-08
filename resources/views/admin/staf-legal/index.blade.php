@@ -1,19 +1,7 @@
-<x-app-layout>
-    <x-slot name="header">
-        <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
-            <div>
-                <div class="flex items-center gap-1 text-xxs font-semibold text-gray-400 uppercase tracking-wider mb-1">
-                    <span>Admin</span>
-                    <svg class="h-3 w-3 text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
-                    </svg>
-                    <span class="text-gray-600">Staf Legal</span>
-                </div>
-                <h2 class="font-extrabold text-2xl text-navy-dark leading-tight">
-                    {{ __('Kelola Staf Legal') }}
-                </h2>
-            </div>
+<x-app-layout title="Kelola Staf Legal" :breadcrumbs="[['label' => 'Admin'], ['label' => 'Staf Legal']]">
 
+    <div class="space-y-6">
+        <div class="flex justify-end">
             <a href="{{ route('admin.staf-legal.create') }}" class="inline-flex items-center px-4 py-2.5 bg-[#1e3a8a] hover:bg-blue-900 text-white font-bold text-xs rounded-xl transition shadow-md shadow-blue-900/20 uppercase tracking-widest gap-2">
                 <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z"></path>
@@ -21,9 +9,6 @@
                 <span>{{ __('Tambah Staf Legal') }}</span>
             </a>
         </div>
-    </x-slot>
-
-    <div class="space-y-6">
         @if (session('success'))
             <div class="bg-emerald-50 border border-emerald-200 text-emerald-800 rounded-xl p-4 text-xs font-semibold flex items-center gap-3">
                 <svg class="h-4 w-4 text-emerald-600 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">

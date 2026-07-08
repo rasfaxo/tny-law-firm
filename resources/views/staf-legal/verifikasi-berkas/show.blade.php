@@ -1,17 +1,4 @@
-<x-app-layout>
-    <x-slot name="header">
-        <div class="flex items-center gap-[4px] text-sm text-[#94a3b8]">
-            <span>Staf Legal</span>
-            <svg class="h-[12px] w-[12px] text-[#94a3b8]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
-            </svg>
-            <a href="{{ route('staf-legal.verifikasi-berkas.index') }}" class="hover:text-[#475569]">Pengajuan Verifikasi</a>
-            <svg class="h-[12px] w-[12px] text-[#94a3b8]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
-            </svg>
-            <span class="text-[#475569] font-medium">PP-{{ sprintf('%03d', $praPendaftaranPerkara->id_pendaftaran) }}</span>
-        </div>
-    </x-slot>
+<x-app-layout title="Detail Pengajuan" :breadcrumbs="[['label' => 'Staf Legal'], ['label' => 'Pengajuan Verifikasi', 'url' => route('staf-legal.verifikasi-berkas.index')], ['label' => 'PP-' . sprintf('%03d', $praPendaftaranPerkara->id_pendaftaran)]]">
 
     @php
         $isVerifiable = in_array($praPendaftaranPerkara->status_pengajuan, ['menunggu_verifikasi', 'menunggu_verifikasi_ulang']);

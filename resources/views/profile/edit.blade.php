@@ -1,27 +1,24 @@
-<x-app-layout>
-    <x-slot name="header">
-        <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
-            <div>
-                <!-- Breadcrumb -->
-                <div class="flex items-center gap-1 text-xxs font-semibold text-gray-400 uppercase tracking-wider mb-1">
-                    <span>Klien</span>
-                    <svg class="h-3 w-3 text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
-                    </svg>
-                    <span>Profil Saya</span>
-                    @if(request()->query('edit') === 'true')
-                        <svg class="h-3 w-3 text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
-                        </svg>
-                        <span class="text-gray-600">Edit</span>
-                    @endif
-                </div>
-                <h2 class="font-extrabold text-2xl text-navy-dark leading-tight">
-                    {{ request()->query('edit') === 'true' ? __('Edit Profil') : __('Profil Saya') }}
-                </h2>
-            </div>
+@php
+    $roleName = match(Auth::user()->role) {
+        'klien' => 'Klien',
+        'admin' => 'Admin',
+        'staf_legal' => 'Staf Legal',
+        default => 'User'
+    };
+    $breadcrumbs = [
+        ['label' => $roleName],
+        ['label' => 'Profil Saya']
+    ];
+    if(request()->query('edit') === 'true') {
+        $breadcrumbs[1]['url'] = route('profile.edit');
+        $breadcrumbs[] = ['label' => 'Edit'];
+    }
+@endphp
+<x-app-layout :title="request()->query('edit') === 'true' ? __('Edit Profil') : __('Profil Saya')" :breadcrumbs="$breadcrumbs">
 
-            @if(request()->query('edit') !== 'true' && $user->role === 'klien')
+    <div class="space-y-6">
+        @if(request()->query('edit') !== 'true' && $user->role === 'klien')
+            <div class="flex justify-end">
                 <!-- Tombol Edit Profil -->
                 <a href="{{ route('profile.edit', ['edit' => 'true']) }}" class="bg-navy-dark text-white hover:bg-navy-primary hover:shadow-md transition px-5 py-2.5 rounded-xl font-bold text-xs tracking-wider uppercase flex items-center gap-2">
                     <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -29,11 +26,17 @@
                     </svg>
                     <span>Edit Profil</span>
                 </a>
-            @endif
-        </div>
-    </x-slot>
-
-    <div class="space-y-6">
+            </div>
+        @elseif(request()->query('edit') === 'true')
+            <div class="flex justify-start">
+                <a href="{{ route('profile.edit') }}" class="inline-flex items-center justify-center bg-white border border-[#E2E8F0] hover:border-accent-blue text-navy-dark hover:text-accent-blue font-bold text-xs px-4 py-2.5 rounded-xl transition shadow-sm gap-2">
+                    <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path>
+                    </svg>
+                    <span>{{ __('Kembali') }}</span>
+                </a>
+            </div>
+        @endif
         <!-- Status Notification -->
         @if (session('status') === 'profile-updated')
             <div class="rounded-xl bg-green-50 border border-green-200 p-4 flex gap-3 text-sm text-green-700">

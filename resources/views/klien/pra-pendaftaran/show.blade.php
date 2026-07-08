@@ -1,20 +1,4 @@
-<x-app-layout>
-    <x-slot name="header">
-        <div class="flex items-center gap-1 text-xxs font-semibold text-gray-400 uppercase tracking-wider mb-1">
-            <span>Klien</span>
-            <svg class="h-3 w-3 text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
-            </svg>
-            <a href="{{ route('klien.pra-pendaftaran.index') }}" class="hover:underline">Pengajuan</a>
-            <svg class="h-3 w-3 text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
-            </svg>
-            <span class="text-gray-600 font-mono">PP-{{ str_pad($praPendaftaranPerkara->id_pendaftaran, 3, '0', STR_PAD_LEFT) }}</span>
-        </div>
-        <h2 class="font-extrabold text-2xl text-navy-dark leading-tight">
-            {{ __('Detail Pengajuan Perkara') }}
-        </h2>
-    </x-slot>
+<x-app-layout title="Detail Pengajuan Perkara" :breadcrumbs="[['label' => 'Klien'], ['label' => 'Pengajuan', 'url' => route('klien.pra-pendaftaran.index')], ['label' => 'PP-' . str_pad($praPendaftaranPerkara->id_pendaftaran, 3, '0', STR_PAD_LEFT)]]">
 
     @php
         // Logika Data Booking Konsultasi
@@ -88,11 +72,11 @@
                     </div>
                     <div class="p-6 space-y-4">
                         <div>
-                            <span class="block text-xxs font-bold text-gray-400 uppercase tracking-wider">Kategori Perkara</span>
+                            <span class="block text-xs font-bold text-gray-400 uppercase tracking-wider">Kategori Perkara</span>
                             <span class="block text-sm font-semibold text-navy-dark mt-0.5">{{ $praPendaftaranPerkara->kategori?->nama_kategori ?? '-' }}</span>
                         </div>
                         <div>
-                            <span class="block text-xxs font-bold text-gray-400 uppercase tracking-wider">Kronologi Perkara</span>
+                            <span class="block text-xs font-bold text-gray-400 uppercase tracking-wider">Kronologi Perkara</span>
                             <p class="text-sm text-navy-dark mt-1 leading-relaxed whitespace-pre-line bg-gray-50/50 p-4 rounded-xl border border-gray-100">
                                 {{ $praPendaftaranPerkara->kronologi }}
                             </p>
@@ -117,15 +101,16 @@
                         @endif
                     </div>
 
-                    <div class="overflow-x-auto">
+                    <!-- Desktop Table Layout -->
+                    <div class="hidden md:block overflow-x-auto">
                         <table class="min-w-full divide-y divide-[#F1F5F9]">
                             <thead class="bg-[#F8FAFC]">
                                 <tr>
-                                    <th class="px-6 py-4 text-left text-xxs font-bold text-gray-400 uppercase tracking-wider">Nama Dokumen</th>
-                                    <th class="px-6 py-4 text-left text-xxs font-bold text-gray-400 uppercase tracking-wider">Jenis</th>
-                                    <th class="px-6 py-4 text-left text-xxs font-bold text-gray-400 uppercase tracking-wider">Status Berkas</th>
-                                    <th class="px-6 py-4 text-left text-xxs font-bold text-gray-400 uppercase tracking-wider">Tanggal Unggah</th>
-                                    <th class="px-6 py-4 text-right text-xxs font-bold text-gray-400 uppercase tracking-wider">Aksi</th>
+                                    <th class="px-6 py-4 text-left text-xs font-bold text-gray-400 uppercase tracking-wider">Nama Dokumen</th>
+                                    <th class="px-6 py-4 text-left text-xs font-bold text-gray-400 uppercase tracking-wider">Jenis</th>
+                                    <th class="px-6 py-4 text-left text-xs font-bold text-gray-400 uppercase tracking-wider">Status Berkas</th>
+                                    <th class="px-6 py-4 text-left text-xs font-bold text-gray-400 uppercase tracking-wider">Tanggal Unggah</th>
+                                    <th class="px-6 py-4 text-right text-xs font-bold text-gray-400 uppercase tracking-wider">Aksi</th>
                                 </tr>
                             </thead>
                             <tbody class="bg-white divide-y divide-[#F1F5F9]">
@@ -162,6 +147,34 @@
                             </tbody>
                         </table>
                     </div>
+
+                    <!-- Mobile Card Layout -->
+                    <div class="block md:hidden divide-y divide-[#F1F5F9] bg-white">
+                        @forelse ($praPendaftaranPerkara->dokumenAktif as $dokumen)
+                            <div class="p-4 space-y-3">
+                                <div class="flex justify-between items-center">
+                                    <span class="text-sm font-semibold text-navy-dark">{{ $dokumen->nama_dokumen }}</span>
+                                    <x-status-badge :status="$dokumen->status_dokumen" />
+                                </div>
+                                <div class="text-xs text-gray-500 font-medium">
+                                    Jenis: {{ $dokumen->jenis_dokumen }}
+                                </div>
+                                <div class="flex justify-between items-center pt-2 border-t border-gray-100">
+                                    <span class="text-xs text-gray-400 font-medium">Unggah: {{ $dokumen->created_at?->format('d M Y H:i') ?? '-' }}</span>
+                                    <a href="{{ route('klien.dokumen.show', $dokumen) }}" class="inline-flex items-center gap-1 text-xs font-bold text-accent-blue hover:underline">
+                                        <span>Lihat/Unduh</span>
+                                        <svg class="h-3.5 w-3.5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path>
+                                        </svg>
+                                    </a>
+                                </div>
+                            </div>
+                        @empty
+                            <div class="p-6 text-center text-sm text-gray-400">
+                                Belum ada dokumen aktif yang diunggah.
+                            </div>
+                        @endforelse
+                    </div>
                 </div>
 
                 <!-- Card Catatan Perbaikan Dokumen (Hanya jika status berkas_tidak_lengkap) -->
@@ -176,58 +189,99 @@
                             <p class="text-xs text-red-700 mt-1">Harap perbaiki dokumen bermasalah di bawah ini sesuai instruksi verifikator Staf Legal</p>
                         </div>
 
-                        <div class="overflow-x-auto">
-                            <table class="min-w-full divide-y divide-[#F1F5F9]">
-                                <thead class="bg-[#F8FAFC]">
+                    <!-- Desktop Table Layout -->
+                    <div class="hidden md:block overflow-x-auto">
+                        <table class="min-w-full divide-y divide-[#F1F5F9]">
+                            <thead class="bg-[#F8FAFC]">
+                                <tr>
+                                    <th class="px-6 py-4 text-left text-xs font-bold text-gray-400 uppercase tracking-wider">Nama Dokumen</th>
+                                    <th class="px-6 py-4 text-left text-xs font-bold text-gray-400 uppercase tracking-wider">Instruksi Catatan</th>
+                                    <th class="px-6 py-4 text-left text-xs font-bold text-gray-400 uppercase tracking-wider">Status Koreksi</th>
+                                    <th class="px-6 py-4 text-right text-xs font-bold text-gray-400 uppercase tracking-wider">Aksi</th>
+                                </tr>
+                            </thead>
+                            <tbody class="bg-white divide-y divide-[#F1F5F9]">
+                                @forelse ($catatanPerbaikan as $catatan)
+                                    @php
+                                        $dokumenCatatan = $catatan->dokumenPerkara;
+                                        $bisaUploadPerbaikan = $catatan->status_perbaikan === 'belum_diperbaiki'
+                                            && $dokumenCatatan
+                                            && $dokumenCatatan->status_dokumen === 'perlu_perbaikan';
+                                    @endphp
                                     <tr>
-                                        <th class="px-6 py-4 text-left text-xxs font-bold text-gray-400 uppercase tracking-wider">Nama Dokumen</th>
-                                        <th class="px-6 py-4 text-left text-xxs font-bold text-gray-400 uppercase tracking-wider">Instruksi Catatan</th>
-                                        <th class="px-6 py-4 text-left text-xxs font-bold text-gray-400 uppercase tracking-wider">Status Koreksi</th>
-                                        <th class="px-6 py-4 text-right text-xxs font-bold text-gray-400 uppercase tracking-wider">Aksi</th>
+                                        <td class="px-6 py-4 text-sm font-semibold text-navy-dark">
+                                            <div class="font-semibold">{{ $dokumenCatatan?->nama_dokumen ?? '-' }}</div>
+                                            <div class="text-xs text-gray-400 font-normal mt-0.5">{{ $dokumenCatatan?->jenis_dokumen ?? '-' }}</div>
+                                        </td>
+                                        <td class="px-6 py-4 text-sm text-gray-600 max-w-[250px] leading-relaxed whitespace-pre-line">
+                                            {{ $catatan->isi_catatan }}
+                                        </td>
+                                        <td class="px-6 py-4 whitespace-nowrap">
+                                            <x-status-badge :status="$catatan->status_perbaikan" />
+                                        </td>
+                                        <td class="px-6 py-4 whitespace-nowrap text-right text-sm">
+                                            @if ($bisaUploadPerbaikan)
+                                                <a href="{{ route('klien.perbaikan-dokumen.create', $catatan) }}" class="inline-flex items-center gap-1.5 text-xs font-bold text-accent-blue hover:underline transition">
+                                                    <span>Unggah Ulang</span>
+                                                    <svg class="h-3.5 w-3.5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"></path>
+                                                    </svg>
+                                                </a>
+                                            @else
+                                                <span class="text-gray-400 font-medium text-xs">Selesai diperbaiki</span>
+                                            @endif
+                                        </td>
                                     </tr>
-                                </thead>
-                                <tbody class="bg-white divide-y divide-[#F1F5F9]">
-                                    @forelse ($catatanPerbaikan as $catatan)
-                                        @php
-                                            $dokumenCatatan = $catatan->dokumenPerkara;
-                                            $bisaUploadPerbaikan = $catatan->status_perbaikan === 'belum_diperbaiki'
-                                                && $dokumenCatatan
-                                                && $dokumenCatatan->status_dokumen === 'perlu_perbaikan';
-                                        @endphp
-                                        <tr>
-                                            <td class="px-6 py-4 text-sm font-semibold text-navy-dark">
-                                                <div class="font-semibold">{{ $dokumenCatatan?->nama_dokumen ?? '-' }}</div>
-                                                <div class="text-xs text-gray-400 font-normal mt-0.5">{{ $dokumenCatatan?->jenis_dokumen ?? '-' }}</div>
-                                            </td>
-                                            <td class="px-6 py-4 text-sm text-gray-600 max-w-[250px] leading-relaxed whitespace-pre-line">
-                                                {{ $catatan->isi_catatan }}
-                                            </td>
-                                            <td class="px-6 py-4 whitespace-nowrap">
-                                                <x-status-badge :status="$catatan->status_perbaikan" />
-                                            </td>
-                                            <td class="px-6 py-4 whitespace-nowrap text-right text-sm">
-                                                @if ($bisaUploadPerbaikan)
-                                                    <a href="{{ route('klien.perbaikan-dokumen.create', $catatan) }}" class="inline-flex items-center gap-1.5 text-xs font-bold text-accent-blue hover:underline transition">
-                                                        <span>Unggah Ulang</span>
-                                                        <svg class="h-3.5 w-3.5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"></path>
-                                                        </svg>
-                                                    </a>
-                                                @else
-                                                    <span class="text-gray-400 font-medium text-xs">Selesai diperbaiki</span>
-                                                @endif
-                                            </td>
-                                        </tr>
-                                    @empty
-                                        <tr>
-                                            <td colspan="4" class="px-6 py-10 text-center text-sm text-gray-400">
-                                                Tidak ada catatan perbaikan dokumen spesifik.
-                                            </td>
-                                        </tr>
-                                    @endforelse
-                                </tbody>
-                            </table>
-                        </div>
+                                @empty
+                                    <tr>
+                                        <td colspan="4" class="px-6 py-10 text-center text-sm text-gray-400">
+                                            Tidak ada catatan perbaikan dokumen spesifik.
+                                        </td>
+                                    </tr>
+                                @endforelse
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <!-- Mobile Card Layout -->
+                    <div class="block md:hidden divide-y divide-[#F1F5F9] bg-white">
+                        @forelse ($catatanPerbaikan as $catatan)
+                            @php
+                                $dokumenCatatan = $catatan->dokumenPerkara;
+                                $bisaUploadPerbaikan = $catatan->status_perbaikan === 'belum_diperbaiki'
+                                    && $dokumenCatatan
+                                    && $dokumenCatatan->status_dokumen === 'perlu_perbaikan';
+                            @endphp
+                            <div class="p-4 space-y-3">
+                                <div class="flex justify-between items-center">
+                                    <span class="text-sm font-semibold text-navy-dark">{{ $dokumenCatatan?->nama_dokumen ?? '-' }}</span>
+                                    <x-status-badge :status="$catatan->status_perbaikan" />
+                                </div>
+                                <div class="text-xs text-gray-500 font-medium">
+                                    Jenis: {{ $dokumenCatatan?->jenis_dokumen ?? '-' }}
+                                </div>
+                                <div class="text-xs text-gray-600 bg-red-50/50 p-2.5 rounded-lg border border-red-100/50 leading-relaxed whitespace-pre-line">
+                                    <strong>Instruksi Catatan:</strong> {{ $catatan->isi_catatan }}
+                                </div>
+                                <div class="flex justify-end pt-2 border-t border-gray-100">
+                                    @if ($bisaUploadPerbaikan)
+                                        <a href="{{ route('klien.perbaikan-dokumen.create', $catatan) }}" class="inline-flex items-center gap-1 text-xs font-bold text-accent-blue hover:underline">
+                                            <span>Unggah Ulang</span>
+                                            <svg class="h-3.5 w-3.5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"></path>
+                                            </svg>
+                                        </a>
+                                    @else
+                                        <span class="text-gray-400 font-medium text-xs">Selesai diperbaiki</span>
+                                    @endif
+                                </div>
+                            </div>
+                        @empty
+                            <div class="p-6 text-center text-sm text-gray-400">
+                                Tidak ada catatan perbaikan dokumen spesifik.
+                            </div>
+                        @endforelse
+                    </div>
                     </div>
                 @endif
 
@@ -238,15 +292,16 @@
                             <h4 class="font-bold text-navy-dark text-base">Histori Dokumen Lama</h4>
                             <p class="text-xs text-gray-400 mt-1">Histori berkas lama sebelum dilakukan perbaikan (bersifat arsip/read-only)</p>
                         </div>
-                        <div class="overflow-x-auto">
+                        <!-- Desktop Table Layout -->
+                        <div class="hidden md:block overflow-x-auto">
                             <table class="min-w-full divide-y divide-[#F1F5F9]">
                                 <thead class="bg-[#F8FAFC]">
                                     <tr>
-                                        <th class="px-6 py-4 text-left text-xxs font-bold text-gray-400 uppercase tracking-wider">Nama Dokumen</th>
-                                        <th class="px-6 py-4 text-left text-xxs font-bold text-gray-400 uppercase tracking-wider">Jenis</th>
-                                        <th class="px-6 py-4 text-left text-xxs font-bold text-gray-400 uppercase tracking-wider">Status Lama</th>
-                                        <th class="px-6 py-4 text-left text-xxs font-bold text-gray-400 uppercase tracking-wider">Tanggal Ganti</th>
-                                        <th class="px-6 py-4 text-right text-xxs font-bold text-gray-400 uppercase tracking-wider">Aksi</th>
+                                        <th class="px-6 py-4 text-left text-xs font-bold text-gray-400 uppercase tracking-wider">Nama Dokumen</th>
+                                        <th class="px-6 py-4 text-left text-xs font-bold text-gray-400 uppercase tracking-wider">Jenis</th>
+                                        <th class="px-6 py-4 text-left text-xs font-bold text-gray-400 uppercase tracking-wider">Status Lama</th>
+                                        <th class="px-6 py-4 text-left text-xs font-bold text-gray-400 uppercase tracking-wider">Tanggal Ganti</th>
+                                        <th class="px-6 py-4 text-right text-xs font-bold text-gray-400 uppercase tracking-wider">Aksi</th>
                                     </tr>
                                 </thead>
                                 <tbody class="bg-white divide-y divide-[#F1F5F9]">
@@ -273,6 +328,27 @@
                                     @endforeach
                                 </tbody>
                             </table>
+                        </div>
+
+                        <!-- Mobile Card Layout -->
+                        <div class="block md:hidden divide-y divide-[#F1F5F9] bg-white">
+                            @foreach ($praPendaftaranPerkara->riwayatDokumen as $riwayatDok)
+                                <div class="p-4 space-y-3">
+                                    <div class="flex justify-between items-center">
+                                        <span class="text-sm font-semibold text-gray-600">{{ $riwayatDok->nama_dokumen }}</span>
+                                        <x-status-badge :status="$riwayatDok->status_dokumen" />
+                                    </div>
+                                    <div class="text-xs text-gray-500 font-medium">
+                                        Jenis: {{ $riwayatDok->jenis_dokumen }}
+                                    </div>
+                                    <div class="flex justify-between items-center pt-2 border-t border-gray-100">
+                                        <span class="text-xs text-gray-400 font-medium">Ganti: {{ $riwayatDok->created_at?->format('d M Y') ?? '-' }}</span>
+                                        <a href="{{ route('klien.dokumen.show', $riwayatDok) }}" class="text-gray-400 hover:text-navy-dark transition text-xs font-semibold">
+                                            Lihat Berkas
+                                        </a>
+                                    </div>
+                                </div>
+                            @endforeach
                         </div>
                     </div>
                 @endif

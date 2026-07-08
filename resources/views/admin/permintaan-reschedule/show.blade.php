@@ -1,31 +1,14 @@
-<x-app-layout>
-    <x-slot name="header">
-        <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
-            <div>
-                <div class="flex items-center gap-1 text-xxs font-semibold text-gray-400 uppercase tracking-wider mb-1">
-                    <span>Admin</span>
-                    <svg class="h-3 w-3 text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
-                    </svg>
-                    <span>Permintaan Reschedule</span>
-                    <svg class="h-3 w-3 text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
-                    </svg>
-                    <span class="text-gray-600 font-mono">RS-{{ str_pad($permintaanReschedule->id_reschedule, 3, '0', STR_PAD_LEFT) }}</span>
-                </div>
-                <h2 class="font-extrabold text-2xl text-navy-dark leading-tight">
-                    {{ __('Detail Permintaan Reschedule') }}
-                </h2>
-            </div>
+<x-app-layout title="Detail Permintaan Reschedule" :breadcrumbs="[['label' => 'Admin'], ['label' => 'Permintaan Reschedule', 'url' => route('admin.permintaan-reschedule.index')], ['label' => 'RS-' . str_pad($permintaanReschedule->id_reschedule, 3, '0', STR_PAD_LEFT)]]">
 
-            <a href="{{ route('admin.permintaan-reschedule.index') }}" class="inline-flex items-center justify-center bg-white border border-[#E2E8F0] hover:border-accent-blue text-navy-dark hover:text-accent-blue font-bold text-xs px-5 py-2.5 rounded-xl transition shadow-sm gap-2">
+    <div class="space-y-6">
+        <div class="flex justify-start">
+            <a href="{{ route('admin.permintaan-reschedule.index') }}" class="inline-flex items-center justify-center bg-white border border-[#E2E8F0] hover:border-accent-blue text-navy-dark hover:text-accent-blue font-bold text-xs px-4 py-2.5 rounded-xl transition shadow-sm gap-2">
                 <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path>
                 </svg>
                 <span>{{ __('Kembali') }}</span>
             </a>
         </div>
-    </x-slot>
 
     @php
         $bookingLama = $permintaanReschedule->bookingLama;

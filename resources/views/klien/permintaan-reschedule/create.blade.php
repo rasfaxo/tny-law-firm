@@ -1,33 +1,13 @@
-<x-app-layout>
-    <x-slot name="header">
-        <div class="flex items-center gap-1 text-xxs font-semibold text-gray-400 uppercase tracking-wider mb-1">
-            <span>Klien</span>
-            <svg class="h-3 w-3 text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
-            </svg>
-            <a href="{{ route('klien.booking-konsultasi.index') }}" class="hover:underline">Jadwal Konsultasi</a>
-            <svg class="h-3 w-3 text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
-            </svg>
-            <a href="{{ route('klien.booking-konsultasi.show', $bookingKonsultasi) }}" class="hover:underline text-gray-600 font-mono">BK-{{ str_pad($bookingKonsultasi->id_booking, 3, '0', STR_PAD_LEFT) }}</a>
-            <svg class="h-3 w-3 text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
-            </svg>
-            <span>Reschedule</span>
-        </div>
-        <h2 class="font-extrabold text-2xl text-navy-dark leading-tight">
-            {{ __('Ajukan Reschedule') }}
-        </h2>
-    </x-slot>
+<x-app-layout title="Ajukan Reschedule" :breadcrumbs="[['label' => 'Klien'], ['label' => 'Jadwal Konsultasi', 'url' => route('klien.booking-konsultasi.index')], ['label' => 'BK-' . str_pad($bookingKonsultasi->id_booking, 3, '0', STR_PAD_LEFT), 'url' => route('klien.booking-konsultasi.show', $bookingKonsultasi)], ['label' => 'Reschedule']]">
 
     @php
         $pengajuan = $bookingKonsultasi->praPendaftaranPerkara;
         $jadwal = $bookingKonsultasi->jadwalKonsultasi;
     @endphp
 
-    <div class="space-y-6">
+    <div class="space-y-6" x-data="{ isSubmitting: false }">
         @if ($errors->any())
-            <div class="rounded-xl bg-red-50 border border-red-200 p-4 flex gap-3 text-sm text-red-700 shadow-sm">
+            <div class="rounded-xl bg-red-50 border border-red-200 p-4 flex gap-3 text-sm text-red-700 shadow-sm" x-init="$nextTick(() => { $el.scrollIntoView({ behavior: 'smooth', block: 'start' }); })">
                 <svg class="h-5 w-5 text-red-500 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path>
                 </svg>
@@ -52,7 +32,7 @@
             </p>
         </div>
 
-        <form method="POST" action="{{ route('klien.permintaan-reschedule.store', $bookingKonsultasi) }}" class="space-y-6">
+        <form method="POST" action="{{ route('klien.permintaan-reschedule.store', $bookingKonsultasi) }}" class="space-y-6" @submit="isSubmitting = true">
             @csrf
 
             <!-- Card 1: Jadwal Saat Ini -->
@@ -137,15 +117,16 @@
                 </div>
                 
                 <div class="p-6 sm:p-8">
-                    <div class="overflow-x-auto border border-[#E2E8F0] rounded-xl">
+                    <!-- Desktop Table Layout -->
+                    <div class="hidden md:block overflow-x-auto border border-[#E2E8F0] rounded-xl">
                         <table class="min-w-full divide-y divide-gray-200">
                             <thead class="bg-[#F8FAFC]">
                                 <tr>
-                                    <th class="px-6 py-4 text-left text-xxs font-bold text-gray-400 uppercase tracking-wider w-16">Pilih</th>
-                                    <th class="px-6 py-4 text-left text-xxs font-bold text-gray-400 uppercase tracking-wider">Tanggal</th>
-                                    <th class="px-6 py-4 text-left text-xxs font-bold text-gray-400 uppercase tracking-wider">Jam Mulai</th>
-                                    <th class="px-6 py-4 text-left text-xxs font-bold text-gray-400 uppercase tracking-wider">Jam Selesai</th>
-                                    <th class="px-6 py-4 text-left text-xxs font-bold text-gray-400 uppercase tracking-wider">Ketersediaan</th>
+                                    <th class="px-6 py-4 text-left text-xs font-bold text-gray-400 uppercase tracking-wider w-16">Pilih</th>
+                                    <th class="px-6 py-4 text-left text-xs font-bold text-gray-400 uppercase tracking-wider">Tanggal</th>
+                                    <th class="px-6 py-4 text-left text-xs font-bold text-gray-400 uppercase tracking-wider">Jam Mulai</th>
+                                    <th class="px-6 py-4 text-left text-xs font-bold text-gray-400 uppercase tracking-wider">Jam Selesai</th>
+                                    <th class="px-6 py-4 text-left text-xs font-bold text-gray-400 uppercase tracking-wider">Ketersediaan</th>
                                 </tr>
                             </thead>
                             <tbody class="bg-white divide-y divide-gray-100">
@@ -167,12 +148,12 @@
                                             {{ substr((string) $slot->waktu_selesai, 0, 5) }}
                                         </td>
                                         <td class="px-6 py-4 whitespace-nowrap">
-                                            <span class="bg-green-50 text-green-700 text-[10px] font-bold px-2 py-0.5 rounded-full border border-green-200 uppercase tracking-wider">Tersedia</span>
+                                            <span class="bg-green-50 text-green-700 text-xs font-bold px-2.5 py-0.5 rounded-full border border-green-200 uppercase tracking-wider">Tersedia</span>
                                         </td>
                                     </tr>
                                 @empty
                                     <tr>
-                                        <td colspan="5" class="px-6 py-12 text-center text-gray-500">
+                                        <td colspan="5" class="px-6 py-12 text-center text-gray-500 text-sm">
                                             Belum ada slot jadwal alternatif yang tersedia saat ini.
                                         </td>
                                     </tr>
@@ -180,6 +161,32 @@
                             </tbody>
                         </table>
                     </div>
+
+                    <!-- Mobile Card Layout -->
+                    <div class="block md:hidden divide-y divide-gray-100 bg-white border border-[#E2E8F0] rounded-xl overflow-hidden">
+                        @forelse ($jadwalKonsultasi as $slot)
+                            @php
+                                $labelJadwal = $slot->tanggal?->translatedFormat('l, d M Y') . ' • ' . substr((string) $slot->waktu_mulai, 0, 5) . '–' . substr((string) $slot->waktu_selesai, 0, 5) . ' WIB';
+                            @endphp
+                            <label class="block p-4 space-y-3 cursor-pointer hover:bg-gray-50/50 transition">
+                                <div class="flex justify-between items-center">
+                                    <div class="flex items-center gap-3">
+                                        <input type="radio" name="reschedule_slot_radio_mobile" value="{{ $labelJadwal }}" onclick="selectSlot('{{ $labelJadwal }}')" class="border-gray-300 text-accent-blue shadow-sm focus:ring-accent-blue" @checked(old('preferensi_jadwal') === $labelJadwal)>
+                                        <span class="text-sm font-bold text-navy-dark">{{ $slot->tanggal?->translatedFormat('l, d M Y') ?? '-' }}</span>
+                                    </div>
+                                    <span class="bg-green-50 text-green-700 text-xs font-bold px-2 py-0.5 rounded-full border border-green-200 uppercase tracking-wider">Tersedia</span>
+                                </div>
+                                <div class="text-xs text-gray-500 font-medium pl-7">
+                                    Jam: {{ substr((string) $slot->waktu_mulai, 0, 5) }} – {{ substr((string) $slot->waktu_selesai, 0, 5) }} WIB
+                                </div>
+                            </label>
+                        @empty
+                            <div class="p-8 text-center text-gray-500 text-xs">
+                                Belum ada slot jadwal alternatif yang tersedia saat ini.
+                            </div>
+                        @endforelse
+                    </div>
+
                 </div>
             </div>
 
@@ -188,8 +195,17 @@
                 <a href="{{ route('klien.booking-konsultasi.show', $bookingKonsultasi) }}" class="bg-white border border-[#E2E8F0] hover:bg-gray-50 text-gray-700 font-bold text-sm px-6 py-2.5 rounded-xl transition shadow-sm">
                     Batal
                 </a>
-                <button type="submit" class="bg-[#1e3a8a] hover:bg-blue-900 text-white font-bold text-sm px-8 py-2.5 rounded-xl transition shadow-md shadow-blue-900/20">
-                    Konfirmasi Pilihan
+                <button type="submit" 
+                        :disabled="isSubmitting"
+                        class="bg-[#1e3a8a] hover:bg-blue-900 text-white font-bold text-sm px-8 py-2.5 rounded-xl transition shadow-md shadow-blue-900/20 flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed">
+                    <span x-show="!isSubmitting">Konfirmasi Pilihan</span>
+                    <span x-show="isSubmitting" class="flex items-center gap-2">
+                        <svg class="animate-spin h-4 w-4 text-white" fill="none" viewBox="0 0 24 24">
+                            <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                            <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                        </svg>
+                        <span>Mengirim...</span>
+                    </span>
                 </button>
             </div>
         </form>
