@@ -20,6 +20,9 @@ class StorePraPendaftaranPerkaraRequest extends FormRequest
             "id_kategori" => ["required", "exists:kategori_perkara,id_kategori"],
             "judul_perkara" => ["required", "string", "max:150"],
             "kronologi" => ["required", "string"],
+            "nama_dokumen" => ["required", "string", "max:100"],
+            "jenis_dokumen" => ["required", "string", "max:50"],
+            "file_dokumen" => ["required", "file", "mimes:pdf,jpg,jpeg,png", "max:5120"],
         ];
     }
 }

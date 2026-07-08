@@ -18,7 +18,7 @@ class UpdateJadwalKonsultasiRequest extends FormRequest
     public function rules(): array
     {
         return [
-            "tanggal" => ["required", "date"],
+            "tanggal" => ["required", "date", "after_or_equal:today"],
             "waktu_mulai" => ["required", "date_format:H:i"],
             "waktu_selesai" => [
                 "required",

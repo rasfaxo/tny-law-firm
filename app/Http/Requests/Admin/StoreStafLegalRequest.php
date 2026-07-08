@@ -4,6 +4,7 @@ namespace App\Http\Requests\Admin;
 
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
+use Illuminate\Validation\Rules\Password;
 
 class StoreStafLegalRequest extends FormRequest
 {
@@ -21,7 +22,7 @@ class StoreStafLegalRequest extends FormRequest
             "nama" => ["required", "string", "max:100"],
             "email" => ["required", "email", "max:100", "unique:users,email"],
             "no_telepon" => ["nullable", "string", "max:20"],
-            "password" => ["required", "confirmed", "min:8"],
+            "password" => ["required", "confirmed", Password::defaults()],
             "status_akun" => ["required", Rule::in(["aktif", "nonaktif"])],
         ];
     }

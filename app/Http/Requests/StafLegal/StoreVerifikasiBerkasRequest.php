@@ -24,13 +24,13 @@ class StoreVerifikasiBerkasRequest extends FormRequest
                 "required",
                 Rule::in(["berkas_lengkap", "berkas_tidak_lengkap"]),
             ],
-            "catatan_umum" => ["nullable", "string"],
+            "catatan_umum" => ["nullable", "string", "max:2000"],
             "dokumen" => ["nullable", "array"],
             "dokumen.*.status_dokumen" => [
                 "required",
                 Rule::in(["valid", "perlu_perbaikan"]),
             ],
-            "dokumen.*.catatan" => ["nullable", "string"],
+            "dokumen.*.catatan" => ["nullable", "string", "max:2000"],
         ];
     }
 
