@@ -8,6 +8,7 @@ use App\Models\DokumenPerkara;
 use App\Models\PraPendaftaranPerkara;
 use App\Services\VerifikasiBerkasService;
 use Illuminate\Http\RedirectResponse;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 use Illuminate\View\View;
@@ -15,24 +16,65 @@ use Symfony\Component\HttpFoundation\StreamedResponse;
 
 class VerifikasiBerkasController extends Controller
 {
-    public function index(): View
+    public function index(Request $request): View
     {
-        $pengajuan = PraPendaftaranPerkara::query()
+        $query = PraPendaftaranPerkara::query()
             ->with(["klien", "kategori"])
-            ->withCount("dokumenAktif")
-            ->whereIn(
-                "status_pengajuan",
-                VerifikasiBerkasService::verifiableStatuses(),
-            )
-            ->latest("tanggal_pengajuan")
-            ->paginate(10);
+            ->withCount("dokumenAktif");
 
-        return view("staf-legal.verifikasi-berkas.index", compact("pengajuan"));
+        if ($request->filled('search')) {
+            $search = $request->input('search');
+            $query->where(function ($q) use ($search) {
+                $q->where('judul_perkara', 'like', "%{$search}%")
+                  ->orWhere('id_pendaftaran', 'like', "%{$search}%")
+                  ->orWhereHas('klien', function ($qk) use ($search) {
+                      $qk->where('nama', 'like', "%{$search}%");
+                  });
+            });
+        }
+
+        if ($request->filled('status')) {
+            $query->where('status_pengajuan', $request->input('status'));
+        }
+
+        if ($request->filled('kategori')) {
+            $query->where('id_kategori', $request->input('kategori'));
+        }
+
+        $pengajuan = $query->latest("tanggal_pengajuan")->paginate(10)->withQueryString();
+        $kategoriList = \App\Models\KategoriPerkara::all();
+
+        return view("staf-legal.verifikasi-berkas.index", compact("pengajuan", "kategoriList"));
     }
 
-    public function show(
-        PraPendaftaranPerkara $praPendaftaranPerkara,
-    ): View|RedirectResponse {
+    public function riwayat(): View
+    {
+        $riwayat = \App\Models\VerifikasiBerkas::query()
+            ->with(["praPendaftaranPerkara.klien", "praPendaftaranPerkara.kategori"])
+            ->where("id_user", auth()->id())
+            ->latest("tanggal_verifikasi")
+            ->paginate(10);
+
+        return view("staf-legal.verifikasi-berkas.riwayat", compact("riwayat"));
+    }
+
+    public function show(PraPendaftaranPerkara $praPendaftaranPerkara): View
+    {
+        $praPendaftaranPerkara->load([
+            "klien",
+            "kategori",
+            "dokumenAktif" => fn($query) => $query->oldest(),
+            "riwayatDokumen" => fn($query) => $query->oldest(),
+        ]);
+
+        return view(
+            "staf-legal.verifikasi-berkas.show",
+            compact("praPendaftaranPerkara"),
+        );
+    }
+
+    public function verifikasi(PraPendaftaranPerkara $praPendaftaranPerkara): View|RedirectResponse
+    {
         if (!$this->isVerifiable($praPendaftaranPerkara)) {
             return redirect()
                 ->route("staf-legal.verifikasi-berkas.index")
@@ -50,7 +92,7 @@ class VerifikasiBerkasController extends Controller
         ]);
 
         return view(
-            "staf-legal.verifikasi-berkas.show",
+            "staf-legal.verifikasi-berkas.verifikasi",
             compact("praPendaftaranPerkara"),
         );
     }
@@ -76,7 +118,7 @@ class VerifikasiBerkasController extends Controller
         );
 
         return redirect()
-            ->route("staf-legal.verifikasi-berkas.index")
+            ->route("staf-legal.verifikasi-berkas.riwayat")
             ->with("success", "Hasil verifikasi berkas berhasil disimpan.");
     }
 
@@ -85,19 +127,18 @@ class VerifikasiBerkasController extends Controller
     ): StreamedResponse {
         $dokumenPerkara->load("praPendaftaranPerkara");
 
+        // Staf Legal can view any document belonging to a case
         abort_unless(
-            $dokumenPerkara->praPendaftaranPerkara instanceof
-                PraPendaftaranPerkara &&
-                $this->isVerifiable($dokumenPerkara->praPendaftaranPerkara),
+            $dokumenPerkara->praPendaftaranPerkara instanceof PraPendaftaranPerkara,
             403,
         );
 
         abort_unless(
-            Storage::disk("public")->exists($dokumenPerkara->file_path),
+            Storage::disk("local")->exists($dokumenPerkara->file_path),
             404,
         );
 
-        return Storage::disk("public")->download(
+        return Storage::disk("local")->download(
             $dokumenPerkara->file_path,
             $this->downloadFileName($dokumenPerkara),
         );

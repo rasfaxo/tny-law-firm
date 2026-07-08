@@ -22,7 +22,9 @@ class DokumenPerkaraController extends Controller
     ): View|RedirectResponse {
         $this->ensurePengajuanOwnedByKlien($request, $praPendaftaranPerkara);
 
-        if ($praPendaftaranPerkara->status_pengajuan !== "menunggu_verifikasi") {
+        if (
+            $praPendaftaranPerkara->status_pengajuan !== "menunggu_verifikasi"
+        ) {
             return redirect()
                 ->route("klien.pra-pendaftaran.show", $praPendaftaranPerkara)
                 ->with(
@@ -31,10 +33,7 @@ class DokumenPerkaraController extends Controller
                 );
         }
 
-        return view(
-            "klien.dokumen.create",
-            compact("praPendaftaranPerkara"),
-        );
+        return view("klien.dokumen.create", compact("praPendaftaranPerkara"));
     }
 
     public function store(
@@ -44,7 +43,9 @@ class DokumenPerkaraController extends Controller
     ): RedirectResponse {
         $this->ensurePengajuanOwnedByKlien($request, $praPendaftaranPerkara);
 
-        if ($praPendaftaranPerkara->status_pengajuan !== "menunggu_verifikasi") {
+        if (
+            $praPendaftaranPerkara->status_pengajuan !== "menunggu_verifikasi"
+        ) {
             return redirect()
                 ->route("klien.pra-pendaftaran.show", $praPendaftaranPerkara)
                 ->with(
@@ -53,7 +54,10 @@ class DokumenPerkaraController extends Controller
                 );
         }
 
-        $service->storeForPengajuan($praPendaftaranPerkara, $request->validated());
+        $service->storeForPengajuan(
+            $praPendaftaranPerkara,
+            $request->validated(),
+        );
 
         return redirect()
             ->route("klien.pra-pendaftaran.show", $praPendaftaranPerkara)
@@ -69,11 +73,11 @@ class DokumenPerkaraController extends Controller
         $this->ensureDokumenOwnedByKlien($request, $dokumenPerkara);
 
         abort_unless(
-            Storage::disk("public")->exists($dokumenPerkara->file_path),
+            Storage::disk("local")->exists($dokumenPerkara->file_path),
             404,
         );
 
-        return Storage::disk("public")->download(
+        return Storage::disk("local")->download(
             $dokumenPerkara->file_path,
             $this->downloadFileName($dokumenPerkara),
         );
@@ -103,7 +107,8 @@ class DokumenPerkaraController extends Controller
     private function downloadFileName(DokumenPerkara $dokumenPerkara): string
     {
         $extension = pathinfo($dokumenPerkara->file_path, PATHINFO_EXTENSION);
-        $baseName = Str::slug($dokumenPerkara->nama_dokumen) ?: "dokumen-perkara";
+        $baseName =
+            Str::slug($dokumenPerkara->nama_dokumen) ?: "dokumen-perkara";
 
         return $extension ? "{$baseName}.{$extension}" : $baseName;
     }

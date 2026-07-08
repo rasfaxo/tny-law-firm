@@ -15,11 +15,32 @@ class PraPendaftaranPerkaraController extends Controller
 {
     public function index(Request $request): View
     {
-        $praPendaftaranPerkara = PraPendaftaranPerkara::query()
+        $query = PraPendaftaranPerkara::query()
             ->with("kategori")
-            ->where("id_user", $request->user()->id_user)
-            ->latest("tanggal_pengajuan")
-            ->paginate(10);
+            ->where("id_user", $request->user()->id_user);
+
+        // Search filter
+        if ($request->filled('search')) {
+            $search = $request->input('search');
+            $query->where(function($q) use ($search) {
+                $q->where('judul_perkara', 'like', '%' . $search . '%');
+                
+                // Cek jika input mencari kode, e.g. PP-001
+                $cleanSearch = preg_replace('/[^0-9]/', '', $search);
+                if (!empty($cleanSearch)) {
+                    $q->orWhere('id_pendaftaran', (int)$cleanSearch);
+                }
+            });
+        }
+
+        // Status filter
+        if ($request->filled('status')) {
+            $query->where('status_pengajuan', $request->input('status'));
+        }
+
+        $praPendaftaranPerkara = $query->latest("tanggal_pengajuan")
+            ->paginate(10)
+            ->withQueryString(); // Mempertahankan query string saat paginasi
 
         return view(
             "klien.pra-pendaftaran.index",

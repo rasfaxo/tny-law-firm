@@ -44,9 +44,15 @@ class PermintaanRescheduleController extends Controller
                 );
         }
 
+        $jadwalKonsultasi = \App\Models\JadwalKonsultasi::query()
+            ->where("status_slot", "tersedia")
+            ->orderBy("tanggal")
+            ->orderBy("waktu_mulai")
+            ->get();
+
         return view(
             "klien.permintaan-reschedule.create",
-            compact("bookingKonsultasi"),
+            compact("bookingKonsultasi", "jadwalKonsultasi"),
         );
     }
 

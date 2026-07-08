@@ -2,6 +2,10 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\Enums\StatusBooking;
+use App\Enums\StatusKonfirmasi;
+use App\Enums\StatusPengajuan;
+use App\Enums\StatusReschedule;
 use App\Http\Controllers\Controller;
 use App\Models\BookingKonsultasi;
 use App\Models\KategoriPerkara;
@@ -15,31 +19,28 @@ use Illuminate\View\View;
 
 class LaporanController extends Controller
 {
-    private array $statusPengajuan = [
-        "menunggu_verifikasi",
-        "berkas_tidak_lengkap",
-        "menunggu_verifikasi_ulang",
-        "berkas_lengkap",
-        "jadwal_dipilih",
-        "selesai",
+    private array $statusPengajuan;
+
+    private array $statusVerifikasi = [
+        StatusPengajuan::BerkasLengkap->value,
+        StatusPengajuan::BerkasTidakLengkap->value,
     ];
 
-    private array $statusVerifikasi = ["berkas_lengkap", "berkas_tidak_lengkap"];
-
-    private array $statusBooking = ["aktif", "dibatalkan", "selesai"];
+    private array $statusBooking;
 
     private array $metodeKonsultasi = ["online", "offline"];
 
-    private array $statusKonfirmasiKonsultasi = [
-        "menunggu_konfirmasi",
-        "terkonfirmasi",
-    ];
+    private array $statusKonfirmasiKonsultasi;
 
-    private array $statusReschedule = [
-        "menunggu_persetujuan",
-        "disetujui",
-        "ditolak",
-    ];
+    private array $statusReschedule;
+
+    public function __construct()
+    {
+        $this->statusPengajuan = StatusPengajuan::values();
+        $this->statusBooking = StatusBooking::values();
+        $this->statusKonfirmasiKonsultasi = StatusKonfirmasi::values();
+        $this->statusReschedule = StatusReschedule::values();
+    }
 
     public function index(): View
     {
@@ -69,16 +70,28 @@ class LaporanController extends Controller
 
         $laporan = PraPendaftaranPerkara::query()
             ->with(["kategori", "klien"])
-            ->when($filters["tanggal_mulai"] ?? null, function ($query, $tanggal) {
+            ->when($filters["tanggal_mulai"] ?? null, function (
+                $query,
+                $tanggal,
+            ) {
                 $query->whereDate("tanggal_pengajuan", ">=", $tanggal);
             })
-            ->when($filters["tanggal_selesai"] ?? null, function ($query, $tanggal) {
+            ->when($filters["tanggal_selesai"] ?? null, function (
+                $query,
+                $tanggal,
+            ) {
                 $query->whereDate("tanggal_pengajuan", "<=", $tanggal);
             })
-            ->when($filters["status_pengajuan"] ?? null, function ($query, $status) {
+            ->when($filters["status_pengajuan"] ?? null, function (
+                $query,
+                $status,
+            ) {
                 $query->where("status_pengajuan", $status);
             })
-            ->when($filters["id_kategori"] ?? null, function ($query, $kategoriId) {
+            ->when($filters["id_kategori"] ?? null, function (
+                $query,
+                $kategoriId,
+            ) {
                 $query->where("id_kategori", $kategoriId);
             })
             ->latest("tanggal_pengajuan")
@@ -114,17 +127,33 @@ class LaporanController extends Controller
         ]);
 
         $laporan = VerifikasiBerkas::query()
-            ->with(["praPendaftaranPerkara.kategori", "praPendaftaranPerkara.klien", "stafLegal"])
-            ->when($filters["tanggal_mulai"] ?? null, function ($query, $tanggal) {
+            ->with([
+                "praPendaftaranPerkara.kategori",
+                "praPendaftaranPerkara.klien",
+                "stafLegal",
+            ])
+            ->when($filters["tanggal_mulai"] ?? null, function (
+                $query,
+                $tanggal,
+            ) {
                 $query->whereDate("tanggal_verifikasi", ">=", $tanggal);
             })
-            ->when($filters["tanggal_selesai"] ?? null, function ($query, $tanggal) {
+            ->when($filters["tanggal_selesai"] ?? null, function (
+                $query,
+                $tanggal,
+            ) {
                 $query->whereDate("tanggal_verifikasi", "<=", $tanggal);
             })
-            ->when($filters["status_verifikasi"] ?? null, function ($query, $status) {
+            ->when($filters["status_verifikasi"] ?? null, function (
+                $query,
+                $status,
+            ) {
                 $query->where("status_verifikasi", $status);
             })
-            ->when($filters["id_staf_legal"] ?? null, function ($query, $stafId) {
+            ->when($filters["id_staf_legal"] ?? null, function (
+                $query,
+                $stafId,
+            ) {
                 $query->where("id_user", $stafId);
             })
             ->latest("tanggal_verifikasi")
@@ -165,20 +194,39 @@ class LaporanController extends Controller
         ]);
 
         $laporan = BookingKonsultasi::query()
-            ->with(["jadwalKonsultasi", "klien", "praPendaftaranPerkara.kategori"])
-            ->when($filters["tanggal_mulai"] ?? null, function ($query, $tanggal) {
+            ->with([
+                "jadwalKonsultasi",
+                "klien",
+                "praPendaftaranPerkara.kategori",
+            ])
+            ->when($filters["tanggal_mulai"] ?? null, function (
+                $query,
+                $tanggal,
+            ) {
                 $query->whereDate("tanggal_booking", ">=", $tanggal);
             })
-            ->when($filters["tanggal_selesai"] ?? null, function ($query, $tanggal) {
+            ->when($filters["tanggal_selesai"] ?? null, function (
+                $query,
+                $tanggal,
+            ) {
                 $query->whereDate("tanggal_booking", "<=", $tanggal);
             })
-            ->when($filters["status_booking"] ?? null, function ($query, $status) {
+            ->when($filters["status_booking"] ?? null, function (
+                $query,
+                $status,
+            ) {
                 $query->where("status_booking", $status);
             })
-            ->when($filters["metode_konsultasi"] ?? null, function ($query, $metode) {
+            ->when($filters["metode_konsultasi"] ?? null, function (
+                $query,
+                $metode,
+            ) {
                 $query->where("metode_konsultasi", $metode);
             })
-            ->when($filters["status_konfirmasi_konsultasi"] ?? null, function ($query, $status) {
+            ->when($filters["status_konfirmasi_konsultasi"] ?? null, function (
+                $query,
+                $status,
+            ) {
                 $query->where("status_konfirmasi_konsultasi", $status);
             })
             ->latest("tanggal_booking")
@@ -218,16 +266,28 @@ class LaporanController extends Controller
                 "bookingLama.praPendaftaranPerkara.kategori",
                 "klien",
             ])
-            ->when($filters["tanggal_mulai"] ?? null, function ($query, $tanggal) {
+            ->when($filters["tanggal_mulai"] ?? null, function (
+                $query,
+                $tanggal,
+            ) {
                 $query->whereDate("tanggal_pengajuan", ">=", $tanggal);
             })
-            ->when($filters["tanggal_selesai"] ?? null, function ($query, $tanggal) {
+            ->when($filters["tanggal_selesai"] ?? null, function (
+                $query,
+                $tanggal,
+            ) {
                 $query->whereDate("tanggal_pengajuan", "<=", $tanggal);
             })
-            ->when($filters["status_reschedule"] ?? null, function ($query, $status) {
+            ->when($filters["status_reschedule"] ?? null, function (
+                $query,
+                $status,
+            ) {
                 $query->where("status_reschedule", $status);
             })
-            ->when($filters["preferensi_metode"] ?? null, function ($query, $metode) {
+            ->when($filters["preferensi_metode"] ?? null, function (
+                $query,
+                $metode,
+            ) {
                 $query->where("preferensi_metode", $metode);
             })
             ->latest("tanggal_pengajuan")
@@ -264,21 +324,34 @@ class LaporanController extends Controller
                     ->latest(),
             ])
             ->where("status_pengajuan", "selesai")
-            ->when($filters["tanggal_mulai"] ?? null, function ($query, $tanggal) {
-                $query->whereHas("riwayatStatus", function ($query) use ($tanggal) {
+            ->when($filters["tanggal_mulai"] ?? null, function (
+                $query,
+                $tanggal,
+            ) {
+                $query->whereHas("riwayatStatus", function ($query) use (
+                    $tanggal,
+                ) {
                     $query
                         ->where("status", "selesai")
                         ->whereDate("created_at", ">=", $tanggal);
                 });
             })
-            ->when($filters["tanggal_selesai"] ?? null, function ($query, $tanggal) {
-                $query->whereHas("riwayatStatus", function ($query) use ($tanggal) {
+            ->when($filters["tanggal_selesai"] ?? null, function (
+                $query,
+                $tanggal,
+            ) {
+                $query->whereHas("riwayatStatus", function ($query) use (
+                    $tanggal,
+                ) {
                     $query
                         ->where("status", "selesai")
                         ->whereDate("created_at", "<=", $tanggal);
                 });
             })
-            ->when($filters["id_kategori"] ?? null, function ($query, $kategoriId) {
+            ->when($filters["id_kategori"] ?? null, function (
+                $query,
+                $kategoriId,
+            ) {
                 $query->where("id_kategori", $kategoriId);
             })
             ->latest("tanggal_pengajuan")
