@@ -88,6 +88,14 @@ Route::middleware(["auth", "active_account", "role:klien"])
             BookingKonsultasiController::class,
             "store",
         ])->name("booking-konsultasi.store");
+        Route::get("/booking-konsultasi", [
+            BookingKonsultasiController::class,
+            "index",
+        ])->name("booking-konsultasi.index");
+        Route::get("/booking-konsultasi/{bookingKonsultasi}", [
+            BookingKonsultasiController::class,
+            "show",
+        ])->name("booking-konsultasi.show");
 
         Route::get(
             "/booking-konsultasi/{bookingKonsultasi}/reschedule/create",
@@ -272,10 +280,18 @@ Route::middleware(["auth", "active_account", "role:staf_legal"])
             VerifikasiBerkasController::class,
             "index",
         ])->name("verifikasi-berkas.index");
+        Route::get("/riwayat-verifikasi", [
+            VerifikasiBerkasController::class,
+            "riwayat",
+        ])->name("verifikasi-berkas.riwayat");
         Route::get("/verifikasi-berkas/{praPendaftaranPerkara}", [
             VerifikasiBerkasController::class,
             "show",
         ])->name("verifikasi-berkas.show");
+        Route::get("/verifikasi-berkas/{praPendaftaranPerkara}/verifikasi", [
+            VerifikasiBerkasController::class,
+            "verifikasi",
+        ])->name("verifikasi-berkas.verifikasi");
         Route::post("/verifikasi-berkas/{praPendaftaranPerkara}", [
             VerifikasiBerkasController::class,
             "store",

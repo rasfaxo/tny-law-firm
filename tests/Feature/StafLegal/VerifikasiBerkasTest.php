@@ -24,7 +24,7 @@ class VerifikasiBerkasTest extends TestCase
                     $dokumen->id_dokumen => ["status_dokumen" => "valid"],
                 ],
             ])
-            ->assertRedirect(route("staf-legal.verifikasi-berkas.index"));
+            ->assertRedirect(route("staf-legal.verifikasi-berkas.riwayat"));
 
         $this->assertDatabaseHas("pra_pendaftaran_perkara", [
             "id_pendaftaran" => $pengajuan->id_pendaftaran,
@@ -63,7 +63,7 @@ class VerifikasiBerkasTest extends TestCase
                     ],
                 ],
             ])
-            ->assertRedirect(route("staf-legal.verifikasi-berkas.index"));
+            ->assertRedirect(route("staf-legal.verifikasi-berkas.riwayat"));
 
         $this->assertDatabaseHas("pra_pendaftaran_perkara", [
             "id_pendaftaran" => $pengajuan->id_pendaftaran,

@@ -1,282 +1,161 @@
 <x-app-layout>
     <x-slot name="header">
-        <h2 class="font-semibold text-xl text-gray-800 leading-tight">
-            {{ __('Detail Pra-Pendaftaran Perkara') }}
+        <div class="flex items-center gap-1 text-xxs font-semibold text-gray-400 uppercase tracking-wider mb-1">
+            <span>Klien</span>
+            <svg class="h-3 w-3 text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+            </svg>
+            <a href="{{ route('klien.pra-pendaftaran.index') }}" class="hover:underline">Pengajuan</a>
+            <svg class="h-3 w-3 text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+            </svg>
+            <span class="text-gray-600 font-mono">PP-{{ str_pad($praPendaftaranPerkara->id_pendaftaran, 3, '0', STR_PAD_LEFT) }}</span>
+        </div>
+        <h2 class="font-extrabold text-2xl text-navy-dark leading-tight">
+            {{ __('Detail Pengajuan Perkara') }}
         </h2>
     </x-slot>
 
-    <div class="py-12">
-        <div class="max-w-4xl mx-auto sm:px-6 lg:px-8 space-y-6">
-            @if (session('success'))
-                <div class="rounded-md bg-green-50 p-4 text-sm text-green-700">
-                    {{ session('success') }}
-                </div>
-            @endif
+    @php
+        // Logika Data Booking Konsultasi
+        $bookingAktif = $praPendaftaranPerkara->bookingAktif;
+        $bookingTampil = $bookingAktif ?: $praPendaftaranPerkara->bookingTerakhir;
+        $semuaPermintaanReschedule = $praPendaftaranPerkara->bookingKonsultasi
+            ->flatMap(fn ($booking) => $booking->permintaanReschedule);
+        $permintaanRescheduleTerakhir = $semuaPermintaanReschedule->sortByDesc('tanggal_pengajuan')->first();
+        $permintaanRescheduleMenunggu = $bookingAktif
+            ? $semuaPermintaanReschedule
+                ->where('id_booking', $bookingAktif->id_booking)
+                ->firstWhere('status_reschedule', 'menunggu_persetujuan')
+            : null;
+        $bisaAjukanReschedule = $bookingAktif
+            && $bookingAktif->status_booking === 'aktif'
+            && $praPendaftaranPerkara->status_pengajuan === 'jadwal_dipilih'
+            && !$permintaanRescheduleMenunggu;
 
-            @if (session('error'))
-                <div class="rounded-md bg-red-50 p-4 text-sm text-red-700">
-                    {{ session('error') }}
-                </div>
-            @endif
+        // Logika Status Verifikasi Terakhir
+        $verifikasiTerakhir = $praPendaftaranPerkara->verifikasiBerkas->first();
+    @endphp
 
-            <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
-                <div class="p-6 text-gray-900 space-y-4">
-                    <div>
-                        <div class="text-sm font-medium text-gray-500">Judul Perkara</div>
-                        <div class="mt-1">{{ $praPendaftaranPerkara->judul_perkara }}</div>
-                    </div>
-
-                    <div>
-                        <div class="text-sm font-medium text-gray-500">Kategori Perkara</div>
-                        <div class="mt-1">{{ $praPendaftaranPerkara->kategori?->nama_kategori ?? '-' }}</div>
-                    </div>
-
-                    <div>
-                        <div class="text-sm font-medium text-gray-500">Status Pengajuan</div>
-                        <div class="mt-1">
-                            <x-status-badge :status="$praPendaftaranPerkara->status_pengajuan" color="yellow" />
-                        </div>
-                    </div>
-
-                    <div>
-                        <div class="text-sm font-medium text-gray-500">Tanggal Pengajuan</div>
-                        <div class="mt-1">{{ $praPendaftaranPerkara->tanggal_pengajuan?->format('d M Y H:i') ?? '-' }}</div>
-                    </div>
-
-                    <div>
-                        <div class="text-sm font-medium text-gray-500">Kronologi</div>
-                        <div class="mt-1 whitespace-pre-line">{{ $praPendaftaranPerkara->kronologi }}</div>
-                    </div>
-
-                    <div class="pt-4">
-                        <a href="{{ route('klien.pra-pendaftaran.index') }}" class="text-sm text-gray-600 hover:text-gray-900">
-                            {{ __('Kembali ke daftar') }}
-                        </a>
-                    </div>
-                </div>
+    <div class="space-y-6">
+        <!-- Alert Notification -->
+        @if (session('success'))
+            <div class="rounded-xl bg-green-50 border border-green-200 p-4 flex gap-3 text-sm text-green-700">
+                <svg class="h-5 w-5 text-green-500 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                </svg>
+                <span>{{ session('success') }}</span>
             </div>
+        @endif
 
-            @php
-                $bookingAktif = $praPendaftaranPerkara->bookingAktif;
-                $bookingTampil = $bookingAktif ?: $praPendaftaranPerkara->bookingTerakhir;
-                $semuaPermintaanReschedule = $praPendaftaranPerkara->bookingKonsultasi
-                    ->flatMap(fn ($booking) => $booking->permintaanReschedule);
-                $permintaanRescheduleTerakhir = $semuaPermintaanReschedule->sortByDesc('tanggal_pengajuan')->first();
-                $permintaanRescheduleMenunggu = $bookingAktif
-                    ? $semuaPermintaanReschedule
-                        ->where('id_booking', $bookingAktif->id_booking)
-                        ->firstWhere('status_reschedule', 'menunggu_persetujuan')
-                    : null;
-                $bisaAjukanReschedule = $bookingAktif
-                    && $bookingAktif->status_booking === 'aktif'
-                    && $praPendaftaranPerkara->status_pengajuan === 'jadwal_dipilih'
-                    && !$permintaanRescheduleMenunggu;
-            @endphp
+        @if (session('error'))
+            <div class="rounded-xl bg-red-50 border border-red-200 p-4 flex gap-3 text-sm text-red-700">
+                <svg class="h-5 w-5 text-red-500 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path>
+                </svg>
+                <span>{{ session('error') }}</span>
+            </div>
+        @endif
 
-            @if ($bookingTampil || $praPendaftaranPerkara->status_pengajuan === 'berkas_lengkap' || $praPendaftaranPerkara->status_pengajuan === 'selesai')
-                <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
-                    <div class="p-6 text-gray-900">
-                        <div class="flex items-center justify-between gap-4">
-                            <h3 class="text-lg font-medium text-gray-900">{{ __('Informasi Konsultasi') }}</h3>
-
-                            @if (!$bookingAktif && $praPendaftaranPerkara->status_pengajuan === 'berkas_lengkap')
-                                <a href="{{ route('klien.booking-konsultasi.create', $praPendaftaranPerkara) }}" class="inline-flex items-center px-4 py-2 bg-gray-800 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-gray-700 focus:bg-gray-700 active:bg-gray-900 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 transition ease-in-out duration-150">
-                                    {{ __('Pilih Jadwal Konsultasi') }}
-                                </a>
-                            @elseif ($bisaAjukanReschedule)
-                                <a href="{{ route('klien.permintaan-reschedule.create', $bookingAktif) }}" class="inline-flex items-center px-4 py-2 bg-gray-800 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-gray-700 focus:bg-gray-700 active:bg-gray-900 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 transition ease-in-out duration-150">
-                                    {{ __('Ajukan Reschedule') }}
-                                </a>
-                            @endif
-                        </div>
-
-                        @if ($bookingTampil)
-                            @php
-                                $jadwalBooking = $bookingTampil->jadwalKonsultasi;
-                                $metodeBooking = $bookingTampil->metode_konsultasi ?? 'offline';
-                                $statusKonfirmasi = $bookingTampil->status_konfirmasi_konsultasi ?? 'menunggu_konfirmasi';
-                                $metodeColor = $metodeBooking === 'online' ? 'blue' : 'gray';
-                                $konfirmasiColor = $statusKonfirmasi === 'terkonfirmasi' ? 'green' : 'yellow';
-                                $bookingColor = match ($bookingTampil->status_booking) {
-                                    'aktif' => 'green',
-                                    'selesai' => 'blue',
-                                    'dibatalkan' => 'red',
-                                    default => 'gray',
-                                };
-                            @endphp
-
-                            @if ($statusKonfirmasi === 'menunggu_konfirmasi')
-                                <div class="mt-4 rounded-md bg-yellow-50 p-4 text-sm text-yellow-700">
-                                    {{ __('Informasi teknis konsultasi sedang menunggu konfirmasi Admin. Admin akan melengkapi link/lokasi konsultasi sebelum jadwal berlangsung.') }}
-                                </div>
-                            @endif
-
-                            @if ($praPendaftaranPerkara->status_pengajuan === 'selesai')
-                                <div class="mt-4 rounded-md bg-green-50 p-4 text-sm text-green-700">
-                                    {{ __('Konsultasi telah selesai. Terima kasih telah menggunakan layanan pra-pendaftaran perkara TNY Law Firm.') }}
-                                </div>
-                            @endif
-
-                            @if ($permintaanRescheduleTerakhir)
-                                @php
-                                    $statusRescheduleColor = match ($permintaanRescheduleTerakhir->status_reschedule) {
-                                        'disetujui' => 'green',
-                                        'ditolak' => 'red',
-                                        default => 'yellow',
-                                    };
-                                @endphp
-                                <div class="mt-4 rounded-md border border-gray-200 p-4 text-sm text-gray-700">
-                                    <div class="flex flex-wrap items-center justify-between gap-3">
-                                        <div>
-                                            <div class="font-medium text-gray-900">{{ __('Status Permintaan Reschedule Terakhir') }}</div>
-                                            <div class="mt-1">
-                                                <x-status-badge :status="$permintaanRescheduleTerakhir->status_reschedule" :color="$statusRescheduleColor" />
-                                            </div>
-                                        </div>
-                                        <a href="{{ route('klien.permintaan-reschedule.show', $permintaanRescheduleTerakhir) }}" class="text-indigo-600 hover:text-indigo-900">
-                                            {{ __('Lihat Detail') }}
-                                        </a>
-                                    </div>
-
-                                    @if ($permintaanRescheduleTerakhir->status_reschedule === 'menunggu_persetujuan')
-                                        <p class="mt-3 text-yellow-700">
-                                            {{ __('Permintaan reschedule sedang menunggu persetujuan Admin. Jadwal lama tetap berlaku sampai Admin menyetujui perubahan.') }}
-                                        </p>
-                                    @elseif ($permintaanRescheduleTerakhir->status_reschedule === 'ditolak')
-                                        <p class="mt-3 text-red-700">
-                                            {{ __('Permintaan reschedule ditolak. Jadwal lama tetap berlaku.') }}
-                                        </p>
-                                    @elseif ($permintaanRescheduleTerakhir->status_reschedule === 'disetujui')
-                                        <p class="mt-3 text-green-700">
-                                            {{ __('Permintaan reschedule disetujui. Informasi booking aktif di bawah ini mengikuti jadwal terbaru.') }}
-                                        </p>
-                                    @endif
-                                </div>
-                            @endif
-
-                            <dl class="mt-4 grid grid-cols-1 gap-4 sm:grid-cols-2">
-                                <div>
-                                    <dt class="text-sm font-medium text-gray-500">Status Booking</dt>
-                                    <dd class="mt-1">
-                                        <x-status-badge :status="$bookingTampil->status_booking" :color="$bookingColor" />
-                                    </dd>
-                                </div>
-                                <div>
-                                    <dt class="text-sm font-medium text-gray-500">Metode Konsultasi</dt>
-                                    <dd class="mt-1">
-                                        <x-status-badge :status="$metodeBooking" :color="$metodeColor" />
-                                    </dd>
-                                </div>
-                                <div>
-                                    <dt class="text-sm font-medium text-gray-500">Status Konfirmasi Konsultasi</dt>
-                                    <dd class="mt-1">
-                                        <x-status-badge :status="$statusKonfirmasi" :color="$konfirmasiColor" />
-                                    </dd>
-                                </div>
-                                <div>
-                                    <dt class="text-sm font-medium text-gray-500">Tanggal Booking</dt>
-                                    <dd class="mt-1 text-gray-900">{{ $bookingTampil->tanggal_booking?->format('d M Y H:i') ?? '-' }}</dd>
-                                </div>
-                                <div>
-                                    <dt class="text-sm font-medium text-gray-500">Tanggal Konsultasi</dt>
-                                    <dd class="mt-1 text-gray-900">{{ $jadwalBooking?->tanggal?->format('d M Y') ?? '-' }}</dd>
-                                </div>
-                                <div>
-                                    <dt class="text-sm font-medium text-gray-500">Waktu Konsultasi</dt>
-                                    <dd class="mt-1 text-gray-900">
-                                        {{ $jadwalBooking ? substr((string) $jadwalBooking->waktu_mulai, 0, 5) : '-' }}
-                                        @if ($jadwalBooking)
-                                            - {{ substr((string) $jadwalBooking->waktu_selesai, 0, 5) }}
-                                        @endif
-                                    </dd>
-                                </div>
-                                <div class="sm:col-span-2">
-                                    <dt class="text-sm font-medium text-gray-500">Catatan Preferensi Klien</dt>
-                                    <dd class="mt-1 whitespace-pre-line text-gray-900">{{ $bookingTampil->catatan_preferensi_klien ?: '-' }}</dd>
-                                </div>
-
-                                @if ($metodeBooking === 'online')
-                                    <div class="sm:col-span-2">
-                                        <dt class="text-sm font-medium text-gray-500">Link Konsultasi</dt>
-                                        <dd class="mt-1 text-gray-900">
-                                            @if ($bookingTampil->link_konsultasi)
-                                                <a href="{{ $bookingTampil->link_konsultasi }}" class="text-indigo-600 hover:text-indigo-900" target="_blank" rel="noopener noreferrer">
-                                                    {{ $bookingTampil->link_konsultasi }}
-                                                </a>
-                                            @else
-                                                {{ __('Link konsultasi belum tersedia.') }}
-                                            @endif
-                                        </dd>
-                                    </div>
-                                @else
-                                    <div class="sm:col-span-2">
-                                        <dt class="text-sm font-medium text-gray-500">Lokasi Konsultasi</dt>
-                                        <dd class="mt-1 whitespace-pre-line text-gray-900">
-                                            {{ $bookingTampil->lokasi_konsultasi ?: __('Lokasi konsultasi belum tersedia.') }}
-                                        </dd>
-                                    </div>
-                                @endif
-
-                                <div class="sm:col-span-2">
-                                    <dt class="text-sm font-medium text-gray-500">Catatan Konsultasi dari Admin</dt>
-                                    <dd class="mt-1 whitespace-pre-line text-gray-900">{{ $bookingTampil->catatan_konsultasi ?: '-' }}</dd>
-                                </div>
-                            </dl>
-                        @else
-                            <p class="mt-4 text-sm text-gray-500">
-                                @if ($praPendaftaranPerkara->status_pengajuan === 'selesai')
-                                    {{ __('Konsultasi telah selesai. Terima kasih telah menggunakan layanan pra-pendaftaran perkara TNY Law Firm.') }}
-                                @else
-                                    {{ __('Berkas sudah lengkap. Silakan pilih jadwal konsultasi yang tersedia.') }}
-                                @endif
-                            </p>
-                        @endif
+        <!-- 2-Column Grid Layout -->
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
+            
+            <!-- COLUMN LEFT: Pengajuan Detail, Dokumen & Timeline (lg:col-span-8) -->
+            <div class="lg:col-span-8 space-y-6">
+                
+                <!-- Card Header Pengajuan (Figma node-id=65:1062) -->
+                <div class="bg-white border border-[#E2E8F0] p-6 rounded-2xl shadow-sm space-y-4">
+                    <div class="flex items-center gap-3">
+                        <span class="bg-blue-50 text-accent-blue font-bold font-mono text-xs px-3 py-1 rounded-lg">
+                            PP-{{ str_pad($praPendaftaranPerkara->id_pendaftaran, 3, '0', STR_PAD_LEFT) }}
+                        </span>
+                        <x-status-badge :status="$praPendaftaranPerkara->status_pengajuan" />
+                    </div>
+                    <div>
+                        <h3 class="font-extrabold text-navy-dark text-xl leading-tight">
+                            {{ $praPendaftaranPerkara->judul_perkara }}
+                        </h3>
+                        <p class="text-xs text-gray-400 mt-1">
+                            Diajukan pada {{ $praPendaftaranPerkara->tanggal_pengajuan?->format('d F Y • H:i') ?? '-' }} WIB
+                        </p>
                     </div>
                 </div>
-            @endif
 
-            <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
-                <div class="p-6 text-gray-900">
-                    <div class="flex items-center justify-between gap-4">
-                        <h3 class="text-lg font-medium text-gray-900">{{ __('Dokumen Aktif') }}</h3>
+                <!-- Card Detail Perkara (Data Pengajuan) -->
+                <div class="bg-white border border-[#E2E8F0] rounded-2xl shadow-sm overflow-hidden">
+                    <div class="p-6 border-b border-[#F1F5F9]">
+                        <h4 class="font-bold text-navy-dark text-sm uppercase tracking-wider text-gray-400">Deskripsi Perkara</h4>
+                    </div>
+                    <div class="p-6 space-y-4">
+                        <div>
+                            <span class="block text-xxs font-bold text-gray-400 uppercase tracking-wider">Kategori Perkara</span>
+                            <span class="block text-sm font-semibold text-navy-dark mt-0.5">{{ $praPendaftaranPerkara->kategori?->nama_kategori ?? '-' }}</span>
+                        </div>
+                        <div>
+                            <span class="block text-xxs font-bold text-gray-400 uppercase tracking-wider">Kronologi Perkara</span>
+                            <p class="text-sm text-navy-dark mt-1 leading-relaxed whitespace-pre-line bg-gray-50/50 p-4 rounded-xl border border-gray-100">
+                                {{ $praPendaftaranPerkara->kronologi }}
+                            </p>
+                        </div>
+                    </div>
+                </div>
 
+                <!-- Card Dokumen Aktif -->
+                <div class="bg-white border border-[#E2E8F0] rounded-2xl shadow-sm overflow-hidden">
+                    <div class="p-6 border-b border-[#F1F5F9] flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+                        <div>
+                            <h4 class="font-bold text-navy-dark text-base">Dokumen Pendukung Aktif</h4>
+                            <p class="text-xs text-gray-400 mt-1">Daftar dokumen pendukung perkara yang saat ini aktif</p>
+                        </div>
                         @if ($praPendaftaranPerkara->status_pengajuan === 'menunggu_verifikasi')
-                            <a href="{{ route('klien.dokumen.create', $praPendaftaranPerkara) }}" class="inline-flex items-center px-4 py-2 bg-gray-800 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-gray-700 focus:bg-gray-700 active:bg-gray-900 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 transition ease-in-out duration-150">
-                                {{ __('Upload Dokumen') }}
+                            <a href="{{ route('klien.dokumen.create', $praPendaftaranPerkara) }}" class="bg-[#1e3a8a] hover:bg-blue-900 text-white font-bold text-xs px-4 py-2.5 rounded-xl transition shadow-md shadow-blue-900/20 inline-flex items-center gap-1.5">
+                                <svg class="h-4 w-4 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"></path>
+                                </svg>
+                                <span>Upload Dokumen Baru</span>
                             </a>
                         @endif
                     </div>
 
-                    <div class="mt-4 overflow-x-auto">
-                        <table class="min-w-full divide-y divide-gray-200">
-                            <thead class="bg-gray-50">
+                    <div class="overflow-x-auto">
+                        <table class="min-w-full divide-y divide-[#F1F5F9]">
+                            <thead class="bg-[#F8FAFC]">
                                 <tr>
-                                    <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Nama Dokumen</th>
-                                    <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Jenis</th>
-                                    <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
-                                    <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Tanggal Upload</th>
-                                    <th class="px-4 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">Aksi</th>
+                                    <th class="px-6 py-4 text-left text-xxs font-bold text-gray-400 uppercase tracking-wider">Nama Dokumen</th>
+                                    <th class="px-6 py-4 text-left text-xxs font-bold text-gray-400 uppercase tracking-wider">Jenis</th>
+                                    <th class="px-6 py-4 text-left text-xxs font-bold text-gray-400 uppercase tracking-wider">Status Berkas</th>
+                                    <th class="px-6 py-4 text-left text-xxs font-bold text-gray-400 uppercase tracking-wider">Tanggal Unggah</th>
+                                    <th class="px-6 py-4 text-right text-xxs font-bold text-gray-400 uppercase tracking-wider">Aksi</th>
                                 </tr>
                             </thead>
-                            <tbody class="bg-white divide-y divide-gray-200">
+                            <tbody class="bg-white divide-y divide-[#F1F5F9]">
                                 @forelse ($praPendaftaranPerkara->dokumenAktif as $dokumen)
                                     <tr>
-                                        <td class="px-4 py-3 font-medium text-gray-900">{{ $dokumen->nama_dokumen }}</td>
-                                        <td class="px-4 py-3 whitespace-nowrap text-gray-700">{{ $dokumen->jenis_dokumen }}</td>
-                                        <td class="px-4 py-3 whitespace-nowrap text-gray-700">
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm font-semibold text-navy-dark">
+                                            {{ $dokumen->nama_dokumen }}
+                                        </td>
+                                        <td class="px-6 py-4 whitespace-nowrap text-xs text-gray-500">
+                                            {{ $dokumen->jenis_dokumen }}
+                                        </td>
+                                        <td class="px-6 py-4 whitespace-nowrap">
                                             <x-status-badge :status="$dokumen->status_dokumen" />
                                         </td>
-                                        <td class="px-4 py-3 whitespace-nowrap text-gray-700">{{ $dokumen->created_at?->format('d M Y H:i') ?? '-' }}</td>
-                                        <td class="px-4 py-3 whitespace-nowrap text-right text-sm font-medium">
-                                            <a href="{{ route('klien.dokumen.show', $dokumen) }}" class="text-indigo-600 hover:text-indigo-900">
-                                                {{ __('Lihat/Unduh') }}
+                                        <td class="px-6 py-4 whitespace-nowrap text-xs text-gray-400">
+                                            {{ $dokumen->created_at?->format('d M Y H:i') ?? '-' }}
+                                        </td>
+                                        <td class="px-6 py-4 whitespace-nowrap text-right text-sm">
+                                            <a href="{{ route('klien.dokumen.show', $dokumen) }}" class="inline-flex items-center gap-1.5 text-xs font-bold text-accent-blue hover:underline transition">
+                                                <span>Lihat/Unduh</span>
+                                                <svg class="h-3.5 w-3.5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path>
+                                                </svg>
                                             </a>
                                         </td>
                                     </tr>
                                 @empty
                                     <tr>
-                                        <td colspan="5" class="px-4 py-8 text-center text-gray-500">
-                                            {{ __('Belum ada dokumen aktif.') }}
+                                        <td colspan="5" class="px-6 py-10 text-center text-sm text-gray-400">
+                                            Belum ada dokumen aktif yang diunggah.
                                         </td>
                                     </tr>
                                 @endforelse
@@ -284,78 +163,30 @@
                         </table>
                     </div>
                 </div>
-            </div>
 
-            <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
-                <div class="p-6 text-gray-900">
-                    <h3 class="text-lg font-medium text-gray-900">{{ __('Riwayat Dokumen') }}</h3>
-                    <p class="mt-1 text-sm text-gray-500">
-                        {{ __('Dokumen lama yang sudah diganti tetap disimpan sebagai histori dan bersifat read-only.') }}
-                    </p>
+                <!-- Card Catatan Perbaikan Dokumen (Hanya jika status berkas_tidak_lengkap) -->
+                @if ($praPendaftaranPerkara->status_pengajuan === 'berkas_tidak_lengkap')
+                    @php
+                        $catatanPerbaikan = $praPendaftaranPerkara->verifikasiBerkas
+                            ->flatMap(fn ($verifikasi) => $verifikasi->catatanVerifikasi);
+                    @endphp
+                    <div class="bg-white border border-red-100 rounded-2xl shadow-sm overflow-hidden">
+                        <div class="p-6 border-b border-red-50 bg-red-50/30">
+                            <h4 class="font-bold text-red-900 text-base">Catatan Perbaikan Dokumen</h4>
+                            <p class="text-xs text-red-700 mt-1">Harap perbaiki dokumen bermasalah di bawah ini sesuai instruksi verifikator Staf Legal</p>
+                        </div>
 
-                    <div class="mt-4 overflow-x-auto">
-                        <table class="min-w-full divide-y divide-gray-200">
-                            <thead class="bg-gray-50">
-                                <tr>
-                                    <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Nama Dokumen</th>
-                                    <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Jenis</th>
-                                    <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
-                                    <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Tanggal Upload</th>
-                                    <th class="px-4 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">Aksi</th>
-                                </tr>
-                            </thead>
-                            <tbody class="bg-white divide-y divide-gray-200">
-                                @forelse ($praPendaftaranPerkara->riwayatDokumen as $dokumen)
+                        <div class="overflow-x-auto">
+                            <table class="min-w-full divide-y divide-[#F1F5F9]">
+                                <thead class="bg-[#F8FAFC]">
                                     <tr>
-                                        <td class="px-4 py-3 font-medium text-gray-900">{{ $dokumen->nama_dokumen }}</td>
-                                        <td class="px-4 py-3 whitespace-nowrap text-gray-700">{{ $dokumen->jenis_dokumen }}</td>
-                                        <td class="px-4 py-3 whitespace-nowrap text-gray-700">
-                                            <x-status-badge :status="$dokumen->status_dokumen" color="gray" />
-                                        </td>
-                                        <td class="px-4 py-3 whitespace-nowrap text-gray-700">{{ $dokumen->created_at?->format('d M Y H:i') ?? '-' }}</td>
-                                        <td class="px-4 py-3 whitespace-nowrap text-right text-sm font-medium">
-                                            <a href="{{ route('klien.dokumen.show', $dokumen) }}" class="text-indigo-600 hover:text-indigo-900">
-                                                {{ __('Lihat/Unduh') }}
-                                            </a>
-                                        </td>
-                                    </tr>
-                                @empty
-                                    <tr>
-                                        <td colspan="5" class="px-4 py-8 text-center text-gray-500">
-                                            {{ __('Belum ada riwayat dokumen.') }}
-                                        </td>
-                                    </tr>
-                                @endforelse
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-            </div>
-
-            @if ($praPendaftaranPerkara->status_pengajuan === 'berkas_tidak_lengkap')
-                @php
-                    $catatanPerbaikan = $praPendaftaranPerkara->verifikasiBerkas
-                        ->flatMap(fn ($verifikasi) => $verifikasi->catatanVerifikasi);
-                @endphp
-
-                <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
-                    <div class="p-6 text-gray-900">
-                        <h3 class="text-lg font-medium text-gray-900">{{ __('Catatan Perbaikan Dokumen') }}</h3>
-                        <p class="mt-1 text-sm text-gray-500">
-                            {{ __('Unggah dokumen pengganti hanya untuk catatan yang masih belum diperbaiki.') }}
-                        </p>
-
-                        <div class="mt-4 overflow-x-auto">
-                            <table class="min-w-full divide-y divide-gray-200">
-                                <thead class="bg-gray-50">
-                                    <tr>
-                                        <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Dokumen</th>
-                                        <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Catatan</th>
-                                        <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status Perbaikan</th>
-                                        <th class="px-4 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">Aksi</th>
+                                        <th class="px-6 py-4 text-left text-xxs font-bold text-gray-400 uppercase tracking-wider">Nama Dokumen</th>
+                                        <th class="px-6 py-4 text-left text-xxs font-bold text-gray-400 uppercase tracking-wider">Instruksi Catatan</th>
+                                        <th class="px-6 py-4 text-left text-xxs font-bold text-gray-400 uppercase tracking-wider">Status Koreksi</th>
+                                        <th class="px-6 py-4 text-right text-xxs font-bold text-gray-400 uppercase tracking-wider">Aksi</th>
                                     </tr>
                                 </thead>
-                                <tbody class="bg-white divide-y divide-gray-200">
+                                <tbody class="bg-white divide-y divide-[#F1F5F9]">
                                     @forelse ($catatanPerbaikan as $catatan)
                                         @php
                                             $dokumenCatatan = $catatan->dokumenPerkara;
@@ -364,36 +195,33 @@
                                                 && $dokumenCatatan->status_dokumen === 'perlu_perbaikan';
                                         @endphp
                                         <tr>
-                                            <td class="px-4 py-3 text-gray-700">
-                                                <div class="font-medium text-gray-900">{{ $dokumenCatatan?->nama_dokumen ?? '-' }}</div>
-                                                <div class="mt-1 text-sm text-gray-500">
-                                                    {{ $dokumenCatatan?->jenis_dokumen ?? '-' }}
-                                                    &middot;
-                                                    @if ($dokumenCatatan)
-                                                        <x-status-badge :status="$dokumenCatatan->status_dokumen" color="gray" />
-                                                    @else
-                                                        -
-                                                    @endif
-                                                </div>
+                                            <td class="px-6 py-4 text-sm font-semibold text-navy-dark">
+                                                <div class="font-semibold">{{ $dokumenCatatan?->nama_dokumen ?? '-' }}</div>
+                                                <div class="text-xs text-gray-400 font-normal mt-0.5">{{ $dokumenCatatan?->jenis_dokumen ?? '-' }}</div>
                                             </td>
-                                            <td class="px-4 py-3 text-gray-700 whitespace-pre-line">{{ $catatan->isi_catatan }}</td>
-                                            <td class="px-4 py-3 whitespace-nowrap text-gray-700">
-                                                <x-status-badge :status="$catatan->status_perbaikan" color="orange" />
+                                            <td class="px-6 py-4 text-sm text-gray-600 max-w-[250px] leading-relaxed whitespace-pre-line">
+                                                {{ $catatan->isi_catatan }}
                                             </td>
-                                            <td class="px-4 py-3 whitespace-nowrap text-right text-sm font-medium">
+                                            <td class="px-6 py-4 whitespace-nowrap">
+                                                <x-status-badge :status="$catatan->status_perbaikan" />
+                                            </td>
+                                            <td class="px-6 py-4 whitespace-nowrap text-right text-sm">
                                                 @if ($bisaUploadPerbaikan)
-                                                    <a href="{{ route('klien.perbaikan-dokumen.create', $catatan) }}" class="text-indigo-600 hover:text-indigo-900">
-                                                        {{ __('Upload Pengganti') }}
+                                                    <a href="{{ route('klien.perbaikan-dokumen.create', $catatan) }}" class="inline-flex items-center gap-1.5 text-xs font-bold text-accent-blue hover:underline transition">
+                                                        <span>Unggah Ulang</span>
+                                                        <svg class="h-3.5 w-3.5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"></path>
+                                                        </svg>
                                                     </a>
                                                 @else
-                                                    <span class="text-gray-400">{{ __('Tidak tersedia') }}</span>
+                                                    <span class="text-gray-400 font-medium text-xs">Selesai diperbaiki</span>
                                                 @endif
                                             </td>
                                         </tr>
                                     @empty
                                         <tr>
-                                            <td colspan="4" class="px-4 py-8 text-center text-gray-500">
-                                                {{ __('Belum ada catatan perbaikan dokumen.') }}
+                                            <td colspan="4" class="px-6 py-10 text-center text-sm text-gray-400">
+                                                Tidak ada catatan perbaikan dokumen spesifik.
                                             </td>
                                         </tr>
                                     @endforelse
@@ -401,42 +229,235 @@
                             </table>
                         </div>
                     </div>
-                </div>
-            @endif
+                @endif
 
-            <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
-                <div class="p-6 text-gray-900">
-                    <h3 class="text-lg font-medium text-gray-900">{{ __('Riwayat Status') }}</h3>
+                <!-- Card Riwayat Histori Dokumen Lama (Read-Only) -->
+                @if ($praPendaftaranPerkara->riwayatDokumen->isNotEmpty())
+                    <div class="bg-white border border-[#E2E8F0] rounded-2xl shadow-sm overflow-hidden">
+                        <div class="p-6 border-b border-[#F1F5F9]">
+                            <h4 class="font-bold text-navy-dark text-base">Histori Dokumen Lama</h4>
+                            <p class="text-xs text-gray-400 mt-1">Histori berkas lama sebelum dilakukan perbaikan (bersifat arsip/read-only)</p>
+                        </div>
+                        <div class="overflow-x-auto">
+                            <table class="min-w-full divide-y divide-[#F1F5F9]">
+                                <thead class="bg-[#F8FAFC]">
+                                    <tr>
+                                        <th class="px-6 py-4 text-left text-xxs font-bold text-gray-400 uppercase tracking-wider">Nama Dokumen</th>
+                                        <th class="px-6 py-4 text-left text-xxs font-bold text-gray-400 uppercase tracking-wider">Jenis</th>
+                                        <th class="px-6 py-4 text-left text-xxs font-bold text-gray-400 uppercase tracking-wider">Status Lama</th>
+                                        <th class="px-6 py-4 text-left text-xxs font-bold text-gray-400 uppercase tracking-wider">Tanggal Ganti</th>
+                                        <th class="px-6 py-4 text-right text-xxs font-bold text-gray-400 uppercase tracking-wider">Aksi</th>
+                                    </tr>
+                                </thead>
+                                <tbody class="bg-white divide-y divide-[#F1F5F9]">
+                                    @foreach ($praPendaftaranPerkara->riwayatDokumen as $riwayatDok)
+                                        <tr>
+                                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-600">
+                                                {{ $riwayatDok->nama_dokumen }}
+                                            </td>
+                                            <td class="px-6 py-4 whitespace-nowrap text-xs text-gray-400">
+                                                {{ $riwayatDok->jenis_dokumen }}
+                                            </td>
+                                            <td class="px-6 py-4 whitespace-nowrap">
+                                                <x-status-badge :status="$riwayatDok->status_dokumen" />
+                                            </td>
+                                            <td class="px-6 py-4 whitespace-nowrap text-xs text-gray-400">
+                                                {{ $riwayatDok->created_at?->format('d M Y') ?? '-' }}
+                                            </td>
+                                            <td class="px-6 py-4 whitespace-nowrap text-right text-sm">
+                                                <a href="{{ route('klien.dokumen.show', $riwayatDok) }}" class="text-gray-400 hover:text-navy-dark transition text-xs font-semibold">
+                                                    Lihat Berkas
+                                                </a>
+                                            </td>
+                                        </tr>
+                                    @endforeach
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                @endif
 
-                    <div class="mt-4 overflow-x-auto">
-                        <table class="min-w-full divide-y divide-gray-200">
-                            <thead class="bg-gray-50">
-                                <tr>
-                                    <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Tanggal</th>
-                                    <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
-                                    <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Keterangan</th>
-                                    <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">User</th>
-                                </tr>
-                            </thead>
-                            <tbody class="bg-white divide-y divide-gray-200">
-                                @forelse ($praPendaftaranPerkara->riwayatStatus as $riwayat)
-                                    <tr>
-                                        <td class="px-4 py-3 whitespace-nowrap text-gray-700">{{ $riwayat->created_at?->format('d M Y H:i') ?? '-' }}</td>
-                                        <td class="px-4 py-3 whitespace-nowrap text-gray-700">{{ str_replace('_', ' ', ucfirst($riwayat->status)) }}</td>
-                                        <td class="px-4 py-3 text-gray-700">{{ $riwayat->keterangan ?? '-' }}</td>
-                                        <td class="px-4 py-3 whitespace-nowrap text-gray-700">{{ $riwayat->user?->nama ?? '-' }}</td>
-                                    </tr>
-                                @empty
-                                    <tr>
-                                        <td colspan="4" class="px-4 py-8 text-center text-gray-500">
-                                            {{ __('Belum ada riwayat status.') }}
-                                        </td>
-                                    </tr>
-                                @endforelse
-                            </tbody>
-                        </table>
+                <!-- Card Riwayat Status (Timeline vertikal minimalis) -->
+                <div class="bg-white border border-[#E2E8F0] rounded-2xl shadow-sm overflow-hidden">
+                    <div class="p-6 border-b border-[#F1F5F9]">
+                        <h4 class="font-bold text-navy-dark text-base">Timeline Riwayat Status</h4>
+                    </div>
+                    <div class="p-6">
+                        <div class="space-y-0">
+                            @forelse ($praPendaftaranPerkara->riwayatStatus as $index => $riwayat)
+                                @php
+                                    $isLast = $loop->last;
+                                @endphp
+                                <div class="flex gap-4 items-start relative">
+                                    <!-- Marker & Line -->
+                                    <div class="flex flex-col items-center">
+                                        <div class="w-6 h-6 rounded-full bg-[#1E3A8A] border-4 border-blue-50 flex items-center justify-center shrink-0 z-10">
+                                            <div class="w-1.5 h-1.5 bg-white rounded-full"></div>
+                                        </div>
+                                        @if (!$isLast)
+                                            <div class="w-0.5 bg-[#1E3A8A]/30 h-full min-h-[40px] absolute top-6 bottom-0 left-[11px]"></div>
+                                        @endif
+                                    </div>
+                                    
+                                    <!-- Content -->
+                                    <div class="pb-8">
+                                        <p class="font-semibold text-[13px] text-navy-dark">
+                                            {{ ucwords(str_replace('_', ' ', $riwayat->status)) }}
+                                        </p>
+                                        <p class="text-[11px] text-gray-400 mt-1">
+                                            {{ $riwayat->keterangan ?? 'Tercatat oleh sistem' }} • {{ $riwayat->created_at?->format('d M Y H:i') ?? '-' }}
+                                        </p>
+                                    </div>
+                                </div>
+                            @empty
+                                <p class="text-xs text-gray-400">Belum ada riwayat aktivitas.</p>
+                            @endforelse
+                        </div>
                     </div>
                 </div>
+            </div>
+
+            <!-- COLUMN RIGHT: Verifikasi & Konsultasi Panel (lg:col-span-4) -->
+            <div class="lg:col-span-4 space-y-6">
+                
+                <!-- Card Hasil Verifikasi Berkas (dari Staf Legal) -->
+                @if ($verifikasiTerakhir)
+                    <div class="bg-white border border-[#E2E8F0] p-6 rounded-2xl shadow-sm space-y-4">
+                        <div class="border-b border-[#F1F5F9] pb-3">
+                            <h4 class="font-bold text-navy-dark text-base">Hasil Verifikasi Berkas</h4>
+                            <p class="text-xs text-gray-400 mt-1">Catatan pemeriksaan oleh Staf Legal</p>
+                        </div>
+                        <div class="space-y-3">
+                            <div>
+                                <span class="block text-xxs font-bold text-gray-400 uppercase tracking-wider">Tanggal Periksa</span>
+                                <span class="block text-xs font-semibold text-navy-dark mt-0.5">{{ $verifikasiTerakhir->tanggal_verifikasi?->format('d M Y • H:i') ?? '-' }} WIB</span>
+                            </div>
+                            <div>
+                                <span class="block text-xxs font-bold text-gray-400 uppercase tracking-wider">Pemeriksa</span>
+                                <span class="block text-xs font-semibold text-navy-dark mt-0.5">{{ $verifikasiTerakhir->user?->nama ?? '-' }}</span>
+                            </div>
+                            <div>
+                                <span class="block text-xxs font-bold text-gray-400 uppercase tracking-wider">Catatan Umum</span>
+                                <p class="text-xs text-gray-600 bg-gray-50/50 p-3 rounded-xl border border-gray-100 mt-1 leading-relaxed whitespace-pre-line italic">
+                                    "{{ $verifikasiTerakhir->catatan_verifikasi_umum ?? 'Berkas diperiksa.' }}"
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                @endif
+
+                <!-- Card Informasi Pertemuan Konsultasi -->
+                @if ($bookingTampil || $praPendaftaranPerkara->status_pengajuan === 'berkas_lengkap' || $praPendaftaranPerkara->status_pengajuan === 'selesai')
+                    <div class="bg-white border border-[#E2E8F0] p-6 rounded-2xl shadow-sm space-y-4">
+                        <div class="border-b border-[#F1F5F9] pb-3 flex items-center justify-between gap-4">
+                            <div>
+                                <h4 class="font-bold text-navy-dark text-base">Informasi Konsultasi</h4>
+                                <p class="text-xs text-gray-400 mt-1">Status pertemuan konsultasi Anda</p>
+                            </div>
+                        </div>
+
+                        <!-- CTA Pilih Jadwal (jika berkas lengkap dan belum ada booking) -->
+                        @if (!$bookingAktif && $praPendaftaranPerkara->status_pengajuan === 'berkas_lengkap')
+                            <div class="py-2 text-center space-y-3">
+                                <p class="text-xs text-gray-500 leading-relaxed">Berkas perkara Anda sudah dinyatakan lengkap oleh verifikator. Silakan pilih slot jadwal konsultasi yang tersedia.</p>
+                                <a href="{{ route('klien.booking-konsultasi.create', $praPendaftaranPerkara) }}" class="bg-[#1e3a8a] hover:bg-blue-900 text-white font-bold text-sm py-3 rounded-xl w-full block text-center transition shadow-md shadow-blue-900/20">
+                                    Pilih Jadwal Konsultasi
+                                </a>
+                            </div>
+                        @endif
+
+                        @if ($bookingTampil)
+                            @php
+                                $jadwalBooking = $bookingTampil->jadwalKonsultasi;
+                                $metodeBooking = $bookingTampil->metode_konsultasi ?? 'offline';
+                                $statusKonfirmasi = $bookingTampil->status_konfirmasi_konsultasi ?? 'menunggu_konfirmasi';
+                            @endphp
+
+                            <!-- Status Badges -->
+                            <div class="flex items-center gap-2 flex-wrap">
+                                <x-status-badge :status="$bookingTampil->status_booking" />
+                                <x-status-badge :status="$statusKonfirmasi" />
+                            </div>
+
+                            <!-- Reschedule status alert -->
+                            @if ($permintaanRescheduleTerakhir)
+                                <div class="p-3 rounded-xl text-xs leading-relaxed border mt-2 {{ $permintaanRescheduleTerakhir->status_reschedule === 'menunggu_persetujuan' ? 'bg-yellow-50 border-yellow-200 text-yellow-800' : ($permintaanRescheduleTerakhir->status_reschedule === 'disetujui' ? 'bg-green-50 border-green-200 text-green-800' : 'bg-red-50 border-red-200 text-red-800') }}">
+                                    <strong>Status Reschedule:</strong>
+                                    <div class="flex items-center justify-between gap-3 mt-1.5">
+                                        <x-status-badge :status="$permintaanRescheduleTerakhir->status_reschedule" />
+                                        <a href="{{ route('klien.permintaan-reschedule.show', $permintaanRescheduleTerakhir) }}" class="font-bold underline">Detail &rarr;</a>
+                                    </div>
+                                    @if ($permintaanRescheduleTerakhir->status_reschedule === 'menunggu_persetujuan')
+                                        <p class="mt-2 text-[10px] text-gray-500 italic">Jadwal lama di bawah ini tetap berlaku sampai Admin menyetujui permintaan reschedule.</p>
+                                    @endif
+                                </div>
+                            @endif
+
+                            <!-- Slot info box -->
+                            <div class="bg-[#F8FAFC] border border-[#E2E8F0] p-4 rounded-xl space-y-2">
+                                <div class="flex items-center gap-2 text-xs font-semibold text-[#334155]">
+                                    <svg class="h-4 w-4 text-accent-blue shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
+                                    </svg>
+                                    <span>{{ $jadwalBooking?->tanggal?->format('l, d M Y') ?? '-' }}</span>
+                                </div>
+                                <div class="pl-6 text-xxs text-gray-500 font-medium">
+                                    {{ $jadwalBooking ? $jadwalBooking->waktu_mulai . ' – ' . $jadwalBooking->waktu_selesai . ' WIB' : '-' }}
+                                </div>
+                            </div>
+
+                            <!-- Case info & Method -->
+                            <div class="space-y-3 pt-2 text-xs">
+                                <div class="flex items-center gap-2">
+                                    <x-status-badge :status="$metodeBooking" />
+                                </div>
+
+                                @if ($statusKonfirmasi === 'terkonfirmasi')
+                                    <div class="bg-green-50/50 border border-green-100 p-3 rounded-xl text-green-700 leading-relaxed">
+                                        <strong>Lokasi / Link Pertemuan:</strong><br>
+                                        @if ($metodeBooking === 'online')
+                                            <a href="{{ $bookingTampil->link_konsultasi }}" target="_blank" class="text-accent-blue hover:underline break-all font-semibold">
+                                                {{ $bookingTampil->link_konsultasi }}
+                                            </a>
+                                        @else
+                                            <span class="font-medium text-gray-700">{{ $bookingTampil->lokasi_konsultasi ?? '-' }}</span>
+                                        @endif
+                                    </div>
+                                @else
+                                    <div class="bg-yellow-50/50 border border-yellow-100 p-3 rounded-xl text-yellow-800 leading-relaxed">
+                                        Menunggu Admin melengkapi detail alamat atau link pertemuan online.
+                                    </div>
+                                @endif
+
+                                @if ($bookingTampil->catatan_preferensi_klien)
+                                    <div>
+                                        <span class="block text-xxs font-bold text-gray-400 uppercase tracking-wider">Catatan Preferensi Klien</span>
+                                        <span class="block font-medium text-gray-600 mt-0.5 italic">"{{ $bookingTampil->catatan_preferensi_klien }}"</span>
+                                    </div>
+                                @endif
+
+                                @if ($bookingTampil->catatan_konsultasi)
+                                    <div>
+                                        <span class="block text-xxs font-bold text-gray-400 uppercase tracking-wider">Catatan Konsultasi Admin</span>
+                                        <span class="block font-medium text-gray-600 mt-0.5 italic">"{{ $bookingTampil->catatan_konsultasi }}"</span>
+                                    </div>
+                                @endif
+                            </div>
+
+                            <!-- CTA Reschedule (jika diperbolehkan) -->
+                            @if ($bisaAjukanReschedule)
+                                <div class="pt-4 border-t border-[#F1F5F9]">
+                                    <a href="{{ route('klien.permintaan-reschedule.create', $bookingAktif) }}" class="bg-white border border-[#E2E8F0] hover:border-accent-blue text-navy-dark hover:text-accent-blue text-center font-bold py-2.5 rounded-xl text-xs transition flex items-center justify-center gap-2 shadow-sm w-full">
+                                        <svg class="h-4 w-4 text-gray-400 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 1121.21 8H12v9l-7-7"></path>
+                                        </svg>
+                                        <span>Ajukan Reschedule Jadwal</span>
+                                    </a>
+                                </div>
+                            @endif
+                        @endif
+                    </div>
+                @endif
             </div>
         </div>
     </div>

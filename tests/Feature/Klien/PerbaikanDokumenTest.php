@@ -16,7 +16,9 @@ class PerbaikanDokumenTest extends TestCase
 
     public function test_klien_can_upload_replacement_document_for_repair_note(): void
     {
-        Storage::fake("public");
+        // CRIT-01: dokumen perkara disimpan di disk "local" (private),
+        // bukan disk "public".
+        Storage::fake("local");
 
         $klien = $this->createKlien();
         $pengajuan = $this->createPengajuan($klien, [
@@ -69,12 +71,12 @@ class PerbaikanDokumenTest extends TestCase
             ->where("status_dokumen", "terkirim")
             ->firstOrFail();
 
-        Storage::disk("public")->assertExists($dokumenBaru->file_path);
+        Storage::disk("local")->assertExists($dokumenBaru->file_path);
     }
 
     public function test_klien_cannot_repair_other_clients_document(): void
     {
-        Storage::fake("public");
+        Storage::fake("local");
 
         $klienA = $this->createKlien();
         $klienB = $this->createKlien();

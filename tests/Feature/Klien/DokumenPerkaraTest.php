@@ -16,7 +16,9 @@ class DokumenPerkaraTest extends TestCase
 
     public function test_klien_can_upload_valid_document_for_owned_pengajuan(): void
     {
-        Storage::fake("public");
+        // CRIT-01: dokumen perkara disimpan di disk "local" (private),
+        // bukan disk "public".
+        Storage::fake("local");
 
         $klien = $this->createKlien();
         $pengajuan = $this->createPengajuan($klien);
@@ -34,12 +36,12 @@ class DokumenPerkaraTest extends TestCase
         $this->assertSame($pengajuan->id_pendaftaran, $dokumen->id_pendaftaran);
         $this->assertSame("terkirim", $dokumen->status_dokumen);
         $this->assertNotSame("ktp.pdf", basename($dokumen->file_path));
-        Storage::disk("public")->assertExists($dokumen->file_path);
+        Storage::disk("local")->assertExists($dokumen->file_path);
     }
 
     public function test_invalid_document_file_is_rejected(): void
     {
-        Storage::fake("public");
+        Storage::fake("local");
 
         $klien = $this->createKlien();
         $pengajuan = $this->createPengajuan($klien);
@@ -58,7 +60,7 @@ class DokumenPerkaraTest extends TestCase
 
     public function test_document_larger_than_five_mb_is_rejected(): void
     {
-        Storage::fake("public");
+        Storage::fake("local");
 
         $klien = $this->createKlien();
         $pengajuan = $this->createPengajuan($klien);
@@ -77,7 +79,7 @@ class DokumenPerkaraTest extends TestCase
 
     public function test_klien_cannot_upload_document_to_other_clients_pengajuan(): void
     {
-        Storage::fake("public");
+        Storage::fake("local");
 
         $klienA = $this->createKlien();
         $klienB = $this->createKlien();
