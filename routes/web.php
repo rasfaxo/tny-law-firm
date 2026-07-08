@@ -5,6 +5,7 @@ use App\Http\Controllers\Admin\JadwalKonsultasiController;
 use App\Http\Controllers\Admin\LaporanController;
 use App\Http\Controllers\Admin\PermintaanRescheduleController as AdminPermintaanRescheduleController;
 use App\Http\Controllers\Admin\KategoriPerkaraController;
+use App\Http\Controllers\Admin\PraPendaftaranController as AdminPraPendaftaranController;
 use App\Http\Controllers\Admin\StafLegalController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\Klien\BookingKonsultasiController;
@@ -202,6 +203,11 @@ Route::middleware(["auth", "active_account", "role:admin"])
             KategoriPerkaraController::class,
             "destroy",
         ])->name("kategori-perkara.destroy");
+
+        Route::get("/pra-pendaftaran/{praPendaftaranPerkara}", [
+            AdminPraPendaftaranController::class,
+            "show",
+        ])->name("pra-pendaftaran.show");
 
         Route::get("/jadwal-konsultasi", [
             JadwalKonsultasiController::class,

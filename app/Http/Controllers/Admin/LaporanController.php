@@ -42,9 +42,76 @@ class LaporanController extends Controller
         $this->statusReschedule = StatusReschedule::values();
     }
 
-    public function index(): View
+    public function index(Request $request): View
     {
-        return view("admin.laporan.index");
+        $filters = $request->validate([
+            "tanggal_mulai" => ["nullable", "date"],
+            "tanggal_selesai" => [
+                "nullable",
+                "date",
+                "after_or_equal:tanggal_mulai",
+            ],
+        ]);
+
+        $totalPengajuan = PraPendaftaranPerkara::query()
+            ->when($filters["tanggal_mulai"] ?? null, fn($q, $d) => $q->whereDate("tanggal_pengajuan", ">=", $d))
+            ->when($filters["tanggal_selesai"] ?? null, fn($q, $d) => $q->whereDate("tanggal_pengajuan", "<=", $d))
+            ->count();
+
+        $pengajuanSelesai = PraPendaftaranPerkara::query()
+            ->where("status_pengajuan", "selesai")
+            ->when($filters["tanggal_mulai"] ?? null, fn($q, $d) => $q->whereDate("tanggal_pengajuan", ">=", $d))
+            ->when($filters["tanggal_selesai"] ?? null, fn($q, $d) => $q->whereDate("tanggal_pengajuan", "<=", $d))
+            ->count();
+
+        $berkasLengkap = PraPendaftaranPerkara::query()
+            ->where("status_pengajuan", "berkas_lengkap")
+            ->when($filters["tanggal_mulai"] ?? null, fn($q, $d) => $q->whereDate("tanggal_pengajuan", ">=", $d))
+            ->when($filters["tanggal_selesai"] ?? null, fn($q, $d) => $q->whereDate("tanggal_pengajuan", "<=", $d))
+            ->count();
+
+        $bookingSelesai = BookingKonsultasi::query()
+            ->where("status_booking", "selesai")
+            ->when($filters["tanggal_mulai"] ?? null, fn($q, $d) => $q->whereDate("tanggal_booking", ">=", $d))
+            ->when($filters["tanggal_selesai"] ?? null, fn($q, $d) => $q->whereDate("tanggal_booking", "<=", $d))
+            ->count();
+
+        $kategoriSummary = KategoriPerkara::query()
+            ->withCount([
+                "praPendaftaranPerkara as total_count" => function ($query) use ($filters) {
+                    $query->when($filters["tanggal_mulai"] ?? null, fn($q, $d) => $q->whereDate("tanggal_pengajuan", ">=", $d))
+                        ->when($filters["tanggal_selesai"] ?? null, fn($q, $d) => $q->whereDate("tanggal_pengajuan", "<=", $d));
+                },
+                "praPendaftaranPerkara as berkas_lengkap_count" => function ($query) use ($filters) {
+                    $query->where("status_pengajuan", "berkas_lengkap")
+                        ->when($filters["tanggal_mulai"] ?? null, fn($q, $d) => $q->whereDate("tanggal_pengajuan", ">=", $d))
+                        ->when($filters["tanggal_selesai"] ?? null, fn($q, $d) => $q->whereDate("tanggal_pengajuan", "<=", $d));
+                },
+                "praPendaftaranPerkara as jadwal_dipilih_count" => function ($query) use ($filters) {
+                    $query->where("status_pengajuan", "jadwal_dipilih")
+                        ->when($filters["tanggal_mulai"] ?? null, fn($q, $d) => $q->whereDate("tanggal_pengajuan", ">=", $d))
+                        ->when($filters["tanggal_selesai"] ?? null, fn($q, $d) => $q->whereDate("tanggal_pengajuan", "<=", $d));
+                },
+                "praPendaftaranPerkara as selesai_count" => function ($query) use ($filters) {
+                    $query->where("status_pengajuan", "selesai")
+                        ->when($filters["tanggal_mulai"] ?? null, fn($q, $d) => $q->whereDate("tanggal_pengajuan", ">=", $d))
+                        ->when($filters["tanggal_selesai"] ?? null, fn($q, $d) => $q->whereDate("tanggal_pengajuan", "<=", $d));
+                }
+            ])
+            ->orderBy("nama_kategori")
+            ->get();
+
+        return view(
+            "admin.laporan.index",
+            compact(
+                "filters",
+                "totalPengajuan",
+                "pengajuanSelesai",
+                "berkasLengkap",
+                "bookingSelesai",
+                "kategoriSummary"
+            )
+        );
     }
 
     public function praPendaftaran(Request $request): View

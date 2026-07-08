@@ -1,182 +1,203 @@
 <x-app-layout>
     <x-slot name="header">
-        <h2 class="font-semibold text-xl text-gray-800 leading-tight">
-            {{ __('Admin Dashboard') }}
+        <div class="flex items-center gap-1 text-xxs font-semibold text-gray-400 uppercase tracking-wider mb-1">
+            <span>Admin</span>
+            <svg class="h-3 w-3 text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+            </svg>
+            <span class="text-gray-600">Dashboard</span>
+        </div>
+        <h2 class="font-extrabold text-2xl text-navy-dark leading-tight">
+            {{ __('Dashboard Admin') }}
         </h2>
     </x-slot>
 
-    <div class="py-12">
-        <div class="max-w-7xl mx-auto sm:px-6 lg:px-8 space-y-6">
-            <div class="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
-                @foreach ($statistics as $label => $value)
-                    <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
-                        <div class="p-5">
-                            <div class="text-sm font-medium text-gray-500">{{ $label }}</div>
-                            <div class="mt-2 text-3xl font-semibold text-gray-900">{{ $value }}</div>
+    @php
+        $berkasTidakLengkap = \App\Models\PraPendaftaranPerkara::where('status_pengajuan', 'berkas_tidak_lengkap')->count();
+    @endphp
+
+    <div class="space-y-6">
+        <!-- Welcome Banner (Figma Node 79:1026) -->
+        <div class="bg-gradient-to-r from-[#1e3a8a] via-[#1c357d] to-[#6d28d9] text-white p-6 sm:p-8 rounded-2xl shadow-lg flex flex-col md:flex-row justify-between items-start md:items-center gap-6 relative overflow-hidden">
+            <!-- Decorative circle overlay -->
+            <div class="absolute right-0 top-0 w-64 h-64 bg-white/5 rounded-full -mr-20 -mt-20 pointer-events-none"></div>
+            
+            <div class="space-y-2 max-w-2xl relative z-10">
+                <div class="bg-white/15 px-3 py-1 rounded-full text-xxs font-extrabold tracking-wider uppercase inline-block">
+                    Admin Panel
+                </div>
+                <h3 class="font-extrabold text-xl sm:text-2xl tracking-tight">Selamat datang, {{ Auth::user()->nama }}</h3>
+                <p class="text-sm text-white/70 leading-relaxed">
+                    Pantau aktivitas sistem, data pra-pendaftaran, staf legal, kategori perkara, dan jadwal konsultasi.
+                </p>
+            </div>
+            <a href="{{ route('admin.laporan.pra-pendaftaran') }}" class="bg-[#d4af37] hover:bg-[#c5a02e] hover:shadow-lg transition duration-200 px-5 py-3 rounded-xl font-extrabold text-xs text-navy-dark tracking-wider uppercase flex items-center gap-2 shrink-0 z-10 shadow-md shadow-[#d4af37]/20">
+                <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+                </svg>
+                <span>Lihat Data Pra-Pendaftaran</span>
+            </a>
+        </div>
+
+        <!-- 4 Stats Cards Grid -->
+        <div class="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-4">
+            <!-- Total Klien -->
+            <div class="bg-white border border-[#E2E8F0] p-6 rounded-2xl shadow-sm flex flex-col justify-between h-[160px]">
+                <div class="flex items-center justify-between">
+                    <div class="bg-[#F5F3FF] p-2.5 rounded-xl text-[#6D28D9]">
+                        <svg class="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                        </svg>
+                    </div>
+                    <span class="text-3xl font-extrabold text-navy-dark tracking-tight">{{ $statistics['Total Klien'] }}</span>
+                </div>
+                <div>
+                    <span class="block text-sm font-bold text-[#334155]">Total Klien</span>
+                    <span class="block text-xs text-gray-400">Akun klien aktif</span>
+                </div>
+            </div>
+
+            <!-- Total Staf Legal -->
+            <div class="bg-white border border-[#E2E8F0] p-6 rounded-2xl shadow-sm flex flex-col justify-between h-[160px]">
+                <div class="flex items-center justify-between">
+                    <div class="bg-[#EBF5FF] p-2.5 rounded-xl text-[#1E3A8A]">
+                        <svg class="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path>
+                        </svg>
+                    </div>
+                    <span class="text-3xl font-extrabold text-navy-dark tracking-tight">{{ $statistics['Total Staf Legal'] }}</span>
+                </div>
+                <div>
+                    <span class="block text-sm font-bold text-[#334155]">Total Staf Legal</span>
+                    <span class="block text-xs text-gray-400">Akun staf legal</span>
+                </div>
+            </div>
+
+            <!-- Pra-Pendaftaran -->
+            <div class="bg-white border border-[#E2E8F0] p-6 rounded-2xl shadow-sm flex flex-col justify-between h-[160px]">
+                <div class="flex items-center justify-between">
+                    <div class="bg-[#FFFBEB] p-2.5 rounded-xl text-[#D97706]">
+                        <svg class="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+                        </svg>
+                    </div>
+                    <span class="text-3xl font-extrabold text-navy-dark tracking-tight">{{ $statistics['Total Pengajuan'] }}</span>
+                </div>
+                <div>
+                    <span class="block text-sm font-bold text-[#334155]">Pra-Pendaftaran</span>
+                    <span class="block text-xs text-gray-400">Seluruh data pengajuan</span>
+                </div>
+            </div>
+
+            <!-- Jadwal Aktif -->
+            <div class="bg-white border border-[#E2E8F0] p-6 rounded-2xl shadow-sm flex flex-col justify-between h-[160px]">
+                <div class="flex items-center justify-between">
+                    <div class="bg-[#F0FDF4] p-2.5 rounded-xl text-[#15803D]">
+                        <svg class="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
+                        </svg>
+                    </div>
+                    <span class="text-3xl font-extrabold text-navy-dark tracking-tight">{{ $statistics['Jadwal Tersedia'] }}</span>
+                </div>
+                <div>
+                    <span class="block text-sm font-bold text-[#334155]">Jadwal Aktif</span>
+                    <span class="block text-xs text-gray-400">Slot jadwal tersedia</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Two Columns Layout (Figma Node 79:1099) -->
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+            <!-- Left Card: Ringkasan Status Pengajuan -->
+            <div class="bg-white border border-[#E2E8F0] p-6 sm:p-8 rounded-2xl shadow-sm lg:col-span-5 space-y-6">
+                <div>
+                    <h3 class="font-bold text-navy-dark text-lg">Ringkasan Status Pengajuan</h3>
+                    <p class="text-xs text-gray-400 mt-1">Distribusi status utama pada sistem.</p>
+                </div>
+                
+                <div class="space-y-3">
+                    <!-- Menunggu Verifikasi -->
+                    <div class="bg-[#F8FAFC] border border-[#E2E8F0] rounded-xl px-4 py-3 flex justify-between items-center">
+                        <span class="bg-[#FEF9C3] border border-[#FDE68A] text-[#A16207] text-xxs font-extrabold px-3 py-1 rounded-full uppercase tracking-wider">
+                            Menunggu Verifikasi
+                        </span>
+                        <span class="text-lg font-extrabold text-navy-dark">{{ $statistics['Pengajuan Menunggu Verifikasi'] }}</span>
+                    </div>
+
+                    <!-- Berkas Tidak Lengkap -->
+                    <div class="bg-[#F8FAFC] border border-[#E2E8F0] rounded-xl px-4 py-3 flex justify-between items-center">
+                        <span class="bg-[#FEE2E2] border border-[#FECACA] text-[#B91C1C] text-xxs font-extrabold px-3 py-1 rounded-full uppercase tracking-wider">
+                            Berkas Tidak Lengkap
+                        </span>
+                        <span class="text-lg font-extrabold text-navy-dark">{{ $berkasTidakLengkap }}</span>
+                    </div>
+
+                    <!-- Berkas Lengkap -->
+                    <div class="bg-[#F8FAFC] border border-[#E2E8F0] rounded-xl px-4 py-3 flex justify-between items-center">
+                        <span class="bg-[#DCFCE7] border border-[#BBF7D0] text-[#15803D] text-xxs font-extrabold px-3 py-1 rounded-full uppercase tracking-wider">
+                            Berkas Lengkap
+                        </span>
+                        <span class="text-lg font-extrabold text-navy-dark">{{ $statistics['Pengajuan Berkas Lengkap'] }}</span>
+                    </div>
+
+                    <!-- Jadwal Dipilih -->
+                    <div class="bg-[#F8FAFC] border border-[#E2E8F0] rounded-xl px-4 py-3 flex justify-between items-center">
+                        <span class="bg-[#DBEAFE] border border-[#BFDBFE] text-[#1D4ED8] text-xxs font-extrabold px-3 py-1 rounded-full uppercase tracking-wider">
+                            Jadwal Dipilih
+                        </span>
+                        <span class="text-lg font-extrabold text-navy-dark">{{ $statistics['Pengajuan Jadwal Dipilih'] }}</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Right Card: Pra-Pendaftaran Terbaru -->
+            <div class="bg-white border border-[#E2E8F0] p-6 sm:p-8 rounded-2xl shadow-sm lg:col-span-7 flex flex-col justify-between overflow-hidden">
+                <div class="space-y-6">
+                    <div class="flex justify-between items-center">
+                        <div>
+                            <h3 class="font-bold text-navy-dark text-lg">Pra-Pendaftaran Terbaru</h3>
+                            <p class="text-xs text-gray-400 mt-1">3 pengajuan terbaru dari klien.</p>
                         </div>
-                    </div>
-                @endforeach
-            </div>
-
-            <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
-                <div class="p-6 text-gray-900">
-                    <div class="flex items-center justify-between gap-4">
-                        <h3 class="text-lg font-medium text-gray-900">{{ __('Pengajuan Terbaru') }}</h3>
-                        <a href="{{ route('admin.laporan.pra-pendaftaran') }}" class="text-sm text-indigo-600 hover:text-indigo-900">
-                            {{ __('Lihat Laporan') }}
+                        <a href="{{ route('admin.laporan.pra-pendaftaran') }}" class="text-xs font-bold text-[#1D4ED8] hover:underline">
+                            Lihat Semua &rarr;
                         </a>
                     </div>
 
-                    <div class="mt-4 overflow-x-auto">
-                        <table class="min-w-full divide-y divide-gray-200">
-                            <thead class="bg-gray-50">
+                    <div class="overflow-x-auto border border-[#E2E8F0] rounded-xl">
+                        <table class="min-w-full divide-y divide-[#E2E8F0]">
+                            <thead class="bg-[#F8FAFC]">
                                 <tr>
-                                    <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Klien</th>
-                                    <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Judul Perkara</th>
-                                    <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Kategori</th>
-                                    <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
-                                    <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Tanggal</th>
-                                    <th class="px-4 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">Aksi</th>
+                                    <th class="px-4 py-3 text-left text-xxs font-bold text-gray-400 uppercase tracking-wider">Kode</th>
+                                    <th class="px-4 py-3 text-left text-xxs font-bold text-gray-400 uppercase tracking-wider">Klien</th>
+                                    <th class="px-4 py-3 text-left text-xxs font-bold text-gray-400 uppercase tracking-wider">Status</th>
+                                    <th class="px-4 py-3 text-right text-xxs font-bold text-gray-400 uppercase tracking-wider">Aksi</th>
                                 </tr>
                             </thead>
-                            <tbody class="bg-white divide-y divide-gray-200">
-                                @forelse ($pengajuanTerbaru as $pengajuan)
-                                    @php
-                                        $statusColor = match ($pengajuan->status_pengajuan) {
-                                            'selesai' => 'green',
-                                            'jadwal_dipilih', 'berkas_lengkap' => 'blue',
-                                            'berkas_tidak_lengkap' => 'red',
-                                            default => 'yellow',
-                                        };
-                                    @endphp
+                            <tbody class="bg-white divide-y divide-[#E2E8F0]">
+                                @forelse ($pengajuanTerbaru->take(3) as $pengajuan)
                                     <tr>
-                                        <td class="px-4 py-3 whitespace-nowrap text-gray-700">{{ $pengajuan->klien?->nama ?? '-' }}</td>
-                                        <td class="px-4 py-3 text-gray-700">{{ $pengajuan->judul_perkara }}</td>
-                                        <td class="px-4 py-3 whitespace-nowrap text-gray-700">{{ $pengajuan->kategori?->nama_kategori ?? '-' }}</td>
-                                        <td class="px-4 py-3 whitespace-nowrap text-gray-700">
-                                            <x-status-badge :status="$pengajuan->status_pengajuan" :color="$statusColor" />
+                                        <td class="px-4 py-3.5 whitespace-nowrap text-xs font-bold text-[#1E3A8A] font-mono">
+                                            PP-{{ str_pad($pengajuan->id_pendaftaran, 3, '0', STR_PAD_LEFT) }}
                                         </td>
-                                        <td class="px-4 py-3 whitespace-nowrap text-gray-700">{{ $pengajuan->tanggal_pengajuan?->format('d M Y H:i') ?? '-' }}</td>
-                                        <td class="px-4 py-3 whitespace-nowrap text-right text-sm text-gray-400">
-                                            {{ __('Tidak tersedia') }}
+                                        <td class="px-4 py-3.5 whitespace-nowrap text-xs font-semibold text-[#334155]">
+                                            {{ $pengajuan->klien?->nama ?? '-' }}
                                         </td>
-                                    </tr>
-                                @empty
-                                    <tr>
-                                        <td colspan="6" class="px-4 py-8 text-center text-gray-500">
-                                            {{ __('Belum ada pengajuan.') }}
+                                        <td class="px-4 py-3.5 whitespace-nowrap">
+                                            <x-status-badge :status="$pengajuan->status_pengajuan" />
                                         </td>
-                                    </tr>
-                                @endforelse
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-            </div>
-
-            <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
-                <div class="p-6 text-gray-900">
-                    <div class="flex items-center justify-between gap-4">
-                        <h3 class="text-lg font-medium text-gray-900">{{ __('Booking Konsultasi Terbaru') }}</h3>
-                        <a href="{{ route('admin.booking-konsultasi.index') }}" class="text-sm text-indigo-600 hover:text-indigo-900">
-                            {{ __('Lihat Booking') }}
-                        </a>
-                    </div>
-
-                    <div class="mt-4 overflow-x-auto">
-                        <table class="min-w-full divide-y divide-gray-200">
-                            <thead class="bg-gray-50">
-                                <tr>
-                                    <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Klien</th>
-                                    <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Judul Perkara</th>
-                                    <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Tanggal Jadwal</th>
-                                    <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Metode</th>
-                                    <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Booking</th>
-                                    <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Konfirmasi</th>
-                                </tr>
-                            </thead>
-                            <tbody class="bg-white divide-y divide-gray-200">
-                                @forelse ($bookingTerbaru as $booking)
-                                    @php
-                                        $jadwal = $booking->jadwalKonsultasi;
-                                        $bookingColor = match ($booking->status_booking) {
-                                            'aktif' => 'green',
-                                            'selesai' => 'blue',
-                                            'dibatalkan' => 'red',
-                                            default => 'gray',
-                                        };
-                                        $konfirmasiColor = $booking->status_konfirmasi_konsultasi === 'terkonfirmasi' ? 'green' : 'yellow';
-                                    @endphp
-                                    <tr>
-                                        <td class="px-4 py-3 whitespace-nowrap text-gray-700">{{ $booking->klien?->nama ?? '-' }}</td>
-                                        <td class="px-4 py-3 text-gray-700">
-                                            <a href="{{ route('admin.booking-konsultasi.show', $booking) }}" class="text-indigo-600 hover:text-indigo-900">
-                                                {{ $booking->praPendaftaranPerkara?->judul_perkara ?? '-' }}
-                                            </a>
-                                        </td>
-                                        <td class="px-4 py-3 whitespace-nowrap text-gray-700">
-                                            {{ $jadwal?->tanggal?->format('d M Y') ?? '-' }}
-                                        </td>
-                                        <td class="px-4 py-3 whitespace-nowrap text-gray-700">
-                                            <x-status-badge :status="$booking->metode_konsultasi ?? '-'" :color="$booking->metode_konsultasi === 'online' ? 'blue' : 'gray'" />
-                                        </td>
-                                        <td class="px-4 py-3 whitespace-nowrap text-gray-700">
-                                            <x-status-badge :status="$booking->status_booking" :color="$bookingColor" />
-                                        </td>
-                                        <td class="px-4 py-3 whitespace-nowrap text-gray-700">
-                                            <x-status-badge :status="$booking->status_konfirmasi_konsultasi ?? 'menunggu_konfirmasi'" :color="$konfirmasiColor" />
-                                        </td>
-                                    </tr>
-                                @empty
-                                    <tr>
-                                        <td colspan="6" class="px-4 py-8 text-center text-gray-500">
-                                            {{ __('Belum ada booking konsultasi.') }}
-                                        </td>
-                                    </tr>
-                                @endforelse
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-            </div>
-
-            <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
-                <div class="p-6 text-gray-900">
-                    <div class="flex items-center justify-between gap-4">
-                        <h3 class="text-lg font-medium text-gray-900">{{ __('Permintaan Reschedule Menunggu') }}</h3>
-                        <a href="{{ route('admin.permintaan-reschedule.index') }}" class="text-sm text-indigo-600 hover:text-indigo-900">
-                            {{ __('Lihat Reschedule') }}
-                        </a>
-                    </div>
-
-                    <div class="mt-4 overflow-x-auto">
-                        <table class="min-w-full divide-y divide-gray-200">
-                            <thead class="bg-gray-50">
-                                <tr>
-                                    <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Klien</th>
-                                    <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Judul Perkara</th>
-                                    <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Alasan Singkat</th>
-                                    <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Tanggal Pengajuan</th>
-                                    <th class="px-4 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">Aksi</th>
-                                </tr>
-                            </thead>
-                            <tbody class="bg-white divide-y divide-gray-200">
-                                @forelse ($rescheduleMenunggu as $reschedule)
-                                    <tr>
-                                        <td class="px-4 py-3 whitespace-nowrap text-gray-700">{{ $reschedule->klien?->nama ?? '-' }}</td>
-                                        <td class="px-4 py-3 text-gray-700">{{ $reschedule->bookingLama?->praPendaftaranPerkara?->judul_perkara ?? '-' }}</td>
-                                        <td class="px-4 py-3 text-gray-700">{{ \Illuminate\Support\Str::limit($reschedule->alasan_reschedule, 80) }}</td>
-                                        <td class="px-4 py-3 whitespace-nowrap text-gray-700">{{ $reschedule->tanggal_pengajuan?->format('d M Y H:i') ?? '-' }}</td>
-                                        <td class="px-4 py-3 whitespace-nowrap text-right text-sm font-medium">
-                                            <a href="{{ route('admin.permintaan-reschedule.show', $reschedule) }}" class="text-indigo-600 hover:text-indigo-900">
-                                                {{ __('Detail') }}
+                                        <td class="px-4 py-3.5 whitespace-nowrap text-right">
+                                            <a href="{{ route('admin.laporan.pra-pendaftaran') }}" class="inline-flex items-center gap-1 text-xs font-bold text-accent-blue hover:underline transition">
+                                                <span>Detail</span>
+                                                <svg class="h-3 w-3 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+                                                </svg>
                                             </a>
                                         </td>
                                     </tr>
                                 @empty
                                     <tr>
-                                        <td colspan="5" class="px-4 py-8 text-center text-gray-500">
-                                            {{ __('Tidak ada permintaan reschedule yang menunggu.') }}
+                                        <td colspan="4" class="px-4 py-8 text-center text-xs text-gray-400">
+                                            Belum ada pengajuan terbaru.
                                         </td>
                                     </tr>
                                 @endforelse
