@@ -134,6 +134,18 @@
                     <span>Kategori Perkara</span>
                 </a>
 
+                <!-- Data Pengajuan -->
+                <a href="{{ route('admin.pra-pendaftaran.index') }}" 
+                   class="h-[46px] rounded-[14px] px-[16px] text-[13px] font-medium tracking-[0.325px] flex items-center gap-[12px] relative transition duration-150 {{ request()->routeIs('admin.pra-pendaftaran.*') ? 'bg-[#1e3a8a] text-white' : 'text-[#cbd5e1] hover:bg-[#132240] hover:text-white' }}">
+                    @if(request()->routeIs('admin.pra-pendaftaran.*'))
+                        <div class="absolute bg-[#d4af37] h-[24px] left-0 rounded-r-[3px] top-[11px] w-[3px]"></div>
+                    @endif
+                    <svg class="h-[18px] w-[18px] shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+                    </svg>
+                    <span>Data Pengajuan</span>
+                </a>
+
                 <!-- Slot Jadwal -->
                 <a href="{{ route('admin.jadwal-konsultasi.index') }}" 
                    class="h-[46px] rounded-[14px] px-[16px] text-[13px] font-medium tracking-[0.325px] flex items-center gap-[12px] relative transition duration-150 {{ request()->routeIs('admin.jadwal-konsultasi.*') ? 'bg-[#1e3a8a] text-white' : 'text-[#cbd5e1] hover:bg-[#132240] hover:text-white' }}">
@@ -312,6 +324,9 @@
                 </a>
                 <a href="{{ route('admin.kategori-perkara.index') }}" class="h-[46px] rounded-[14px] px-[16px] text-[13px] font-medium tracking-[0.325px] flex items-center gap-[12px] relative transition {{ request()->routeIs('admin.kategori-perkara.*') ? 'bg-[#1e3a8a] text-white' : 'text-[#cbd5e1] hover:bg-[#132240]' }}">
                     <span>Kategori Perkara</span>
+                </a>
+                <a href="{{ route('admin.pra-pendaftaran.index') }}" class="h-[46px] rounded-[14px] px-[16px] text-[13px] font-medium tracking-[0.325px] flex items-center gap-[12px] relative transition {{ request()->routeIs('admin.pra-pendaftaran.*') ? 'bg-[#1e3a8a] text-white' : 'text-[#cbd5e1] hover:bg-[#132240]' }}">
+                    <span>Data Pengajuan</span>
                 </a>
                 <a href="{{ route('admin.jadwal-konsultasi.index') }}" class="h-[46px] rounded-[14px] px-[16px] text-[13px] font-medium tracking-[0.325px] flex items-center gap-[12px] relative transition {{ request()->routeIs('admin.jadwal-konsultasi.*') ? 'bg-[#1e3a8a] text-white' : 'text-[#cbd5e1] hover:bg-[#132240]' }}">
                     <span>Slot Jadwal</span>

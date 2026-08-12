@@ -204,6 +204,10 @@ Route::middleware(["auth", "active_account", "role:admin"])
             "destroy",
         ])->name("kategori-perkara.destroy");
 
+        Route::get("/pra-pendaftaran", [
+            AdminPraPendaftaranController::class,
+            "index",
+        ])->name("pra-pendaftaran.index");
         Route::get("/pra-pendaftaran/{praPendaftaranPerkara}", [
             AdminPraPendaftaranController::class,
             "show",
