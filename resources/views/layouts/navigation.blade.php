@@ -122,6 +122,18 @@
                     <span>Kelola Staf Legal</span>
                 </a>
 
+                <!-- Data Klien -->
+                <a href="{{ route('admin.klien.index') }}" 
+                   class="h-[46px] rounded-[14px] px-[16px] text-[13px] font-medium tracking-[0.325px] flex items-center gap-[12px] relative transition duration-150 {{ request()->routeIs('admin.klien.*') ? 'bg-[#1e3a8a] text-white' : 'text-[#cbd5e1] hover:bg-[#132240] hover:text-white' }}">
+                    @if(request()->routeIs('admin.klien.*'))
+                        <div class="absolute bg-[#d4af37] h-[24px] left-0 rounded-r-[3px] top-[11px] w-[3px]"></div>
+                    @endif
+                    <svg class="h-[18px] w-[18px] shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"></path>
+                    </svg>
+                    <span>Data Klien</span>
+                </a>
+
                 <!-- Kategori Perkara -->
                 <a href="{{ route('admin.kategori-perkara.index') }}" 
                    class="h-[46px] rounded-[14px] px-[16px] text-[13px] font-medium tracking-[0.325px] flex items-center gap-[12px] relative transition duration-150 {{ request()->routeIs('admin.kategori-perkara.*') ? 'bg-[#1e3a8a] text-white' : 'text-[#cbd5e1] hover:bg-[#132240] hover:text-white' }}">
@@ -321,6 +333,9 @@
                 </a>
                 <a href="{{ route('admin.staf-legal.index') }}" class="h-[46px] rounded-[14px] px-[16px] text-[13px] font-medium tracking-[0.325px] flex items-center gap-[12px] relative transition {{ request()->routeIs('admin.staf-legal.*') ? 'bg-[#1e3a8a] text-white' : 'text-[#cbd5e1] hover:bg-[#132240]' }}">
                     <span>Kelola Staf Legal</span>
+                </a>
+                <a href="{{ route('admin.klien.index') }}" class="h-[46px] rounded-[14px] px-[16px] text-[13px] font-medium tracking-[0.325px] flex items-center gap-[12px] relative transition {{ request()->routeIs('admin.klien.*') ? 'bg-[#1e3a8a] text-white' : 'text-[#cbd5e1] hover:bg-[#132240]' }}">
+                    <span>Data Klien</span>
                 </a>
                 <a href="{{ route('admin.kategori-perkara.index') }}" class="h-[46px] rounded-[14px] px-[16px] text-[13px] font-medium tracking-[0.325px] flex items-center gap-[12px] relative transition {{ request()->routeIs('admin.kategori-perkara.*') ? 'bg-[#1e3a8a] text-white' : 'text-[#cbd5e1] hover:bg-[#132240]' }}">
                     <span>Kategori Perkara</span>

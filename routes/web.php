@@ -144,6 +144,30 @@ Route::middleware(["auth", "active_account", "role:admin"])
             "pengajuanSelesai",
         ])->name("laporan.pengajuan-selesai");
 
+        Route::get("/klien", [\App\Http\Controllers\Admin\KlienController::class, "index"])->name(
+            "klien.index",
+        );
+        Route::get("/klien/{user}", [
+            \App\Http\Controllers\Admin\KlienController::class,
+            "show",
+        ])->name("klien.show");
+        Route::get("/klien/{user}/edit", [
+            \App\Http\Controllers\Admin\KlienController::class,
+            "edit",
+        ])->name("klien.edit");
+        Route::put("/klien/{user}", [
+            \App\Http\Controllers\Admin\KlienController::class,
+            "update",
+        ])->name("klien.update");
+        Route::patch("/klien/{user}/status", [
+            \App\Http\Controllers\Admin\KlienController::class,
+            "updateStatus",
+        ])->name("klien.status");
+        Route::patch("/klien/{user}/password", [
+            \App\Http\Controllers\Admin\KlienController::class,
+            "updatePassword",
+        ])->name("klien.password");
+
         Route::get("/staf-legal", [StafLegalController::class, "index"])->name(
             "staf-legal.index",
         );
