@@ -13,7 +13,7 @@ class PraPendaftaranPerkaraService
     ) {}
 
     /**
-     * @param array{id_kategori: mixed, judul_perkara: string, kronologi: string, nama_dokumen: string, jenis_dokumen: string, file_dokumen: \Illuminate\Http\UploadedFile} $data
+     * @param array{id_kategori: mixed, judul_perkara: string, kronologi: string, dokumen: array<int, array{nama_dokumen: string, jenis_dokumen: string, file_dokumen: \Illuminate\Http\UploadedFile}>} $data
      */
     public function createForKlien(array $data, int $userId): PraPendaftaranPerkara
     {
@@ -34,12 +34,14 @@ class PraPendaftaranPerkaraService
                 "keterangan" => "Pengajuan pra-pendaftaran perkara dibuat oleh klien",
             ]);
 
-            // Save initial document
-            $this->dokumenService->storeForPengajuan($pengajuan, [
-                "nama_dokumen" => $data["nama_dokumen"],
-                "jenis_dokumen" => $data["jenis_dokumen"],
-                "file" => $data["file_dokumen"],
-            ]);
+            // Save all documents
+            foreach ($data["dokumen"] as $doc) {
+                $this->dokumenService->storeForPengajuan($pengajuan, [
+                    "nama_dokumen" => $doc["nama_dokumen"],
+                    "jenis_dokumen" => $doc["jenis_dokumen"],
+                    "file" => $doc["file_dokumen"],
+                ]);
+            }
 
             return $pengajuan;
         });
