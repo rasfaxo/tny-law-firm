@@ -14,38 +14,26 @@
     <div class="space-y-6 max-w-5xl mx-auto">
         <!-- Notifikasi -->
         @if (session('success'))
-            <div class="rounded-xl bg-green-50 border border-green-200 p-4 flex gap-3 text-sm text-green-700 shadow-sm">
-                <svg class="h-5 w-5 text-green-500 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-                </svg>
-                <span>{{ session('success') }}</span>
-            </div>
+            <x-alert-banner type="success">
+                {{ session('success') }}
+            </x-alert-banner>
         @endif
 
         @if (session('error'))
-            <div class="rounded-xl bg-red-50 border border-red-200 p-4 flex gap-3 text-sm text-red-700 shadow-sm">
-                <svg class="h-5 w-5 text-red-500 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path>
-                </svg>
-                <span>{{ session('error') }}</span>
-            </div>
+            <x-alert-banner type="error">
+                {{ session('error') }}
+            </x-alert-banner>
         @endif
 
         <!-- Banner status reschedule -->
         @if($permintaanMenunggu)
-            <div class="bg-amber-50 border border-amber-200 p-4 rounded-xl flex gap-3 text-sm text-amber-800 shadow-sm">
-                <svg class="h-5 w-5 text-amber-500 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-                </svg>
-                <div class="space-y-1">
-                    <p class="font-bold">Permintaan Reschedule Menunggu Persetujuan</p>
-                    <p class="text-xs text-amber-700/80">Anda telah mengajukan reschedule untuk booking ini. Jadwal lama tetap berlaku hingga keputusan disetujui Admin.</p>
-                </div>
-            </div>
+            <x-alert-banner type="warning" title="Permintaan Reschedule Menunggu Persetujuan">
+                Anda telah mengajukan reschedule untuk booking ini. Jadwal lama tetap berlaku hingga keputusan disetujui Admin.
+            </x-alert-banner>
         @endif
 
         <!-- 1. Header Card -->
-        <div class="bg-white border border-[#E2E8F0] p-6 sm:p-8 rounded-[20px] shadow-sm">
+        <x-card>
             <div class="flex flex-col sm:flex-row sm:justify-between sm:items-start gap-4">
                 <span class="inline-flex bg-blue-50 text-accent-blue font-bold font-mono text-xs px-3 py-1 rounded-lg w-max">
                     BK-{{ str_pad($bookingKonsultasi->id_booking, 3, '0', STR_PAD_LEFT) }}
@@ -65,7 +53,7 @@
                 {{ $perkara->judul_perkara }}
             </h3>
             
-            <hr class="border-[#F1F5F9] my-6">
+            <x-divider />
 
             <div class="grid grid-cols-1 sm:grid-cols-3 gap-6">
                 <div>
@@ -84,13 +72,13 @@
                     </span>
                 </div>
             </div>
-        </div>
+        </x-card>
 
         <!-- 2. Jadwal Konsultasi Card -->
-        <div class="bg-white border border-[#E2E8F0] p-6 sm:p-8 rounded-[20px] shadow-sm">
+        <x-card>
             <h3 class="font-bold text-navy-dark text-xl">Jadwal Konsultasi</h3>
             
-            <hr class="border-[#F1F5F9] my-6">
+            <x-divider />
 
             <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
                 <!-- Tanggal -->
@@ -126,16 +114,16 @@
                     </div>
                 </div>
             </div>
-        </div>
+        </x-card>
 
         <!-- 3. Informasi Admin Card -->
-        <div class="bg-white border border-[#E2E8F0] p-6 sm:p-8 rounded-[20px] shadow-sm">
+        <x-card>
             <div>
                 <h3 class="font-bold text-navy-dark text-xl">Informasi Admin</h3>
                 <p class="text-sm text-gray-500 mt-1">Informasi yang diberikan oleh Admin untuk pelaksanaan konsultasi.</p>
             </div>
 
-            <hr class="border-[#F1F5F9] my-6">
+            <x-divider />
 
             <div class="divide-y divide-[#F1F5F9] -my-4">
                 <!-- Link / Lokasi -->
@@ -171,16 +159,16 @@
                     </p>
                 </div>
             </div>
-        </div>
+        </x-card>
 
         <!-- 4. Catatan Klien Card -->
-        <div class="bg-white border border-[#E2E8F0] p-6 sm:p-8 rounded-[20px] shadow-sm">
+        <x-card>
             <div>
-                <h3 class="font-bold text-navy-dark text-xl">Catatan Klien</h3>
-                <p class="text-sm text-gray-500 mt-1">Catatan preferensi yang Anda berikan saat melakukan pemesanan.</p>
+                <h3 class="font-bold text-navy-dark text-xl">Catatan Preferensi Klien</h3>
+                <p class="text-sm text-gray-500 mt-1">Catatan yang Anda berikan saat mengajukan booking jadwal konsultasi.</p>
             </div>
 
-            <hr class="border-[#F1F5F9] my-6">
+            <x-divider />
 
             <div class="grid grid-cols-1 sm:grid-cols-[200px_1fr] items-start gap-2 sm:gap-6">
                 <span class="text-[11px] font-bold text-gray-400 uppercase tracking-wider pt-1">CATATAN PREFERENSI</span>
@@ -190,10 +178,10 @@
                     </p>
                 </div>
             </div>
-        </div>
+        </x-card>
 
         <!-- 5. Request Reschedule Action Card -->
-        <div class="bg-white border border-[#E2E8F0] p-6 sm:p-8 rounded-[20px] shadow-sm flex flex-col sm:flex-row sm:items-center sm:justify-between gap-6">
+        <x-card class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-6">
             <div class="space-y-1">
                 <h3 class="font-bold text-navy-dark text-lg">Request Reschedule</h3>
                 <p class="text-sm text-gray-500">Jadwal tetap berlaku hingga disetujui oleh Admin.</p>
@@ -201,12 +189,12 @@
             
             <div class="shrink-0">
                 @if($bisaAjukanReschedule)
-                    <a href="{{ route('klien.permintaan-reschedule.create', $bookingKonsultasi) }}" class="bg-[#1e3a8a] hover:bg-blue-900 text-white font-bold text-sm px-6 py-3 rounded-xl transition shadow-md shadow-blue-900/20 inline-flex items-center justify-center gap-2 w-full sm:w-auto">
+                    <x-primary-button href="{{ route('klien.permintaan-reschedule.create', $bookingKonsultasi) }}" tag="a" class="w-full sm:w-auto justify-center gap-2">
                         <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 1121.21 8H12v9l-7-7"></path>
                         </svg>
                         Request Reschedule
-                    </a>
+                    </x-primary-button>
                 @else
                     <button disabled class="bg-gray-100 text-gray-400 font-bold text-sm px-6 py-3 rounded-xl border border-gray-200 cursor-not-allowed inline-flex items-center justify-center gap-2 w-full sm:w-auto">
                         <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -216,16 +204,16 @@
                     </button>
                 @endif
             </div>
-        </div>
+        </x-card>
 
         <!-- 6. Back Button Area -->
         <div class="pt-4 pb-12">
-            <a href="{{ route('klien.booking-konsultasi.index') }}" class="inline-flex items-center gap-2 bg-white border border-[#E2E8F0] hover:bg-gray-50 text-navy-dark font-bold text-sm px-5 py-2.5 rounded-xl transition shadow-sm">
+            <x-secondary-button href="{{ route('klien.booking-konsultasi.index') }}" tag="a">
                 <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path>
                 </svg>
                 Kembali ke Daftar Jadwal
-            </a>
+            </x-secondary-button>
         </div>
     </div>
 </x-app-layout>

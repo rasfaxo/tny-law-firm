@@ -7,30 +7,24 @@
 
     <div class="space-y-6" x-data="{ isSubmitting: false }">
         @if ($errors->any())
-            <div class="rounded-xl bg-red-50 border border-red-200 p-4 flex gap-3 text-sm text-red-700 shadow-sm" x-init="$nextTick(() => { $el.scrollIntoView({ behavior: 'smooth', block: 'start' }); })">
-                <svg class="h-5 w-5 text-red-500 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path>
-                </svg>
+            <x-alert-banner type="error" x-init="$nextTick(() => { $el.scrollIntoView({ behavior: 'smooth', block: 'start' }); })">
                 <ul class="list-disc list-inside space-y-1">
                     @foreach ($errors->all() as $error)
                         <li>{{ $error }}</li>
                     @endforeach
                 </ul>
-            </div>
+            </x-alert-banner>
         @endif
         @if (session('error'))
-            <div class="rounded-xl bg-red-50 border border-red-200 p-4 flex gap-3 text-sm text-red-700 shadow-sm">
-                <svg class="h-5 w-5 text-red-500 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path>
-                </svg>
-                <span>{{ session('error') }}</span>
-            </div>
+            <x-alert-banner type="error">
+                {{ session('error') }}
+            </x-alert-banner>
         @endif
 
 
 
         <!-- Card Info Pengajuan -->
-        <div class="bg-white border border-[#E2E8F0] p-6 sm:p-8 rounded-2xl shadow-sm flex flex-col md:flex-row md:items-start md:justify-between gap-6">
+        <x-card class="flex flex-col md:flex-row md:items-start md:justify-between gap-6">
             <div class="space-y-4 max-w-2xl">
                 <div>
                     <h3 class="font-extrabold text-navy-dark text-lg sm:text-xl leading-tight">
@@ -55,7 +49,7 @@
                     <span class="block text-sm font-bold text-accent-blue font-mono mt-1">PP-{{ str_pad($praPendaftaranPerkara->id_pendaftaran, 3, '0', STR_PAD_LEFT) }}</span>
                 </div>
             </div>
-        </div>
+        </x-card>
 
         <!-- Main Form (Booking POST) -->
         <form method="POST" action="{{ route('klien.booking-konsultasi.store', $praPendaftaranPerkara) }}" @submit="isSubmitting = true">
@@ -65,7 +59,7 @@
             <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 items-start">
                 
                 <!-- LEFT COLUMN: Pilih Slot Jadwal -->
-                <div class="bg-white border border-[#E2E8F0] rounded-2xl shadow-sm overflow-hidden">
+                <x-card class="p-0 overflow-hidden sm:p-0">
                     <!-- Section Title -->
                     <div class="p-6 sm:p-8 border-b border-[#F1F5F9] bg-[#F8FAFC]/50">
                         <h3 class="font-bold text-navy-dark text-lg">Pilih Slot Jadwal</h3>
@@ -74,12 +68,12 @@
                         <!-- Date Filter Row -->
                         <div class="flex gap-3 items-end mt-6">
                             <div class="flex-1">
-                                <label for="date-picker-input" class="block text-xxs font-bold text-gray-600 uppercase tracking-wider mb-2">Filter Tanggal</label>
-                                <input type="date" id="date-picker-input" value="{{ request('tanggal') }}" class="w-full bg-white border-[#E2E8F0] focus:border-accent-blue focus:ring focus:ring-accent-blue/20 rounded-xl text-sm placeholder-gray-400 transition shadow-sm h-11">
+                                <x-input-label for="date-picker-input" :value="__('Filter Tanggal')" class="!text-xxs !font-bold !text-gray-600 !uppercase !tracking-wider mb-2" />
+                                <x-text-input type="date" id="date-picker-input" :value="request('tanggal')" class="w-full" />
                             </div>
-                            <button type="button" onclick="document.getElementById('filter-tanggal-hidden').value = document.getElementById('date-picker-input').value; document.getElementById('filter-form').submit();" class="bg-[#1e3a8a] hover:bg-blue-900 text-white font-bold text-sm h-11 px-6 rounded-xl transition shadow-md shadow-blue-900/20">
+                            <x-primary-button type="button" onclick="document.getElementById('filter-tanggal-hidden').value = document.getElementById('date-picker-input').value; document.getElementById('filter-form').submit();" class="h-11 px-6">
                                 Cari Slot
-                            </button>
+                            </x-primary-button>
                         </div>
                     </div>
                     
@@ -124,12 +118,8 @@
                                 </div>
                             </label>
                         @empty
-                            <div class="text-center py-12 px-4 border-2 border-dashed border-[#E2E8F0] rounded-2xl bg-[#F8FAFC]">
-                                <svg class="mx-auto h-12 w-12 text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
-                                </svg>
-                                <h3 class="mt-2 text-sm font-bold text-navy-dark">Belum ada slot jadwal</h3>
-                                <p class="mt-1 text-xs text-gray-500">Admin belum menambahkan jadwal konsultasi yang tersedia untuk saat ini.</p>
+                            <div class="py-12">
+                                <x-empty-state title="Belum ada slot jadwal" message="Admin belum menambahkan jadwal konsultasi yang tersedia untuk saat ini." />
                             </div>
                         @endforelse
                         
@@ -139,10 +129,10 @@
                             </div>
                         @endif
                     </div>
-                </div>
+                </x-card>
 
                 <!-- RIGHT COLUMN: Detail Konsultasi -->
-                <div class="bg-white border border-[#E2E8F0] rounded-2xl shadow-sm overflow-hidden flex flex-col justify-between min-h-[500px]">
+                <x-card class="p-0 overflow-hidden sm:p-0 flex flex-col justify-between min-h-[500px]">
                     <div class="p-6 sm:p-8 space-y-6">
                         <!-- Section Title -->
                         <div class="border-b border-[#F1F5F9] pb-4">
@@ -180,41 +170,31 @@
                         <!-- Catatan Preferensi -->
                         <div>
                             <x-input-label for="catatan_preferensi_klien" :value="__('Catatan Preferensi (Opsional)')" class="!text-xs !font-bold !text-gray-600 !uppercase !tracking-wider mb-2" />
-                            <textarea id="catatan_preferensi_klien" name="catatan_preferensi_klien" rows="4" class="w-full bg-[#F8FAFC] border-[#E2E8F0] focus:border-accent-blue focus:ring focus:ring-accent-blue/20 rounded-xl text-sm placeholder-gray-400 transition shadow-sm resize-none" placeholder="Tuliskan preferensi atau informasi tambahan terkait konsultasi...">{{ old('catatan_preferensi_klien') }}</textarea>
+                            <x-text-input tag="textarea" id="catatan_preferensi_klien" name="catatan_preferensi_klien" rows="4" class="w-full resize-none" placeholder="Tuliskan preferensi atau informasi tambahan terkait konsultasi...">{{ old('catatan_preferensi_klien') }}</x-text-input>
                             <x-input-error :messages="$errors->get('catatan_preferensi_klien')" class="mt-2" />
                         </div>
 
                         <!-- Alert Aturan Booking -->
-                        <div class="bg-[#EFF6FF] border-l-4 border-accent-blue p-4 rounded-r-xl">
-                            <div class="flex gap-2 items-center">
-                                <svg class="h-5 w-5 text-accent-blue shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-                                </svg>
-                                <span class="font-bold text-accent-blue text-sm">Aturan Booking</span>
-                            </div>
-                            <p class="text-xs text-blue-700/80 mt-2 pl-7 leading-relaxed">
-                                Satu pengajuan hanya dapat memiliki satu booking aktif. Link atau lokasi konsultasi akan dikonfirmasi oleh Admin.
-                            </p>
-                        </div>
+                        <x-alert-banner type="info" title="Aturan Booking">
+                            Satu pengajuan hanya dapat memiliki satu booking aktif. Link atau lokasi konsultasi akan dikonfirmasi oleh Admin.
+                        </x-alert-banner>
                     </div>
 
                     <!-- Footer Buttons -->
                     <div class="p-6 sm:p-8 border-t border-[#F1F5F9] bg-[#F8FAFC]/50 flex items-center justify-end gap-3 shrink-0">
-                        <a href="{{ route('klien.pra-pendaftaran.show', $praPendaftaranPerkara) }}" class="bg-white border border-[#E2E8F0] hover:bg-gray-50 text-gray-700 font-bold text-sm px-6 py-2.5 rounded-xl transition shadow-sm">
+                        <x-secondary-button href="{{ route('klien.pra-pendaftaran.show', $praPendaftaranPerkara) }}" tag="a">
                             Batal
-                        </a>
-                        <button type="submit" 
-                                :disabled="isSubmitting"
-                                class="bg-[#1e3a8a] hover:bg-blue-900 text-white font-bold text-sm px-8 py-2.5 rounded-xl transition shadow-md shadow-blue-900/20 flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed">
+                        </x-secondary-button>
+                        <x-primary-button ::disabled="isSubmitting">
                             <span x-show="!isSubmitting">Konfirmasi Booking</span>
-                            <span x-show="isSubmitting" class="flex items-center gap-2">
+                            <span x-show="isSubmitting" class="flex items-center gap-2" style="display: none;">
                                 <svg class="animate-spin h-4 w-4 text-white" fill="none" viewBox="0 0 24 24">
                                     <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
                                     <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
                                 </svg>
                                 <span>Mengirim...</span>
                             </span>
-                        </button>
+                        </x-primary-button>
                     </div>
                 </div>
 

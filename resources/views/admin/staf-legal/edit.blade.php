@@ -2,25 +2,22 @@
 
     <div class="space-y-6">
         <div class="flex justify-start">
-            <a href="{{ route('admin.staf-legal.index') }}" class="inline-flex items-center justify-center bg-white border border-[#E2E8F0] hover:border-accent-blue text-navy-dark hover:text-accent-blue font-bold text-xs px-4 py-2.5 rounded-xl transition shadow-sm gap-2">
+            <x-secondary-button href="{{ route('admin.staf-legal.index') }}" tag="a" class="gap-2">
                 <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path>
                 </svg>
                 <span>{{ __('Kembali') }}</span>
-            </a>
+            </x-secondary-button>
         </div>
 
         <div class="max-w-2xl mx-auto">
             @if (session('success'))
-                <div class="bg-emerald-50 border border-emerald-200 text-emerald-800 rounded-xl p-4 text-xs font-semibold flex items-center gap-3 mb-6">
-                    <svg class="h-4 w-4 text-emerald-600 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-                    </svg>
-                    <span>{{ session('success') }}</span>
-                </div>
+                <x-alert-banner type="success" class="mb-6">
+                    {{ session('success') }}
+                </x-alert-banner>
             @endif
 
-            <div class="bg-white border border-[#E2E8F0] p-6 sm:p-8 rounded-2xl shadow-sm">
+            <x-card>
                 <form method="POST" action="{{ route('admin.staf-legal.update', $stafLegal) }}" class="space-y-6">
                     @csrf
                     @method('PUT')
@@ -45,24 +42,24 @@
 
                     <div>
                         <x-input-label for="status_akun" :value="__('Status Akun')" />
-                        <select id="status_akun" name="status_akun" class="mt-1 block w-full border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 rounded-md shadow-sm" required>
+                        <select id="status_akun" name="status_akun" class="mt-1 block w-full bg-[#F8FAFC] border-[#E2E8F0] focus:border-accent-blue focus:ring focus:ring-accent-blue/20 rounded-xl text-sm transition shadow-sm" required>
                             <option value="aktif" @selected(old('status_akun', $stafLegal->status_akun) === 'aktif')>Aktif</option>
                             <option value="nonaktif" @selected(old('status_akun', $stafLegal->status_akun) === 'nonaktif')>Nonaktif</option>
                         </select>
                         <x-input-error class="mt-2" :messages="$errors->get('status_akun')" />
                     </div>
 
-                    <div class="flex items-center justify-end gap-3">
-                        <a href="{{ route('admin.staf-legal.show', $stafLegal) }}" class="text-sm text-gray-600 hover:text-gray-900">
+                    <div class="flex items-center justify-end gap-3 pt-2">
+                        <x-secondary-button href="{{ route('admin.staf-legal.show', $stafLegal) }}" tag="a">
                             {{ __('Batal') }}
-                        </a>
+                        </x-secondary-button>
                         <x-primary-button>{{ __('Simpan Perubahan') }}</x-primary-button>
                     </div>
                 </form>
-            </div>
+            </x-card>
 
-            <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
-                <form method="POST" action="{{ route('admin.staf-legal.password', $stafLegal) }}" class="p-6 space-y-6">
+            <x-card class="mt-6">
+                <form method="POST" action="{{ route('admin.staf-legal.password', $stafLegal) }}" class="space-y-6">
                     @csrf
                     @method('PATCH')
 
@@ -84,11 +81,11 @@
                         <x-text-input id="password_confirmation" name="password_confirmation" type="password" class="mt-1 block w-full" required />
                     </div>
 
-                    <div class="flex justify-end">
+                    <div class="flex justify-end pt-2">
                         <x-primary-button>{{ __('Ubah Password') }}</x-primary-button>
                     </div>
                 </form>
-            </div>
+            </x-card>
         </div>
     </div>
 </x-app-layout>

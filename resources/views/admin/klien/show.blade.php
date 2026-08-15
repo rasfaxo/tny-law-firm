@@ -2,35 +2,32 @@
 
     <div class="space-y-6">
         <div class="flex justify-between items-center">
-            <a href="{{ route('admin.klien.index') }}" class="inline-flex items-center justify-center bg-white border border-[#E2E8F0] hover:border-accent-blue text-navy-dark hover:text-accent-blue font-bold text-xs px-4 py-2.5 rounded-xl transition shadow-sm gap-2">
+            <x-secondary-button href="{{ route('admin.klien.index') }}" tag="a" class="gap-2">
                 <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path>
                 </svg>
                 <span>{{ __('Kembali') }}</span>
-            </a>
+            </x-secondary-button>
 
-            <a href="{{ route('admin.klien.edit', $klien) }}" class="inline-flex items-center px-4 py-2.5 bg-[#1e3a8a] hover:bg-blue-900 text-white font-bold text-xs rounded-xl transition shadow-md shadow-blue-900/20 uppercase tracking-widest gap-2">
+            <x-primary-button href="{{ route('admin.klien.edit', $klien) }}" tag="a" class="gap-2">
                 <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path>
                 </svg>
                 <span>{{ __('Edit Data') }}</span>
-            </a>
+            </x-primary-button>
         </div>
 
         <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
             <!-- Kolom Kiri: Info Dasar & Keamanan -->
             <div class="lg:col-span-1 space-y-6">
                 @if (session('success'))
-                    <div class="bg-emerald-50 border border-emerald-200 text-emerald-800 rounded-xl p-4 text-xs font-semibold flex items-center gap-3">
-                        <svg class="h-4 w-4 text-emerald-600 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-                        </svg>
-                        <span>{{ session('success') }}</span>
-                    </div>
+                    <x-alert-banner type="success">
+                        {{ session('success') }}
+                    </x-alert-banner>
                 @endif
 
                 <!-- Card Profil Dasar -->
-                <div class="bg-white border border-[#E2E8F0] rounded-2xl shadow-sm overflow-hidden">
+                <x-card class="p-0 overflow-hidden">
                     <div class="p-6 space-y-4">
                         <div class="flex items-center gap-4 border-b border-[#F1F5F9] pb-4">
                             <div class="h-12 w-12 rounded-full bg-blue-50 text-[#1e3a8a] border border-blue-100 flex items-center justify-center font-bold text-lg shrink-0">
@@ -78,10 +75,10 @@
                             </form>
                         </div>
                     </div>
-                </div>
+                </x-card>
 
                 <!-- Card Reset Password -->
-                <div class="bg-white border border-[#E2E8F0] rounded-2xl shadow-sm overflow-hidden" x-data="{ isSubmitting: false }">
+                <x-card class="p-0 overflow-hidden" x-data="{ isSubmitting: false }">
                     <div class="p-6">
                         <h4 class="font-bold text-navy-dark text-sm mb-4">Reset Password Klien</h4>
                         <form method="POST" action="{{ route('admin.klien.password', $klien) }}" @submit="isSubmitting = true">
@@ -107,12 +104,12 @@
                             </div>
                         </form>
                     </div>
-                </div>
+                </x-card>
             </div>
 
             <!-- Kolom Kanan: Riwayat Pengajuan -->
             <div class="lg:col-span-2">
-                <div class="bg-white border border-[#E2E8F0] rounded-2xl shadow-sm overflow-hidden">
+                <x-card class="p-0 overflow-hidden">
                     <div class="p-6 border-b border-[#E2E8F0] flex justify-between items-center">
                         <h3 class="font-bold text-navy-dark text-lg">Riwayat Pengajuan Perkara</h3>
                         <span class="bg-[#F1F5F9] text-gray-500 font-bold text-xs px-3 py-1 rounded-lg">
@@ -147,21 +144,11 @@
                             </div>
                         @empty
                             <div class="p-12 text-center">
-                                <div class="max-w-sm mx-auto space-y-3">
-                                    <div class="bg-gray-50 p-4 rounded-full w-14 h-14 mx-auto flex items-center justify-center text-gray-400">
-                                        <svg class="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
-                                        </svg>
-                                    </div>
-                                    <p class="text-sm font-semibold text-navy-dark">Belum Ada Pengajuan</p>
-                                    <p class="text-xs text-gray-400 leading-relaxed">
-                                        Klien ini belum pernah membuat pra-pendaftaran perkara apa pun di dalam sistem.
-                                    </p>
-                                </div>
+                                <x-empty-state title="Belum Ada Pengajuan" message="Klien ini belum pernah membuat pra-pendaftaran perkara apa pun di dalam sistem." />
                             </div>
                         @endforelse
                     </div>
-                </div>
+                </x-card>
             </div>
         </div>
     </div>

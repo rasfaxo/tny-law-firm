@@ -2,28 +2,20 @@
 
     <div class="space-y-6">
         <div class="flex justify-start">
-            <a href="{{ route('admin.laporan.pra-pendaftaran') }}" class="inline-flex items-center justify-center bg-white border border-[#E2E8F0] hover:border-accent-blue text-navy-dark hover:text-accent-blue font-bold text-xs px-4 py-2.5 rounded-xl transition shadow-sm gap-2">
+            <x-secondary-button href="{{ route('admin.laporan.pra-pendaftaran') }}" tag="a" class="gap-2">
                 <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path>
                 </svg>
                 <span>{{ __('Kembali') }}</span>
-            </a>
+            </x-secondary-button>
         </div>
         <!-- Monitoring Info Banner (Figma Node 82:2210) -->
-        <div class="bg-[#EFF6FF] border border-[#BFDBFE] text-[#1E3A8A] rounded-2xl p-5 flex items-start gap-4 shadow-sm">
-            <svg class="h-6 w-6 text-[#1D4ED8] shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-            </svg>
-            <div>
-                <h4 class="font-bold text-sm">Halaman Monitoring Admin</h4>
-                <p class="text-xs text-[#1E3A8A]/80 mt-1 leading-relaxed">
-                    Halaman ini digunakan untuk memantau detail pra-pendaftaran perkara klien. Pengungahan berkas dan verifikasi berkas merupakan wewenang dari Klien dan Staf Legal.
-                </p>
-            </div>
-        </div>
+        <x-alert-banner type="info" title="Halaman Monitoring Admin">
+            Halaman ini digunakan untuk memantau detail pra-pendaftaran perkara klien. Pengungahan berkas dan verifikasi berkas merupakan wewenang dari Klien dan Staf Legal.
+        </x-alert-banner>
 
         <!-- Case Title & Status -->
-        <div class="bg-white border border-[#E2E8F0] p-6 rounded-2xl shadow-sm flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+        <x-card class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
             <div class="space-y-1">
                 <span class="inline-flex bg-blue-50 text-[#1e3a8a] text-xs font-bold font-mono px-3 py-1 rounded-lg">
                     PP-{{ str_pad($praPendaftaranPerkara->id_pendaftaran, 3, '0', STR_PAD_LEFT) }}
@@ -34,11 +26,11 @@
                 <span class="text-xs text-gray-400 font-medium">Status Pengajuan:</span>
                 <x-status-badge :status="$praPendaftaranPerkara->status_pengajuan" />
             </div>
-        </div>
+        </x-card>
 
         <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
             <!-- Left Card: Data Klien -->
-            <div class="bg-white border border-[#E2E8F0] p-6 sm:p-8 rounded-2xl shadow-sm space-y-6">
+            <x-card class="space-y-6">
                 <div>
                     <h3 class="font-bold text-navy-dark text-lg">Data Klien</h3>
                     <p class="text-xs text-gray-400 mt-1">Informasi akun dan profil klien pemilik pengajuan.</p>
@@ -79,10 +71,10 @@
                         <span class="text-sm font-semibold text-navy-dark leading-relaxed text-left max-w-xs">{{ $profil?->alamat ?? '-' }}</span>
                     </div>
                 </div>
-            </div>
+            </x-card>
 
             <!-- Right Card: Detail Perkara -->
-            <div class="bg-white border border-[#E2E8F0] p-6 sm:p-8 rounded-2xl shadow-sm space-y-6">
+            <x-card class="space-y-6">
                 <div>
                     <h3 class="font-bold text-navy-dark text-lg">Detail Perkara</h3>
                     <p class="text-xs text-gray-400 mt-1">Klasifikasi dan deskripsi permasalahan hukum.</p>
@@ -106,11 +98,11 @@
                         </div>
                     </div>
                 </div>
-            </div>
+            </x-card>
         </div>
 
         <!-- Documents Card -->
-        <div class="bg-white border border-[#E2E8F0] p-6 sm:p-8 rounded-2xl shadow-sm space-y-6">
+        <x-card class="space-y-6">
             <div>
                 <h3 class="font-bold text-navy-dark text-lg">Dokumen Pendukung</h3>
                 <p class="text-xs text-gray-400 mt-1">Berkas perkara yang diunggah oleh klien.</p>
@@ -168,14 +160,13 @@
                             </tr>
                         @empty
                             <tr>
-                                <td colspan="4" class="px-6 py-8 text-center text-xs text-gray-400">
-                                    Belum ada dokumen yang diunggah.
+                                <td colspan="4" class="px-6 py-12 text-center">
+                                    <x-empty-state title="Belum Ada Dokumen" message="Klien belum mengunggah dokumen pendukung untuk perkara ini." />
                                 </td>
                             </tr>
                         @endforelse
                     </tbody>
-                </table>
             </div>
-        </div>
+        </x-card>
     </div>
 </x-app-layout>

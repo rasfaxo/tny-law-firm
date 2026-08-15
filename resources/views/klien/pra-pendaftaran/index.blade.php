@@ -3,22 +3,21 @@
     <div class="space-y-6">
         <div class="flex justify-end">
             <!-- CTA Buat Pengajuan -->
-            <a href="{{ route('klien.pra-pendaftaran.create') }}" class="bg-[#1e3a8a] hover:bg-blue-900 text-white font-bold text-xs tracking-wider uppercase px-5 py-2.5 rounded-xl transition shadow-md shadow-blue-900/20 flex items-center gap-2">
+            <x-primary-button href="{{ route('klien.pra-pendaftaran.create') }}" tag="a" class="gap-2">
                 <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
                 </svg>
                 <span>Buat Pengajuan</span>
-            </a>
+            </x-primary-button>
         </div>
         <!-- Filter & Search Bar -->
-        <div class="bg-white border border-[#E2E8F0] p-6 rounded-2xl shadow-sm">
+        <x-card>
             <form method="GET" action="{{ route('klien.pra-pendaftaran.index') }}" class="grid grid-cols-1 md:grid-cols-12 gap-4 items-end">
                 <!-- Search Input -->
                 <div class="md:col-span-6 space-y-1.5">
-                    <label for="search" class="block text-xs font-bold text-gray-400 uppercase tracking-wider">Cari Pengajuan</label>
+                    <x-input-label for="search" :value="__('Cari Pengajuan')" />
                     <div class="relative">
-                        <input type="text" name="search" id="search" value="{{ request('search') }}" placeholder="Judul atau kode pengajuan..." 
-                               class="block w-full bg-[#F8FAFC] border-[#E2E8F0] focus:border-accent-blue focus:ring focus:ring-accent-blue/20 rounded-xl text-sm placeholder-gray-400 transition shadow-sm h-11 pl-4 pr-10 py-2">
+                        <x-text-input type="text" name="search" id="search" :value="request('search')" placeholder="Judul atau kode pengajuan..." class="w-full pl-4 pr-10" />
                         @if(request('search'))
                             <a href="{{ route('klien.pra-pendaftaran.index', request()->except('search')) }}" class="absolute inset-y-0 right-0 pr-3 flex items-center text-gray-400 hover:text-gray-600">
                                 <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -31,9 +30,9 @@
 
                 <!-- Status Filter -->
                 <div class="md:col-span-4 space-y-1.5">
-                    <label for="status" class="block text-xs font-bold text-gray-400 uppercase tracking-wider">Filter Status</label>
+                    <x-input-label for="status" :value="__('Filter Status')" />
                     <select name="status" id="status" onchange="this.form.submit()" 
-                            class="block w-full bg-[#F8FAFC] border-[#E2E8F0] focus:border-accent-blue focus:ring focus:ring-accent-blue/20 rounded-xl text-sm transition shadow-sm h-11 pl-4 py-2">
+                            class="block w-full bg-[#F8FAFC] border-[#E2E8F0] focus:border-accent-blue focus:ring focus:ring-accent-blue/20 rounded-xl text-sm transition shadow-sm h-11 pl-4 py-2 mt-1">
                         <option value="">Semua Status</option>
                         <option value="menunggu_verifikasi" {{ request('status') === 'menunggu_verifikasi' ? 'selected' : '' }}>Menunggu Verifikasi</option>
                         <option value="berkas_tidak_lengkap" {{ request('status') === 'berkas_tidak_lengkap' ? 'selected' : '' }}>Berkas Tidak Lengkap</option>
@@ -46,30 +45,27 @@
 
                 <!-- Submit / Clear Buttons -->
                 <div class="md:col-span-2 flex gap-2 w-full">
-                    <button type="submit" class="bg-[#1e3a8a] hover:bg-blue-900 text-white font-bold text-sm h-11 rounded-xl flex-1 text-center transition shadow-md shadow-blue-900/20">
+                    <x-primary-button type="submit" class="flex-1 justify-center h-11 px-4">
                         Cari
-                    </button>
+                    </x-primary-button>
                     @if(request('search') || request('status'))
-                        <a href="{{ route('klien.pra-pendaftaran.index') }}" class="bg-white border border-[#E2E8F0] hover:bg-gray-50 text-gray-700 font-bold text-sm h-11 px-4 rounded-xl text-center transition flex items-center justify-center">
+                        <x-secondary-button href="{{ route('klien.pra-pendaftaran.index') }}" tag="a" class="h-11 px-4 justify-center">
                             Reset
-                        </a>
+                        </x-secondary-button>
                     @endif
                 </div>
             </form>
-        </div>
+        </x-card>
 
         <!-- Success Alert -->
         @if (session('success'))
-            <div class="rounded-xl bg-green-50 border border-green-200 p-4 flex gap-3 text-sm text-green-700">
-                <svg class="h-5 w-5 text-green-500 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-                </svg>
-                <span>{{ session('success') }}</span>
-            </div>
+            <x-alert-banner type="success">
+                {{ session('success') }}
+            </x-alert-banner>
         @endif
 
         <!-- Case List -->
-        <div class="bg-white border border-[#E2E8F0] rounded-2xl shadow-sm overflow-hidden">
+        <x-card class="p-0 overflow-hidden sm:p-0">
             <!-- Desktop Table Layout -->
             <div class="hidden md:block overflow-x-auto">
                 <table class="min-w-full divide-y divide-[#F1F5F9]">
@@ -113,21 +109,10 @@
                         @empty
                             <tr>
                                 <td colspan="6" class="px-6 py-12 text-center">
-                                    <div class="max-w-sm mx-auto space-y-3">
-                                        <div class="bg-gray-50 p-4 rounded-full w-14 h-14 mx-auto flex items-center justify-center text-gray-400">
-                                            <svg class="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 13V6a2 2 0 00-2-2H6a2 2 0 00-2 2v7m16 0a2 2 0 01-2 2H6a2 2 0 01-2-2m16 0V9a2 2 0 00-2-2H6a2 2 0 00-2 2v4m16 4h-2m-8 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1"></path>
-                                            </svg>
-                                        </div>
-                                        <p class="text-sm font-semibold text-navy-dark">Tidak Ada Pengajuan</p>
-                                        <p class="text-xs text-gray-400 leading-relaxed">
-                                            @if(request('search') || request('status'))
-                                                Tidak ditemukan pengajuan dengan kriteria pencarian dan filter Anda saat ini.
-                                            @else
-                                                Anda belum mengajukan pra-pendaftaran perkara apa pun saat ini.
-                                            @endif
-                                        </p>
-                                    </div>
+                                    <x-empty-state 
+                                        title="Tidak Ada Pengajuan" 
+                                        :message="request('search') || request('status') ? 'Tidak ditemukan pengajuan dengan kriteria pencarian dan filter Anda saat ini.' : 'Anda belum mengajukan pra-pendaftaran perkara apa pun saat ini.'" 
+                                    />
                                 </td>
                             </tr>
                         @endforelse
@@ -160,12 +145,11 @@
                         </div>
                     </div>
                 @empty
-                    <div class="p-8 text-center text-sm text-gray-400">
-                        @if(request('search') || request('status'))
-                            Tidak ditemukan pengajuan dengan kriteria pencarian dan filter Anda saat ini.
-                        @else
-                            Anda belum mengajukan pra-pendaftaran perkara apa pun saat ini.
-                        @endif
+                    <div class="p-8 text-center">
+                        <x-empty-state 
+                            title="Tidak Ada Pengajuan" 
+                            :message="request('search') || request('status') ? 'Tidak ditemukan pengajuan dengan kriteria pencarian dan filter Anda saat ini.' : 'Anda belum mengajukan pra-pendaftaran perkara apa pun saat ini.'" 
+                        />
                     </div>
                 @endforelse
             </div>
@@ -176,6 +160,6 @@
                     {{ $praPendaftaranPerkara->links() }}
                 </div>
             @endif
-        </div>
+        </x-card>
     </div>
 </x-app-layout>

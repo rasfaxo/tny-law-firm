@@ -2,14 +2,13 @@
 
     <div class="space-y-6">
         <!-- Filter & Search Bar -->
-        <div class="bg-white border border-[#E2E8F0] p-6 rounded-2xl shadow-sm">
+        <x-card>
             <form method="GET" action="{{ route('admin.klien.index') }}" class="grid grid-cols-1 md:grid-cols-12 gap-4 items-end">
                 <!-- Search Input -->
                 <div class="md:col-span-11 space-y-1.5">
-                    <label for="search" class="block text-xs font-bold text-gray-400 uppercase tracking-wider">Cari Klien</label>
+                    <x-input-label for="search" :value="__('Cari Klien')" class="!text-xs !font-bold !text-gray-400 !uppercase !tracking-wider" />
                     <div class="relative">
-                        <input type="text" name="search" id="search" value="{{ request('search') }}" placeholder="Cari nama atau email..." 
-                               class="block w-full bg-[#F8FAFC] border-[#E2E8F0] focus:border-accent-blue focus:ring focus:ring-accent-blue/20 rounded-xl text-sm placeholder-gray-400 transition shadow-sm h-11 pl-4 pr-10 py-2">
+                        <x-text-input type="text" name="search" id="search" :value="request('search')" placeholder="Cari nama atau email..." class="w-full pr-10" />
                         @if(request('search'))
                             <a href="{{ route('admin.klien.index') }}" class="absolute inset-y-0 right-0 pr-3 flex items-center text-gray-400 hover:text-gray-600">
                                 <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -22,25 +21,22 @@
 
                 <!-- Submit Button -->
                 <div class="md:col-span-1 flex items-center justify-end h-11">
-                    <button type="submit" class="bg-[#1e3a8a] hover:bg-blue-900 text-white font-bold text-sm h-full w-full rounded-xl flex items-center justify-center transition shadow-md shadow-blue-900/20" title="Cari">
+                    <x-primary-button class="h-full w-full justify-center px-0" title="Cari">
                         <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
                         </svg>
-                    </button>
+                    </x-primary-button>
                 </div>
             </form>
-        </div>
+        </x-card>
 
         @if (session('success'))
-            <div class="bg-emerald-50 border border-emerald-200 text-emerald-800 rounded-xl p-4 text-sm font-semibold flex items-center gap-3">
-                <svg class="h-5 w-5 text-emerald-600 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-                </svg>
-                <span>{{ session('success') }}</span>
-            </div>
+            <x-alert-banner type="success">
+                {{ session('success') }}
+            </x-alert-banner>
         @endif
 
-        <div class="bg-white border border-[#E2E8F0] rounded-2xl shadow-sm overflow-hidden">
+        <x-card class="p-0 overflow-hidden">
             <!-- Desktop Table Layout -->
             <div class="hidden md:block overflow-x-auto">
                 <table class="min-w-full divide-y divide-[#E2E8F0]">
@@ -111,14 +107,7 @@
                         @empty
                             <tr>
                                 <td colspan="5" class="px-6 py-12 text-center">
-                                    <div class="max-w-sm mx-auto space-y-3">
-                                        <div class="bg-gray-50 p-4 rounded-full w-14 h-14 mx-auto flex items-center justify-center text-gray-400">
-                                            <svg class="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a3 3 0 11-6 0 3 3 0 016 0z"></path>
-                                            </svg>
-                                        </div>
-                                        <p class="text-sm font-semibold text-navy-dark">Tidak Ada Data Klien</p>
-                                    </div>
+                                    <x-empty-state title="Tidak Ada Data Klien" message="Tidak ditemukan klien yang cocok dengan kriteria pencarian Anda." />
                                 </td>
                             </tr>
                         @endforelse
@@ -178,7 +167,7 @@
                     </div>
                 @empty
                     <div class="p-8 text-center text-sm text-gray-400">
-                        Tidak ada data Klien.
+                        <x-empty-state title="Tidak Ada Data Klien" message="Tidak ditemukan klien yang cocok dengan kriteria pencarian Anda." />
                     </div>
                 @endforelse
             </div>
@@ -188,6 +177,6 @@
                     {{ $klien->links() }}
                 </div>
             @endif
-        </div>
+        </x-card>
     </div>
 </x-app-layout>

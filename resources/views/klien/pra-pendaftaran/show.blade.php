@@ -44,7 +44,7 @@
         @endif
 
         <!-- 1. HEADER CARD -->
-        <div class="bg-white border border-[#E2E8F0] p-6 sm:p-8 rounded-[20px] shadow-sm flex flex-col sm:flex-row sm:items-start justify-between gap-6">
+        <x-card class="flex flex-col sm:flex-row sm:items-start justify-between gap-6">
             <div class="space-y-4">
                 <div class="flex items-center gap-3">
                     <span class="bg-blue-50 text-accent-blue font-bold font-mono text-xs px-3 py-1 rounded-lg">
@@ -87,13 +87,13 @@
                     </button>
                 @endif
             </div>
-        </div>
+        </x-card>
 
         <!-- 2. INFORMASI & KRONOLOGI GRID -->
         <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 items-stretch">
             
             <!-- Informasi Pengajuan -->
-            <div class="bg-white border border-[#E2E8F0] p-6 sm:p-8 rounded-[20px] shadow-sm flex flex-col justify-start">
+            <x-card class="flex flex-col justify-start">
                 <div>
                     <h3 class="font-bold text-navy-dark text-lg mb-6">Informasi Pengajuan</h3>
                     <div class="space-y-0">
@@ -115,15 +115,15 @@
                         </div>
                     </div>
                 </div>
-            </div>
+            </x-card>
 
             <!-- Kronologi Perkara -->
-            <div class="bg-white border border-[#E2E8F0] p-6 sm:p-8 rounded-[20px] shadow-sm flex flex-col">
+            <x-card class="flex flex-col">
                 <h3 class="font-bold text-navy-dark text-lg mb-6">Kronologi Perkara</h3>
                 <p class="text-sm text-gray-600 leading-relaxed whitespace-pre-line">
                     {{ $praPendaftaranPerkara->kronologi }}
                 </p>
-            </div>
+            </x-card>
             
         </div>
 
@@ -134,7 +134,7 @@
                 $metodeBooking = $bookingTampil->metode_konsultasi ?? 'offline';
                 $statusKonfirmasi = $bookingTampil->status_konfirmasi_konsultasi ?? 'menunggu_konfirmasi';
             @endphp
-            <div class="bg-white border border-[#E2E8F0] p-6 sm:p-8 rounded-[20px] shadow-sm space-y-6">
+            <x-card class="space-y-6">
                 <div class="flex items-center justify-between">
                     <div>
                         <h3 class="font-bold text-navy-dark text-lg">Informasi Konsultasi</h3>
@@ -219,12 +219,12 @@
 
                 @if ($bisaAjukanReschedule)
                     <div class="pt-4 border-t border-[#F1F5F9] flex justify-end">
-                        <a href="{{ route('klien.permintaan-reschedule.create', $bookingAktif) }}" class="bg-white border border-[#E2E8F0] hover:border-accent-blue text-navy-dark hover:text-accent-blue font-bold px-6 py-2.5 rounded-xl text-sm transition flex items-center justify-center gap-2 shadow-sm">
+                        <x-secondary-button href="{{ route('klien.permintaan-reschedule.create', $bookingAktif) }}" tag="a" class="justify-center gap-2">
                             <svg class="h-4 w-4 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 1121.21 8H12v9l-7-7"></path>
                             </svg>
                             <span>Ajukan Reschedule Jadwal</span>
-                        </a>
+                        </x-secondary-button>
                     </div>
                 @endif
             </div>
@@ -236,7 +236,7 @@
                 $catatanPerbaikan = $praPendaftaranPerkara->verifikasiBerkas
                     ->flatMap(fn ($verifikasi) => $verifikasi->catatanVerifikasi);
             @endphp
-            <div class="bg-white border border-red-100 rounded-[20px] shadow-sm overflow-hidden">
+            <x-card class="p-0 overflow-hidden sm:p-0 border-red-100">
                 <div class="p-6 border-b border-red-50 bg-red-50/30">
                     <h4 class="font-bold text-red-900 text-lg">Catatan Perbaikan Dokumen</h4>
                     <p class="text-sm text-red-700 mt-1">Harap perbaiki dokumen bermasalah di bawah ini sesuai instruksi verifikator Staf Legal.</p>
@@ -287,8 +287,8 @@
                                 </tr>
                             @empty
                                 <tr>
-                                    <td colspan="4" class="px-6 py-10 text-center text-sm text-gray-400">
-                                        Tidak ada catatan perbaikan dokumen spesifik.
+                                    <td colspan="4" class="px-6 py-12 text-center">
+                                        <x-empty-state title="Tidak Ada Catatan" message="Tidak ada catatan perbaikan dokumen spesifik." />
                                     </td>
                                 </tr>
                             @endforelse
@@ -330,28 +330,28 @@
                             </div>
                         </div>
                     @empty
-                        <div class="p-6 text-center text-sm text-gray-400">
-                            Tidak ada catatan perbaikan dokumen spesifik.
+                        <div class="p-6">
+                            <x-empty-state title="Tidak Ada Catatan" message="Tidak ada catatan perbaikan dokumen spesifik." />
                         </div>
                     @endforelse
                 </div>
-            </div>
+            </x-card>
         @endif
 
         <!-- 5. DOKUMEN PENDUKUNG -->
-        <div class="bg-white border border-[#E2E8F0] rounded-[20px] shadow-sm overflow-hidden">
+        <x-card class="p-0 overflow-hidden sm:p-0">
             <div class="p-6 sm:p-8 border-b border-[#F1F5F9] flex flex-col sm:flex-row sm:items-center justify-between gap-4">
                 <div>
                     <h3 class="font-bold text-navy-dark text-lg">Dokumen Pendukung</h3>
                     <p class="text-sm text-gray-500 mt-1">Dokumen yang telah diunggah pada pengajuan ini.</p>
                 </div>
                 @if ($praPendaftaranPerkara->status_pengajuan === 'menunggu_verifikasi')
-                    <a href="{{ route('klien.dokumen.create', $praPendaftaranPerkara) }}" class="bg-[#1e3a8a] hover:bg-blue-900 text-white font-bold text-sm px-5 py-2.5 rounded-xl transition shadow-md shadow-blue-900/20 inline-flex items-center justify-center gap-2">
+                    <x-primary-button href="{{ route('klien.dokumen.create', $praPendaftaranPerkara) }}" tag="a" class="gap-2">
                         <svg class="h-4 w-4 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"></path>
                         </svg>
                         Upload Dokumen Baru
-                    </a>
+                    </x-primary-button>
                 @endif
             </div>
 
@@ -389,8 +389,8 @@
                             </tr>
                         @empty
                             <tr>
-                                <td colspan="4" class="px-8 py-12 text-center text-sm text-gray-400">
-                                    Belum ada dokumen aktif yang diunggah.
+                                <td colspan="4" class="px-8 py-12 text-center">
+                                    <x-empty-state title="Tidak Ada Dokumen" message="Belum ada dokumen aktif yang diunggah." />
                                 </td>
                             </tr>
                         @endforelse
@@ -420,17 +420,17 @@
                         </div>
                     </div>
                 @empty
-                    <div class="p-8 text-center text-sm text-gray-400">
-                        Belum ada dokumen aktif yang diunggah.
+                    <div class="p-8">
+                        <x-empty-state title="Tidak Ada Dokumen" message="Belum ada dokumen aktif yang diunggah." />
                     </div>
                 @endforelse
             </div>
-        </div>
+        </x-card>
 
         <!-- 6. RIWAYAT BAWAH (Timeline, Verifikasi, Histori) -->
         <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 items-start">
             <!-- Timeline Riwayat Status -->
-            <div class="bg-white border border-[#E2E8F0] rounded-[20px] shadow-sm overflow-hidden">
+            <x-card class="p-0 overflow-hidden sm:p-0">
                 <div class="p-6 border-b border-[#F1F5F9]">
                     <h4 class="font-bold text-navy-dark text-base">Timeline Riwayat Status</h4>
                 </div>
@@ -466,12 +466,12 @@
                         @endforelse
                     </div>
                 </div>
-            </div>
+            </x-card>
 
             <div class="space-y-6">
                 <!-- Hasil Verifikasi Berkas -->
                 @if ($verifikasiTerakhir)
-                    <div class="bg-white border border-[#E2E8F0] p-6 rounded-[20px] shadow-sm space-y-4">
+                    <x-card class="space-y-4">
                         <div class="border-b border-[#F1F5F9] pb-3">
                             <h4 class="font-bold text-navy-dark text-base">Hasil Verifikasi Terakhir</h4>
                             <p class="text-xs text-gray-400 mt-1">Catatan pemeriksaan oleh Staf Legal</p>
@@ -488,12 +488,12 @@
                                 </p>
                             </div>
                         </div>
-                    </div>
+                    </x-card>
                 @endif
 
                 <!-- Histori Dokumen Lama -->
                 @if ($praPendaftaranPerkara->riwayatDokumen->isNotEmpty())
-                    <div class="bg-white border border-[#E2E8F0] rounded-[20px] shadow-sm overflow-hidden">
+                    <x-card class="p-0 overflow-hidden sm:p-0">
                         <div class="p-6 border-b border-[#F1F5F9]">
                             <h4 class="font-bold text-navy-dark text-base">Histori Dokumen Lama</h4>
                             <p class="text-xs text-gray-400 mt-1">Arsip dokumen sebelum perbaikan</p>
@@ -511,7 +511,7 @@
                                 </div>
                             @endforeach
                         </div>
-                    </div>
+                    </x-card>
                 @endif
             </div>
         </div>

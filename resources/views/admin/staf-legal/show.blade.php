@@ -2,32 +2,29 @@
 
     <div class="space-y-6">
         <div class="flex justify-between items-center">
-            <a href="{{ route('admin.staf-legal.index') }}" class="inline-flex items-center justify-center bg-white border border-[#E2E8F0] hover:border-accent-blue text-navy-dark hover:text-accent-blue font-bold text-xs px-4 py-2.5 rounded-xl transition shadow-sm gap-2">
+            <x-secondary-button href="{{ route('admin.staf-legal.index') }}" tag="a" class="gap-2">
                 <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path>
                 </svg>
                 <span>{{ __('Kembali') }}</span>
-            </a>
+            </x-secondary-button>
 
-            <a href="{{ route('admin.staf-legal.edit', $stafLegal) }}" class="inline-flex items-center px-4 py-2.5 bg-[#1e3a8a] hover:bg-blue-900 text-white font-bold text-xs rounded-xl transition shadow-md shadow-blue-900/20 uppercase tracking-widest gap-2">
+            <x-primary-button href="{{ route('admin.staf-legal.edit', $stafLegal) }}" tag="a" class="gap-2">
                 <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path>
                 </svg>
                 <span>{{ __('Edit') }}</span>
-            </a>
+            </x-primary-button>
         </div>
 
         <div class="max-w-2xl mx-auto space-y-6">
             @if (session('success'))
-                <div class="bg-emerald-50 border border-emerald-200 text-emerald-800 rounded-xl p-4 text-xs font-semibold flex items-center gap-3">
-                    <svg class="h-4 w-4 text-emerald-600 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-                    </svg>
-                    <span>{{ session('success') }}</span>
-                </div>
+                <x-alert-banner type="success">
+                    {{ session('success') }}
+                </x-alert-banner>
             @endif
 
-            <div class="bg-white border border-[#E2E8F0] rounded-2xl shadow-sm overflow-hidden">
+            <x-card class="p-0 overflow-hidden">
                 <div class="p-6 text-gray-900 space-y-4">
                     <div>
                         <div class="text-xs font-bold text-gray-400 uppercase tracking-wider">Nama</div>
@@ -63,13 +60,13 @@
                             @csrf
                             @method('PATCH')
                             <input type="hidden" name="status_akun" value="{{ $stafLegal->status_akun === 'aktif' ? 'nonaktif' : 'aktif' }}">
-                            <x-primary-button class="bg-[#1e3a8a] hover:bg-blue-900 transition">
+                            <x-primary-button>
                                 {{ $stafLegal->status_akun === 'aktif' ? __('Nonaktifkan Akun') : __('Aktifkan Akun') }}
                             </x-primary-button>
                         </form>
                     </div>
                 </div>
-            </div>
+            </x-card>
         </div>
     </div>
 </x-app-layout>

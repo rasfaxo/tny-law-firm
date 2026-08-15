@@ -27,7 +27,7 @@
         <!-- Statistik Cards Grid -->
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
             <!-- Card 1: Total Pengajuan -->
-            <div class="bg-white border border-[#E2E8F0] p-6 rounded-2xl shadow-sm flex flex-col justify-between h-[160px]">
+            <x-card class="flex flex-col justify-between h-[160px]">
                 <div class="flex items-center justify-between">
                     <div class="bg-indigo-50 p-2.5 rounded-xl text-indigo-600">
                         <svg class="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -42,10 +42,10 @@
                     <span class="block text-sm font-bold text-[#334155]">Total Pengajuan</span>
                     <span class="block text-xs text-gray-400">Semua perkara yang diajukan</span>
                 </div>
-            </div>
+            </x-card>
 
             <!-- Card 2: Menunggu Verifikasi -->
-            <div class="bg-white border border-[#E2E8F0] p-6 rounded-2xl shadow-sm flex flex-col justify-between h-[160px]">
+            <x-card class="flex flex-col justify-between h-[160px]">
                 <div class="flex items-center justify-between">
                     <div class="bg-yellow-50 p-2.5 rounded-xl text-yellow-600">
                         <svg class="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -61,10 +61,10 @@
                     <span class="block text-sm font-bold text-[#334155]">Menunggu Verifikasi</span>
                     <span class="block text-xs text-gray-400">Sedang diperiksa Staf Legal</span>
                 </div>
-            </div>
+            </x-card>
 
             <!-- Card 3: Berkas Lengkap -->
-            <div class="bg-white border border-[#E2E8F0] p-6 rounded-2xl shadow-sm flex flex-col justify-between h-[160px]">
+            <x-card class="flex flex-col justify-between h-[160px]">
                 <div class="flex items-center justify-between">
                     <div class="bg-green-50 p-2.5 rounded-xl text-green-600">
                         <svg class="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -79,10 +79,10 @@
                     <span class="block text-sm font-bold text-[#334155]">Berkas Lengkap</span>
                     <span class="block text-xs text-gray-400">Siap memilih jadwal pertemuan</span>
                 </div>
-            </div>
+            </x-card>
 
             <!-- Card 4: Jadwal Dipilih -->
-            <div class="bg-white border border-[#E2E8F0] p-6 rounded-2xl shadow-sm flex flex-col justify-between h-[160px]">
+            <x-card class="flex flex-col justify-between h-[160px]">
                 <div class="flex items-center justify-between">
                     <div class="bg-blue-50 p-2.5 rounded-xl text-accent-blue">
                         <svg class="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -97,7 +97,7 @@
                     <span class="block text-sm font-bold text-[#334155]">Jadwal Dipilih</span>
                     <span class="block text-xs text-gray-400">Menunggu pelaksanaan konsultasi</span>
                 </div>
-            </div>
+            </x-card>
         </div>
 
         <!-- 2-Column Dashboard Grid -->
@@ -105,7 +105,7 @@
             <!-- Kolom Kiri: Pengajuan Terbaru & Reschedule (lg:col-span-8) -->
             <div class="lg:col-span-8 space-y-6">
                 <!-- Card Pengajuan Terbaru -->
-                <div class="bg-white border border-[#E2E8F0] rounded-2xl shadow-sm overflow-hidden">
+                <x-card class="p-0 overflow-hidden sm:p-0">
                     <div class="p-6 border-b border-[#F1F5F9] flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
                         <div>
                             <h4 class="font-bold text-navy-dark text-base">Pengajuan Terbaru</h4>
@@ -158,8 +158,8 @@
                                     </tr>
                                 @empty
                                     <tr>
-                                        <td colspan="6" class="px-6 py-10 text-center text-sm text-gray-400">
-                                            Belum ada pengajuan pra-pendaftaran perkara.
+                                        <td colspan="6" class="px-6 py-12 text-center">
+                                            <x-empty-state title="Belum Ada Pengajuan" message="Belum ada pengajuan pra-pendaftaran perkara." />
                                         </td>
                                     </tr>
                                 @endforelse
@@ -197,10 +197,10 @@
                             </div>
                         @endforelse
                     </div>
-                </div>
+                </x-card>
 
                 <!-- Card Permintaan Reschedule Saya -->
-                <div class="bg-white border border-[#E2E8F0] rounded-2xl shadow-sm overflow-hidden">
+                <x-card class="p-0 overflow-hidden sm:p-0">
                     <div class="p-6 border-b border-[#F1F5F9]">
                         <h4 class="font-bold text-navy-dark text-base">Permintaan Reschedule Terbaru</h4>
                         <p class="text-xs text-gray-400 mt-1">Status pengajuan permohonan pemindahan jadwal konsultasi Anda</p>
@@ -244,8 +244,8 @@
                                     </tr>
                                 @empty
                                     <tr>
-                                        <td colspan="5" class="px-6 py-10 text-center text-sm text-gray-400">
-                                            Belum ada permintaan reschedule jadwal.
+                                        <td colspan="5" class="px-6 py-12 text-center">
+                                            <x-empty-state title="Belum Ada Permintaan Reschedule" message="Belum ada permintaan reschedule jadwal." />
                                         </td>
                                     </tr>
                                 @endforelse
@@ -287,12 +287,12 @@
                             </div>
                         @endforelse
                     </div>
-                </div>
+                </x-card>
             </div>
 
             <!-- Kolom Kanan: Jadwal Konsultasi Saya (lg:col-span-4) -->
             <div class="lg:col-span-4">
-                <div class="bg-white border border-[#E2E8F0] p-6 rounded-2xl shadow-sm flex flex-col space-y-4">
+                <x-card class="flex flex-col space-y-4">
                     <div class="border-b border-[#F1F5F9] pb-3">
                         <h4 class="font-bold text-navy-dark text-base">Jadwal Konsultasi Saya</h4>
                         <p class="text-xs text-gray-400 mt-1">Status pertemuan yang sedang aktif saat ini</p>
@@ -352,31 +352,23 @@
 
                         <!-- Actions Buttons -->
                         <div class="pt-4 flex flex-col gap-2">
-                            <a href="{{ route('klien.pra-pendaftaran.show', $booking->praPendaftaranPerkara) }}" class="bg-[#1e3a8a] hover:bg-blue-900 text-white text-center font-bold py-2.5 rounded-xl text-xs transition shadow-md shadow-blue-900/20">
+                            <x-primary-button href="{{ route('klien.pra-pendaftaran.show', $booking->praPendaftaranPerkara) }}" tag="a" class="justify-center">
                                 Detail Pengajuan
-                            </a>
-                            <a href="{{ route('klien.permintaan-reschedule.create', $booking) }}" class="bg-white border border-[#E2E8F0] hover:border-accent-blue text-navy-dark hover:text-accent-blue text-center font-bold py-2.5 rounded-xl text-xs transition flex items-center justify-center gap-2 shadow-sm">
+                            </x-primary-button>
+                            <x-secondary-button href="{{ route('klien.permintaan-reschedule.create', $booking) }}" tag="a" class="justify-center gap-2">
                                 <svg class="h-4 w-4 text-gray-400 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 1121.21 8H12v9l-7-7"></path>
                                 </svg>
                                 <span>Ajukan Reschedule</span>
-                            </a>
+                            </x-secondary-button>
                         </div>
                     @else
                         <!-- Empty State Jadwal -->
-                        <div class="text-center py-8 px-4 space-y-3">
-                            <div class="bg-gray-50 p-4 rounded-full w-14 h-14 mx-auto flex items-center justify-center text-gray-400">
-                                <svg class="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
-                                </svg>
-                            </div>
-                            <p class="text-sm font-semibold text-navy-dark">Tidak Ada Jadwal Aktif</p>
-                            <p class="text-xs text-gray-400 leading-relaxed">
-                                Jadwal dapat dipilih jika status pengajuan perkara hukum Anda sudah berstatus <span class="font-bold text-green-600">Berkas Lengkap</span>.
-                            </p>
+                        <div class="py-4">
+                            <x-empty-state title="Tidak Ada Jadwal Aktif" message="Jadwal dapat dipilih jika status pengajuan perkara hukum Anda sudah berstatus Berkas Lengkap." />
                         </div>
                     @endif
-                </div>
+                </x-card>
             </div>
         </div>
     </div>

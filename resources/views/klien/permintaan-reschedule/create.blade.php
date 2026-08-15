@@ -7,40 +7,31 @@
 
     <div class="space-y-6 max-w-5xl mx-auto" x-data="{ isSubmitting: false }">
         @if ($errors->any())
-            <div class="rounded-xl bg-red-50 border border-red-200 p-4 flex gap-3 text-sm text-red-700 shadow-sm" x-init="$nextTick(() => { $el.scrollIntoView({ behavior: 'smooth', block: 'start' }); })">
-                <svg class="h-5 w-5 text-red-500 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path>
-                </svg>
+            <x-alert-banner type="error">
                 <ul class="list-disc list-inside space-y-1">
                     @foreach ($errors->all() as $error)
                         <li>{{ $error }}</li>
                     @endforeach
                 </ul>
-            </div>
+            </x-alert-banner>
         @endif
 
         <!-- Alert Banner (Informasi Reschedule) -->
-        <div class="bg-white border border-blue-200 rounded-xl p-4 flex gap-3 text-sm text-blue-700 shadow-sm">
-            <svg class="h-5 w-5 text-accent-blue shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-            </svg>
-            <div class="space-y-1 mt-0.5">
-                <p class="font-bold">Informasi Reschedule</p>
-                <p class="text-[13px] text-blue-700/80">Pengajuan reschedule akan menunggu persetujuan Admin. Jadwal lama tetap aktif hingga keputusan diberikan.</p>
-            </div>
-        </div>
+        <x-alert-banner type="info" title="Informasi Reschedule">
+            Pengajuan reschedule akan menunggu persetujuan Admin. Jadwal lama tetap aktif hingga keputusan diberikan.
+        </x-alert-banner>
 
         <form method="POST" action="{{ route('klien.permintaan-reschedule.store', $bookingKonsultasi) }}" class="space-y-6" @submit="isSubmitting = true">
             @csrf
 
             <!-- Card 1: Jadwal Saat Ini -->
-            <div class="bg-white border border-[#E2E8F0] rounded-[20px] shadow-sm p-6 sm:p-8">
+            <x-card>
                 <div>
                     <h3 class="font-bold text-navy-dark text-xl">Jadwal Saat Ini</h3>
                     <p class="text-sm text-gray-500 mt-1">Jadwal konsultasi yang saat ini terdaftar atas nama Anda.</p>
                 </div>
 
-                <hr class="border-[#F1F5F9] my-6">
+                <x-divider />
 
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-y-6 gap-x-12">
                     <div>
@@ -71,16 +62,16 @@
                         </div>
                     </div>
                 </div>
-            </div>
+            </x-card>
 
             <!-- Card 2: Alasan Reschedule -->
-            <div class="bg-white border border-[#E2E8F0] rounded-[20px] shadow-sm p-6 sm:p-8">
+            <x-card class="space-y-6">
                 <div>
                     <h3 class="font-bold text-navy-dark text-xl">Alasan Reschedule</h3>
                     <p class="text-sm text-gray-500 mt-1">Jelaskan alasan Anda mengajukan perubahan jadwal.</p>
                 </div>
                 
-                <hr class="border-[#F1F5F9] my-6">
+                <x-divider />
 
                 <div>
                     <x-input-label for="alasan_reschedule" :value="__('ALASAN RESCHEDULE')" class="!text-[11px] !font-bold !text-gray-400 !uppercase !tracking-wider mb-2" />
@@ -88,16 +79,16 @@
                     <x-input-error :messages="$errors->get('alasan_reschedule')" class="mt-2" />
                     <p class="mt-2 text-[11px] font-medium text-gray-400">* Wajib diisi. Alasan yang jelas membantu Admin memproses permintaan Anda lebih cepat.</p>
                 </div>
-            </div>
+            </x-card>
 
             <!-- Card 3: Pilih Jadwal Alternatif -->
-            <div class="bg-white border border-[#E2E8F0] rounded-[20px] shadow-sm p-6 sm:p-8">
+            <x-card>
                 <div>
                     <h3 class="font-bold text-navy-dark text-xl">Pilih Jadwal Alternatif</h3>
                     <p class="text-sm text-gray-500 mt-1">Pilih salah satu slot jadwal yang tersedia sebagai preferensi baru Anda.</p>
                 </div>
 
-                <hr class="border-[#F1F5F9] my-6">
+                <x-divider />
 
                 <div class="overflow-x-auto border border-[#E2E8F0] rounded-xl">
                     <table class="min-w-full divide-y divide-[#E2E8F0]">
@@ -135,12 +126,7 @@
                             @empty
                                 <tr>
                                     <td colspan="5" class="px-6 py-12 text-center">
-                                        <div class="flex flex-col items-center justify-center space-y-3">
-                                            <svg class="h-10 w-10 text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
-                                            </svg>
-                                            <p class="text-sm font-semibold text-gray-500">Belum ada slot jadwal alternatif yang tersedia saat ini.</p>
-                                        </div>
+                                        <x-empty-state title="Tidak Ada Jadwal" message="Belum ada slot jadwal alternatif yang tersedia saat ini." />
                                     </td>
                                 </tr>
                             @endforelse
@@ -148,16 +134,16 @@
                     </table>
                 </div>
                 <x-input-error :messages="$errors->get('preferensi_jadwal')" class="mt-2" />
-            </div>
+            </x-card>
 
             <!-- Card 4: Preferensi Metode -->
-            <div class="bg-white border border-[#E2E8F0] rounded-[20px] shadow-sm p-6 sm:p-8">
+            <x-card>
                 <div>
                     <h3 class="font-bold text-navy-dark text-xl">Preferensi Metode</h3>
                     <p class="text-sm text-gray-500 mt-1">Preferensi metode konsultasi baru (opsional). Admin akan mempertimbangkan permintaan ini.</p>
                 </div>
 
-                <hr class="border-[#F1F5F9] my-6">
+                <x-divider />
 
                 <div class="flex flex-col sm:flex-row gap-4">
                     <label class="cursor-pointer group relative flex items-center bg-white border border-[#E2E8F0] hover:border-accent-blue rounded-xl px-5 py-4 flex-1 transition shadow-sm has-[:checked]:border-accent-blue has-[:checked]:bg-blue-50/50 has-[:checked]:ring-1 has-[:checked]:ring-accent-blue">
@@ -177,20 +163,18 @@
                     </label>
                 </div>
                 <x-input-error :messages="$errors->get('preferensi_metode')" class="mt-2" />
-            </div>
+            </x-card>
 
             <!-- Action Buttons -->
             <div class="flex flex-col-reverse sm:flex-row sm:items-center sm:justify-between gap-4 pt-4 pb-12">
-                <a href="{{ route('klien.booking-konsultasi.show', $bookingKonsultasi) }}" class="bg-white border border-[#E2E8F0] hover:bg-gray-50 text-gray-700 font-bold text-sm px-6 py-2.5 rounded-xl transition shadow-sm inline-flex items-center justify-center gap-2 w-full sm:w-auto">
+                <x-secondary-button href="{{ route('klien.booking-konsultasi.show', $bookingKonsultasi) }}" class="w-full sm:w-auto">
                     <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path>
                     </svg>
                     Batal
-                </a>
+                </x-secondary-button>
                 
-                <button type="submit" 
-                        :disabled="isSubmitting"
-                        class="bg-[#1e3a8a] hover:bg-blue-900 text-white font-bold text-sm px-8 py-2.5 rounded-xl transition shadow-md shadow-blue-900/20 flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed w-full sm:w-auto">
+                <x-primary-button class="w-full sm:w-auto" ::disabled="isSubmitting">
                     <span x-show="!isSubmitting">Ajukan Reschedule</span>
                     <span x-show="isSubmitting" class="flex items-center justify-center gap-2" style="display: none;">
                         <svg class="animate-spin h-4 w-4 text-white" fill="none" viewBox="0 0 24 24">
@@ -199,7 +183,7 @@
                         </svg>
                         <span>Mengirim...</span>
                     </span>
-                </button>
+                </x-primary-button>
             </div>
 
         </form>

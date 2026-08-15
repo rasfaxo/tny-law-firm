@@ -2,7 +2,7 @@
 
     <div class="space-y-6">
         <!-- Search and Filter Bar -->
-        <div class="bg-white border border-[#E2E8F0] p-6 rounded-2xl shadow-sm">
+        <x-card>
             <form method="GET" action="{{ route('klien.booking-konsultasi.index') }}" class="flex flex-col md:flex-row md:items-center justify-between gap-4">
                 <div class="flex-1 max-w-md relative">
                     <span class="absolute inset-y-0 left-0 pl-3 flex items-center">
@@ -27,15 +27,15 @@
                         </a>
                     @endif
                     
-                    <button type="submit" class="bg-[#1e3a8a] hover:bg-blue-900 text-white font-bold text-sm h-11 px-6 rounded-xl transition shadow-md shadow-blue-900/20">
+                    <x-primary-button class="h-11">
                         Cari
-                    </button>
+                    </x-primary-button>
                 </div>
             </form>
-        </div>
+        </x-card>
 
         <!-- Bookings List Table -->
-        <div class="bg-white border border-[#E2E8F0] rounded-2xl shadow-sm overflow-hidden">
+        <x-card class="p-0 overflow-hidden sm:p-0">
             <!-- Desktop Table Layout -->
             <div class="hidden md:block overflow-x-auto">
                 <table class="min-w-full divide-y divide-gray-200">
@@ -98,11 +98,7 @@
                         @empty
                             <tr>
                                 <td colspan="7" class="px-6 py-16 text-center">
-                                    <svg class="mx-auto h-12 w-12 text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
-                                    </svg>
-                                    <h3 class="mt-2 text-sm font-bold text-navy-dark">Belum ada jadwal konsultasi</h3>
-                                    <p class="mt-1 text-xs text-gray-500">Anda belum memiliki jadwal konsultasi terdaftar saat ini.</p>
+                                    <x-empty-state title="Belum ada jadwal konsultasi" message="Anda belum memiliki jadwal konsultasi terdaftar saat ini." />
                                 </td>
                             </tr>
                         @endforelse
@@ -148,11 +144,7 @@
                     </div>
                 @empty
                     <div class="p-8 text-center">
-                        <svg class="mx-auto h-10 w-10 text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
-                        </svg>
-                        <h3 class="mt-2 text-sm font-bold text-navy-dark">Belum ada jadwal konsultasi</h3>
-                        <p class="mt-1 text-xs text-gray-500">Anda belum memiliki jadwal konsultasi terdaftar saat ini.</p>
+                        <x-empty-state title="Belum ada jadwal konsultasi" message="Anda belum memiliki jadwal konsultasi terdaftar saat ini." />
                     </div>
                 @endforelse
             </div>
@@ -162,6 +154,6 @@
                     {{ $bookingKonsultasi->links() }}
                 </div>
             @endif
-        </div>
+        </x-card>
     </div>
 </x-app-layout>

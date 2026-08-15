@@ -1,16 +1,4 @@
-<x-app-layout>
-    <x-slot name="header">
-        <div class="flex items-center gap-1 text-xxs font-semibold text-gray-400 uppercase tracking-wider mb-1 no-print">
-            <span>Admin</span>
-            <svg class="h-3 w-3 text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
-            </svg>
-            <span class="text-gray-600">Data Pra-Pendaftaran</span>
-        </div>
-        <h2 class="font-extrabold text-2xl text-navy-dark leading-tight no-print">
-            {{ __('Data Pra-Pendaftaran') }}
-        </h2>
-    </x-slot>
+<x-app-layout title="Laporan Pra-Pendaftaran" :breadcrumbs="[['label' => 'Admin'], ['label' => 'Laporan', 'url' => route('admin.laporan.index')], ['label' => 'Pra-Pendaftaran']]">
 
     <style>
         @media print {
@@ -33,7 +21,7 @@
 
     <div class="space-y-6">
         <!-- Filter Card -->
-        <div class="no-print bg-white border border-[#E2E8F0] p-6 sm:p-8 rounded-2xl shadow-sm">
+        <x-card class="no-print">
             <form method="GET" action="{{ route('admin.laporan.pra-pendaftaran') }}" class="space-y-6">
                 <div class="grid grid-cols-1 gap-5 md:grid-cols-2 lg:grid-cols-4">
                     <div>
@@ -69,30 +57,30 @@
                 </div>
                 
                 <div class="flex flex-wrap items-center gap-3 pt-4 border-t border-[#E2E8F0]">
-                    <button type="submit" class="inline-flex items-center justify-center bg-[#1e3a8a] hover:bg-blue-900 text-white font-bold text-xs px-5 py-2.5 rounded-xl transition shadow-md shadow-blue-900/20 uppercase tracking-widest gap-1.5">
+                    <x-primary-button class="gap-1.5 uppercase tracking-widest px-5">
                         <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z"></path>
                         </svg>
                         <span>{{ __('Terapkan Filter') }}</span>
-                    </button>
-                    <a href="{{ route('admin.laporan.pra-pendaftaran') }}" class="inline-flex items-center justify-center bg-white border border-[#E2E8F0] hover:border-accent-blue text-navy-dark hover:text-accent-blue font-bold text-xs px-5 py-2.5 rounded-xl transition shadow-sm gap-1.5">
+                    </x-primary-button>
+                    <x-secondary-button href="{{ route('admin.laporan.pra-pendaftaran') }}" tag="a" class="gap-1.5 px-5">
                         <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 1121.21 8H12v9l-7-7"></path>
                         </svg>
                         <span>{{ __('Reset Filter') }}</span>
-                    </a>
-                    <button type="button" onclick="window.print()" class="inline-flex items-center justify-center bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs px-5 py-2.5 rounded-xl transition shadow-md shadow-emerald-700/20 uppercase tracking-widest gap-1.5">
+                    </x-secondary-button>
+                    <x-primary-button type="button" onclick="window.print()" class="bg-emerald-600 hover:bg-emerald-700 shadow-emerald-700/20 uppercase tracking-widest gap-1.5 px-5">
                         <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z"></path>
                         </svg>
                         <span>{{ __('Cetak Laporan') }}</span>
-                    </button>
+                    </x-primary-button>
                 </div>
             </form>
-        </div>
+        </x-card>
 
         <!-- Table Card -->
-        <div class="print-area bg-white border border-[#E2E8F0] rounded-2xl shadow-sm overflow-hidden">
+        <x-card class="print-area p-0 overflow-hidden sm:p-0">
             <div class="p-6 border-b border-[#E2E8F0] flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
                 <div>
                     <h3 class="font-bold text-navy-dark text-lg">{{ __('Laporan Pra-Pendaftaran Perkara') }}</h3>
@@ -156,14 +144,14 @@
                             </tr>
                         @empty
                             <tr>
-                                <td colspan="8" class="px-4 py-8 text-center text-xs text-gray-400">
-                                    Tidak ada data pra-pendaftaran sesuai filter.
+                                <td colspan="8" class="px-4 py-12 text-center">
+                                    <x-empty-state title="Tidak Ada Data" message="Tidak ada data pra-pendaftaran sesuai filter." />
                                 </td>
                             </tr>
                         @endforelse
                     </tbody>
                 </table>
             </div>
-        </div>
+        </x-card>
     </div>
 </x-app-layout>

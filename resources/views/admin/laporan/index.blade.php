@@ -2,7 +2,7 @@
 
     <div class="space-y-6">
         <!-- Secondary Navigation Tabs for Detail Reports -->
-        <div class="bg-white border border-[#E2E8F0] p-4 rounded-2xl shadow-sm">
+        <x-card class="!p-4 sm:!p-4">
             <span class="text-xxs font-bold text-gray-400 uppercase tracking-wider block mb-3">Detail Laporan Terperinci</span>
             <div class="flex flex-wrap gap-2">
                 <a href="{{ route('admin.laporan.pra-pendaftaran') }}" class="inline-flex items-center justify-center bg-[#F8FAFC] border border-[#E2E8F0] hover:border-accent-blue hover:bg-blue-50 text-xs font-semibold text-navy-dark px-4 py-2.5 rounded-xl transition">
@@ -21,10 +21,10 @@
                     {{ __('Pengajuan Selesai') }}
                 </a>
             </div>
-        </div>
+        </x-card>
 
         <!-- Filter Period Card -->
-        <div class="bg-white border border-[#E2E8F0] p-6 rounded-2xl shadow-sm">
+        <x-card>
             <form method="GET" action="{{ route('admin.laporan.index') }}" class="flex flex-col md:flex-row md:items-end gap-4">
                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 flex-1">
                     <div>
@@ -39,22 +39,22 @@
                     </div>
                 </div>
                 <div class="flex gap-2">
-                    <button type="submit" class="bg-[#1e3a8a] hover:bg-blue-900 text-white font-bold text-xs px-5 py-3 rounded-xl transition shadow-md shadow-blue-900/20 uppercase tracking-widest h-11">
+                    <x-primary-button class="h-11 uppercase tracking-widest px-5">
                         Terapkan
-                    </button>
+                    </x-primary-button>
                     @if (request('tanggal_mulai') || request('tanggal_selesai'))
-                        <a href="{{ route('admin.laporan.index') }}" class="inline-flex items-center justify-center bg-white border border-[#E2E8F0] hover:border-rose-300 text-navy-dark hover:text-rose-600 font-bold text-xs px-4 py-3 rounded-xl transition shadow-sm h-11">
+                        <x-secondary-button href="{{ route('admin.laporan.index') }}" tag="a" class="h-11 hover:border-rose-300 hover:text-rose-600">
                             Reset
-                        </a>
+                        </x-secondary-button>
                     @endif
                 </div>
             </form>
-        </div>
+        </x-card>
 
         <!-- Metric Statistics Cards -->
         <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
             <!-- Card 1: Total Pengajuan -->
-            <div class="bg-white border border-[#E2E8F0] p-6 rounded-2xl shadow-sm flex flex-col justify-between h-40">
+            <x-card class="flex flex-col justify-between h-40">
                 <div class="bg-violet-50 text-violet-700 h-10 w-10 rounded-xl flex items-center justify-center shrink-0">
                     <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
@@ -65,10 +65,10 @@
                     <div class="text-xs font-semibold text-gray-500 mt-1">Total Pengajuan</div>
                     <div class="text-xxs text-gray-400 mt-0.5">Periode terpilih</div>
                 </div>
-            </div>
+            </x-card>
 
             <!-- Card 2: Pengajuan Selesai -->
-            <div class="bg-white border border-[#E2E8F0] p-6 rounded-2xl shadow-sm flex flex-col justify-between h-40">
+            <x-card class="flex flex-col justify-between h-40">
                 <div class="bg-emerald-50 text-emerald-700 h-10 w-10 rounded-xl flex items-center justify-center shrink-0">
                     <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
@@ -79,10 +79,10 @@
                     <div class="text-xs font-semibold text-gray-500 mt-1">Pengajuan Selesai</div>
                     <div class="text-xxs text-gray-400 mt-0.5">Telah selesai</div>
                 </div>
-            </div>
+            </x-card>
 
             <!-- Card 3: Berkas Lengkap -->
-            <div class="bg-white border border-[#E2E8F0] p-6 rounded-2xl shadow-sm flex flex-col justify-between h-40">
+            <x-card class="flex flex-col justify-between h-40">
                 <div class="bg-amber-50 text-amber-700 h-10 w-10 rounded-xl flex items-center justify-center shrink-0">
                     <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
@@ -93,10 +93,10 @@
                     <div class="text-xs font-semibold text-gray-500 mt-1">Berkas Lengkap</div>
                     <div class="text-xxs text-gray-400 mt-0.5">Siap konsultasi</div>
                 </div>
-            </div>
+            </x-card>
 
             <!-- Card 4: Konsultasi Selesai -->
-            <div class="bg-white border border-[#E2E8F0] p-6 rounded-2xl shadow-sm flex flex-col justify-between h-40">
+            <x-card class="flex flex-col justify-between h-40">
                 <div class="bg-blue-50 text-blue-700 h-10 w-10 rounded-xl flex items-center justify-center shrink-0">
                     <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
@@ -107,11 +107,11 @@
                     <div class="text-xs font-semibold text-gray-500 mt-1">Konsultasi Selesai</div>
                     <div class="text-xxs text-gray-400 mt-0.5">Booking selesai</div>
                 </div>
-            </div>
+            </x-card>
         </div>
 
         <!-- Summary by Category Card -->
-        <div class="bg-white border border-[#E2E8F0] rounded-2xl shadow-sm overflow-hidden">
+        <x-card class="p-0 overflow-hidden sm:p-0">
             <div class="px-6 py-4 border-b border-[#E2E8F0]">
                 <h3 class="font-bold text-navy-dark text-sm">Ringkasan per Kategori</h3>
                 <p class="text-xxs text-gray-400 mt-0.5 font-semibold">Distribusi pengajuan berdasarkan kategori perkara</p>
@@ -153,14 +153,14 @@
                             </tr>
                         @empty
                             <tr>
-                                <td colspan="6" class="px-6 py-8 text-center text-xs text-gray-400">
-                                    Belum ada data kategori perkara.
+                                <td colspan="6" class="px-6 py-12 text-center">
+                                    <x-empty-state title="Belum Ada Kategori Perkara" message="Belum ada data kategori perkara." />
                                 </td>
                             </tr>
                         @endforelse
                     </tbody>
                 </table>
             </div>
-        </div>
+        </x-card>
     </div>
 </x-app-layout>

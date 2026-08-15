@@ -2,7 +2,7 @@
 
     <div class="space-y-6">
         <!-- Filter & Search Bar -->
-        <div class="bg-white border border-[#E2E8F0] p-6 rounded-2xl shadow-sm">
+        <x-card>
             <form method="GET" action="{{ route('admin.pra-pendaftaran.index') }}" class="grid grid-cols-1 md:grid-cols-12 gap-4 items-end">
                 <!-- Search Input -->
                 <div class="md:col-span-3 space-y-1.5">
@@ -77,20 +77,17 @@
                     </a>
                 </div>
             @endif
-        </div>
+        </x-card>
 
         <!-- Success Alert -->
         @if (session('success'))
-            <div class="rounded-xl bg-green-50 border border-green-200 p-4 flex gap-3 text-sm text-green-700">
-                <svg class="h-5 w-5 text-green-500 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-                </svg>
-                <span>{{ session('success') }}</span>
-            </div>
+            <x-alert-banner type="success">
+                {{ session('success') }}
+            </x-alert-banner>
         @endif
 
         <!-- Case List -->
-        <div class="bg-white border border-[#E2E8F0] rounded-2xl shadow-sm overflow-hidden">
+        <x-card class="p-0 overflow-hidden">
             <!-- Desktop Table Layout -->
             <div class="hidden md:block overflow-x-auto">
                 <table class="min-w-full divide-y divide-[#F1F5F9]">
@@ -138,17 +135,7 @@
                         @empty
                             <tr>
                                 <td colspan="7" class="px-6 py-12 text-center">
-                                    <div class="max-w-sm mx-auto space-y-3">
-                                        <div class="bg-gray-50 p-4 rounded-full w-14 h-14 mx-auto flex items-center justify-center text-gray-400">
-                                            <svg class="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 13V6a2 2 0 00-2-2H6a2 2 0 00-2 2v7m16 0a2 2 0 01-2 2H6a2 2 0 01-2-2m16 0V9a2 2 0 00-2-2H6a2 2 0 00-2 2v4m16 4h-2m-8 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1"></path>
-                                            </svg>
-                                        </div>
-                                        <p class="text-sm font-semibold text-navy-dark">Tidak Ada Data</p>
-                                        <p class="text-xs text-gray-400 leading-relaxed">
-                                            Tidak ditemukan data pra-pendaftaran perkara yang cocok dengan kriteria filter Anda.
-                                        </p>
-                                    </div>
+                                    <x-empty-state title="Tidak Ada Data" message="Tidak ditemukan data pra-pendaftaran perkara yang cocok dengan kriteria filter Anda." />
                                 </td>
                             </tr>
                         @endforelse
@@ -183,7 +170,7 @@
                     </div>
                 @empty
                     <div class="p-8 text-center text-sm text-gray-400">
-                        Tidak ditemukan data pra-pendaftaran perkara.
+                        <x-empty-state title="Tidak Ada Data" message="Tidak ditemukan data pra-pendaftaran perkara yang cocok dengan kriteria filter Anda." />
                     </div>
                 @endforelse
             </div>
@@ -194,6 +181,6 @@
                     {{ $pengajuan->links() }}
                 </div>
             @endif
-        </div>
+        </x-card>
     </div>
 </x-app-layout>

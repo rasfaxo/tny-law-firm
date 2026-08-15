@@ -2,12 +2,12 @@
 
     <div class="space-y-6">
         <div class="flex justify-start">
-            <a href="{{ route('admin.permintaan-reschedule.index') }}" class="inline-flex items-center justify-center bg-white border border-[#E2E8F0] hover:border-accent-blue text-navy-dark hover:text-accent-blue font-bold text-xs px-4 py-2.5 rounded-xl transition shadow-sm gap-2">
+            <x-secondary-button href="{{ route('admin.permintaan-reschedule.index') }}" tag="a" class="gap-2">
                 <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path>
                 </svg>
                 <span>{{ __('Kembali') }}</span>
-            </a>
+            </x-secondary-button>
         </div>
 
     @php
@@ -26,12 +26,9 @@
 
     <div class="space-y-6">
         @if (session('success'))
-            <div class="bg-emerald-50 border border-emerald-200 text-emerald-800 rounded-xl p-4 text-xs font-semibold flex items-center gap-3">
-                <svg class="h-4 w-4 text-emerald-600 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-                </svg>
-                <span>{{ session('success') }}</span>
-            </div>
+            <x-alert-banner type="success">
+                {{ session('success') }}
+            </x-alert-banner>
         @endif
 
         @if ($errors->any())
@@ -49,7 +46,7 @@
         <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
             
             <!-- Left Card: Klien & Pengajuan Info -->
-            <div class="bg-white border border-[#E2E8F0] p-6 sm:p-8 rounded-2xl shadow-sm space-y-6">
+            <x-card class="space-y-6">
                 <div>
                     <h3 class="font-bold text-navy-dark text-lg">Informasi Klien & Perkara</h3>
                     <p class="text-xs text-gray-400 mt-1">Detail pemohon reschedule dan perkara terkait.</p>
@@ -76,10 +73,10 @@
                         <span class="text-sm font-semibold text-navy-dark">{{ $pengajuan?->kategori?->nama_kategori ?? '-' }}</span>
                     </div>
                 </div>
-            </div>
+            </x-card>
 
             <!-- Right Card: Jadwal & Booking Lama -->
-            <div class="bg-white border border-[#E2E8F0] p-6 sm:p-8 rounded-2xl shadow-sm space-y-6">
+            <x-card class="space-y-6">
                 <div>
                     <h3 class="font-bold text-navy-dark text-lg">Jadwal & Booking Lama</h3>
                     <p class="text-xs text-gray-400 mt-1">Detail slot waktu pelaksanaan konsultasi lama.</p>
@@ -111,11 +108,11 @@
                         <x-status-badge :status="$bookingLama?->metode_konsultasi ?? 'offline'" />
                     </div>
                 </div>
-            </div>
+            </x-card>
         </div>
 
         <!-- Detail Permintaan Reschedule Card -->
-        <div class="bg-white border border-[#E2E8F0] p-6 sm:p-8 rounded-2xl shadow-sm space-y-6">
+        <x-card class="space-y-6">
             <div>
                 <h3 class="font-bold text-navy-dark text-lg">Informasi Pengajuan Reschedule</h3>
                 <p class="text-xs text-gray-400 mt-1">Alasan penundaan dan preferensi jadwal baru klien.</p>
@@ -179,11 +176,11 @@
                     @endif
                 </div>
             </div>
-        </div>
+        </x-card>
 
         @if ($jadwalBaru || $bookingBaru)
             <!-- Jadwal Baru Card (If Approved) -->
-            <div class="bg-white border border-[#E2E8F0] p-6 sm:p-8 rounded-2xl shadow-sm space-y-6">
+            <x-card class="space-y-6">
                 <div>
                     <h3 class="font-bold text-[#059669] text-lg">Hasil Reschedule (Jadwal Baru)</h3>
                     <p class="text-xs text-gray-400 mt-1">Detail slot waktu baru yang disetujui.</p>
@@ -204,7 +201,8 @@
                         </div>
                     </div>
                 </div>
-            </div>
+                </div>
+            </x-card>
         @endif
 
         <!-- Action Cards (If Waiting Approval) -->
@@ -212,7 +210,7 @@
             <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
                 
                 <!-- Card Action 1: Setujui Reschedule -->
-                <div class="bg-white border border-[#E2E8F0] p-6 sm:p-8 rounded-2xl shadow-sm space-y-6 flex flex-col justify-between">
+                <x-card class="space-y-6 flex flex-col justify-between">
                     <div class="space-y-4">
                         <div>
                             <h3 class="font-bold text-[#1e3a8a] text-lg">Setujui Permintaan Reschedule</h3>
@@ -247,14 +245,14 @@
                     </div>
 
                     <div class="flex justify-end pt-4 border-t border-[#E2E8F0] mt-6">
-                        <button type="submit" form="approve-form" class="inline-flex items-center justify-center bg-[#1e3a8a] hover:bg-blue-900 text-white font-bold text-xs px-5 py-2.5 rounded-xl transition shadow-md shadow-blue-900/20 uppercase tracking-widest">
+                        <x-primary-button type="submit" form="approve-form">
                             {{ __('Setujui Reschedule') }}
-                        </button>
+                        </x-primary-button>
                     </div>
-                </div>
+                </x-card>
 
                 <!-- Card Action 2: Tolak Reschedule -->
-                <div class="bg-white border border-[#E2E8F0] p-6 sm:p-8 rounded-2xl shadow-sm space-y-6 flex flex-col justify-between">
+                <x-card class="space-y-6 flex flex-col justify-between">
                     <div class="space-y-4">
                         <div>
                             <h3 class="font-bold text-[#b91c1c] text-lg">Tolak Permintaan Reschedule</h3>
@@ -305,11 +303,11 @@
                     </div>
 
                     <div class="flex justify-end pt-4 border-t border-[#E2E8F0] mt-6">
-                        <button type="submit" form="reject-form" class="inline-flex items-center justify-center bg-[#b91c1c] hover:bg-red-850 text-white font-bold text-xs px-5 py-2.5 rounded-xl transition shadow-md shadow-red-800/20 uppercase tracking-widest">
+                        <x-primary-button type="submit" form="reject-form" class="bg-[#b91c1c] hover:bg-red-850 shadow-red-800/20">
                             {{ __('Tolak Reschedule') }}
-                        </button>
+                        </x-primary-button>
                     </div>
-                </div>
+                </x-card>
             </div>
         @endif
     </div>

@@ -6,19 +6,19 @@
 
     <div class="space-y-6">
         @if (session('success'))
-            <div class="rounded-md bg-green-50 p-4 text-sm text-green-700 shadow-sm border border-green-200">
+            <x-alert-banner type="success">
                 {{ session('success') }}
-            </div>
+            </x-alert-banner>
         @endif
 
         @if (session('error'))
-            <div class="rounded-md bg-red-50 p-4 text-sm text-red-700 shadow-sm border border-red-200">
+            <x-alert-banner type="error">
                 {{ session('error') }}
-            </div>
+            </x-alert-banner>
         @endif
 
         <!-- Case Title Header Card -->
-        <div class="bg-white border border-[#e2e8f0] rounded-[16px] p-6 shadow-[0px_1px_3px_rgba(15,23,42,0.06),0px_8px_12px_rgba(15,23,42,0.04)]">
+        <x-card>
             <div class="flex flex-col md:flex-row items-start md:items-center justify-between gap-6">
                 <div class="space-y-2">
                     <div class="flex items-center gap-2 flex-wrap">
@@ -34,22 +34,21 @@
                 </div>
                 @if ($isVerifiable)
                     <div class="shrink-0">
-                        <a href="{{ route('staf-legal.verifikasi-berkas.verifikasi', $praPendaftaranPerkara) }}" 
-                           class="bg-[#1e3a8a] text-white font-semibold text-[13px] tracking-[0.325px] h-[42px] px-[20px] rounded-[14px] flex items-center justify-center gap-2 shadow-md hover:bg-[#1e40af] transition duration-150 cursor-pointer">
-                            <svg class="h-[15px] w-[13px]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <x-primary-button href="{{ route('staf-legal.verifikasi-berkas.verifikasi', $praPendaftaranPerkara) }}" tag="a">
+                            <svg class="h-[15px] w-[13px] mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
                             </svg>
                             Verifikasi Berkas
-                        </a>
+                        </x-primary-button>
                     </div>
                 @endif
             </div>
-        </div>
+        </x-card>
 
         <!-- Info Cards side-by-side -->
         <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
             <!-- Data Klien Card -->
-            <div class="bg-white border border-[#e2e8f0] rounded-[16px] p-6 shadow-[0px_1px_3px_rgba(15,23,42,0.06),0px_8px_12px_rgba(15,23,42,0.04)] space-y-4">
+            <x-card class="space-y-4">
                 <div class="border-b border-[#f1f5f9] pb-4">
                     <h3 class="font-bold text-[16px] text-[#0f172a]">Data Klien</h3>
                     <p class="text-[13px] text-[#64748b] mt-1">Informasi Klien untuk membantu proses verifikasi.</p>
@@ -77,10 +76,10 @@
                         <span class="font-semibold text-[#0f172a]">{{ $praPendaftaranPerkara->klien?->profil?->no_identitas ?? '-' }}</span>
                     </div>
                 </div>
-            </div>
+            </x-card>
 
             <!-- Informasi Pengajuan Card -->
-            <div class="bg-white border border-[#e2e8f0] rounded-[16px] p-6 shadow-[0px_1px_3px_rgba(15,23,42,0.06),0px_8px_12px_rgba(15,23,42,0.04)] space-y-4">
+            <x-card class="space-y-4">
                 <div class="border-b border-[#f1f5f9] pb-4">
                     <h3 class="font-bold text-[16px] text-[#0f172a]">Informasi Pengajuan</h3>
                     <p class="text-[13px] text-[#64748b] mt-1">Detail perkara yang diajukan oleh Klien.</p>
@@ -106,11 +105,11 @@
                         </p>
                     </div>
                 </div>
-            </div>
+            </x-card>
         </div>
 
         <!-- Dokumen Pendukung Card -->
-        <div class="bg-white border border-[#e2e8f0] rounded-[16px] p-6 shadow-[0px_1px_3px_rgba(15,23,42,0.06),0px_8px_12px_rgba(15,23,42,0.04)] space-y-4">
+        <x-card class="space-y-4">
             <div class="border-b border-[#f1f5f9] pb-4">
                 <h3 class="font-bold text-[16px] text-[#0f172a]">Dokumen Pendukung</h3>
                 <p class="text-[13px] text-[#64748b] mt-1">Buka dokumen melalui link aman untuk memeriksa keabsahan data.</p>
@@ -143,18 +142,18 @@
                         @empty
                             <tr>
                                 <td colspan="4" class="px-4 py-8 text-center text-[13px] text-[#64748b]">
-                                    Belum ada dokumen yang diunggah.
+                                    <x-empty-state title="Belum ada dokumen" message="Belum ada dokumen yang diunggah." />
                                 </td>
                             </tr>
                         @endforelse
                     </tbody>
                 </table>
             </div>
-        </div>
+        </x-card>
 
         <!-- Riwayat Dokumen (jika ada data) -->
         @if ($praPendaftaranPerkara->riwayatDokumen->isNotEmpty())
-            <div class="bg-white border border-[#e2e8f0] rounded-[16px] p-6 shadow-[0px_1px_3px_rgba(15,23,42,0.06),0px_8px_12px_rgba(15,23,42,0.04)] space-y-4">
+            <x-card class="space-y-4">
                 <div class="border-b border-[#f1f5f9] pb-4">
                     <h3 class="font-bold text-[16px] text-[#0f172a]">Riwayat Dokumen Replaced</h3>
                     <p class="text-[13px] text-[#64748b] mt-1">Dokumen lama yang sudah diganti oleh Klien (read-only).</p>
@@ -192,17 +191,17 @@
                         </tbody>
                     </table>
                 </div>
-            </div>
+            </x-card>
         @endif
         
         <!-- Back Navigation link -->
-        <div class="flex items-center justify-start mt-4">
-            <a href="{{ route('staf-legal.verifikasi-berkas.index') }}" class="inline-flex items-center gap-1 text-[13px] text-[#64748b] hover:text-[#0f172a] transition duration-150">
-                <svg class="h-[14px] w-[14px]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>
+        <div class="pt-4 pb-12">
+            <x-secondary-button href="{{ route('staf-legal.verifikasi-berkas.index') }}" tag="a">
+                <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path>
                 </svg>
                 Kembali ke Daftar Pengajuan
-            </a>
+            </x-secondary-button>
         </div>
     </div>
 </x-app-layout>

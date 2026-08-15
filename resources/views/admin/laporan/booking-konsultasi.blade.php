@@ -1,9 +1,4 @@
-<x-app-layout>
-    <x-slot name="header">
-        <h2 class="font-semibold text-xl text-gray-800 leading-tight">
-            {{ __('Laporan Booking Konsultasi') }}
-        </h2>
-    </x-slot>
+<x-app-layout title="Laporan Booking Konsultasi" :breadcrumbs="[['label' => 'Admin'], ['label' => 'Laporan', 'url' => route('admin.laporan.index')], ['label' => 'Booking Konsultasi']]">
 
     <style>
         @media print {
@@ -29,9 +24,9 @@
         ];
     @endphp
 
-    <div class="py-12">
-        <div class="max-w-7xl mx-auto sm:px-6 lg:px-8 space-y-6">
-            <div class="no-print bg-white overflow-hidden shadow-sm sm:rounded-lg">
+    <div class="space-y-6">
+        <div class="max-w-full mx-auto space-y-6">
+            <x-card class="no-print p-0 overflow-hidden sm:p-0">
                 <div class="p-6 text-gray-900">
                     <form method="GET" action="{{ route('admin.laporan.booking-konsultasi') }}" class="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-5">
                         <div>
@@ -69,22 +64,22 @@
                                 @endforeach
                             </select>
                         </div>
-                        <div class="md:col-span-2 lg:col-span-5 flex flex-wrap items-center gap-3">
-                            <button type="submit" class="inline-flex items-center rounded-md bg-indigo-600 px-4 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500">
+                        <div class="md:col-span-2 lg:col-span-5 flex flex-wrap items-center gap-3 pt-4 border-t border-[#E2E8F0]">
+                            <x-primary-button>
                                 {{ __('Terapkan Filter') }}
-                            </button>
-                            <a href="{{ route('admin.laporan.booking-konsultasi') }}" class="inline-flex items-center rounded-md bg-gray-100 px-4 py-2 text-sm font-semibold text-gray-700 hover:bg-gray-200">
+                            </x-primary-button>
+                            <x-secondary-button href="{{ route('admin.laporan.booking-konsultasi') }}" tag="a">
                                 {{ __('Reset Filter') }}
-                            </a>
-                            <button type="button" onclick="window.print()" class="inline-flex items-center rounded-md bg-green-600 px-4 py-2 text-sm font-semibold text-white shadow-sm hover:bg-green-500">
+                            </x-secondary-button>
+                            <x-primary-button type="button" onclick="window.print()" class="bg-emerald-600 hover:bg-emerald-700 shadow-emerald-900/20">
                                 {{ __('Cetak') }}
-                            </button>
+                            </x-primary-button>
                         </div>
                     </form>
                 </div>
-            </div>
+            </x-card>
 
-            <div class="print-area bg-white overflow-hidden shadow-sm sm:rounded-lg">
+            <x-card class="print-area p-0 overflow-hidden sm:p-0">
                 <div class="p-6 text-gray-900">
                     <div class="flex flex-col gap-1 sm:flex-row sm:items-start sm:justify-between">
                         <div>
@@ -153,8 +148,8 @@
                                     </tr>
                                 @empty
                                     <tr>
-                                        <td colspan="12" class="px-3 py-8 text-center text-gray-500">
-                                            {{ __('Tidak ada data booking sesuai filter.') }}
+                                        <td colspan="12" class="px-3 py-12 text-center">
+                                            <x-empty-state title="Tidak Ada Data" message="Tidak ada data booking sesuai filter." />
                                         </td>
                                     </tr>
                                 @endforelse
@@ -162,7 +157,7 @@
                         </table>
                     </div>
                 </div>
-            </div>
+            </x-card>
         </div>
     </div>
 </x-app-layout>

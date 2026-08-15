@@ -2,30 +2,19 @@
 
     <div class="space-y-6" x-data="{ isSubmitting: false }">
         @if ($errors->any())
-            <div class="rounded-xl bg-red-50 border border-red-200 p-4 flex gap-3 text-sm text-red-700 shadow-sm" x-init="$nextTick(() => { $el.scrollIntoView({ behavior: 'smooth', block: 'start' }); })">
-                <svg class="h-5 w-5 text-red-500 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path>
-                </svg>
+            <x-alert-banner type="error" x-init="$nextTick(() => { $el.scrollIntoView({ behavior: 'smooth', block: 'start' }); })">
                 <ul class="list-disc list-inside space-y-1">
                     @foreach ($errors->all() as $error)
                         <li>{{ $error }}</li>
                     @endforeach
                 </ul>
-            </div>
+            </x-alert-banner>
         @endif
 
         <!-- Alert Banner (Dokumen perlu perbaikan) -->
-        <div class="bg-[#FFFBEB] border-l-4 border-[#F59E0B] p-4 rounded-r-xl border border-y-[#F59E0B]/20 border-r-[#F59E0B]/20 shadow-sm">
-            <div class="flex gap-2 items-center">
-                <svg class="h-5 w-5 text-[#D97706] shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path>
-                </svg>
-                <span class="font-bold text-[#92400E] text-sm">Dokumen perlu perbaikan</span>
-            </div>
-            <p class="text-xs text-[#92400E]/80 mt-2 pl-7 leading-relaxed">
-                Staf Legal meminta perbaikan pada dokumen berikut. Unggah file baru sesuai catatan perbaikan yang diberikan.
-            </p>
-        </div>
+        <x-alert-banner type="warning" title="Dokumen perlu perbaikan">
+            Staf Legal meminta perbaikan pada dokumen berikut. Unggah file baru sesuai catatan perbaikan yang diberikan.
+        </x-alert-banner>
 
         <form method="POST" action="{{ route('klien.perbaikan-dokumen.store', $catatanVerifikasi) }}" enctype="multipart/form-data" @submit="isSubmitting = true">
             @csrf
@@ -34,7 +23,7 @@
             <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 items-stretch">
                 
                 <!-- LEFT COLUMN: Dokumen Lama -->
-                <div class="bg-white border border-[#E2E8F0] rounded-2xl shadow-sm overflow-hidden flex flex-col justify-between">
+                <x-card class="p-0 overflow-hidden sm:p-0 flex flex-col justify-between">
                     <div class="p-6 sm:p-8 space-y-6">
                         <div class="border-b border-[#F1F5F9] pb-4">
                             <h3 class="font-bold text-navy-dark text-lg">Dokumen Lama</h3>
@@ -65,18 +54,18 @@
 
                     <!-- Action: Lihat Dokumen Lama -->
                     <div class="p-6 sm:p-8 border-t border-[#F1F5F9] bg-[#F8FAFC]/50 flex items-center">
-                        <a href="{{ route('klien.dokumen.show', $dokumen) }}" target="_blank" class="bg-white border border-[#E2E8F0] hover:border-accent-blue text-navy-dark hover:text-accent-blue font-bold text-sm px-6 py-2.5 rounded-xl transition shadow-sm inline-flex items-center gap-2">
+                        <x-secondary-button href="{{ route('klien.dokumen.show', $dokumen) }}" tag="a" target="_blank" class="gap-2">
                             <svg class="h-4 w-4 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path>
                             </svg>
                             Lihat Dokumen Lama
-                        </a>
+                        </x-secondary-button>
                     </div>
-                </div>
+                </x-card>
 
                 <!-- RIGHT COLUMN: Unggah File Baru -->
-                <div class="bg-white border border-[#E2E8F0] rounded-2xl shadow-sm overflow-hidden flex flex-col justify-between">
+                <x-card class="p-0 overflow-hidden sm:p-0 flex flex-col justify-between">
                     <div class="p-6 sm:p-8 space-y-6">
                         <div class="border-b border-[#F1F5F9] pb-4">
                             <h3 class="font-bold text-navy-dark text-lg">Unggah File Baru</h3>
@@ -101,32 +90,27 @@
                             <x-input-error class="mt-2" :messages="$errors->get('file')" />
                         </div>
 
-                        <div class="bg-blue-50/50 border border-blue-200 p-4 rounded-xl flex gap-3 text-xs text-blue-700 leading-relaxed">
-                            <svg class="h-4.5 w-4.5 text-accent-blue shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-                            </svg>
-                            <span>Dokumen lama tidak akan ditimpa. Sistem akan menyimpan file baru sebagai dokumen pengganti yang sah secara terpisah di storage.</span>
-                        </div>
+                        <x-alert-banner type="info">
+                            Dokumen lama tidak akan ditimpa. Sistem akan menyimpan file baru sebagai dokumen pengganti yang sah secara terpisah di storage.
+                        </x-alert-banner>
                     </div>
 
                     <div class="p-6 sm:p-8 border-t border-[#F1F5F9] bg-[#F8FAFC]/50 flex items-center justify-end gap-3">
-                        <a href="{{ route('klien.pra-pendaftaran.show', $pengajuan) }}" class="bg-white border border-[#E2E8F0] hover:border-accent-blue text-navy-dark hover:text-accent-blue font-bold text-sm px-6 py-2.5 rounded-xl transition shadow-sm inline-flex items-center">
+                        <x-secondary-button href="{{ route('klien.pra-pendaftaran.show', $pengajuan) }}" tag="a">
                             Batal
-                        </a>
-                        <button type="submit" 
-                                :disabled="isSubmitting"
-                                class="bg-[#1e3a8a] hover:bg-blue-900 text-white font-bold text-sm px-8 py-2.5 rounded-xl transition shadow-md shadow-blue-900/20 inline-flex items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed">
+                        </x-secondary-button>
+                        <x-primary-button ::disabled="isSubmitting">
                             <span x-show="!isSubmitting">Upload Dokumen Pengganti</span>
-                            <span x-show="isSubmitting" class="flex items-center gap-2">
+                            <span x-show="isSubmitting" class="flex items-center gap-2" style="display: none;">
                                 <svg class="animate-spin h-4 w-4 text-white" fill="none" viewBox="0 0 24 24">
                                     <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
                                     <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
                                 </svg>
                                 <span>Mengupload...</span>
                             </span>
-                        </button>
+                        </x-primary-button>
                     </div>
-                </div>
+                </x-card>
 
             </div>
         </form>

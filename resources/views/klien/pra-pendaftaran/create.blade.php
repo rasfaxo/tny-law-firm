@@ -25,11 +25,8 @@
     }">
         <!-- Error Alert -->
         @if ($errors->any())
-            <div class="rounded-xl bg-red-50 p-4 text-sm text-red-700 shadow-sm border border-red-200" x-init="$nextTick(() => { $el.scrollIntoView({ behavior: 'smooth', block: 'start' }); })">
-                <div class="font-bold flex items-center gap-1.5">
-                    <svg class="h-4 w-4 shrink-0 text-red-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path>
-                    </svg>
+            <x-alert-banner type="error">
+                <div class="font-bold flex items-center gap-1.5" x-init="$nextTick(() => { $el.scrollIntoView({ behavior: 'smooth', block: 'start' }); })">
                     Data pengajuan belum valid. Silakan periksa kembali:
                 </div>
                 <ul class="mt-2 list-disc list-inside space-y-1 pl-1">
@@ -37,7 +34,7 @@
                         <li>{{ $error }}</li>
                     @endforeach
                 </ul>
-            </div>
+            </x-alert-banner>
         @endif
 
         <form method="POST" action="{{ route('klien.pra-pendaftaran.store') }}" enctype="multipart/form-data" class="space-y-6" @submit="isSubmitting = true">
@@ -46,7 +43,7 @@
             <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 items-stretch">
                 
                 <!-- Kiri: Informasi Pengajuan -->
-                <div class="bg-white border border-[#E2E8F0] p-6 sm:p-8 rounded-2xl shadow-sm flex flex-col justify-between space-y-6">
+                <x-card class="flex flex-col justify-between space-y-6">
                     <div>
                         <div class="border-b border-[#F1F5F9] pb-4">
                             <h3 class="font-bold text-navy-dark text-lg">Informasi Pengajuan</h3>
@@ -93,10 +90,10 @@
                             </div>
                         </div>
                     </div>
-                </div>
+                </x-card>
 
                 <!-- Kanan: Dokumen Pendukung -->
-                <div class="bg-white border border-[#E2E8F0] p-6 sm:p-8 rounded-2xl shadow-sm flex flex-col justify-start space-y-6">
+                <x-card class="flex flex-col justify-start space-y-6">
                     <div class="border-b border-[#F1F5F9] pb-4">
                         <h3 class="font-bold text-navy-dark text-lg">Dokumen Pendukung</h3>
                         <p class="text-xs text-gray-500 mt-1 leading-relaxed">Unggah dokumen awal yang diperlukan untuk verifikasi berkas (Maksimal 5 dokumen).</p>
@@ -169,12 +166,12 @@
                             Tambah Dokumen Lain
                         </button>
                     </div>
-                </div>
+                </x-card>
 
             </div> <!-- End of 2 Columns -->
 
-            <!-- Bottom: Review Sebelum Submit -->
-            <div class="bg-white border border-[#E2E8F0] p-6 rounded-2xl shadow-sm flex flex-col md:flex-row items-start md:items-center justify-between gap-6">
+            <!-- Bagian Bawah: Pernyataan & Tombol Aksi -->
+            <x-card class="flex flex-col md:flex-row md:items-center justify-between gap-6">
                 <div class="space-y-1">
                     <h4 class="font-bold text-navy-dark text-sm">Review Sebelum Submit</h4>
                     <p class="text-xs text-gray-500 leading-relaxed">
@@ -205,8 +202,7 @@
                         </span>
                     </button>
                 </div>
-            </div>
-
+            </x-card>
         </form>
     </div>
 

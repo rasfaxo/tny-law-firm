@@ -30,7 +30,7 @@
         <!-- 4 Stats Cards Grid -->
         <div class="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-4">
             <!-- Total Klien -->
-            <div class="bg-white border border-[#E2E8F0] p-6 rounded-2xl shadow-sm flex flex-col justify-between h-[160px]">
+            <x-card class="flex flex-col justify-between h-[160px]">
                 <div class="flex items-center justify-between">
                     <div class="bg-[#F5F3FF] p-2.5 rounded-xl text-[#6D28D9]">
                         <svg class="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -43,10 +43,10 @@
                     <span class="block text-sm font-bold text-[#334155]">Total Klien</span>
                     <span class="block text-xs text-gray-400">Akun klien aktif</span>
                 </div>
-            </div>
+            </x-card>
 
             <!-- Total Staf Legal -->
-            <div class="bg-white border border-[#E2E8F0] p-6 rounded-2xl shadow-sm flex flex-col justify-between h-[160px]">
+            <x-card class="flex flex-col justify-between h-[160px]">
                 <div class="flex items-center justify-between">
                     <div class="bg-[#EBF5FF] p-2.5 rounded-xl text-[#1E3A8A]">
                         <svg class="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -59,10 +59,10 @@
                     <span class="block text-sm font-bold text-[#334155]">Total Staf Legal</span>
                     <span class="block text-xs text-gray-400">Akun staf legal</span>
                 </div>
-            </div>
+            </x-card>
 
             <!-- Pra-Pendaftaran -->
-            <div class="bg-white border border-[#E2E8F0] p-6 rounded-2xl shadow-sm flex flex-col justify-between h-[160px]">
+            <x-card class="flex flex-col justify-between h-[160px]">
                 <div class="flex items-center justify-between">
                     <div class="bg-[#FFFBEB] p-2.5 rounded-xl text-[#D97706]">
                         <svg class="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -75,10 +75,10 @@
                     <span class="block text-sm font-bold text-[#334155]">Pra-Pendaftaran</span>
                     <span class="block text-xs text-gray-400">Seluruh data pengajuan</span>
                 </div>
-            </div>
+            </x-card>
 
             <!-- Jadwal Aktif -->
-            <div class="bg-white border border-[#E2E8F0] p-6 rounded-2xl shadow-sm flex flex-col justify-between h-[160px]">
+            <x-card class="flex flex-col justify-between h-[160px]">
                 <div class="flex items-center justify-between">
                     <div class="bg-[#F0FDF4] p-2.5 rounded-xl text-[#15803D]">
                         <svg class="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -91,13 +91,13 @@
                     <span class="block text-sm font-bold text-[#334155]">Jadwal Aktif</span>
                     <span class="block text-xs text-gray-400">Slot jadwal tersedia</span>
                 </div>
-            </div>
+            </x-card>
         </div>
 
         <!-- Two Columns Layout (Figma Node 79:1099) -->
         <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
             <!-- Left Card: Ringkasan Status Pengajuan -->
-            <div class="bg-white border border-[#E2E8F0] p-6 sm:p-8 rounded-2xl shadow-sm lg:col-span-5 space-y-6">
+            <x-card class="lg:col-span-5 space-y-6">
                 <div>
                     <h3 class="font-bold text-navy-dark text-lg">Ringkasan Status Pengajuan</h3>
                     <p class="text-xs text-gray-400 mt-1">Distribusi status utama pada sistem.</p>
@@ -136,10 +136,10 @@
                         <span class="text-lg font-extrabold text-navy-dark">{{ $statistics['Pengajuan Jadwal Dipilih'] }}</span>
                     </div>
                 </div>
-            </div>
+            </x-card>
 
             <!-- Right Card: Pra-Pendaftaran Terbaru -->
-            <div class="bg-white border border-[#E2E8F0] p-6 sm:p-8 rounded-2xl shadow-sm lg:col-span-7 flex flex-col justify-between overflow-hidden">
+            <x-card class="lg:col-span-7 flex flex-col justify-between overflow-hidden">
                 <div class="space-y-6">
                     <div class="flex justify-between items-center">
                         <div>
@@ -193,7 +193,7 @@
                         </table>
                     </div>
                 </div>
-            </div>
+            </x-card>
         </div>
     </div>
 </x-app-layout>
