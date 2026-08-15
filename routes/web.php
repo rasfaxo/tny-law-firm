@@ -123,26 +123,55 @@ Route::middleware(["auth", "active_account", "role:admin"])
         Route::get("/laporan", [LaporanController::class, "index"])->name(
             "laporan.index",
         );
+        Route::get("/laporan/cetak", [
+            LaporanController::class,
+            "cetakIndex",
+        ])->name("laporan.index.cetak");
+
         Route::get("/laporan/pra-pendaftaran", [
             LaporanController::class,
             "praPendaftaran",
         ])->name("laporan.pra-pendaftaran");
+        Route::get("/laporan/pra-pendaftaran/cetak", [
+            LaporanController::class,
+            "cetakPraPendaftaran",
+        ])->name("laporan.pra-pendaftaran.cetak");
+
         Route::get("/laporan/verifikasi-berkas", [
             LaporanController::class,
             "verifikasiBerkas",
         ])->name("laporan.verifikasi-berkas");
+        Route::get("/laporan/verifikasi-berkas/cetak", [
+            LaporanController::class,
+            "cetakVerifikasiBerkas",
+        ])->name("laporan.verifikasi-berkas.cetak");
+
         Route::get("/laporan/booking-konsultasi", [
             LaporanController::class,
             "bookingKonsultasi",
         ])->name("laporan.booking-konsultasi");
+        Route::get("/laporan/booking-konsultasi/cetak", [
+            LaporanController::class,
+            "cetakBookingKonsultasi",
+        ])->name("laporan.booking-konsultasi.cetak");
+
         Route::get("/laporan/reschedule-konsultasi", [
             LaporanController::class,
             "rescheduleKonsultasi",
         ])->name("laporan.reschedule-konsultasi");
+        Route::get("/laporan/reschedule-konsultasi/cetak", [
+            LaporanController::class,
+            "cetakRescheduleKonsultasi",
+        ])->name("laporan.reschedule-konsultasi.cetak");
+
         Route::get("/laporan/pengajuan-selesai", [
             LaporanController::class,
             "pengajuanSelesai",
         ])->name("laporan.pengajuan-selesai");
+        Route::get("/laporan/pengajuan-selesai/cetak", [
+            LaporanController::class,
+            "cetakPengajuanSelesai",
+        ])->name("laporan.pengajuan-selesai.cetak");
 
         Route::get("/klien", [\App\Http\Controllers\Admin\KlienController::class, "index"])->name(
             "klien.index",
