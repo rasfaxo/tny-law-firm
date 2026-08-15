@@ -59,32 +59,53 @@
                                 <td class="px-6 py-4 whitespace-nowrap text-xs text-gray-500 font-semibold">
                                     {{ $jadwal->admin?->nama ?? '-' }}
                                 </td>
-                                <td class="px-6 py-4 whitespace-nowrap text-right text-xs">
-                                    <div class="flex flex-wrap items-center justify-end gap-4">
-                                        <a href="{{ route('admin.jadwal-konsultasi.show', $jadwal) }}" class="inline-flex items-center gap-1 font-bold text-navy-dark hover:text-accent-blue hover:underline transition">
-                                            <span>Detail</span>
-                                        </a>
+                                <td class="px-6 py-4 whitespace-nowrap text-right">
+                                    <x-dropdown align="right" width="48">
+                                        <x-slot name="trigger">
+                                            <button class="inline-flex items-center justify-center h-8 w-8 text-gray-400 hover:text-navy-dark hover:bg-gray-100 rounded-lg transition">
+                                                <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 5v.01M12 12v.01M12 19v.01M12 6a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2z"></path>
+                                                </svg>
+                                            </button>
+                                        </x-slot>
+                                        <x-slot name="content">
+                                            <x-dropdown-link href="{{ route('admin.jadwal-konsultasi.show', $jadwal) }}" class="text-xs font-semibold">
+                                                Detail
+                                            </x-dropdown-link>
 
-                                        @if ($jadwal->status_slot !== 'terisi')
-                                            <a href="{{ route('admin.jadwal-konsultasi.edit', $jadwal) }}" class="inline-flex items-center gap-1 font-bold text-accent-blue hover:underline transition">
-                                                <span>Edit</span>
-                                            </a>
+                                            @if ($jadwal->status_slot !== 'terisi')
+                                                <x-dropdown-link href="{{ route('admin.jadwal-konsultasi.edit', $jadwal) }}" class="text-xs font-semibold">
+                                                    Edit
+                                                </x-dropdown-link>
+                                            @else
+                                                <div class="block w-full px-4 py-2 text-left text-xs font-semibold text-gray-300 cursor-not-allowed bg-gray-50/50" title="Terkunci (Terisi)">
+                                                    Edit
+                                                </div>
+                                            @endif
 
-                                            <form method="POST" action="{{ route('admin.jadwal-konsultasi.status', $jadwal) }}" class="inline-flex items-center gap-1.5">
+                                            <div class="border-t border-[#E2E8F0] my-1"></div>
+
+                                            <div class="px-4 py-1.5 text-[10px] font-bold text-gray-400 uppercase tracking-wider">
+                                                Ubah Status
+                                            </div>
+
+                                            <form method="POST" action="{{ route('admin.jadwal-konsultasi.status', $jadwal) }}" class="px-4 pb-2 pt-1">
                                                 @csrf
                                                 @method('PATCH')
-                                                <select name="status_slot" class="bg-[#F8FAFC] border-[#E2E8F0] text-xxs font-bold text-gray-600 rounded-lg px-2.5 py-1 focus:ring-accent-blue focus:border-accent-blue">
-                                                    <option value="tersedia" @selected($jadwal->status_slot === 'tersedia')>Tersedia</option>
-                                                    <option value="tidak_aktif" @selected($jadwal->status_slot === 'tidak_aktif')>Tidak Aktif</option>
+                                                <select name="status_slot" 
+                                                    class="w-full text-xs font-medium rounded-md border-[#E2E8F0] py-1.5 pl-2 pr-6 focus:ring-accent-blue focus:border-accent-blue {{ $jadwal->status_slot === 'terisi' ? 'bg-gray-50 text-gray-400 cursor-not-allowed opacity-70' : 'bg-white text-gray-700 cursor-pointer hover:border-gray-300 transition-colors' }}"
+                                                    {{ $jadwal->status_slot === 'terisi' ? 'disabled' : '' }}
+                                                    onchange="this.form.submit()">
+                                                    @if($jadwal->status_slot === 'terisi')
+                                                        <option value="terisi" selected>Terisi</option>
+                                                    @else
+                                                        <option value="tersedia" @selected($jadwal->status_slot === 'tersedia')>Tersedia</option>
+                                                        <option value="tidak_aktif" @selected($jadwal->status_slot === 'tidak_aktif')>Tidak Aktif</option>
+                                                    @endif
                                                 </select>
-                                                <button type="submit" class="font-bold text-[#1e3a8a] hover:underline transition">
-                                                    Ubah
-                                                </button>
                                             </form>
-                                        @else
-                                            <span class="font-bold text-gray-400 select-none">{{ __('Terkunci (Terisi)') }}</span>
-                                        @endif
-                                    </div>
+                                        </x-slot>
+                                    </x-dropdown>
                                 </td>
                             </tr>
                         @empty

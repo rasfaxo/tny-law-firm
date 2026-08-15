@@ -34,6 +34,11 @@
         // Status Booking
         'aktif' => 'Aktif',
         'dibatalkan' => 'Dibatalkan',
+
+        // Slot Jadwal
+        'tersedia' => 'Tersedia',
+        'terisi' => 'Terisi',
+        'tidak_aktif' => 'Tidak Aktif',
     ];
 
     $slug = strtolower((string) $status);
@@ -42,10 +47,10 @@
     // Skema warna default jika tidak dispesifikasikan
     if (!$color) {
         $color = match ($slug) {
-            'berkas_lengkap', 'selesai', 'valid', 'terkonfirmasi', 'disetujui', 'aktif' => 'green',
+            'berkas_lengkap', 'selesai', 'valid', 'terkonfirmasi', 'disetujui', 'aktif', 'tersedia' => 'green',
             'menunggu_verifikasi', 'menunggu_verifikasi_ulang', 'menunggu_konfirmasi', 'menunggu_persetujuan', 'terkirim' => 'yellow',
             'berkas_tidak_lengkap', 'perlu_perbaikan', 'ditolak' => 'red',
-            'jadwal_dipilih', 'online' => 'blue',
+            'jadwal_dipilih', 'online', 'terisi' => 'blue',
             default => 'gray',
         };
     }

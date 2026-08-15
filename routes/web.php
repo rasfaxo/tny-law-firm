@@ -236,6 +236,10 @@ Route::middleware(["auth", "active_account", "role:admin"])
             AdminPraPendaftaranController::class,
             "show",
         ])->name("pra-pendaftaran.show");
+        Route::get("/dokumen/{dokumenPerkara}", [
+            AdminPraPendaftaranController::class,
+            "showDokumen",
+        ])->name("dokumen.show");
 
         Route::get("/jadwal-konsultasi", [
             JadwalKonsultasiController::class,

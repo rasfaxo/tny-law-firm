@@ -59,4 +59,30 @@ class PraPendaftaranController extends Controller
 
         return view('admin.pra-pendaftaran.show', compact('praPendaftaranPerkara'));
     }
+
+    public function showDokumen(
+        \App\Models\DokumenPerkara $dokumenPerkara,
+    ): \Symfony\Component\HttpFoundation\StreamedResponse {
+        $dokumenPerkara->load("praPendaftaranPerkara");
+
+        // Admin can view any document belonging to a case
+        abort_unless(
+            $dokumenPerkara->praPendaftaranPerkara instanceof PraPendaftaranPerkara,
+            403,
+        );
+
+        abort_unless(
+            \Illuminate\Support\Facades\Storage::disk("local")->exists($dokumenPerkara->file_path),
+            404,
+        );
+
+        $extension = pathinfo($dokumenPerkara->file_path, PATHINFO_EXTENSION);
+        $baseName = \Illuminate\Support\Str::slug($dokumenPerkara->nama_dokumen) ?: "dokumen-perkara";
+        $fileName = $extension ? "{$baseName}.{$extension}" : $baseName;
+
+        return \Illuminate\Support\Facades\Storage::disk("local")->download(
+            $dokumenPerkara->file_path,
+            $fileName
+        );
+    }
 }
