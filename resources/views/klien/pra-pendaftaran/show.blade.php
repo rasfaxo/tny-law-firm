@@ -221,7 +221,7 @@
                     <div class="pt-4 border-t border-[#F1F5F9] flex justify-end">
                         <x-secondary-button href="{{ route('klien.permintaan-reschedule.create', $bookingAktif) }}" tag="a" class="justify-center gap-2">
                             <svg class="h-4 w-4 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 1121.21 8H12v9l-7-7"></path>
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path>
                             </svg>
                             <span>Ajukan Reschedule Jadwal</span>
                         </x-secondary-button>

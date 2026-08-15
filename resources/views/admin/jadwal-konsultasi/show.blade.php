@@ -88,29 +88,34 @@
                         </div>
 
                         @if ($jadwalKonsultasi->status_slot !== 'terisi')
-                            <form method="POST" action="{{ route('admin.jadwal-konsultasi.status', $jadwalKonsultasi) }}" class="space-y-4 pt-4 border-t border-[#E2E8F0]">
+                            <form method="POST" action="{{ route('admin.jadwal-konsultasi.status', $jadwalKonsultasi) }}" class="space-y-4 pt-2">
                                 @csrf
                                 @method('PATCH')
                                 <div>
-                                    <x-input-label for="status_slot" :value="__('Ubah Ketersediaan')" />
-                                    <select name="status_slot" class="w-full bg-[#F8FAFC] border-[#E2E8F0] focus:border-accent-blue focus:ring focus:ring-accent-blue/20 rounded-xl text-sm transition shadow-sm h-11 px-4 mt-1">
-                                        <option value="tersedia" @selected($jadwalKonsultasi->status_slot === 'tersedia')>{{ __('Tersedia') }}</option>
-                                        <option value="tidak_aktif" @selected($jadwalKonsultasi->status_slot === 'tidak_aktif')>{{ __('Tidak Aktif') }}</option>
-                                    </select>
-                                </div>
-                                <div class="flex justify-end pt-2">
-                                    <x-primary-button>{{ __('Ubah Status') }}</x-primary-button>
+                                    <x-input-label for="status_slot" :value="__('Ubah Status Slot')" class="text-xxs font-bold text-gray-400 uppercase tracking-wider mb-2" />
+                                    <div class="flex flex-col sm:flex-row gap-3">
+                                        <select name="status_slot" class="w-full sm:flex-1 bg-[#F8FAFC] border-[#E2E8F0] focus:border-accent-blue focus:ring focus:ring-accent-blue/20 rounded-xl text-sm font-semibold text-navy-dark transition shadow-sm h-11 px-4">
+                                            <option value="tersedia" @selected($jadwalKonsultasi->status_slot === 'tersedia')>{{ __('Tersedia') }}</option>
+                                            <option value="tidak_aktif" @selected($jadwalKonsultasi->status_slot === 'tidak_aktif')>{{ __('Tidak Aktif') }}</option>
+                                        </select>
+                                        <x-primary-button class="justify-center sm:w-auto w-full px-6 whitespace-nowrap">{{ __('Ubah Status') }}</x-primary-button>
+                                    </div>
                                 </div>
                             </form>
-                            <div class="pt-4 border-t border-[#E2E8F0] mt-4 flex justify-end">
-                                <x-secondary-button href="{{ route('admin.jadwal-konsultasi.edit', $jadwalKonsultasi) }}" tag="a">
+                            
+                            <div class="border-t border-[#E2E8F0] my-4"></div>
+                            
+                            <div class="flex justify-end">
+                                <x-secondary-button href="{{ route('admin.jadwal-konsultasi.edit', $jadwalKonsultasi) }}" tag="a" class="w-full sm:w-auto justify-center px-6 text-accent-blue border-accent-blue/20 hover:bg-accent-blue/5">
                                     {{ __('Edit Data Slot') }}
                                 </x-secondary-button>
                             </div>
                         @else
-                            <x-alert-banner type="warning">
-                                {{ __('Slot terisi tidak dapat diubah pada fase ini.') }}
-                            </x-alert-banner>
+                            <div class="pt-2">
+                                <x-alert-banner type="warning">
+                                    {{ __('Slot terisi tidak dapat diubah pada fase ini.') }}
+                                </x-alert-banner>
+                            </div>
                         @endif
                     </div>
                 </x-card>

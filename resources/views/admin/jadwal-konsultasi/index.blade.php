@@ -4,7 +4,7 @@
         <div class="flex justify-end">
             <x-primary-button href="{{ route('admin.jadwal-konsultasi.create') }}" tag="a" class="gap-2">
                 <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z"></path>
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2zm7-7v4m-2-2h4"></path>
                 </svg>
                 <span>{{ __('Tambah Jadwal') }}</span>
             </x-primary-button>
@@ -32,8 +32,8 @@
             </div>
         @endif
 
-        <x-card class="p-0 overflow-hidden sm:p-0">
-            <div class="overflow-x-auto">
+        <x-card class="p-0 sm:p-0">
+            <div class="w-full">
                 <table class="min-w-full divide-y divide-[#E2E8F0]">
                     <thead class="bg-[#F8FAFC]">
                         <tr>
@@ -89,7 +89,7 @@
                                                 Ubah Status
                                             </div>
 
-                                            <form method="POST" action="{{ route('admin.jadwal-konsultasi.status', $jadwal) }}" class="px-4 pb-2 pt-1">
+                                            <form method="POST" action="{{ route('admin.jadwal-konsultasi.status', $jadwal) }}" class="px-4 pb-2 pt-1" @click.stop>
                                                 @csrf
                                                 @method('PATCH')
                                                 <select name="status_slot" 
