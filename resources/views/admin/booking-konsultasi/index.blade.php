@@ -2,15 +2,18 @@
 
     <div class="space-y-6">
         @if (session('success'))
-            <div class="bg-emerald-50 border border-emerald-200 text-emerald-800 rounded-xl p-4 text-xs font-semibold flex items-center gap-3">
-                <svg class="h-4 w-4 text-emerald-600 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-                </svg>
-                <span>{{ session('success') }}</span>
-            </div>
+            <x-alert-banner type="success">
+                {{ session('success') }}
+            </x-alert-banner>
         @endif
 
-        <div class="bg-white border border-[#E2E8F0] rounded-2xl shadow-sm overflow-hidden">
+        @if (session('error'))
+            <x-alert-banner type="error">
+                {{ session('error') }}
+            </x-alert-banner>
+        @endif
+
+        <x-card class="p-0 sm:p-0">
             <div class="overflow-x-auto">
                 <table class="min-w-full divide-y divide-[#E2E8F0]">
                     <thead class="bg-[#F8FAFC]">
@@ -31,16 +34,16 @@
                                 $jadwal = $booking->jadwalKonsultasi;
                             @endphp
                             <tr class="hover:bg-[#F8FAFC] transition duration-150">
-                                <td class="px-6 py-4 whitespace-nowrap text-xs font-semibold text-navy-dark">
+                                <td class="px-6 py-4 whitespace-nowrap text-sm font-bold text-navy-dark">
                                     {{ $booking->klien?->nama ?? '-' }}
                                 </td>
                                 <td class="px-6 py-4">
-                                    <div class="font-bold text-navy-dark text-sm">{{ $pengajuan?->judul_perkara ?? '-' }}</div>
+                                    <div class="font-bold text-navy-dark text-sm leading-snug">{{ $pengajuan?->judul_perkara ?? '-' }}</div>
                                     <div class="text-xxs text-gray-400 font-semibold mt-0.5">{{ $pengajuan?->kategori?->nama_kategori ?? '-' }}</div>
                                 </td>
                                 <td class="px-6 py-4 whitespace-nowrap">
-                                    <div class="font-bold text-navy-dark text-xs">{{ $jadwal?->tanggal?->format('d M Y') ?? '-' }}</div>
-                                    <div class="text-xxs text-gray-400 font-mono mt-0.5">
+                                    <div class="font-bold text-navy-dark text-sm">{{ $jadwal?->tanggal?->format('d M Y') ?? '-' }}</div>
+                                    <div class="text-xs text-gray-500 font-mono mt-0.5">
                                         {{ $jadwal ? substr((string) $jadwal->waktu_mulai, 0, 5) : '-' }}
                                         @if ($jadwal)
                                             - {{ substr((string) $jadwal->waktu_selesai, 0, 5) }}
@@ -56,10 +59,10 @@
                                 <td class="px-6 py-4 whitespace-nowrap">
                                     <x-status-badge :status="$booking->status_booking" />
                                 </td>
-                                <td class="px-6 py-4 whitespace-nowrap text-right text-xs font-bold">
-                                    <a href="{{ route('admin.booking-konsultasi.show', $booking) }}" class="inline-flex items-center gap-1 text-accent-blue hover:underline transition">
+                                <td class="px-6 py-4 whitespace-nowrap text-right">
+                                    <a href="{{ route('admin.booking-konsultasi.show', $booking) }}" class="inline-flex items-center gap-1.5 text-xs font-bold text-accent-blue hover:underline transition">
                                         <span>Detail</span>
-                                        <svg class="h-3 w-3 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <svg class="h-3.5 w-3.5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
                                         </svg>
                                     </a>
@@ -67,8 +70,8 @@
                             </tr>
                         @empty
                             <tr>
-                                <td colspan="7" class="px-6 py-8 text-center text-xs text-gray-400">
-                                    Belum ada booking konsultasi.
+                                <td colspan="7" class="px-6 py-12 text-center">
+                                    <x-empty-state title="Belum Ada Booking Konsultasi" message="Belum ada data booking konsultasi yang tercatat." />
                                 </td>
                             </tr>
                         @endforelse
@@ -81,6 +84,6 @@
                     {{ $bookingKonsultasi->links() }}
                 </div>
             @endif
-        </div>
+        </x-card>
     </div>
 </x-app-layout>

@@ -49,8 +49,8 @@
         $color = match ($slug) {
             'berkas_lengkap', 'selesai', 'valid', 'terkonfirmasi', 'disetujui', 'aktif', 'tersedia' => 'green',
             'menunggu_verifikasi', 'menunggu_verifikasi_ulang', 'menunggu_konfirmasi', 'menunggu_persetujuan', 'terkirim' => 'yellow',
-            'berkas_tidak_lengkap', 'perlu_perbaikan', 'ditolak' => 'red',
-            'jadwal_dipilih', 'online', 'terisi' => 'blue',
+            'berkas_tidak_lengkap', 'perlu_perbaikan', 'ditolak', 'dibatalkan' => 'red',
+            'jadwal_dipilih', 'terisi' => 'blue',
             default => 'gray',
         };
     }
