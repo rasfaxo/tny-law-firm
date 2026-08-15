@@ -160,8 +160,8 @@
                                                   class="w-full resize-none"
                                                   placeholder="Tuliskan alasan penolakan atau catatan perbaikan dokumen ini..."
                                                   x-model="docStatus['{{ $dokumen->id_dokumen }}'] === 'perlu_perbaikan' ? undefined : (docStatus['{{ $dokumen->id_dokumen }}'] = 'valid' ? '' : '')"
-                                                  :disabled="statusVerifikasi === 'berkas_lengkap' || docStatus['{{ $dokumen->id_dokumen }}'] !== 'perlu_perbaikan'"
-                                                  :required="statusVerifikasi === 'berkas_tidak_lengkap' && docStatus['{{ $dokumen->id_dokumen }}'] === 'perlu_perbaikan'">{{ old("dokumen.{$dokumen->id_dokumen}.catatan") }}</x-text-input>
+                                                  x-bind:disabled="statusVerifikasi === 'berkas_lengkap' || docStatus['{{ $dokumen->id_dokumen }}'] !== 'perlu_perbaikan'"
+                                                  x-bind:required="statusVerifikasi === 'berkas_tidak_lengkap' && docStatus['{{ $dokumen->id_dokumen }}'] === 'perlu_perbaikan'">{{ old("dokumen.{$dokumen->id_dokumen}.catatan") }}</x-text-input>
                                     </td>
                                     <td class="px-5 py-4 text-right text-[12px] font-semibold">
                                         <a href="{{ route('staf-legal.dokumen.show', $dokumen) }}" class="text-[#1d4ed8] hover:text-[#1e40af] transition duration-150">

@@ -1,153 +1,193 @@
-<x-app-layout title="Laporan Admin" :breadcrumbs="[['label' => 'Admin'], ['label' => 'Laporan']]">
+<x-app-layout title="Laporan & Rekapitulasi" :breadcrumbs="[['label' => 'Admin'], ['label' => 'Laporan']]">
 
-    <div class="space-y-6">
-        <!-- Secondary Navigation Tabs for Detail Reports -->
-        <x-card class="!p-4 sm:!p-4">
-            <span class="text-xxs font-bold text-gray-400 uppercase tracking-wider block mb-3">Detail Laporan Terperinci</span>
-            <div class="flex flex-wrap gap-2">
-                <a href="{{ route('admin.laporan.pra-pendaftaran') }}" class="inline-flex items-center justify-center bg-[#F8FAFC] border border-[#E2E8F0] hover:border-accent-blue hover:bg-blue-50 text-xs font-semibold text-navy-dark px-4 py-2.5 rounded-xl transition">
-                    {{ __('Pra-Pendaftaran') }}
+    <div class="space-y-5">
+        <!-- 1. Hero Header Card -->
+        <div class="bg-white border border-[#e2e8f0] rounded-[16px] p-6 shadow-sm flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+            <div class="space-y-1.5">
+                <h2 class="text-[18px] font-bold text-[#0f172a] leading-snug">
+                    Laporan & Rekapitulasi Sistem
+                </h2>
+                <p class="text-[13px] text-[#64748b] leading-normal">
+                    Pantau rekapitulasi data pra-pendaftaran perkara, verifikasi berkas, booking konsultasi, dan distribusi per kategori perkara.
+                </p>
+            </div>
+        </div>
+
+        <!-- 2. Secondary Navigation Tabs for Detail Reports -->
+        <div class="bg-white border border-[#e2e8f0] rounded-[16px] p-5 shadow-sm space-y-3">
+            <span class="text-[10px] font-semibold text-[#64748b] tracking-[0.25px] uppercase block">
+                Laporan Detail Terperinci
+            </span>
+            <div class="flex flex-wrap gap-2.5">
+                <a href="{{ route('admin.laporan.pra-pendaftaran') }}" class="inline-flex items-center gap-2 bg-[#f8fafc] hover:bg-blue-50 border border-[#e2e8f0] hover:border-[#1e3a8a] text-[13px] font-semibold text-[#0f172a] hover:text-[#1e3a8a] px-4 py-2 rounded-[12px] transition shadow-xs">
+                    <svg class="h-4 w-4 text-[#64748b]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+                    </svg>
+                    <span>Pra-Pendaftaran</span>
                 </a>
-                <a href="{{ route('admin.laporan.verifikasi-berkas') }}" class="inline-flex items-center justify-center bg-[#F8FAFC] border border-[#E2E8F0] hover:border-accent-blue hover:bg-blue-50 text-xs font-semibold text-navy-dark px-4 py-2.5 rounded-xl transition">
-                    {{ __('Verifikasi Berkas') }}
+                <a href="{{ route('admin.laporan.verifikasi-berkas') }}" class="inline-flex items-center gap-2 bg-[#f8fafc] hover:bg-blue-50 border border-[#e2e8f0] hover:border-[#1e3a8a] text-[13px] font-semibold text-[#0f172a] hover:text-[#1e3a8a] px-4 py-2 rounded-[12px] transition shadow-xs">
+                    <svg class="h-4 w-4 text-[#64748b]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                    </svg>
+                    <span>Verifikasi Berkas</span>
                 </a>
-                <a href="{{ route('admin.laporan.booking-konsultasi') }}" class="inline-flex items-center justify-center bg-[#F8FAFC] border border-[#E2E8F0] hover:border-accent-blue hover:bg-blue-50 text-xs font-semibold text-navy-dark px-4 py-2.5 rounded-xl transition">
-                    {{ __('Booking Konsultasi') }}
+                <a href="{{ route('admin.laporan.booking-konsultasi') }}" class="inline-flex items-center gap-2 bg-[#f8fafc] hover:bg-blue-50 border border-[#e2e8f0] hover:border-[#1e3a8a] text-[13px] font-semibold text-[#0f172a] hover:text-[#1e3a8a] px-4 py-2 rounded-[12px] transition shadow-xs">
+                    <svg class="h-4 w-4 text-[#64748b]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
+                    </svg>
+                    <span>Booking Konsultasi</span>
                 </a>
-                <a href="{{ route('admin.laporan.reschedule-konsultasi') }}" class="inline-flex items-center justify-center bg-[#F8FAFC] border border-[#E2E8F0] hover:border-accent-blue hover:bg-blue-50 text-xs font-semibold text-navy-dark px-4 py-2.5 rounded-xl transition">
-                    {{ __('Reschedule') }}
+                <a href="{{ route('admin.laporan.reschedule-konsultasi') }}" class="inline-flex items-center gap-2 bg-[#f8fafc] hover:bg-blue-50 border border-[#e2e8f0] hover:border-[#1e3a8a] text-[13px] font-semibold text-[#0f172a] hover:text-[#1e3a8a] px-4 py-2 rounded-[12px] transition shadow-xs">
+                    <svg class="h-4 w-4 text-[#64748b]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                    </svg>
+                    <span>Reschedule</span>
                 </a>
-                <a href="{{ route('admin.laporan.pengajuan-selesai') }}" class="inline-flex items-center justify-center bg-[#F8FAFC] border border-[#E2E8F0] hover:border-accent-blue hover:bg-blue-50 text-xs font-semibold text-navy-dark px-4 py-2.5 rounded-xl transition">
-                    {{ __('Pengajuan Selesai') }}
+                <a href="{{ route('admin.laporan.pengajuan-selesai') }}" class="inline-flex items-center gap-2 bg-[#f8fafc] hover:bg-blue-50 border border-[#e2e8f0] hover:border-[#1e3a8a] text-[13px] font-semibold text-[#0f172a] hover:text-[#1e3a8a] px-4 py-2 rounded-[12px] transition shadow-xs">
+                    <svg class="h-4 w-4 text-[#64748b]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                    </svg>
+                    <span>Pengajuan Selesai</span>
                 </a>
             </div>
-        </x-card>
+        </div>
 
-        <!-- Filter Period Card -->
-        <x-card>
+        <!-- 3. Filter Period Card -->
+        <div class="bg-white border border-[#e2e8f0] rounded-[16px] p-6 shadow-sm">
             <form method="GET" action="{{ route('admin.laporan.index') }}" class="flex flex-col md:flex-row md:items-end gap-4">
                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 flex-1">
                     <div>
-                        <label for="tanggal_mulai" class="block text-xs font-bold text-gray-600 uppercase tracking-wider mb-2">Tanggal Mulai</label>
+                        <label for="tanggal_mulai" class="block text-[10px] font-semibold text-[#64748b] tracking-[0.25px] uppercase mb-2">Tanggal Mulai</label>
                         <input type="date" id="tanggal_mulai" name="tanggal_mulai" value="{{ request('tanggal_mulai') }}"
-                            class="w-full bg-[#F8FAFC] border-[#E2E8F0] focus:border-accent-blue focus:ring focus:ring-accent-blue/20 rounded-xl text-sm transition shadow-sm h-11 px-4">
+                            class="w-full bg-[#f8fafc] border border-[#e2e8f0] focus:border-[#1e3a8a] focus:ring focus:ring-[#1e3a8a]/20 rounded-[12px] text-[13px] transition shadow-sm h-11 px-4 text-[#0f172a]">
                     </div>
                     <div>
-                        <label for="tanggal_selesai" class="block text-xs font-bold text-gray-600 uppercase tracking-wider mb-2">Tanggal Selesai</label>
+                        <label for="tanggal_selesai" class="block text-[10px] font-semibold text-[#64748b] tracking-[0.25px] uppercase mb-2">Tanggal Selesai</label>
                         <input type="date" id="tanggal_selesai" name="tanggal_selesai" value="{{ request('tanggal_selesai') }}"
-                            class="w-full bg-[#F8FAFC] border-[#E2E8F0] focus:border-accent-blue focus:ring focus:ring-accent-blue/20 rounded-xl text-sm transition shadow-sm h-11 px-4">
+                            class="w-full bg-[#f8fafc] border border-[#e2e8f0] focus:border-[#1e3a8a] focus:ring focus:ring-[#1e3a8a]/20 rounded-[12px] text-[13px] transition shadow-sm h-11 px-4 text-[#0f172a]">
                     </div>
                 </div>
-                <div class="flex gap-2">
-                    <x-primary-button class="h-11 uppercase tracking-widest px-5">
-                        Terapkan
-                    </x-primary-button>
+                <div class="flex gap-2.5">
+                    <button type="submit" class="bg-[#1e3a8a] hover:bg-blue-900 text-white rounded-[12px] h-11 px-5 text-[13px] font-semibold transition shadow-sm inline-flex items-center gap-2">
+                        <svg class="h-4 w-4 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z"></path>
+                        </svg>
+                        <span>Terapkan</span>
+                    </button>
                     @if (request('tanggal_mulai') || request('tanggal_selesai'))
-                        <x-secondary-button href="{{ route('admin.laporan.index') }}" tag="a" class="h-11 hover:border-rose-300 hover:text-rose-600">
+                        <a href="{{ route('admin.laporan.index') }}" class="bg-white border border-[#e2e8f0] hover:bg-gray-50 text-[#334155] rounded-[12px] h-11 px-5 text-[13px] font-semibold transition shadow-sm inline-flex items-center justify-center">
                             Reset
-                        </x-secondary-button>
+                        </a>
                     @endif
                 </div>
             </form>
-        </x-card>
-
-        <!-- Metric Statistics Cards -->
-        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-            <!-- Card 1: Total Pengajuan -->
-            <x-card class="flex flex-col justify-between h-40">
-                <div class="bg-violet-50 text-violet-700 h-10 w-10 rounded-xl flex items-center justify-center shrink-0">
-                    <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
-                    </svg>
-                </div>
-                <div>
-                    <div class="text-3xl font-extrabold text-navy-dark leading-tight">{{ $totalPengajuan }}</div>
-                    <div class="text-xs font-semibold text-gray-500 mt-1">Total Pengajuan</div>
-                    <div class="text-xxs text-gray-400 mt-0.5">Periode terpilih</div>
-                </div>
-            </x-card>
-
-            <!-- Card 2: Pengajuan Selesai -->
-            <x-card class="flex flex-col justify-between h-40">
-                <div class="bg-emerald-50 text-emerald-700 h-10 w-10 rounded-xl flex items-center justify-center shrink-0">
-                    <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-                    </svg>
-                </div>
-                <div>
-                    <div class="text-3xl font-extrabold text-navy-dark leading-tight">{{ $pengajuanSelesai }}</div>
-                    <div class="text-xs font-semibold text-gray-500 mt-1">Pengajuan Selesai</div>
-                    <div class="text-xxs text-gray-400 mt-0.5">Telah selesai</div>
-                </div>
-            </x-card>
-
-            <!-- Card 3: Berkas Lengkap -->
-            <x-card class="flex flex-col justify-between h-40">
-                <div class="bg-amber-50 text-amber-700 h-10 w-10 rounded-xl flex items-center justify-center shrink-0">
-                    <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
-                    </svg>
-                </div>
-                <div>
-                    <div class="text-3xl font-extrabold text-navy-dark leading-tight">{{ $berkasLengkap }}</div>
-                    <div class="text-xs font-semibold text-gray-500 mt-1">Berkas Lengkap</div>
-                    <div class="text-xxs text-gray-400 mt-0.5">Siap konsultasi</div>
-                </div>
-            </x-card>
-
-            <!-- Card 4: Konsultasi Selesai -->
-            <x-card class="flex flex-col justify-between h-40">
-                <div class="bg-blue-50 text-blue-700 h-10 w-10 rounded-xl flex items-center justify-center shrink-0">
-                    <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
-                    </svg>
-                </div>
-                <div>
-                    <div class="text-3xl font-extrabold text-navy-dark leading-tight">{{ $bookingSelesai }}</div>
-                    <div class="text-xs font-semibold text-gray-500 mt-1">Konsultasi Selesai</div>
-                    <div class="text-xxs text-gray-400 mt-0.5">Booking selesai</div>
-                </div>
-            </x-card>
         </div>
 
-        <!-- Summary by Category Card -->
-        <x-card class="p-0 overflow-hidden sm:p-0">
-            <div class="px-6 py-4 border-b border-[#E2E8F0]">
-                <h3 class="font-bold text-navy-dark text-sm">Ringkasan per Kategori</h3>
-                <p class="text-xxs text-gray-400 mt-0.5 font-semibold">Distribusi pengajuan berdasarkan kategori perkara</p>
+        <!-- 4. Metric Statistics Cards -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
+            <!-- Card 1: Total Pengajuan -->
+            <div class="bg-white border border-[#e2e8f0] rounded-[16px] p-5 shadow-sm flex flex-col justify-between h-36">
+                <div class="flex items-center justify-between">
+                    <span class="text-[10px] font-semibold text-[#64748b] tracking-[0.25px] uppercase">Total Pengajuan</span>
+                    <div class="bg-[#f5f3ff] text-[#6d28d9] h-9 w-9 rounded-[10px] flex items-center justify-center shrink-0">
+                        <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+                        </svg>
+                    </div>
+                </div>
+                <div>
+                    <div class="text-[28px] font-extrabold text-[#0f172a] leading-tight">{{ $totalPengajuan }}</div>
+                    <div class="text-[11px] text-[#64748b] mt-0.5">Periode terpilih</div>
+                </div>
+            </div>
+
+            <!-- Card 2: Berkas Lengkap -->
+            <div class="bg-white border border-[#e2e8f0] rounded-[16px] p-5 shadow-sm flex flex-col justify-between h-36">
+                <div class="flex items-center justify-between">
+                    <span class="text-[10px] font-semibold text-[#64748b] tracking-[0.25px] uppercase">Berkas Lengkap</span>
+                    <div class="bg-[#fffbeb] text-[#d97706] h-9 w-9 rounded-[10px] flex items-center justify-center shrink-0">
+                        <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+                        </svg>
+                    </div>
+                </div>
+                <div>
+                    <div class="text-[28px] font-extrabold text-[#0f172a] leading-tight">{{ $berkasLengkap }}</div>
+                    <div class="text-[11px] text-[#64748b] mt-0.5">Siap konsultasi</div>
+                </div>
+            </div>
+
+            <!-- Card 3: Konsultasi Selesai -->
+            <div class="bg-white border border-[#e2e8f0] rounded-[16px] p-5 shadow-sm flex flex-col justify-between h-36">
+                <div class="flex items-center justify-between">
+                    <span class="text-[10px] font-semibold text-[#64748b] tracking-[0.25px] uppercase">Konsultasi Selesai</span>
+                    <div class="bg-[#eff6ff] text-[#1d4ed8] h-9 w-9 rounded-[10px] flex items-center justify-center shrink-0">
+                        <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
+                        </svg>
+                    </div>
+                </div>
+                <div>
+                    <div class="text-[28px] font-extrabold text-[#0f172a] leading-tight">{{ $bookingSelesai }}</div>
+                    <div class="text-[11px] text-[#64748b] mt-0.5">Sesi konsultasi tuntas</div>
+                </div>
+            </div>
+
+            <!-- Card 4: Pengajuan Selesai -->
+            <div class="bg-white border border-[#e2e8f0] rounded-[16px] p-5 shadow-sm flex flex-col justify-between h-36">
+                <div class="flex items-center justify-between">
+                    <span class="text-[10px] font-semibold text-[#64748b] tracking-[0.25px] uppercase">Pengajuan Selesai</span>
+                    <div class="bg-[#ecfdf5] text-[#059669] h-9 w-9 rounded-[10px] flex items-center justify-center shrink-0">
+                        <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                        </svg>
+                    </div>
+                </div>
+                <div>
+                    <div class="text-[28px] font-extrabold text-[#0f172a] leading-tight">{{ $pengajuanSelesai }}</div>
+                    <div class="text-[11px] text-[#64748b] mt-0.5">Perkara tuntas</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 5. Summary by Category Card -->
+        <div class="bg-white border border-[#e2e8f0] rounded-[16px] shadow-sm overflow-hidden">
+            <div class="p-6 border-b border-[#f1f5f9]">
+                <h3 class="font-bold text-[#0f172a] text-[16px]">Ringkasan per Kategori</h3>
+                <p class="text-[13px] text-[#64748b] mt-1">Distribusi seluruh pengajuan perkara berdasarkan kategori perkara</p>
             </div>
 
             <div class="overflow-x-auto">
-                <table class="min-w-full divide-y divide-[#E2E8F0]">
-                    <thead class="bg-[#F8FAFC]">
+                <table class="min-w-full divide-y divide-[#e2e8f0]">
+                    <thead class="bg-[#f8fafc]">
                         <tr>
-                            <th class="px-6 py-4 text-left text-xxs font-bold text-gray-400 uppercase tracking-wider">Kategori</th>
-                            <th class="px-6 py-4 text-left text-xxs font-bold text-gray-400 uppercase tracking-wider">Total</th>
-                            <th class="px-6 py-4 text-left text-xxs font-bold text-gray-400 uppercase tracking-wider">Berkas Lengkap</th>
-                            <th class="px-6 py-4 text-left text-xxs font-bold text-gray-400 uppercase tracking-wider">Jadwal Dipilih</th>
-                            <th class="px-6 py-4 text-left text-xxs font-bold text-gray-400 uppercase tracking-wider">Selesai</th>
-                            <th class="px-6 py-4 text-left text-xxs font-bold text-gray-400 uppercase tracking-wider">Catatan</th>
+                            <th class="px-6 py-3.5 text-left text-[10px] font-semibold text-[#64748b] uppercase tracking-[0.25px]">Kategori</th>
+                            <th class="px-6 py-3.5 text-left text-[10px] font-semibold text-[#64748b] uppercase tracking-[0.25px]">Total</th>
+                            <th class="px-6 py-3.5 text-left text-[10px] font-semibold text-[#64748b] uppercase tracking-[0.25px]">Berkas Lengkap</th>
+                            <th class="px-6 py-3.5 text-left text-[10px] font-semibold text-[#64748b] uppercase tracking-[0.25px]">Jadwal Dipilih</th>
+                            <th class="px-6 py-3.5 text-left text-[10px] font-semibold text-[#64748b] uppercase tracking-[0.25px]">Selesai</th>
+                            <th class="px-6 py-3.5 text-left text-[10px] font-semibold text-[#64748b] uppercase tracking-[0.25px]">Deskripsi</th>
                         </tr>
                     </thead>
-                    <tbody class="bg-white divide-y divide-[#E2E8F0]">
+                    <tbody class="bg-white divide-y divide-[#e2e8f0]/60">
                         @forelse ($kategoriSummary as $summary)
-                            <tr class="hover:bg-[#F8FAFC] transition duration-150">
-                                <td class="px-6 py-4 whitespace-nowrap text-xs font-semibold text-navy-dark">
+                            <tr class="hover:bg-[#f8fafc] transition duration-150">
+                                <td class="px-6 py-4 whitespace-nowrap text-[13px] font-semibold text-[#0f172a]">
                                     {{ $summary->nama_kategori }}
                                 </td>
-                                <td class="px-6 py-4 whitespace-nowrap text-xs font-bold text-navy-dark">
+                                <td class="px-6 py-4 whitespace-nowrap text-[13px] font-bold text-[#1e3a8a]">
                                     {{ $summary->total_count }}
                                 </td>
-                                <td class="px-6 py-4 whitespace-nowrap text-xs text-gray-600">
+                                <td class="px-6 py-4 whitespace-nowrap text-[13px] text-[#334155]">
                                     {{ $summary->berkas_lengkap_count }}
                                 </td>
-                                <td class="px-6 py-4 whitespace-nowrap text-xs text-gray-600">
+                                <td class="px-6 py-4 whitespace-nowrap text-[13px] text-[#334155]">
                                     {{ $summary->jadwal_dipilih_count }}
                                 </td>
-                                <td class="px-6 py-4 whitespace-nowrap text-xs text-gray-600">
+                                <td class="px-6 py-4 whitespace-nowrap text-[13px] text-[#334155]">
                                     {{ $summary->selesai_count }}
                                 </td>
-                                <td class="px-6 py-4 text-xxs text-gray-400 italic max-w-xs truncate">
+                                <td class="px-6 py-4 text-[12px] text-[#64748b] italic max-w-xs truncate">
                                     {{ $summary->deskripsi ?: 'Tidak ada deskripsi.' }}
                                 </td>
                             </tr>
@@ -161,6 +201,6 @@
                     </tbody>
                 </table>
             </div>
-        </x-card>
+        </div>
     </div>
 </x-app-layout>

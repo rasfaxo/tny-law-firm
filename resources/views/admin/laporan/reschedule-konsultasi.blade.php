@@ -4,7 +4,7 @@
         @media print {
             nav, header, .no-print { display: none !important; }
             body { background: #fff !important; }
-            .print-area { box-shadow: none !important; border: none !important; }
+            .print-area { box-shadow: none !important; border: none !important; padding: 0 !important; }
         }
     </style>
 
@@ -20,135 +20,209 @@
         ];
     @endphp
 
-    <div class="space-y-6">
-        <div class="max-w-full mx-auto space-y-6">
-            <x-card class="no-print p-0 overflow-hidden sm:p-0">
-                <div class="p-6 text-gray-900">
-                    <form method="GET" action="{{ route('admin.laporan.reschedule-konsultasi') }}" class="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-4">
-                        <div>
-                            <label for="tanggal_mulai" class="block text-sm font-medium text-gray-700">Tanggal Awal</label>
-                            <input type="date" id="tanggal_mulai" name="tanggal_mulai" value="{{ $filters['tanggal_mulai'] ?? '' }}" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500">
-                        </div>
-                        <div>
-                            <label for="tanggal_selesai" class="block text-sm font-medium text-gray-700">Tanggal Akhir</label>
-                            <input type="date" id="tanggal_selesai" name="tanggal_selesai" value="{{ $filters['tanggal_selesai'] ?? '' }}" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500">
-                        </div>
-                        <div>
-                            <label for="status_reschedule" class="block text-sm font-medium text-gray-700">Status Reschedule</label>
-                            <select id="status_reschedule" name="status_reschedule" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500">
-                                <option value="">Semua Status</option>
-                                @foreach ($statusOptions as $value => $label)
-                                    <option value="{{ $value }}" @selected(($filters['status_reschedule'] ?? '') === $value)>{{ $label }}</option>
-                                @endforeach
-                            </select>
-                        </div>
-                        <div>
-                            <label for="preferensi_metode" class="block text-sm font-medium text-gray-700">Preferensi Metode</label>
-                            <select id="preferensi_metode" name="preferensi_metode" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500">
-                                <option value="">Semua Metode</option>
-                                @foreach ($metodeOptions as $value => $label)
-                                    <option value="{{ $value }}" @selected(($filters['preferensi_metode'] ?? '') === $value)>{{ $label }}</option>
-                                @endforeach
-                            </select>
-                        </div>
-                        <div class="md:col-span-2 lg:col-span-4 flex flex-wrap items-center gap-3 pt-4 border-t border-[#E2E8F0]">
-                            <x-primary-button>
-                                {{ __('Terapkan Filter') }}
-                            </x-primary-button>
-                            <x-secondary-button href="{{ route('admin.laporan.reschedule-konsultasi') }}" tag="a">
-                                {{ __('Reset Filter') }}
-                            </x-secondary-button>
-                            <x-primary-button type="button" onclick="window.print()" class="bg-emerald-600 hover:bg-emerald-700 shadow-emerald-900/20">
-                                {{ __('Cetak') }}
-                            </x-primary-button>
-                        </div>
-                    </form>
-                </div>
-            </x-card>
+    <div class="space-y-5">
+        <!-- 1. Hero Header Card (no-print) -->
+        <div class="bg-white border border-[#e2e8f0] rounded-[16px] p-6 shadow-sm flex flex-col md:flex-row justify-between items-start md:items-center gap-4 no-print">
+            <div class="space-y-1.5">
+                <h2 class="text-[18px] font-bold text-[#0f172a] leading-snug">
+                    Laporan Reschedule Konsultasi
+                </h2>
+                <p class="text-[13px] text-[#64748b] leading-normal">
+                    Rekapitulasi permohonan perubahan jadwal konsultasi oleh Klien beserta status keputusannya.
+                </p>
+            </div>
+            <a href="{{ route('admin.laporan.index') }}" class="bg-white border border-[#e2e8f0] hover:bg-gray-50 text-[#334155] rounded-[14px] px-5 py-2.5 text-[13px] font-semibold inline-flex items-center gap-2 transition shadow-sm shrink-0">
+                <span>← Kembali ke Rekapitulasi</span>
+            </a>
+        </div>
 
-            <x-card class="print-area p-0 overflow-hidden sm:p-0">
-                <div class="p-6 text-gray-900">
-                    <div class="flex flex-col gap-1 sm:flex-row sm:items-start sm:justify-between">
-                        <div>
-                            <h3 class="text-lg font-semibold text-gray-900">{{ __('Laporan Reschedule Konsultasi') }}</h3>
-                            <p class="text-sm text-gray-600">{{ __('Jumlah data:') }} {{ $laporan->count() }}</p>
-                        </div>
-                        <div class="text-sm text-gray-600">
-                            @if (($filters['tanggal_mulai'] ?? null) || ($filters['tanggal_selesai'] ?? null))
-                                Periode: {{ $filters['tanggal_mulai'] ?? 'awal' }} s/d {{ $filters['tanggal_selesai'] ?? 'akhir' }}
-                            @else
-                                Periode: Semua data
-                            @endif
-                        </div>
+        <!-- 2. Navigation Pill Tabs for Detail Reports (no-print) -->
+        <div class="bg-white border border-[#e2e8f0] rounded-[16px] p-5 shadow-sm space-y-3 no-print">
+            <span class="text-[10px] font-semibold text-[#64748b] tracking-[0.25px] uppercase block">
+                Pilih Detail Laporan
+            </span>
+            <div class="flex flex-wrap gap-2.5">
+                <a href="{{ route('admin.laporan.pra-pendaftaran') }}" class="inline-flex items-center gap-2 bg-[#f8fafc] hover:bg-blue-50 border border-[#e2e8f0] hover:border-[#1e3a8a] text-[13px] font-semibold text-[#0f172a] hover:text-[#1e3a8a] px-4 py-2 rounded-[12px] transition shadow-xs">
+                    <svg class="h-4 w-4 text-[#64748b]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+                    </svg>
+                    <span>Pra-Pendaftaran</span>
+                </a>
+                <a href="{{ route('admin.laporan.verifikasi-berkas') }}" class="inline-flex items-center gap-2 bg-[#f8fafc] hover:bg-blue-50 border border-[#e2e8f0] hover:border-[#1e3a8a] text-[13px] font-semibold text-[#0f172a] hover:text-[#1e3a8a] px-4 py-2 rounded-[12px] transition shadow-xs">
+                    <svg class="h-4 w-4 text-[#64748b]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                    </svg>
+                    <span>Verifikasi Berkas</span>
+                </a>
+                <a href="{{ route('admin.laporan.booking-konsultasi') }}" class="inline-flex items-center gap-2 bg-[#f8fafc] hover:bg-blue-50 border border-[#e2e8f0] hover:border-[#1e3a8a] text-[13px] font-semibold text-[#0f172a] hover:text-[#1e3a8a] px-4 py-2 rounded-[12px] transition shadow-xs">
+                    <svg class="h-4 w-4 text-[#64748b]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
+                    </svg>
+                    <span>Booking Konsultasi</span>
+                </a>
+                <a href="{{ route('admin.laporan.reschedule-konsultasi') }}" class="inline-flex items-center gap-2 bg-[#1e3a8a] text-white border border-[#1e3a8a] text-[13px] font-semibold px-4 py-2 rounded-[12px] transition shadow-xs">
+                    <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                    </svg>
+                    <span>Reschedule</span>
+                </a>
+                <a href="{{ route('admin.laporan.pengajuan-selesai') }}" class="inline-flex items-center gap-2 bg-[#f8fafc] hover:bg-blue-50 border border-[#e2e8f0] hover:border-[#1e3a8a] text-[13px] font-semibold text-[#0f172a] hover:text-[#1e3a8a] px-4 py-2 rounded-[12px] transition shadow-xs">
+                    <svg class="h-4 w-4 text-[#64748b]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                    </svg>
+                    <span>Pengajuan Selesai</span>
+                </a>
+            </div>
+        </div>
+
+        <!-- 3. Filter Card (no-print) -->
+        <div class="bg-white border border-[#e2e8f0] rounded-[16px] p-6 shadow-sm no-print">
+            <form method="GET" action="{{ route('admin.laporan.reschedule-konsultasi') }}" class="space-y-5">
+                <div class="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
+                    <div>
+                        <label for="tanggal_mulai" class="block text-[10px] font-semibold text-[#64748b] tracking-[0.25px] uppercase mb-2">Tanggal Awal</label>
+                        <input type="date" id="tanggal_mulai" name="tanggal_mulai" value="{{ $filters['tanggal_mulai'] ?? '' }}" 
+                            class="w-full bg-[#f8fafc] border border-[#e2e8f0] focus:border-[#1e3a8a] focus:ring focus:ring-[#1e3a8a]/20 rounded-[12px] text-[13px] transition shadow-sm h-11 px-4 text-[#0f172a]">
                     </div>
-
-                    <div class="mt-6 overflow-x-auto">
-                        <table class="min-w-full divide-y divide-gray-200 text-sm">
-                            <thead class="bg-gray-50">
-                                <tr>
-                                    <th class="px-3 py-3 text-left font-medium text-gray-500 uppercase tracking-wider">No</th>
-                                    <th class="px-3 py-3 text-left font-medium text-gray-500 uppercase tracking-wider">ID Reschedule</th>
-                                    <th class="px-3 py-3 text-left font-medium text-gray-500 uppercase tracking-wider">Nama Klien</th>
-                                    <th class="px-3 py-3 text-left font-medium text-gray-500 uppercase tracking-wider">Judul Perkara</th>
-                                    <th class="px-3 py-3 text-left font-medium text-gray-500 uppercase tracking-wider">Jadwal Lama</th>
-                                    <th class="px-3 py-3 text-left font-medium text-gray-500 uppercase tracking-wider">Preferensi Jadwal</th>
-                                    <th class="px-3 py-3 text-left font-medium text-gray-500 uppercase tracking-wider">Preferensi Metode</th>
-                                    <th class="px-3 py-3 text-left font-medium text-gray-500 uppercase tracking-wider">Status</th>
-                                    <th class="px-3 py-3 text-left font-medium text-gray-500 uppercase tracking-wider">Tanggal Pengajuan</th>
-                                    <th class="px-3 py-3 text-left font-medium text-gray-500 uppercase tracking-wider">Tanggal Keputusan</th>
-                                    <th class="px-3 py-3 text-left font-medium text-gray-500 uppercase tracking-wider">Catatan Admin</th>
-                                </tr>
-                            </thead>
-                            <tbody class="divide-y divide-gray-200 bg-white">
-                                @forelse ($laporan as $reschedule)
-                                    @php
-                                        $bookingLama = $reschedule->bookingLama;
-                                        $jadwalLama = $bookingLama?->jadwalKonsultasi;
-                                        $statusColor = match ($reschedule->status_reschedule) {
-                                            'disetujui' => 'green',
-                                            'ditolak' => 'red',
-                                            default => 'yellow',
-                                        };
-                                    @endphp
-                                    <tr>
-                                        <td class="px-3 py-3 text-gray-700">{{ $loop->iteration }}</td>
-                                        <td class="px-3 py-3 whitespace-nowrap text-gray-700">{{ $reschedule->id_reschedule }}</td>
-                                        <td class="px-3 py-3 whitespace-nowrap text-gray-700">{{ $reschedule->klien?->nama ?? '-' }}</td>
-                                        <td class="px-3 py-3 text-gray-700">{{ $bookingLama?->praPendaftaranPerkara?->judul_perkara ?? '-' }}</td>
-                                        <td class="px-3 py-3 whitespace-nowrap text-gray-700">
-                                            @if ($jadwalLama)
-                                                {{ $jadwalLama->tanggal?->format('d M Y') ?? '-' }}, {{ $jadwalLama->waktu_mulai }} - {{ $jadwalLama->waktu_selesai }}
-                                            @else
-                                                -
-                                            @endif
-                                        </td>
-                                        <td class="px-3 py-3 text-gray-700">{{ \Illuminate\Support\Str::limit($reschedule->preferensi_jadwal ?? '-', 100) }}</td>
-                                        <td class="px-3 py-3 whitespace-nowrap text-gray-700">
-                                            @if ($reschedule->preferensi_metode)
-                                                <x-status-badge :status="$reschedule->preferensi_metode" :color="$reschedule->preferensi_metode === 'online' ? 'blue' : 'gray'" />
-                                            @else
-                                                -
-                                            @endif
-                                        </td>
-                                        <td class="px-3 py-3 whitespace-nowrap text-gray-700">
-                                            <x-status-badge :status="$reschedule->status_reschedule" :color="$statusColor" />
-                                        </td>
-                                        <td class="px-3 py-3 whitespace-nowrap text-gray-700">{{ $reschedule->tanggal_pengajuan?->format('d M Y H:i') ?? '-' }}</td>
-                                        <td class="px-3 py-3 whitespace-nowrap text-gray-700">{{ $reschedule->tanggal_keputusan?->format('d M Y H:i') ?? '-' }}</td>
-                                        <td class="px-3 py-3 text-gray-700">{{ \Illuminate\Support\Str::limit($reschedule->catatan_admin ?? '-', 100) }}</td>
-                                    </tr>
-                                @empty
-                                    <tr>
-                                        <td colspan="11" class="px-3 py-12 text-center">
-                                            <x-empty-state title="Tidak Ada Data" message="Tidak ada data reschedule sesuai filter." />
-                                        </td>
-                                    </tr>
-                                @endforelse
-                            </tbody>
-                        </table>
+                    <div>
+                        <label for="tanggal_selesai" class="block text-[10px] font-semibold text-[#64748b] tracking-[0.25px] uppercase mb-2">Tanggal Akhir</label>
+                        <input type="date" id="tanggal_selesai" name="tanggal_selesai" value="{{ $filters['tanggal_selesai'] ?? '' }}" 
+                            class="w-full bg-[#f8fafc] border border-[#e2e8f0] focus:border-[#1e3a8a] focus:ring focus:ring-[#1e3a8a]/20 rounded-[12px] text-[13px] transition shadow-sm h-11 px-4 text-[#0f172a]">
+                    </div>
+                    <div>
+                        <label for="status_reschedule" class="block text-[10px] font-semibold text-[#64748b] tracking-[0.25px] uppercase mb-2">Status Reschedule</label>
+                        <select id="status_reschedule" name="status_reschedule" 
+                            class="w-full bg-[#f8fafc] border border-[#e2e8f0] focus:border-[#1e3a8a] focus:ring focus:ring-[#1e3a8a]/20 rounded-[12px] text-[13px] transition shadow-sm h-11 px-4 text-[#0f172a]">
+                            <option value="">Semua Status</option>
+                            @foreach ($statusOptions as $value => $label)
+                                <option value="{{ $value }}" @selected(($filters['status_reschedule'] ?? '') === $value)>{{ $label }}</option>
+                            @endforeach
+                        </select>
+                    </div>
+                    <div>
+                        <label for="preferensi_metode" class="block text-[10px] font-semibold text-[#64748b] tracking-[0.25px] uppercase mb-2">Preferensi Metode</label>
+                        <select id="preferensi_metode" name="preferensi_metode" 
+                            class="w-full bg-[#f8fafc] border border-[#e2e8f0] focus:border-[#1e3a8a] focus:ring focus:ring-[#1e3a8a]/20 rounded-[12px] text-[13px] transition shadow-sm h-11 px-4 text-[#0f172a]">
+                            <option value="">Semua Metode</option>
+                            @foreach ($metodeOptions as $value => $label)
+                                <option value="{{ $value }}" @selected(($filters['preferensi_metode'] ?? '') === $value)>{{ $label }}</option>
+                            @endforeach
+                        </select>
                     </div>
                 </div>
-            </x-card>
+                
+                <div class="flex flex-wrap items-center gap-3 pt-4 border-t border-[#e2e8f0]">
+                    <button type="submit" class="bg-[#1e3a8a] hover:bg-blue-900 text-white rounded-[12px] h-11 px-5 text-[13px] font-semibold transition shadow-sm inline-flex items-center gap-2">
+                        <svg class="h-4 w-4 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z"></path>
+                        </svg>
+                        <span>{{ __('Terapkan Filter') }}</span>
+                    </button>
+                    <a href="{{ route('admin.laporan.reschedule-konsultasi') }}" class="bg-white border border-[#e2e8f0] hover:bg-gray-50 text-[#334155] rounded-[12px] h-11 px-5 text-[13px] font-semibold transition shadow-sm inline-flex items-center gap-2">
+                        <svg class="h-4 w-4 shrink-0 text-[#64748b]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path>
+                        </svg>
+                        <span>{{ __('Reset Filter') }}</span>
+                    </a>
+                    <button type="button" onclick="window.print()" class="bg-emerald-600 hover:bg-emerald-700 text-white rounded-[12px] h-11 px-5 text-[13px] font-semibold transition shadow-sm inline-flex items-center gap-2 ml-auto">
+                        <svg class="h-4 w-4 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z"></path>
+                        </svg>
+                        <span>{{ __('Cetak Laporan') }}</span>
+                    </button>
+                </div>
+            </form>
+        </div>
+
+        <!-- 4. Table Card (Print Area) -->
+        <div class="bg-white border border-[#e2e8f0] rounded-[16px] shadow-sm overflow-hidden print-area">
+            <div class="p-6 border-b border-[#f1f5f9] flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+                <div>
+                    <h3 class="font-bold text-[#0f172a] text-[16px]">{{ __('Laporan Reschedule Konsultasi') }}</h3>
+                    <p class="text-[13px] text-[#64748b] mt-0.5">Total data ditemukan: <span class="font-bold text-[#0f172a]">{{ $laporan->count() }}</span></p>
+                </div>
+                <div class="text-[12px] font-semibold text-[#475569] bg-[#f8fafc] border border-[#e2e8f0] px-4 py-2 rounded-[12px]">
+                    @if (($filters['tanggal_mulai'] ?? null) || ($filters['tanggal_selesai'] ?? null))
+                        Periode: {{ \Carbon\Carbon::parse($filters['tanggal_mulai'])->format('d M Y') }} s/d {{ \Carbon\Carbon::parse($filters['tanggal_selesai'])->format('d M Y') }}
+                    @else
+                        Periode: Semua Data
+                    @endif
+                </div>
+            </div>
+
+            <div class="overflow-x-auto">
+                <table class="min-w-full divide-y divide-[#e2e8f0]">
+                    <thead class="bg-[#f8fafc]">
+                        <tr>
+                            <th class="px-4 py-3.5 text-left text-[10px] font-semibold text-[#64748b] uppercase tracking-[0.25px]">No</th>
+                            <th class="px-4 py-3.5 text-left text-[10px] font-semibold text-[#64748b] uppercase tracking-[0.25px]">Kode</th>
+                            <th class="px-4 py-3.5 text-left text-[10px] font-semibold text-[#64748b] uppercase tracking-[0.25px]">Nama Klien</th>
+                            <th class="px-4 py-3.5 text-left text-[10px] font-semibold text-[#64748b] uppercase tracking-[0.25px]">Judul Perkara</th>
+                            <th class="px-4 py-3.5 text-left text-[10px] font-semibold text-[#64748b] uppercase tracking-[0.25px]">Jadwal Lama</th>
+                            <th class="px-4 py-3.5 text-left text-[10px] font-semibold text-[#64748b] uppercase tracking-[0.25px]">Preferensi Jadwal</th>
+                            <th class="px-4 py-3.5 text-left text-[10px] font-semibold text-[#64748b] uppercase tracking-[0.25px]">Metode</th>
+                            <th class="px-4 py-3.5 text-left text-[10px] font-semibold text-[#64748b] uppercase tracking-[0.25px]">Status</th>
+                            <th class="px-4 py-3.5 text-left text-[10px] font-semibold text-[#64748b] uppercase tracking-[0.25px]">Tanggal Pengajuan</th>
+                            <th class="px-4 py-3.5 text-left text-[10px] font-semibold text-[#64748b] uppercase tracking-[0.25px]">Tanggal Keputusan</th>
+                            <th class="px-4 py-3.5 text-left text-[10px] font-semibold text-[#64748b] uppercase tracking-[0.25px]">Catatan Admin</th>
+                        </tr>
+                    </thead>
+                    <tbody class="bg-white divide-y divide-[#e2e8f0]/60">
+                        @forelse ($laporan as $reschedule)
+                            @php
+                                $bookingLama = $reschedule->bookingLama;
+                                $jadwalLama = $bookingLama?->jadwalKonsultasi;
+                            @endphp
+                            <tr class="hover:bg-[#f8fafc] transition duration-150">
+                                <td class="px-4 py-4 whitespace-nowrap text-[12px] text-gray-400 font-semibold">
+                                    {{ $loop->iteration }}
+                                </td>
+                                <td class="px-4 py-4 whitespace-nowrap text-[13px] font-bold text-[#1e3a8a] font-mono">
+                                    RS-{{ str_pad($reschedule->id_reschedule, 3, '0', STR_PAD_LEFT) }}
+                                </td>
+                                <td class="px-4 py-4 whitespace-nowrap text-[13px] font-semibold text-[#0f172a]">
+                                    {{ $reschedule->klien?->nama ?? '-' }}
+                                </td>
+                                <td class="px-4 py-4 text-[13px] text-[#334155] truncate max-w-xs font-medium">
+                                    {{ $bookingLama?->praPendaftaranPerkara?->judul_perkara ?? '-' }}
+                                </td>
+                                <td class="px-4 py-4 whitespace-nowrap text-[13px] text-[#334155]">
+                                    @if ($jadwalLama)
+                                        {{ $jadwalLama->tanggal?->format('d M Y') ?? '-' }}
+                                        <span class="text-[11px] text-[#64748b] block">({{ substr((string) $jadwalLama->waktu_mulai, 0, 5) }} - {{ substr((string) $jadwalLama->waktu_selesai, 0, 5) }} WIB)</span>
+                                    @else
+                                        -
+                                    @endif
+                                </td>
+                                <td class="px-4 py-4 text-[12px] text-[#334155] max-w-xs truncate">
+                                    {{ $reschedule->preferensi_jadwal ?: '-' }}
+                                </td>
+                                <td class="px-4 py-4 whitespace-nowrap">
+                                    <x-status-badge :status="$reschedule->preferensi_metode ?: 'offline'" />
+                                </td>
+                                <td class="px-4 py-4 whitespace-nowrap">
+                                    <x-status-badge :status="$reschedule->status_reschedule" />
+                                </td>
+                                <td class="px-4 py-4 whitespace-nowrap text-[12px] text-[#64748b]">
+                                    {{ $reschedule->tanggal_pengajuan?->format('d M Y H:i') ?? '-' }}
+                                </td>
+                                <td class="px-4 py-4 whitespace-nowrap text-[12px] text-[#64748b]">
+                                    {{ $reschedule->tanggal_keputusan?->format('d M Y H:i') ?? '-' }}
+                                </td>
+                                <td class="px-4 py-4 text-[12px] text-[#64748b] max-w-xs truncate">
+                                    {{ $reschedule->catatan_admin ?: '-' }}
+                                </td>
+                            </tr>
+                        @empty
+                            <tr>
+                                <td colspan="11" class="px-4 py-12 text-center">
+                                    <x-empty-state title="Tidak Ada Data" message="Tidak ada data reschedule konsultasi sesuai filter yang dipilih." />
+                                </td>
+                            </tr>
+                        @endforelse
+                    </tbody>
+                </table>
+            </div>
         </div>
     </div>
 </x-app-layout>
