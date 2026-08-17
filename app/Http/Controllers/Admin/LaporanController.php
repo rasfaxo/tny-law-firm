@@ -328,6 +328,7 @@ class LaporanController extends Controller
 
         $laporan = PermintaanReschedule::query()
             ->with([
+                "jadwalBaru",
                 "bookingBaru.jadwalKonsultasi",
                 "bookingLama.jadwalKonsultasi",
                 "bookingLama.praPendaftaranPerkara.kategori",
@@ -684,6 +685,7 @@ class LaporanController extends Controller
 
         $laporan = PermintaanReschedule::query()
             ->with([
+                "jadwalBaru",
                 "bookingBaru.jadwalKonsultasi",
                 "bookingLama.jadwalKonsultasi",
                 "bookingLama.praPendaftaranPerkara.kategori",
