@@ -50,14 +50,14 @@
                     <!-- Password -->
                     <div>
                         <x-input-label for="password" value="Password" class="mb-2" />
-                        <x-text-input id="password" name="password" type="password" class="w-full" required placeholder="Minimal 8 karakter" />
+                        <x-password-input id="password" name="password" class="w-full" required placeholder="Minimal 8 karakter" />
                         <x-input-error class="mt-2" :messages="$errors->get('password')" />
                     </div>
 
                     <!-- Konfirmasi Password -->
                     <div>
                         <x-input-label for="password_confirmation" value="Konfirmasi Password" class="mb-2" />
-                        <x-text-input id="password_confirmation" name="password_confirmation" type="password" class="w-full" required placeholder="Ulangi password" />
+                        <x-password-input id="password_confirmation" name="password_confirmation" class="w-full" required placeholder="Ulangi password" />
                     </div>
                 </div>
 

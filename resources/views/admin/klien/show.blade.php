@@ -79,7 +79,7 @@
                             <div class="space-y-4">
                                 <div>
                                     <x-input-label for="password" :value="__('Password Baru')" />
-                                    <x-text-input type="password" name="password" id="password" required minlength="8" class="mt-1 block w-full" placeholder="Minimal 8 karakter..." />
+                                    <x-password-input name="password" id="password" required minlength="8" class="mt-1 block w-full" placeholder="Minimal 8 karakter..." />
                                     <x-input-error :messages="$errors->get('password')" class="mt-1" />
                                 </div>
                                 <x-primary-button class="w-full justify-center" ::disabled="isSubmitting">
