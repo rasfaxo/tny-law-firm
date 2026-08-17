@@ -26,9 +26,9 @@
         };
 
         $roleBadgeClass = match ($user->role) {
-            'klien' => 'bg-[#eff6ff] text-[#1d4ed8]',
-            'admin' => 'bg-[#f5f3ff] text-[#6d28d9]',
-            'staf_legal' => 'bg-[#f0fdf4] text-[#15803d]',
+            'klien' => 'bg-blue-50 text-blue-700',
+            'admin' => 'bg-purple-50 text-purple-700',
+            'staf_legal' => 'bg-green-50 text-green-700',
             default => 'bg-gray-100 text-gray-800',
         };
 
@@ -41,7 +41,7 @@
     }
 @endphp
 
-<header class="bg-white border-b border-[#E2E8F0] h-[80px] flex items-center justify-between px-6 md:px-8 shrink-0 z-10 drop-shadow-[0px_1px_1.5px_rgba(0,0,0,0.05)]">
+<header class="bg-white border-b border-[#E2E8F0] h-20 flex items-center justify-between px-6 md:px-8 shrink-0 z-10 drop-shadow-sm">
     <div class="flex items-center gap-4 flex-1">
         <!-- Mobile Hamburger Button -->
         <button @click="sidebarOpen = !sidebarOpen" class="text-gray-500 hover:text-gray-700 focus:outline-none lg:hidden shrink-0">
@@ -59,10 +59,10 @@
             <!-- Standard dynamic breadcrumbs and title -->
             <div class="flex flex-col">
                 @if(!empty($breadcrumbs))
-                    <nav class="flex items-center gap-1.5 text-xxs font-semibold text-gray-400 uppercase tracking-wider mb-0.5 select-none">
+                    <nav class="flex items-center gap-1.5 text-xs font-bold text-gray-400 uppercase tracking-wider mb-0.5 select-none">
                         @foreach($breadcrumbs as $index => $crumb)
                             @if($index > 0)
-                                <svg class="h-2.5 w-2.5 text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <svg class="h-3 w-3 text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
                                 </svg>
                             @endif
@@ -76,9 +76,9 @@
                 @else
                     <!-- Fallback breadcrumb based on user role -->
                     @if($user)
-                        <nav class="flex items-center gap-1 text-xxs font-semibold text-gray-400 uppercase tracking-wider mb-0.5 select-none">
+                        <nav class="flex items-center gap-1 text-xs font-bold text-gray-400 uppercase tracking-wider mb-0.5 select-none">
                             <span>{{ $roleLabel }}</span>
-                            <svg class="h-2.5 w-2.5 text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <svg class="h-3 w-3 text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
                             </svg>
                             <span class="text-gray-600">{{ $title ?? 'Dashboard' }}</span>
@@ -86,7 +86,7 @@
                     @endif
                 @endif
 
-                <h2 class="font-extrabold text-2xl text-[#0f172a] leading-tight tracking-tight">
+                <h2 class="font-extrabold text-2xl text-navy-dark leading-tight tracking-tight">
                     {{ $title ?? 'Dashboard' }}
                 </h2>
             </div>
@@ -98,22 +98,22 @@
         @if($user)
             <div class="flex items-center gap-3">
                 <!-- Role Badge -->
-                <span class="px-3 py-1 rounded-full text-[11px] font-semibold tracking-[0.275px] {{ $roleBadgeClass }} hidden sm:inline-block select-none">
+                <span class="px-3 py-1 rounded-full text-xs font-semibold {{ $roleBadgeClass }} hidden sm:inline-block select-none">
                     {{ $roleLabel }}
                 </span>
 
                 <!-- Dropdown -->
                 <x-dropdown align="right" width="48">
                     <x-slot name="trigger">
-                        <button class="bg-white border border-[#e2e8f0] hover:border-accent-blue transition duration-150 rounded-full pl-[9px] pr-[15px] py-[6px] flex items-center gap-[10px] shadow-sm select-none focus:outline-none">
+                        <button class="bg-white border border-[#E2E8F0] hover:border-accent-blue transition duration-150 rounded-full pl-2 pr-3.5 py-1.5 flex items-center gap-2.5 shadow-sm select-none focus:outline-none">
                             <!-- Avatar circle -->
-                            <div class="w-7 h-7 rounded-full flex items-center justify-center text-white text-[10px] font-bold tracking-wider {{ $avatarBg }} shrink-0">
+                            <div class="w-7 h-7 rounded-full flex items-center justify-center text-white text-xs font-bold tracking-wider {{ $avatarBg }} shrink-0">
                                 {{ strtoupper($initials) }}
                             </div>
                             <!-- Name & Status -->
                             <div class="flex flex-col items-start text-left hidden md:flex">
-                                <span class="text-xs font-semibold text-[#0f172a] leading-none">{{ $user->nama }}</span>
-                                <span class="text-[10px] text-[#64748b] leading-none mt-0.5">Akun aktif</span>
+                                <span class="text-xs font-semibold text-navy-dark leading-none">{{ $user->nama }}</span>
+                                <span class="text-xs text-gray-500 leading-none mt-0.5">Akun aktif</span>
                             </div>
                             <!-- Caret -->
                             <svg class="h-3 w-3 text-gray-400 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">

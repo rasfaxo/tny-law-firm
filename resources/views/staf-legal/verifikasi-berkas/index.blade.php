@@ -26,7 +26,7 @@
                 <!-- Filter Status -->
                 <div class="space-y-2">
                     <x-input-label for="status" value="Filter Status" />
-                    <select name="status" id="status" class="w-full bg-[#F8FAFC] border-[#E2E8F0] focus:border-accent-blue focus:ring focus:ring-accent-blue/20 rounded-xl text-sm transition shadow-sm h-11 px-4 appearance-none">
+                    <x-select name="status" id="status">
                         <option value="">Semua Status</option>
                         <option value="menunggu_verifikasi" @selected(request('status') === 'menunggu_verifikasi')>Menunggu Verifikasi</option>
                         <option value="menunggu_verifikasi_ulang" @selected(request('status') === 'menunggu_verifikasi_ulang')>Verifikasi Ulang</option>
@@ -34,20 +34,20 @@
                         <option value="berkas_lengkap" @selected(request('status') === 'berkas_lengkap')>Berkas Lengkap</option>
                         <option value="jadwal_dipilih" @selected(request('status') === 'jadwal_dipilih')>Jadwal Dipilih</option>
                         <option value="selesai" @selected(request('status') === 'selesai')>Selesai</option>
-                    </select>
+                    </x-select>
                 </div>
 
                 <!-- Filter Kategori -->
                 <div class="space-y-2">
                     <x-input-label for="kategori" value="Filter Kategori" />
-                    <select name="kategori" id="kategori" class="w-full bg-[#F8FAFC] border-[#E2E8F0] focus:border-accent-blue focus:ring focus:ring-accent-blue/20 rounded-xl text-sm transition shadow-sm h-11 px-4 appearance-none">
+                    <x-select name="kategori" id="kategori">
                         <option value="">Semua Kategori</option>
                         @foreach ($kategoriList as $kategori)
                             <option value="{{ $kategori->id_kategori }}" @selected(request('kategori') == $kategori->id_kategori)>
                                 {{ $kategori->nama_kategori }}
                             </option>
                         @endforeach
-                    </select>
+                    </x-select>
                 </div>
 
                 <!-- Terapkan Button -->
@@ -65,12 +65,12 @@
                 <table class="min-w-full divide-y divide-[#F1F5F9]">
                     <thead class="bg-[#F8FAFC]">
                         <tr>
-                            <th class="px-5 py-4 text-left text-[11px] font-bold text-gray-400 tracking-wider uppercase">Kode</th>
-                            <th class="px-5 py-4 text-left text-[11px] font-bold text-gray-400 tracking-wider uppercase">Klien</th>
-                            <th class="px-5 py-4 text-left text-[11px] font-bold text-gray-400 tracking-wider uppercase">Judul</th>
-                            <th class="px-5 py-4 text-left text-[11px] font-bold text-gray-400 tracking-wider uppercase">Kategori</th>
-                            <th class="px-5 py-4 text-left text-[11px] font-bold text-gray-400 tracking-wider uppercase">Status</th>
-                            <th class="px-5 py-4 text-right text-[11px] font-bold text-gray-400 tracking-wider uppercase">Aksi</th>
+                            <th class="px-6 py-4 text-left text-xs font-bold text-gray-400 tracking-wider uppercase">Kode</th>
+                            <th class="px-6 py-4 text-left text-xs font-bold text-gray-400 tracking-wider uppercase">Klien</th>
+                            <th class="px-6 py-4 text-left text-xs font-bold text-gray-400 tracking-wider uppercase">Judul</th>
+                            <th class="px-6 py-4 text-left text-xs font-bold text-gray-400 tracking-wider uppercase">Kategori</th>
+                            <th class="px-6 py-4 text-left text-xs font-bold text-gray-400 tracking-wider uppercase">Status</th>
+                            <th class="px-6 py-4 text-right text-xs font-bold text-gray-400 tracking-wider uppercase">Aksi</th>
                         </tr>
                     </thead>
                     <tbody class="bg-white divide-y divide-[#F1F5F9]">
@@ -79,24 +79,24 @@
                                 $isVerifiable = in_array($item->status_pengajuan, ['menunggu_verifikasi', 'menunggu_verifikasi_ulang']);
                             @endphp
                             <tr class="hover:bg-gray-50/40 transition">
-                                <td class="px-5 py-4 whitespace-nowrap text-[13px] font-mono font-medium text-accent-blue">
+                                <td class="px-6 py-4 whitespace-nowrap text-sm font-mono font-medium text-accent-blue">
                                     PP-{{ sprintf('%03d', $item->id_pendaftaran) }}
                                 </td>
-                                <td class="px-5 py-4 whitespace-nowrap text-[13px] font-bold text-navy-dark">
+                                <td class="px-6 py-4 whitespace-nowrap text-sm font-bold text-navy-dark">
                                     {{ $item->klien?->nama ?? '-' }}
                                 </td>
-                                <td class="px-5 py-4 text-[13px] text-gray-600 font-medium">
+                                <td class="px-6 py-4 text-sm text-gray-600 font-medium">
                                     {{ $item->judul_perkara }}
                                 </td>
-                                <td class="px-5 py-4 whitespace-nowrap">
-                                    <span class="inline-flex items-center px-2.5 py-1 rounded-full border border-gray-200 text-[11px] font-bold bg-gray-100 text-gray-700">
+                                <td class="px-6 py-4 whitespace-nowrap">
+                                    <span class="inline-flex items-center px-2.5 py-1 rounded-lg text-xs font-bold bg-gray-100 text-gray-600">
                                         {{ $item->kategori?->nama_kategori ?? '-' }}
                                     </span>
                                 </td>
-                                <td class="px-5 py-4 whitespace-nowrap">
+                                <td class="px-6 py-4 whitespace-nowrap">
                                     <x-status-badge :status="$item->status_pengajuan" />
                                 </td>
-                                <td class="px-5 py-4 whitespace-nowrap text-right text-sm">
+                                <td class="px-6 py-4 whitespace-nowrap text-right text-sm">
                                     @if ($isVerifiable)
                                         <a href="{{ route('staf-legal.verifikasi-berkas.show', $item) }}" class="inline-flex items-center gap-1 text-accent-blue hover:text-blue-800 transition font-bold">
                                             Verifikasi
@@ -127,7 +127,7 @@
 
             <!-- Custom Styled Pagination -->
             @if ($pengajuan->hasPages())
-                <div class="px-5 py-4 bg-white border-t border-[#F1F5F9]">
+                <div class="px-6 py-4 bg-white border-t border-[#F1F5F9]">
                     {{ $pengajuan->links() }}
                 </div>
             @endif

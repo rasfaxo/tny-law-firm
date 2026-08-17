@@ -18,13 +18,13 @@
                 <table class="min-w-full divide-y divide-[#E2E8F0]">
                     <thead class="bg-[#F8FAFC]">
                         <tr>
-                            <th class="px-6 py-4 text-left text-xxs font-bold text-gray-400 uppercase tracking-wider">Klien</th>
-                            <th class="px-6 py-4 text-left text-xxs font-bold text-gray-400 uppercase tracking-wider">Perkara</th>
-                            <th class="px-6 py-4 text-left text-xxs font-bold text-gray-400 uppercase tracking-wider">Jadwal</th>
-                            <th class="px-6 py-4 text-left text-xxs font-bold text-gray-400 uppercase tracking-wider">Metode</th>
-                            <th class="px-6 py-4 text-left text-xxs font-bold text-gray-400 uppercase tracking-wider">Konfirmasi</th>
-                            <th class="px-6 py-4 text-left text-xxs font-bold text-gray-400 uppercase tracking-wider">Booking</th>
-                            <th class="px-6 py-4 text-right text-xxs font-bold text-gray-400 uppercase tracking-wider">Aksi</th>
+                            <th class="px-6 py-4 text-left text-xs font-bold text-gray-400 uppercase tracking-wider">Klien</th>
+                            <th class="px-6 py-4 text-left text-xs font-bold text-gray-400 uppercase tracking-wider">Perkara</th>
+                            <th class="px-6 py-4 text-left text-xs font-bold text-gray-400 uppercase tracking-wider">Jadwal</th>
+                            <th class="px-6 py-4 text-left text-xs font-bold text-gray-400 uppercase tracking-wider">Metode</th>
+                            <th class="px-6 py-4 text-left text-xs font-bold text-gray-400 uppercase tracking-wider">Konfirmasi</th>
+                            <th class="px-6 py-4 text-left text-xs font-bold text-gray-400 uppercase tracking-wider">Booking</th>
+                            <th class="px-6 py-4 text-right text-xs font-bold text-gray-400 uppercase tracking-wider">Aksi</th>
                         </tr>
                     </thead>
                     <tbody class="bg-white divide-y divide-[#E2E8F0]">
@@ -39,7 +39,7 @@
                                 </td>
                                 <td class="px-6 py-4">
                                     <div class="font-bold text-navy-dark text-sm leading-snug">{{ $pengajuan?->judul_perkara ?? '-' }}</div>
-                                    <div class="text-xxs text-gray-400 font-semibold mt-0.5">{{ $pengajuan?->kategori?->nama_kategori ?? '-' }}</div>
+                                    <div class="text-xs text-gray-400 font-semibold mt-0.5">{{ $pengajuan?->kategori?->nama_kategori ?? '-' }}</div>
                                 </td>
                                 <td class="px-6 py-4 whitespace-nowrap">
                                     <div class="font-bold text-navy-dark text-sm">{{ $jadwal?->tanggal?->format('d M Y') ?? '-' }}</div>

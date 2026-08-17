@@ -39,10 +39,10 @@
                 <!-- Status Akun -->
                 <div>
                     <x-input-label for="status_akun" value="Status Akun" class="mb-2" />
-                    <select id="status_akun" name="status_akun" class="w-full bg-[#F8FAFC] border-[#E2E8F0] focus:border-accent-blue focus:ring focus:ring-accent-blue/20 rounded-xl text-sm transition shadow-sm h-11 px-4" required>
+                    <x-select id="status_akun" name="status_akun" required>
                         <option value="aktif" @selected(old('status_akun', 'aktif') === 'aktif')>Aktif</option>
                         <option value="nonaktif" @selected(old('status_akun') === 'nonaktif')>Nonaktif</option>
-                    </select>
+                    </x-select>
                     <x-input-error class="mt-2" :messages="$errors->get('status_akun')" />
                 </div>
 

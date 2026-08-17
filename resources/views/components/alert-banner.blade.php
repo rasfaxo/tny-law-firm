@@ -43,7 +43,7 @@
         @if($title)
             <p class="font-bold text-sm">{{ $title }}</p>
         @endif
-        <div class="text-[13px] opacity-90 leading-relaxed">
+        <div class="text-sm opacity-90 leading-relaxed">
             {{ $slot }}
         </div>
     </div>

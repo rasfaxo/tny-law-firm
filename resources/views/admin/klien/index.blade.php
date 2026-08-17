@@ -54,7 +54,7 @@
                             <tr class="hover:bg-[#F8FAFC] transition duration-150">
                                 <td class="px-6 py-4 whitespace-nowrap">
                                     <div class="flex items-center gap-3">
-                                        <div class="h-8 w-8 rounded-full bg-blue-50 text-[#1e3a8a] border border-blue-100 flex items-center justify-center font-bold text-xs shrink-0">
+                                        <div class="h-8 w-8 rounded-full bg-blue-50 text-accent-blue border border-blue-100 flex items-center justify-center font-bold text-xs shrink-0">
                                             {{ strtoupper(substr($user->nama, 0, 1)) }}
                                         </div>
                                         <div class="font-bold text-navy-dark text-sm">
@@ -121,7 +121,7 @@
                     <div class="p-4 space-y-3">
                         <div class="flex justify-between items-center">
                             <div class="flex items-center gap-3">
-                                <div class="h-8 w-8 rounded-full bg-blue-50 text-[#1e3a8a] border border-blue-100 flex items-center justify-center font-bold text-xs shrink-0">
+                                <div class="h-8 w-8 rounded-full bg-blue-50 text-accent-blue border border-blue-100 flex items-center justify-center font-bold text-xs shrink-0">
                                     {{ strtoupper(substr($user->nama, 0, 1)) }}
                                 </div>
                                 <div class="font-bold text-navy-dark text-sm">

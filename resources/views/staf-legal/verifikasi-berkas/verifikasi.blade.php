@@ -42,45 +42,45 @@
                 <!-- Hasil Verifikasi Card -->
                 <x-card class="space-y-5 flex flex-col justify-between h-full">
                     <div class="space-y-4">
-                        <div class="border-b border-[#f1f5f9] pb-4">
-                            <h3 class="font-bold text-[16px] text-[#0f172a]">Hasil Verifikasi</h3>
-                            <p class="text-[13px] text-[#64748b] mt-1">Pilih keputusan berdasarkan pemeriksaan dokumen.</p>
+                        <div class="border-b border-[#F1F5F9] pb-4">
+                            <h3 class="font-bold text-lg text-navy-dark">Hasil Verifikasi</h3>
+                            <p class="text-xs text-gray-500 mt-1">Pilih keputusan berdasarkan pemeriksaan dokumen.</p>
                         </div>
 
                         <!-- Radio Options -->
                         <div class="space-y-3">
                             <!-- Berkas Lengkap -->
                             <label class="flex items-center gap-3 p-4 rounded-xl border cursor-pointer transition duration-150"
-                                   :class="statusVerifikasi === 'berkas_lengkap' ? 'bg-[#eff6ff] border-[#1d4ed8] text-[#1d4ed8]' : 'bg-white border-[#e2e8f0] hover:bg-slate-50 text-[#334155]'">
+                                   :class="statusVerifikasi === 'berkas_lengkap' ? 'bg-blue-50 border-blue-600 text-blue-700' : 'bg-white border-[#E2E8F0] hover:bg-slate-50 text-gray-700'">
                                 <input type="radio" name="status_verifikasi" value="berkas_lengkap" 
                                        class="border-gray-300 text-indigo-600 focus:ring-indigo-500"
                                        @click="setToLengkap()"
                                        :checked="statusVerifikasi === 'berkas_lengkap'">
-                                <span class="text-[14px] font-semibold">Berkas Lengkap</span>
+                                <span class="text-sm font-semibold">Berkas Lengkap</span>
                             </label>
 
                             <!-- Berkas Tidak Lengkap -->
                             <label class="flex items-center gap-3 p-4 rounded-xl border cursor-pointer transition duration-150"
-                                   :class="statusVerifikasi === 'berkas_tidak_lengkap' ? 'bg-[#fef2f2] border-[#dc2626] text-[#b91c1c]' : 'bg-white border-[#e2e8f0] hover:bg-slate-50 text-[#334155]'">
+                                   :class="statusVerifikasi === 'berkas_tidak_lengkap' ? 'bg-red-50 border-red-600 text-red-700' : 'bg-white border-[#E2E8F0] hover:bg-slate-50 text-gray-700'">
                                 <input type="radio" name="status_verifikasi" value="berkas_tidak_lengkap" 
                                        class="border-gray-300 text-red-600 focus:ring-red-500"
                                        @click="statusVerifikasi = 'berkas_tidak_lengkap'"
                                        :checked="statusVerifikasi === 'berkas_tidak_lengkap'">
-                                <span class="text-[14px] font-semibold">Berkas Tidak Lengkap</span>
+                                <span class="text-sm font-semibold">Berkas Tidak Lengkap</span>
                             </label>
                         </div>
                     </div>
 
                     <!-- Dynamic Preview Badge and Info -->
-                    <div class="pt-4 border-t border-[#f1f5f9] flex flex-col gap-2">
+                    <div class="pt-4 border-t border-[#F1F5F9] flex flex-col gap-2">
                         <div class="flex items-center gap-2">
-                            <span class="text-[12px] font-semibold text-[#64748b]">Keputusan terpilih:</span>
+                            <span class="text-xs font-semibold text-gray-500">Keputusan terpilih:</span>
                             <span class="inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-semibold tracking-wide border shadow-sm"
                                   :class="statusVerifikasi === 'berkas_lengkap' ? 'bg-green-50 text-green-700 border-green-200' : 'bg-red-50 text-red-700 border-red-200'">
                                 <span x-text="statusVerifikasi === 'berkas_lengkap' ? 'Berkas Lengkap' : 'Berkas Tidak Lengkap'"></span>
                             </span>
                         </div>
-                        <p class="text-[12.5px] text-[#64748b]">
+                        <p class="text-xs text-gray-500">
                             <span x-show="statusVerifikasi === 'berkas_lengkap'">Jika berkas dinyatakan lengkap, Klien dapat memilih jadwal konsultasi.</span>
                             <span x-show="statusVerifikasi === 'berkas_tidak_lengkap'">Jika berkas tidak lengkap, Klien harus memperbaiki dokumen pendukung yang bermasalah.</span>
                         </p>
@@ -89,9 +89,9 @@
 
                 <!-- Catatan Umum Card -->
                 <x-card class="space-y-4 h-full">
-                    <div class="border-b border-[#f1f5f9] pb-4">
-                        <h3 class="font-bold text-[16px] text-[#0f172a]">Catatan Umum Verifikasi</h3>
-                        <p class="text-[13px] text-[#64748b] mt-1">Opsional jika berkas lengkap. Wajib jika berkas tidak lengkap.</p>
+                    <div class="border-b border-[#F1F5F9] pb-4">
+                        <h3 class="font-bold text-lg text-navy-dark">Catatan Umum Verifikasi</h3>
+                        <p class="text-xs text-gray-500 mt-1">Opsional jika berkas lengkap. Wajib jika berkas tidak lengkap.</p>
                     </div>
 
                     <div class="space-y-2">
@@ -105,33 +105,33 @@
 
             <!-- Catatan Per Dokumen Card -->
             <x-card class="space-y-4">
-                <div class="border-b border-[#f1f5f9] pb-4">
-                    <h3 class="font-bold text-[16px] text-[#0f172a]">Catatan Per Dokumen</h3>
-                    <p class="text-[13px] text-[#64748b] mt-1">Tandai status setiap dokumen dan tambahkan catatan jika perlu perbaikan.</p>
+                <div class="border-b border-[#F1F5F9] pb-4">
+                    <h3 class="font-bold text-lg text-navy-dark">Catatan Per Dokumen</h3>
+                    <p class="text-xs text-gray-500 mt-1">Tandai status setiap dokumen dan tambahkan catatan jika perlu perbaikan.</p>
                 </div>
 
                 <!-- Desktop Table Layout -->
                 <div class="hidden md:block overflow-x-auto border border-[#E2E8F0] rounded-xl">
-                    <table class="min-w-full divide-y divide-[#e2e8f0]">
-                        <thead class="bg-[#f8fafc]">
+                    <table class="min-w-full divide-y divide-[#E2E8F0]">
+                        <thead class="bg-[#F8FAFC]">
                             <tr>
-                                <th class="px-5 py-4 text-left text-xs font-semibold text-[#64748b] tracking-wider uppercase w-1/4">Dokumen</th>
-                                <th class="px-5 py-4 text-left text-xs font-semibold text-[#64748b] tracking-wider uppercase w-1/4">Status</th>
-                                <th class="px-5 py-4 text-left text-xs font-semibold text-[#64748b] tracking-wider uppercase w-2/5">Catatan Perbaikan</th>
-                                <th class="px-5 py-4 text-right text-xs font-semibold text-[#64748b] tracking-wider uppercase w-[10%]">Aksi</th>
+                                <th class="px-6 py-4 text-left text-xs font-bold text-gray-400 tracking-wider uppercase w-1/4">Dokumen</th>
+                                <th class="px-6 py-4 text-left text-xs font-bold text-gray-400 tracking-wider uppercase w-1/4">Status</th>
+                                <th class="px-6 py-4 text-left text-xs font-bold text-gray-400 tracking-wider uppercase w-2/5">Catatan Perbaikan</th>
+                                <th class="px-6 py-4 text-right text-xs font-bold text-gray-400 tracking-wider uppercase w-[10%]">Aksi</th>
                             </tr>
                         </thead>
-                        <tbody class="bg-white divide-y divide-[#f1f5f9]">
+                        <tbody class="bg-white divide-y divide-[#F1F5F9]">
                             @forelse ($praPendaftaranPerkara->dokumenAktif as $dokumen)
                                 <tr class="align-top">
-                                    <td class="px-5 py-4 text-[13px]">
-                                        <div class="font-semibold text-[#334155]">{{ $dokumen->nama_dokumen }}</div>
-                                        <div class="text-xs text-[#64748b] mt-0.5">{{ $dokumen->jenis_dokumen }}</div>
+                                    <td class="px-6 py-4 text-sm">
+                                        <div class="font-semibold text-navy-dark">{{ $dokumen->nama_dokumen }}</div>
+                                        <div class="text-xs text-gray-500 mt-0.5">{{ $dokumen->jenis_dokumen }}</div>
                                     </td>
-                                    <td class="px-5 py-4">
+                                    <td class="px-6 py-4">
                                         <div class="flex flex-col gap-2">
                                             <!-- Option Valid -->
-                                            <label class="inline-flex items-center gap-2 text-[13px] cursor-pointer"
+                                            <label class="inline-flex items-center gap-2 text-sm cursor-pointer"
                                                    :class="statusVerifikasi === 'berkas_lengkap' ? 'opacity-60 cursor-not-allowed' : ''">
                                                 <input type="radio" 
                                                        :name="'dummy_status_' + '{{ $dokumen->id_dokumen }}'" 
@@ -143,7 +143,7 @@
                                             </label>
 
                                             <!-- Option Perlu Perbaikan -->
-                                            <label class="inline-flex items-center gap-2 text-[13px] cursor-pointer"
+                                            <label class="inline-flex items-center gap-2 text-sm cursor-pointer"
                                                    :class="statusVerifikasi === 'berkas_lengkap' ? 'opacity-60 cursor-not-allowed' : ''">
                                                 <input type="radio" 
                                                        :name="'dummy_status_' + '{{ $dokumen->id_dokumen }}'" 
@@ -155,15 +155,15 @@
                                             </label>
                                         </div>
                                     </td>
-                                     <td class="px-5 py-4">
+                                     <td class="px-6 py-4">
                                         <x-text-input tag="textarea" name="dokumen[{{ $dokumen->id_dokumen }}][catatan]" rows="3" 
                                                   class="w-full resize-none"
                                                   placeholder="Tuliskan alasan penolakan atau catatan perbaikan dokumen ini..."
                                                   x-bind:disabled="statusVerifikasi === 'berkas_lengkap' || docStatus['{{ $dokumen->id_dokumen }}'] !== 'perlu_perbaikan'"
                                                   x-bind:required="statusVerifikasi === 'berkas_tidak_lengkap' && docStatus['{{ $dokumen->id_dokumen }}'] === 'perlu_perbaikan'">{{ old("dokumen.{$dokumen->id_dokumen}.catatan") }}</x-text-input>
                                     </td>
-                                    <td class="px-5 py-4 text-right text-[12px] font-semibold">
-                                        <a href="{{ route('staf-legal.dokumen.show', $dokumen) }}" class="text-[#1d4ed8] hover:text-[#1e40af] transition duration-150">
+                                    <td class="px-6 py-4 text-right text-sm font-semibold">
+                                        <a href="{{ route('staf-legal.dokumen.show', $dokumen) }}" class="text-accent-blue hover:text-blue-800 transition duration-150">
                                             Lihat
                                         </a>
                                     </td>
@@ -172,7 +172,7 @@
                                 <input type="hidden" name="dokumen[{{ $dokumen->id_dokumen }}][status_dokumen]" :value="docStatus['{{ $dokumen->id_dokumen }}']">
                             @empty
                                 <tr>
-                                    <td colspan="4" class="px-5 py-8 text-center text-[13px] text-[#64748b]">
+                                    <td colspan="4" class="px-6 py-8 text-center text-sm text-gray-500">
                                         <x-empty-state title="Belum ada dokumen" message="Belum ada dokumen yang diunggah." />
                                     </td>
                                 </tr>
@@ -184,22 +184,22 @@
                 <!-- Mobile Card Layout -->
                 <div class="block md:hidden space-y-4">
                     @forelse ($praPendaftaranPerkara->dokumenAktif as $dokumen)
-                        <div class="bg-white border border-[#e2e8f0] rounded-[16px] p-4 space-y-4">
+                        <div class="bg-white border border-[#E2E8F0] rounded-xl p-4 space-y-4">
                             <div class="flex justify-between items-start gap-2">
                                 <div>
-                                    <div class="font-semibold text-navy-dark text-[13px]">{{ $dokumen->nama_dokumen }}</div>
-                                    <div class="text-xs text-[#64748b] mt-0.5">{{ $dokumen->jenis_dokumen }}</div>
+                                    <div class="font-semibold text-navy-dark text-sm">{{ $dokumen->nama_dokumen }}</div>
+                                    <div class="text-xs text-gray-500 mt-0.5">{{ $dokumen->jenis_dokumen }}</div>
                                 </div>
-                                <a href="{{ route('staf-legal.dokumen.show', $dokumen) }}" class="text-[#1d4ed8] hover:text-[#1e40af] text-xs font-bold shrink-0 transition duration-150">
+                                <a href="{{ route('staf-legal.dokumen.show', $dokumen) }}" class="text-accent-blue hover:text-blue-800 text-xs font-bold shrink-0 transition duration-150">
                                     Lihat Dokumen
                                 </a>
                             </div>
 
-                            <div class="space-y-2 pt-2 border-t border-[#f1f5f9]">
+                            <div class="space-y-2 pt-2 border-t border-[#F1F5F9]">
                                 <span class="block text-xs font-bold text-gray-400 uppercase tracking-wider">Status Dokumen</span>
                                 <div class="flex items-center gap-4">
                                     <!-- Option Valid -->
-                                    <label class="inline-flex items-center gap-2 text-[13px] cursor-pointer"
+                                    <label class="inline-flex items-center gap-2 text-sm cursor-pointer"
                                            :class="statusVerifikasi === 'berkas_lengkap' ? 'opacity-60 cursor-not-allowed' : ''">
                                         <input type="radio" 
                                                :name="'dummy_status_mobile_' + '{{ $dokumen->id_dokumen }}'" 
@@ -211,7 +211,7 @@
                                     </label>
 
                                     <!-- Option Perlu Perbaikan -->
-                                    <label class="inline-flex items-center gap-2 text-[13px] cursor-pointer"
+                                    <label class="inline-flex items-center gap-2 text-sm cursor-pointer"
                                            :class="statusVerifikasi === 'berkas_lengkap' ? 'opacity-60 cursor-not-allowed' : ''">
                                         <input type="radio" 
                                                :name="'dummy_status_mobile_' + '{{ $dokumen->id_dokumen }}'" 
@@ -225,7 +225,7 @@
                             </div>
 
                             <div class="space-y-1.5">
-                                <span class="block text-xs font-bold text-gray-600 uppercase tracking-wider">Catatan Perbaikan</span>
+                                <span class="block text-xs font-bold text-gray-400 uppercase tracking-wider">Catatan Perbaikan</span>
                                 <x-text-input tag="textarea" name="dokumen[{{ $dokumen->id_dokumen }}][catatan_mobile]" rows="2" 
                                           class="w-full resize-none"
                                           placeholder="Tuliskan alasan penolakan atau catatan perbaikan..."

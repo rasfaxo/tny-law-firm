@@ -15,7 +15,7 @@
         <!-- Scripts -->
         @vite(['resources/css/app.css', 'resources/js/app.js'])
     </head>
-    <body class="font-sans antialiased text-[#0F172A] bg-background-light">
+    <body class="font-sans antialiased text-navy-dark bg-background-light">
         <div class="h-screen flex overflow-hidden" x-data="{ sidebarOpen: false }">
             <!-- Sidebar Navigation -->
             @include('layouts.navigation')

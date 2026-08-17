@@ -15,7 +15,7 @@
         <!-- Scripts -->
         @vite(['resources/css/app.css', 'resources/js/app.js'])
     </head>
-    <body class="font-sans antialiased text-[#0F172A] bg-background-light">
+    <body class="font-sans antialiased text-navy-dark bg-background-light">
         <div class="min-h-screen grid grid-cols-1 lg:grid-cols-12">
             <!-- Left Side: Navy Banner (Hidden on Mobile) -->
             <div class="hidden lg:flex lg:col-span-5 bg-navy-dark text-white p-12 flex-col justify-between relative overflow-hidden">

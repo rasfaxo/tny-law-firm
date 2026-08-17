@@ -37,7 +37,7 @@
                 @endif
             </div>
 
-            <x-primary-button class="bg-[#1E3A8A] hover:bg-navy-dark text-white rounded-xl py-2 px-6">
+            <x-primary-button class="py-2 px-6">
                 {{ __('Masuk') }}
             </x-primary-button>
         </div>

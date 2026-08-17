@@ -48,7 +48,7 @@
         </div>
 
         <div class="flex items-center justify-end mt-8">
-            <x-primary-button class="bg-[#1E3A8A] hover:bg-navy-dark text-white rounded-xl py-2 px-6 w-full justify-center">
+            <x-primary-button class="py-2 px-6 w-full justify-center">
                 {{ __('Daftar Akun') }}
             </x-primary-button>
         </div>

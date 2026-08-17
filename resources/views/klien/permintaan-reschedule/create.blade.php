@@ -35,28 +35,28 @@
 
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-y-6 gap-x-12">
                     <div>
-                        <span class="block text-[11px] font-bold text-gray-400 uppercase tracking-wider mb-2">KODE BOOKING</span>
+                        <span class="block text-xs font-bold text-gray-400 uppercase tracking-wider mb-2">KODE BOOKING</span>
                         <span class="block text-sm font-bold text-navy-dark mt-1 font-mono">BK-{{ str_pad($bookingKonsultasi->id_booking, 3, '0', STR_PAD_LEFT) }}</span>
                     </div>
 
                     <div>
-                        <span class="block text-[11px] font-bold text-gray-400 uppercase tracking-wider mb-2">METODE KONSULTASI</span>
+                        <span class="block text-xs font-bold text-gray-400 uppercase tracking-wider mb-2">METODE KONSULTASI</span>
                         <div class="mt-1">
-                            <span class="inline-flex px-3 py-1 rounded-full text-[11px] font-bold border {{ $bookingKonsultasi->metode_konsultasi === 'online' ? 'bg-blue-50 text-blue-700 border-blue-200' : 'bg-gray-100 text-gray-700 border-gray-200' }}">
+                            <span class="inline-flex px-3 py-1 rounded-full text-xs font-bold border {{ $bookingKonsultasi->metode_konsultasi === 'online' ? 'bg-blue-50 text-blue-700 border-blue-200' : 'bg-gray-100 text-gray-700 border-gray-200' }}">
                                 {{ ucfirst($bookingKonsultasi->metode_konsultasi) }}
                             </span>
                         </div>
                     </div>
 
                     <div>
-                        <span class="block text-[11px] font-bold text-gray-400 uppercase tracking-wider mb-2">TANGGAL & WAKTU</span>
+                        <span class="block text-xs font-bold text-gray-400 uppercase tracking-wider mb-2">TANGGAL & WAKTU</span>
                         <span class="block text-sm font-bold text-navy-dark mt-1">
                             {{ $jadwal?->tanggal?->translatedFormat('l, d M Y') ?? '-' }} • {{ $jadwal ? substr((string) $jadwal->waktu_mulai, 0, 5) . '–' . substr((string) $jadwal->waktu_selesai, 0, 5) : '-' }} WIB
                         </span>
                     </div>
 
                     <div>
-                        <span class="block text-[11px] font-bold text-gray-400 uppercase tracking-wider mb-2">STATUS BOOKING</span>
+                        <span class="block text-xs font-bold text-gray-400 uppercase tracking-wider mb-2">STATUS BOOKING</span>
                         <div class="mt-1">
                             <x-status-badge :status="$bookingKonsultasi->status_booking" />
                         </div>
@@ -74,10 +74,10 @@
                 <x-divider />
 
                 <div>
-                    <x-input-label for="alasan_reschedule" :value="__('ALASAN RESCHEDULE')" class="!text-[11px] !font-bold !text-gray-400 !uppercase !tracking-wider mb-2" />
-                    <textarea id="alasan_reschedule" name="alasan_reschedule" rows="4" required class="w-full bg-white border-[#E2E8F0] focus:border-accent-blue focus:ring focus:ring-accent-blue/20 rounded-xl text-sm placeholder-gray-400 transition shadow-sm resize-none" placeholder="Contoh: Terdapat kendala mendadak pada jadwal yang sudah ditentukan. Mohon penjadwalan ulang ke waktu yang lebih memungkinkan.">{{ old('alasan_reschedule') }}</textarea>
+                    <x-input-label for="alasan_reschedule" :value="__('Alasan Reschedule')" />
+                    <x-text-input tag="textarea" id="alasan_reschedule" name="alasan_reschedule" rows="4" required class="resize-none" placeholder="Contoh: Terdapat kendala mendadak pada jadwal yang sudah ditentukan. Mohon penjadwalan ulang ke waktu yang lebih memungkinkan.">{{ old('alasan_reschedule') }}</x-text-input>
                     <x-input-error :messages="$errors->get('alasan_reschedule')" class="mt-2" />
-                    <p class="mt-2 text-[11px] font-medium text-gray-400">* Wajib diisi. Alasan yang jelas membantu Admin memproses permintaan Anda lebih cepat.</p>
+                    <p class="mt-2 text-xs font-medium text-gray-400">* Wajib diisi. Alasan yang jelas membantu Admin memproses permintaan Anda lebih cepat.</p>
                 </div>
             </x-card>
 
@@ -94,11 +94,11 @@
                     <table class="min-w-full divide-y divide-[#E2E8F0]">
                         <thead class="bg-[#F8FAFC]">
                             <tr>
-                                <th class="px-6 py-4 text-left text-[11px] font-bold text-gray-400 uppercase tracking-wider w-16"></th>
-                                <th class="px-6 py-4 text-left text-[11px] font-bold text-gray-400 uppercase tracking-wider">Tanggal</th>
-                                <th class="px-6 py-4 text-left text-[11px] font-bold text-gray-400 uppercase tracking-wider">Jam Mulai</th>
-                                <th class="px-6 py-4 text-left text-[11px] font-bold text-gray-400 uppercase tracking-wider">Jam Selesai</th>
-                                <th class="px-6 py-4 text-left text-[11px] font-bold text-gray-400 uppercase tracking-wider">Ketersediaan</th>
+                                <th class="px-6 py-4 text-left text-xs font-bold text-gray-400 uppercase tracking-wider w-16"></th>
+                                <th class="px-6 py-4 text-left text-xs font-bold text-gray-400 uppercase tracking-wider">Tanggal</th>
+                                <th class="px-6 py-4 text-left text-xs font-bold text-gray-400 uppercase tracking-wider">Jam Mulai</th>
+                                <th class="px-6 py-4 text-left text-xs font-bold text-gray-400 uppercase tracking-wider">Jam Selesai</th>
+                                <th class="px-6 py-4 text-left text-xs font-bold text-gray-400 uppercase tracking-wider">Ketersediaan</th>
                             </tr>
                         </thead>
                         <tbody class="bg-white divide-y divide-[#F1F5F9]">
@@ -120,7 +120,7 @@
                                         {{ substr((string) $slot->waktu_selesai, 0, 5) }} WIB
                                     </td>
                                     <td class="px-6 py-4 whitespace-nowrap">
-                                        <span class="inline-flex bg-green-50 text-green-700 font-bold text-[11px] px-3 py-1 rounded-full border border-green-200">Tersedia</span>
+                                        <span class="inline-flex bg-green-50 text-green-700 font-bold text-xs px-3 py-1 rounded-full border border-green-200">Tersedia</span>
                                     </td>
                                 </tr>
                             @empty

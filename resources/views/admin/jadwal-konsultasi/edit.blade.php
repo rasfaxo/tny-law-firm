@@ -44,11 +44,10 @@
 
                 <div>
                     <x-input-label for="status_slot" :value="__('Status Slot')" />
-                    <select id="status_slot" name="status_slot" required
-                        class="w-full bg-[#F8FAFC] border-[#E2E8F0] focus:border-accent-blue focus:ring focus:ring-accent-blue/20 rounded-xl text-sm transition shadow-sm h-11 px-4 mt-1">
+                    <x-select id="status_slot" name="status_slot" required class="mt-1">
                         <option value="tersedia" @selected(old('status_slot', $jadwalKonsultasi->status_slot) === 'tersedia')>Tersedia</option>
                         <option value="tidak_aktif" @selected(old('status_slot', $jadwalKonsultasi->status_slot) === 'tidak_aktif')>Tidak Aktif</option>
-                    </select>
+                    </x-select>
                     @if($errors->has('status_slot'))
                         <div class="text-rose-600 text-xs font-semibold mt-1.5">{{ $errors->first('status_slot') }}</div>
                     @endif

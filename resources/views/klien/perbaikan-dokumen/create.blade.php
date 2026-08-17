@@ -42,12 +42,12 @@
 
                         <div class="border-b border-[#F1F5F9]/60 pb-4 flex justify-between items-center">
                             <span class="text-xs font-bold text-gray-400 uppercase tracking-wider">Status Dokumen</span>
-                            <span class="bg-red-50 text-red-700 text-xxs font-bold px-2.5 py-0.5 rounded-full border border-red-200 uppercase tracking-wider">Perlu Perbaikan</span>
+                            <span class="bg-red-50 text-red-700 text-xs font-extrabold px-2.5 py-0.5 rounded-full border border-red-200 uppercase tracking-wider">Perlu Perbaikan</span>
                         </div>
 
                         <!-- Catatan perbaikan -->
                         <div class="bg-amber-50/50 border border-amber-200 p-4 rounded-xl space-y-1">
-                            <span class="block text-xxs font-bold text-amber-800 uppercase tracking-wider">Catatan Perbaikan dari Staf Legal</span>
+                            <span class="block text-xs font-bold text-amber-800 uppercase tracking-wider">Catatan Perbaikan dari Staf Legal</span>
                             <p class="text-xs text-amber-800/90 leading-relaxed whitespace-pre-line">{{ $catatanVerifikasi->isi_catatan }}</p>
                         </div>
                     </div>
@@ -74,9 +74,9 @@
 
                         <!-- Dropzone input file -->
                         <div class="space-y-4">
-                            <label for="file" class="block text-xs font-bold text-gray-600 uppercase tracking-wider">File Dokumen Pengganti</label>
+                            <x-input-label for="file" :value="__('File Dokumen Pengganti')" />
                             
-                            <div class="border-2 border-dashed border-[#E2E8F0] hover:border-accent-blue rounded-2xl p-8 bg-[#F8FAFC]/50 text-center transition cursor-pointer relative group">
+                            <div class="border-2 border-dashed border-[#E2E8F0] hover:border-accent-blue rounded-xl p-8 bg-[#F8FAFC]/50 text-center transition cursor-pointer relative group">
                                 <input id="file" name="file" type="file" accept=".pdf,.jpg,.jpeg,.png,application/pdf,image/jpeg,image/png" class="absolute inset-0 opacity-0 cursor-pointer z-10" required onchange="updateFileName(this)">
                                 
                                 <svg class="mx-auto h-10 w-10 text-gray-400 group-hover:text-accent-blue transition" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -85,7 +85,7 @@
                                 
                                 <p id="upload-instruction" class="mt-3 text-sm font-bold text-navy-dark group-hover:text-accent-blue transition">Pilih file untuk diunggah</p>
                                 <p id="file-name-display" class="mt-2 text-xs text-accent-blue font-bold hidden"></p>
-                                <p class="mt-1 text-xxs text-gray-400 font-medium">Format: PDF, JPG, JPEG, PNG (Maksimal 5 MB)</p>
+                                <p class="mt-1 text-xs text-gray-400 font-medium">Format: PDF, JPG, JPEG, PNG (Maksimal 5 MB)</p>
                             </div>
                             <x-input-error class="mt-2" :messages="$errors->get('file')" />
                         </div>

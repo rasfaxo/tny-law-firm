@@ -41,17 +41,17 @@
 
                     <div>
                         <x-input-label for="status_akun" value="Status Akun" />
-                        <select id="status_akun" name="status_akun" class="mt-1 block w-full bg-[#F8FAFC] border-[#E2E8F0] focus:border-accent-blue focus:ring focus:ring-accent-blue/20 rounded-xl text-sm transition shadow-sm" required>
+                        <x-select id="status_akun" name="status_akun" class="mt-1 block w-full" required>
                             <option value="aktif" @selected(old('status_akun', $klien->status_akun) === 'aktif')>Aktif</option>
                             <option value="nonaktif" @selected(old('status_akun', $klien->status_akun) === 'nonaktif')>Nonaktif</option>
-                        </select>
+                        </x-select>
                         <x-input-error class="mt-2" :messages="$errors->get('status_akun')" />
                     </div>
 
                     <div class="flex items-center justify-end gap-3 pt-4 border-t border-[#F1F5F9]">
-                        <a href="{{ route('admin.klien.show', $klien) }}" class="text-sm font-semibold text-gray-500 hover:text-navy-dark transition">
+                        <x-secondary-button href="{{ route('admin.klien.show', $klien) }}" tag="a">
                             {{ __('Batal') }}
-                        </a>
+                        </x-secondary-button>
                         <x-primary-button x-bind:disabled="isSubmitting" x-bind:class="{ 'opacity-70 cursor-not-allowed': isSubmitting }">
                             <span x-show="!isSubmitting">Simpan Perubahan</span>
                             <span x-show="isSubmitting" class="flex items-center gap-2" style="display: none;">

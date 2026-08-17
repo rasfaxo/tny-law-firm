@@ -53,39 +53,29 @@
                         <div class="pt-6 space-y-6">
                             <!-- Kategori Perkara -->
                             <div class="space-y-2">
-                                <label for="id_kategori" class="block text-xs font-bold text-gray-600 uppercase tracking-wider">Kategori Perkara</label>
-                                <div class="relative">
-                                    <select id="id_kategori" name="id_kategori" required 
-                                            class="block w-full bg-[#F8FAFC] border-[#E2E8F0] focus:border-accent-blue focus:ring focus:ring-accent-blue/20 rounded-xl text-sm placeholder-gray-400 transition shadow-sm h-11 px-4 appearance-none">
-                                        <option value="">Pilih kategori perkara</option>
-                                        @foreach ($kategoriPerkara as $kategori)
-                                            <option value="{{ $kategori->id_kategori }}" @selected(old('id_kategori') == $kategori->id_kategori)>
-                                                {{ $kategori->nama_kategori }}
-                                            </option>
-                                        @endforeach
-                                    </select>
-                                    <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-4">
-                                        <svg class="h-4 w-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
-                                        </svg>
-                                    </div>
-                                </div>
+                                <x-input-label for="id_kategori" :value="__('Kategori Perkara')" />
+                                <x-select id="id_kategori" name="id_kategori" required>
+                                    <option value="">Pilih kategori perkara</option>
+                                    @foreach ($kategoriPerkara as $kategori)
+                                        <option value="{{ $kategori->id_kategori }}" @selected(old('id_kategori') == $kategori->id_kategori)>
+                                            {{ $kategori->nama_kategori }}
+                                        </option>
+                                    @endforeach
+                                </x-select>
                                 <x-input-error class="mt-1" :messages="$errors->get('id_kategori')" />
                             </div>
 
                             <!-- Judul Perkara -->
                             <div class="space-y-2">
-                                <label for="judul_perkara" class="block text-xs font-bold text-gray-600 uppercase tracking-wider">Judul Perkara</label>
-                                <input type="text" name="judul_perkara" id="judul_perkara" value="{{ old('judul_perkara') }}" placeholder="Masukkan judul perkara" required 
-                                       class="block w-full bg-[#F8FAFC] border-[#E2E8F0] focus:border-accent-blue focus:ring focus:ring-accent-blue/20 rounded-xl text-sm placeholder-gray-400 transition shadow-sm h-11 px-4">
+                                <x-input-label for="judul_perkara" :value="__('Judul Perkara')" />
+                                <x-text-input type="text" name="judul_perkara" id="judul_perkara" :value="old('judul_perkara')" placeholder="Masukkan judul perkara" required />
                                 <x-input-error class="mt-1" :messages="$errors->get('judul_perkara')" />
                             </div>
 
                             <!-- Kronologi Perkara -->
                             <div class="space-y-2">
-                                <label for="kronologi" class="block text-xs font-bold text-gray-600 uppercase tracking-wider">Kronologi Perkara</label>
-                                <textarea id="kronologi" name="kronologi" rows="6" placeholder="Tuliskan kronologi perkara secara ringkas dan jelas" required 
-                                          class="block w-full bg-[#F8FAFC] border-[#E2E8F0] focus:border-accent-blue focus:ring focus:ring-accent-blue/20 rounded-xl text-sm placeholder-gray-400 transition shadow-sm px-4 py-3 resize-none">{{ old('kronologi') }}</textarea>
+                                <x-input-label for="kronologi" :value="__('Kronologi Perkara')" />
+                                <x-text-input tag="textarea" id="kronologi" name="kronologi" rows="6" placeholder="Tuliskan kronologi perkara secara ringkas dan jelas" required class="resize-none">{{ old('kronologi') }}</x-text-input>
                                 <x-input-error class="mt-1" :messages="$errors->get('kronologi')" />
                             </div>
                         </div>
@@ -121,28 +111,20 @@
 
                                 <!-- Jenis Dokumen -->
                                 <div class="space-y-2">
-                                    <label :for="'jenis_dokumen_' + index" class="block text-xs font-bold text-gray-600 uppercase tracking-wider">Jenis Dokumen <span class="text-red-500">*</span></label>
-                                    <div class="relative">
-                                        <select :name="'dokumen[' + index + '][jenis_dokumen]'" :id="'jenis_dokumen_' + index" required 
-                                                class="block w-full bg-white border-[#E2E8F0] focus:border-accent-blue focus:ring focus:ring-accent-blue/20 rounded-xl text-sm placeholder-gray-400 transition shadow-sm h-11 px-4 appearance-none">
-                                            <option value="">Pilih jenis dokumen</option>
-                                            <option value="ktp">KTP</option>
-                                            <option value="kk">Kartu Keluarga</option>
-                                            <option value="surat_kuasa">Surat Kuasa</option>
-                                            <option value="bukti_transfer">Bukti Transfer</option>
-                                            <option value="dokumen_lainnya">Dokumen Lainnya</option>
-                                        </select>
-                                        <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-4">
-                                            <svg class="h-4 w-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
-                                            </svg>
-                                        </div>
-                                    </div>
+                                    <label :for="'jenis_dokumen_' + index" class="block text-xs font-bold text-gray-400 uppercase tracking-wider">Jenis Dokumen <span class="text-red-500">*</span></label>
+                                    <x-select :name="'dokumen[' + index + '][jenis_dokumen]'" :id="'jenis_dokumen_' + index" required>
+                                        <option value="">Pilih jenis dokumen</option>
+                                        <option value="ktp">KTP</option>
+                                        <option value="kk">Kartu Keluarga</option>
+                                        <option value="surat_kuasa">Surat Kuasa</option>
+                                        <option value="bukti_transfer">Bukti Transfer</option>
+                                        <option value="dokumen_lainnya">Dokumen Lainnya</option>
+                                    </x-select>
                                 </div>
 
                                 <!-- Upload File -->
                                 <div class="space-y-2">
-                                    <label class="block text-xs font-bold text-gray-600 uppercase tracking-wider">Upload File <span class="text-red-500">*</span></label>
+                                    <label class="block text-xs font-bold text-gray-400 uppercase tracking-wider">Upload File <span class="text-red-500">*</span></label>
                                     <div class="border-2 border-dashed border-[#E2E8F0] hover:border-accent-blue rounded-xl p-6 bg-white text-center transition cursor-pointer relative group">
                                         <input type="file" :name="'dokumen[' + index + '][file_dokumen]'" accept=".pdf,.jpg,.jpeg,.png" required class="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10" @change="updateFileName($event.target, index)">
                                         
@@ -159,7 +141,7 @@
                         </template>
 
                         <button type="button" @click="addDokumen()" x-show="dokumenList.length < 5 && dokumenList[dokumenList.length - 1].fileName !== ''" 
-                                class="w-full flex justify-center items-center gap-2 py-3 border-2 border-dashed border-[#1e3a8a] text-[#1e3a8a] hover:bg-blue-50 rounded-xl font-bold text-sm transition">
+                                class="w-full flex justify-center items-center gap-2 py-3 border-2 border-dashed border-accent-blue text-accent-blue hover:bg-blue-50 rounded-xl font-bold text-sm transition">
                             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
                             </svg>
@@ -180,27 +162,24 @@
                 </div>
                 
                 <div class="flex items-center gap-3 w-full md:w-auto shrink-0 justify-end">
-                    <a href="{{ route('klien.pra-pendaftaran.index') }}" 
-                       class="bg-white border border-[#E2E8F0] hover:bg-gray-50 text-gray-700 font-bold text-sm px-6 py-2.5 rounded-xl transition shadow-sm w-full md:w-auto text-center">
+                    <x-secondary-button href="{{ route('klien.pra-pendaftaran.index') }}" tag="a" class="w-full md:w-auto">
                         Batal
-                    </a>
-                    <button type="submit" 
-                            :disabled="isSubmitting"
-                            class="bg-[#1e3a8a] hover:bg-blue-900 text-white font-bold text-sm px-6 py-2.5 rounded-xl transition shadow-md shadow-blue-900/20 flex items-center justify-center gap-2 w-full md:w-auto whitespace-nowrap disabled:opacity-50 disabled:cursor-not-allowed">
+                    </x-secondary-button>
+                    <x-primary-button type="submit" ::disabled="isSubmitting" class="w-full md:w-auto whitespace-nowrap">
                         <span x-show="!isSubmitting" class="flex items-center gap-2">
                             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8" />
                             </svg>
                             Kirim Pengajuan
                         </span>
-                        <span x-show="isSubmitting" class="flex items-center gap-2">
+                        <span x-show="isSubmitting" class="flex items-center gap-2" style="display: none;">
                             <svg class="animate-spin h-4 w-4 text-white" fill="none" viewBox="0 0 24 24">
                                 <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
                                 <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
                             </svg>
                             Mengirim...
                         </span>
-                    </button>
+                    </x-primary-button>
                 </div>
             </x-card>
         </form>

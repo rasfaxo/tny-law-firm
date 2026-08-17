@@ -71,7 +71,7 @@
             <div class="shrink-0 flex items-center">
                 @if ($isBerkasLengkap && !$bookingAktif)
                     <!-- Enabled Pilih Jadwal -->
-                    <a href="{{ route('klien.booking-konsultasi.create', $praPendaftaranPerkara) }}" class="bg-[#1e3a8a] hover:bg-blue-900 text-white font-bold text-sm px-6 py-3 rounded-xl transition shadow-md shadow-blue-900/20 inline-flex items-center justify-center gap-2 w-full sm:w-auto">
+                    <a href="{{ route('klien.booking-konsultasi.create', $praPendaftaranPerkara) }}" class="bg-navy-primary hover:bg-navy-dark text-white font-bold text-sm px-6 py-3 rounded-xl transition shadow-md shadow-blue-900/20 inline-flex items-center justify-center gap-2 w-full sm:w-auto">
                         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
                         </svg>
@@ -443,20 +443,20 @@
                             <div class="flex gap-4 items-start relative">
                                 <!-- Marker & Line -->
                                 <div class="flex flex-col items-center">
-                                    <div class="w-6 h-6 rounded-full bg-[#1E3A8A] border-4 border-blue-50 flex items-center justify-center shrink-0 z-10">
+                                    <div class="w-6 h-6 rounded-full bg-navy-primary border-4 border-blue-50 flex items-center justify-center shrink-0 z-10">
                                         <div class="w-1.5 h-1.5 bg-white rounded-full"></div>
                                     </div>
                                     @if (!$isLast)
-                                        <div class="w-0.5 bg-[#1E3A8A]/30 h-full min-h-[40px] absolute top-6 bottom-0 left-[11px]"></div>
+                                        <div class="w-0.5 bg-navy-primary/30 h-full min-h-[40px] absolute top-6 bottom-0 left-[11px]"></div>
                                     @endif
                                 </div>
                                 
                                 <!-- Content -->
                                 <div class="pb-8">
-                                    <p class="font-semibold text-[13px] text-navy-dark">
+                                    <p class="font-semibold text-sm text-navy-dark">
                                         {{ ucwords(str_replace('_', ' ', $riwayat->status)) }}
                                     </p>
-                                    <p class="text-[11px] text-gray-400 mt-1">
+                                    <p class="text-xs text-gray-400 mt-1">
                                         {{ $riwayat->keterangan ?? 'Tercatat oleh sistem' }} • {{ $riwayat->created_at?->format('d M Y H:i') ?? '-' }}
                                     </p>
                                 </div>
@@ -478,11 +478,11 @@
                         </div>
                         <div class="space-y-3">
                             <div>
-                                <span class="block text-xxs font-bold text-gray-400 uppercase tracking-wider">Tanggal Periksa</span>
+                                <span class="block text-xs font-bold text-gray-400 uppercase tracking-wider">Tanggal Periksa</span>
                                 <span class="block text-xs font-semibold text-navy-dark mt-0.5">{{ $verifikasiTerakhir->tanggal_verifikasi?->format('d M Y • H:i') ?? '-' }} WIB</span>
                             </div>
                             <div>
-                                <span class="block text-xxs font-bold text-gray-400 uppercase tracking-wider">Catatan Umum</span>
+                                <span class="block text-xs font-bold text-gray-400 uppercase tracking-wider">Catatan Umum</span>
                                 <p class="text-xs text-gray-600 bg-gray-50/50 p-3 rounded-xl border border-gray-100 mt-1 leading-relaxed whitespace-pre-line italic">
                                     "{{ $verifikasiTerakhir->catatan_verifikasi_umum ?? 'Berkas diperiksa.' }}"
                                 </p>

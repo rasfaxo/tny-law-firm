@@ -37,12 +37,12 @@
             @endif
 
             <!-- 1. Hero Card: Title, Status Badges, & Actions -->
-            <div class="bg-white border border-[#e2e8f0] rounded-[16px] p-6 shadow-sm flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+            <div class="bg-white border border-[#E2E8F0] rounded-xl p-6 shadow-sm flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
                 <div class="space-y-2">
-                    <h2 class="text-[18px] font-bold text-[#0f172a] leading-snug">
+                    <h2 class="text-xl font-bold text-navy-dark leading-snug">
                         BK-{{ str_pad($bookingKonsultasi->id_booking, 3, '0', STR_PAD_LEFT) }} — {{ $pengajuan?->judul_perkara ?? 'Konsultasi Perkara' }}
                     </h2>
-                    <p class="text-[13px] text-[#64748b] leading-normal">
+                    <p class="text-sm text-gray-500 leading-normal">
                         @if ($bookingKonsultasi->status_booking === 'selesai')
                             Booking konsultasi ini telah selesai dilaksanakan.
                         @elseif ($bookingKonsultasi->status_booking === 'dibatalkan')
@@ -61,18 +61,18 @@
 
                 <div class="flex flex-wrap items-center gap-2.5 shrink-0 self-start md:self-center">
                     @if ($canConfirm)
-                        <button @click="showForm = true" type="button" class="bg-[#1e3a8a] hover:bg-blue-900 text-white rounded-[14px] px-5 py-2.5 text-[13px] font-semibold transition shadow-sm inline-flex items-center gap-2">
+                        <x-primary-button @click="showForm = true" type="button">
                             <span>{{ $statusKonfirmasi === 'terkonfirmasi' ? __('Perbarui Konfirmasi') : __('Konfirmasi Konsultasi') }}</span>
-                        </button>
+                        </x-primary-button>
                     @endif
 
                     @if ($canComplete)
                         <form method="POST" action="{{ route('admin.booking-konsultasi.selesai', $bookingKonsultasi) }}">
                             @csrf
                             @method('PATCH')
-                            <button type="submit" onclick="return confirm('Apakah Anda yakin sesi konsultasi telah selesai? Status tidak dapat dikembalikan.')" class="bg-white border border-[#e2e8f0] hover:bg-gray-50 text-[#334155] rounded-[14px] px-5 py-2.5 text-[13px] font-semibold transition shadow-sm">
+                            <x-secondary-button type="submit" onclick="return confirm('Apakah Anda yakin sesi konsultasi telah selesai? Status tidak dapat dikembalikan.')">
                                 {{ __('Tandai Selesai') }}
-                            </button>
+                            </x-secondary-button>
                         </form>
                     @endif
                 </div>
@@ -81,51 +81,51 @@
             <!-- 2. Middle 3-Column Info Cards Grid -->
             <div class="grid grid-cols-1 md:grid-cols-3 gap-5">
                 <!-- Card 1: Informasi Klien -->
-                <div class="bg-white border border-[#e2e8f0] rounded-[16px] p-5 sm:p-6 shadow-sm flex flex-col justify-between">
+                <div class="bg-white border border-[#E2E8F0] rounded-xl p-5 sm:p-6 shadow-sm flex flex-col justify-between">
                     <div>
-                        <div class="border-b border-[#f1f5f9] pb-3 mb-4">
-                            <h3 class="text-[14px] font-bold text-[#0f172a]">Informasi Klien</h3>
+                        <div class="border-b border-[#F1F5F9] pb-3 mb-4">
+                            <h3 class="text-sm font-bold text-navy-dark">Informasi Klien</h3>
                         </div>
-                        <div class="space-y-3 divide-y divide-[#e2e8f0]/60">
+                        <div class="space-y-3 divide-y divide-[#E2E8F0]">
                             <div class="pt-0">
-                                <span class="text-[10px] font-semibold text-[#64748b] tracking-[0.25px] uppercase block">Nama</span>
-                                <p class="text-[13px] font-semibold text-[#0f172a] mt-0.5">{{ $bookingKonsultasi->klien?->nama ?? '-' }}</p>
+                                <span class="text-xs font-bold text-gray-400 uppercase tracking-wider block">Nama</span>
+                                <p class="text-sm font-semibold text-navy-dark mt-0.5">{{ $bookingKonsultasi->klien?->nama ?? '-' }}</p>
                             </div>
                             <div class="pt-3">
-                                <span class="text-[10px] font-semibold text-[#64748b] tracking-[0.25px] uppercase block">Email</span>
-                                <p class="text-[13px] font-semibold text-[#0f172a] mt-0.5 break-all">{{ $bookingKonsultasi->klien?->email ?? '-' }}</p>
+                                <span class="text-xs font-bold text-gray-400 uppercase tracking-wider block">Email</span>
+                                <p class="text-sm font-semibold text-navy-dark mt-0.5 break-all">{{ $bookingKonsultasi->klien?->email ?? '-' }}</p>
                             </div>
                             <div class="pt-3">
-                                <span class="text-[10px] font-semibold text-[#64748b] tracking-[0.25px] uppercase block">Nomor Telepon</span>
-                                <p class="text-[13px] font-semibold text-[#0f172a] mt-0.5">{{ $bookingKonsultasi->klien?->no_telepon ?? '-' }}</p>
+                                <span class="text-xs font-bold text-gray-400 uppercase tracking-wider block">Nomor Telepon</span>
+                                <p class="text-sm font-semibold text-navy-dark mt-0.5">{{ $bookingKonsultasi->klien?->no_telepon ?? '-' }}</p>
                             </div>
                         </div>
                     </div>
                 </div>
 
                 <!-- Card 2: Informasi Pengajuan -->
-                <div class="bg-white border border-[#e2e8f0] rounded-[16px] p-5 sm:p-6 shadow-sm flex flex-col justify-between">
+                <div class="bg-white border border-[#E2E8F0] rounded-xl p-5 sm:p-6 shadow-sm flex flex-col justify-between">
                     <div>
-                        <div class="border-b border-[#f1f5f9] pb-3 mb-4">
-                            <h3 class="text-[14px] font-bold text-[#0f172a]">Informasi Pengajuan</h3>
+                        <div class="border-b border-[#F1F5F9] pb-3 mb-4">
+                            <h3 class="text-sm font-bold text-navy-dark">Informasi Pengajuan</h3>
                         </div>
-                        <div class="space-y-3 divide-y divide-[#e2e8f0]/60">
+                        <div class="space-y-3 divide-y divide-[#E2E8F0]">
                             <div class="pt-0">
-                                <span class="text-[10px] font-semibold text-[#64748b] tracking-[0.25px] uppercase block">Kode Pengajuan</span>
-                                <p class="text-[13px] font-semibold font-mono text-[#1e3a8a] mt-0.5">
+                                <span class="text-xs font-bold text-gray-400 uppercase tracking-wider block">Kode Pengajuan</span>
+                                <p class="text-sm font-semibold font-mono text-accent-blue mt-0.5">
                                     {{ $pengajuan ? 'PP-' . str_pad($pengajuan->id_pendaftaran, 3, '0', STR_PAD_LEFT) : '-' }}
                                 </p>
                             </div>
                             <div class="pt-3">
-                                <span class="text-[10px] font-semibold text-[#64748b] tracking-[0.25px] uppercase block">Kategori Perkara</span>
-                                <p class="text-[13px] font-semibold text-[#0f172a] mt-0.5">{{ $pengajuan?->kategori?->nama_kategori ?? '-' }}</p>
+                                <span class="text-xs font-bold text-gray-400 uppercase tracking-wider block">Kategori Perkara</span>
+                                <p class="text-sm font-semibold text-navy-dark mt-0.5">{{ $pengajuan?->kategori?->nama_kategori ?? '-' }}</p>
                             </div>
                             <div class="pt-3">
-                                <span class="text-[10px] font-semibold text-[#64748b] tracking-[0.25px] uppercase block mb-1">Status Pengajuan</span>
+                                <span class="text-xs font-bold text-gray-400 uppercase tracking-wider block mb-1">Status Pengajuan</span>
                                 @if ($pengajuan?->status_pengajuan)
                                     <x-status-badge :status="$pengajuan->status_pengajuan" />
                                 @else
-                                    <span class="text-[13px] text-gray-400">-</span>
+                                    <span class="text-sm text-gray-400">-</span>
                                 @endif
                             </div>
                         </div>
@@ -133,16 +133,16 @@
                 </div>
 
                 <!-- Card 3: Jadwal dan Metode -->
-                <div class="bg-white border border-[#e2e8f0] rounded-[16px] p-5 sm:p-6 shadow-sm flex flex-col justify-between">
+                <div class="bg-white border border-[#E2E8F0] rounded-xl p-5 sm:p-6 shadow-sm flex flex-col justify-between">
                     <div>
-                        <div class="border-b border-[#f1f5f9] pb-3 mb-4">
-                            <h3 class="text-[14px] font-bold text-[#0f172a]">Jadwal dan Metode</h3>
+                        <div class="border-b border-[#F1F5F9] pb-3 mb-4">
+                            <h3 class="text-sm font-bold text-navy-dark">Jadwal dan Metode</h3>
                         </div>
-                        <div class="space-y-3 divide-y divide-[#e2e8f0]/60">
+                        <div class="space-y-3 divide-y divide-[#E2E8F0]">
                             <div class="pt-0">
-                                <span class="text-[10px] font-semibold text-[#64748b] tracking-[0.25px] uppercase block">Jadwal</span>
-                                <p class="text-[13px] font-semibold text-[#0f172a] mt-0.5">{{ $jadwal?->tanggal?->format('d M Y') ?? '-' }}</p>
-                                <p class="text-[12px] text-[#64748b] mt-0.5">
+                                <span class="text-xs font-bold text-gray-400 uppercase tracking-wider block">Jadwal</span>
+                                <p class="text-sm font-semibold text-navy-dark mt-0.5">{{ $jadwal?->tanggal?->format('d M Y') ?? '-' }}</p>
+                                <p class="text-xs text-gray-500 mt-0.5">
                                     {{ $jadwal ? substr((string) $jadwal->waktu_mulai, 0, 5) : '-' }}
                                     @if ($jadwal)
                                         – {{ substr((string) $jadwal->waktu_selesai, 0, 5) }} WIB
@@ -150,7 +150,7 @@
                                 </p>
                             </div>
                             <div class="pt-3">
-                                <span class="text-[10px] font-semibold text-[#64748b] tracking-[0.25px] uppercase block mb-1">Metode</span>
+                                <span class="text-xs font-bold text-gray-400 uppercase tracking-wider block mb-1">Metode</span>
                                 <x-status-badge :status="$metode" />
                             </div>
                         </div>
@@ -159,81 +159,81 @@
             </div>
 
             <!-- 3. Bottom Card: Informasi Konsultasi -->
-            <div class="bg-white border border-[#e2e8f0] rounded-[16px] p-6 shadow-sm space-y-6">
-                <div class="border-b border-[#f1f5f9] pb-4">
-                    <h3 class="text-[16px] font-bold text-[#0f172a]">Informasi Konsultasi</h3>
+            <div class="bg-white border border-[#E2E8F0] rounded-xl p-6 shadow-sm space-y-6">
+                <div class="border-b border-[#F1F5F9] pb-4">
+                    <h3 class="text-lg font-bold text-navy-dark">Informasi Konsultasi</h3>
                 </div>
 
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-x-12 gap-y-5">
                     <!-- Left Column -->
-                    <div class="space-y-4 divide-y divide-[#e2e8f0]/60">
+                    <div class="space-y-4 divide-y divide-[#E2E8F0]">
                         <div class="pt-0">
-                            <span class="text-[11px] font-semibold text-[#64748b] tracking-[0.275px] uppercase block mb-1">Status Booking</span>
+                            <span class="text-xs font-bold text-gray-400 uppercase tracking-wider block mb-1">Status Booking</span>
                             <x-status-badge :status="$bookingKonsultasi->status_booking" />
                         </div>
                         <div class="pt-3.5">
-                            <span class="text-[11px] font-semibold text-[#64748b] tracking-[0.275px] uppercase block mb-1">Status Konfirmasi</span>
+                            <span class="text-xs font-bold text-gray-400 uppercase tracking-wider block mb-1">Status Konfirmasi</span>
                             <x-status-badge :status="$statusKonfirmasi" />
                         </div>
                         <div class="pt-3.5">
-                            <span class="text-[11px] font-semibold text-[#64748b] tracking-[0.275px] uppercase block">Catatan Preferensi Klien</span>
-                            <p class="text-[13px] text-[#0f172a] mt-1 whitespace-pre-line leading-relaxed">
+                            <span class="text-xs font-bold text-gray-400 uppercase tracking-wider block">Catatan Preferensi Klien</span>
+                            <p class="text-sm text-navy-dark mt-1 whitespace-pre-line leading-relaxed">
                                 {{ $bookingKonsultasi->catatan_preferensi_klien ?: '–' }}
                             </p>
                         </div>
                         <div class="pt-3.5">
                             @if ($metode === 'online')
-                                <span class="text-[11px] font-semibold text-[#64748b] tracking-[0.275px] uppercase block">Link Konsultasi</span>
+                                <span class="text-xs font-bold text-gray-400 uppercase tracking-wider block">Link Konsultasi</span>
                                 <div class="mt-1">
                                     @if ($bookingKonsultasi->link_konsultasi)
-                                        <a href="{{ $bookingKonsultasi->link_konsultasi }}" class="text-[13px] font-semibold text-accent-blue hover:underline break-all inline-flex items-center gap-1.5" target="_blank" rel="noopener noreferrer">
+                                        <a href="{{ $bookingKonsultasi->link_konsultasi }}" class="text-sm font-semibold text-accent-blue hover:underline break-all inline-flex items-center gap-1.5" target="_blank" rel="noopener noreferrer">
                                             <svg class="h-4 w-4 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"></path>
                                             </svg>
                                             <span>{{ $bookingKonsultasi->link_konsultasi }}</span>
                                         </a>
                                     @else
-                                        <span class="text-[13px] font-semibold italic text-[#94a3b8]">Belum tersedia</span>
+                                        <span class="text-sm font-semibold italic text-gray-400">Belum tersedia</span>
                                     @endif
                                 </div>
                             @else
-                                <span class="text-[11px] font-semibold text-[#64748b] tracking-[0.275px] uppercase block">Lokasi Konsultasi</span>
+                                <span class="text-xs font-bold text-gray-400 uppercase tracking-wider block">Lokasi Konsultasi</span>
                                 <div class="mt-1">
                                     @if ($bookingKonsultasi->lokasi_konsultasi)
-                                        <p class="text-[13px] font-semibold text-[#0f172a]">{{ $bookingKonsultasi->lokasi_konsultasi }}</p>
+                                        <p class="text-sm font-semibold text-navy-dark">{{ $bookingKonsultasi->lokasi_konsultasi }}</p>
                                     @else
-                                        <span class="text-[13px] font-semibold italic text-[#94a3b8]">Belum tersedia</span>
+                                        <span class="text-sm font-semibold italic text-gray-400">Belum tersedia</span>
                                     @endif
                                 </div>
                             @endif
                         </div>
                         <div class="pt-3.5">
-                            <span class="text-[11px] font-semibold text-[#64748b] tracking-[0.275px] uppercase block">Catatan Konsultasi</span>
-                            <p class="text-[13px] text-[#0f172a] mt-1 whitespace-pre-line leading-relaxed">
+                            <span class="text-xs font-bold text-gray-400 uppercase tracking-wider block">Catatan Konsultasi</span>
+                            <p class="text-sm text-navy-dark mt-1 whitespace-pre-line leading-relaxed">
                                 {{ $bookingKonsultasi->catatan_konsultasi ?: '–' }}
                             </p>
                         </div>
                         <div class="pt-3.5">
-                            <span class="text-[11px] font-semibold text-[#64748b] tracking-[0.275px] uppercase block">Admin Konfirmasi</span>
-                            <p class="text-[13px] font-semibold text-[#0f172a] mt-1">{{ $bookingKonsultasi->adminKonfirmasi?->nama ?? '–' }}</p>
+                            <span class="text-xs font-bold text-gray-400 uppercase tracking-wider block">Admin Konfirmasi</span>
+                            <p class="text-sm font-semibold text-navy-dark mt-1">{{ $bookingKonsultasi->adminKonfirmasi?->nama ?? '–' }}</p>
                         </div>
                     </div>
 
                     <!-- Right Column -->
-                    <div class="space-y-4 divide-y divide-[#e2e8f0]/60">
+                    <div class="space-y-4 divide-y divide-[#E2E8F0]">
                         <div class="pt-0">
-                            <span class="text-[11px] font-semibold text-[#64748b] tracking-[0.275px] uppercase block mb-1">Metode Konsultasi</span>
+                            <span class="text-xs font-bold text-gray-400 uppercase tracking-wider block mb-1">Metode Konsultasi</span>
                             <x-status-badge :status="$metode" />
                         </div>
                         <div class="pt-3.5">
-                            <span class="text-[11px] font-semibold text-[#64748b] tracking-[0.275px] uppercase block">Tanggal Booking</span>
-                            <p class="text-[14px] font-bold text-[#0f172a] mt-1">
+                            <span class="text-xs font-bold text-gray-400 uppercase tracking-wider block">Tanggal Booking</span>
+                            <p class="text-sm font-bold text-navy-dark mt-1">
                                 {{ $bookingKonsultasi->tanggal_booking ? \Carbon\Carbon::parse($bookingKonsultasi->tanggal_booking)->format('d M Y, H.i') : ($bookingKonsultasi->created_at ? $bookingKonsultasi->created_at->format('d M Y, H.i') : '–') }}
                             </p>
                         </div>
                         <div class="pt-3.5">
-                            <span class="text-[11px] font-semibold text-[#64748b] tracking-[0.275px] uppercase block">Dikonfirmasi Pada</span>
-                            <p class="text-[13px] font-semibold text-[#0f172a] mt-1">
+                            <span class="text-xs font-bold text-gray-400 uppercase tracking-wider block">Dikonfirmasi Pada</span>
+                            <p class="text-sm font-semibold text-navy-dark mt-1">
                                 {{ $bookingKonsultasi->dikonfirmasi_pada ? $bookingKonsultasi->dikonfirmasi_pada->format('d M Y, H.i') : '–' }}
                             </p>
                         </div>
@@ -241,13 +241,13 @@
                 </div>
 
                 <!-- Alert Box: Syarat Tandai Selesai -->
-                <div class="bg-[#fffbeb] border border-[#f59e0b] border-l-4 rounded-[14px] p-4 text-[#92400e] flex items-start gap-3">
-                    <svg class="h-4 w-4 shrink-0 text-[#f59e0b] mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <div class="bg-amber-50 border border-amber-400 border-l-4 rounded-xl p-4 text-amber-900 flex items-start gap-3">
+                    <svg class="h-4 w-4 shrink-0 text-amber-500 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path>
                     </svg>
                     <div class="space-y-0.5">
-                        <h4 class="text-[13px] font-semibold text-[#92400e]">Syarat Tandai Selesai</h4>
-                        <p class="text-[12px] text-[#92400e]/90 leading-relaxed">
+                        <h4 class="text-sm font-semibold text-amber-900">Syarat Tandai Selesai</h4>
+                        <p class="text-xs text-amber-800 leading-relaxed">
                             Pastikan konsultasi sudah terlaksana sebelum menandai booking sebagai selesai.
                         </p>
                     </div>
@@ -256,7 +256,7 @@
 
             <!-- 4. Bottom Back Button -->
             <div class="flex justify-start pt-2">
-                <a href="{{ route('admin.booking-konsultasi.index') }}" class="bg-white border border-[#e2e8f0] hover:bg-gray-50 text-[#334155] rounded-[14px] px-5 py-2.5 text-[13px] font-semibold inline-flex items-center gap-2 transition shadow-sm">
+                <a href="{{ route('admin.booking-konsultasi.index') }}" class="bg-white border border-[#E2E8F0] hover:bg-gray-50 text-gray-700 rounded-xl px-5 py-2.5 text-sm font-semibold inline-flex items-center gap-2 transition shadow-sm">
                     <span>← Kembali ke Daftar Booking</span>
                 </a>
             </div>
@@ -268,13 +268,13 @@
         <!-- ============================================== -->
         <div x-show="showForm" x-cloak class="space-y-5">
             <!-- Top Info Banner -->
-            <div class="bg-[#eff6ff] border border-[#bfdbfe] border-l-4 border-l-[#1d4ed8] rounded-[14px] p-4 text-[#1e40af] flex items-start gap-3">
-                <svg class="h-4 w-4 shrink-0 text-[#1d4ed8] mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <div class="bg-blue-50 border border-blue-200 border-l-4 border-l-blue-600 rounded-xl p-4 text-blue-900 flex items-start gap-3">
+                <svg class="h-4 w-4 shrink-0 text-blue-600 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
                 </svg>
                 <div class="space-y-0.5">
-                    <h4 class="text-[13px] font-semibold text-[#1e40af]">Konfirmasi Detail Teknis</h4>
-                    <p class="text-[12px] text-[#1e40af]/90 leading-relaxed">
+                    <h4 class="text-sm font-semibold text-blue-900">Konfirmasi Detail Teknis</h4>
+                    <p class="text-xs text-blue-800 leading-relaxed">
                         Isi detail konsultasi sesuai metode yang dipilih Klien. Sistem tidak membuat integrasi rapat otomatis.
                     </p>
                 </div>
@@ -292,12 +292,12 @@
             @endif
 
             <!-- Focused Form Card -->
-            <div class="bg-white border border-[#e2e8f0] rounded-[16px] p-6 sm:p-8 shadow-sm space-y-6">
+            <div class="bg-white border border-[#E2E8F0] rounded-xl p-6 sm:p-8 shadow-sm space-y-6">
                 <div>
-                    <h3 class="text-[16px] font-bold text-[#0f172a]">
+                    <h3 class="text-lg font-bold text-navy-dark">
                         Metode {{ $metode === 'online' ? 'Online' : 'Offline' }}
                     </h3>
-                    <p class="text-[13px] text-[#64748b] mt-1">
+                    <p class="text-sm text-gray-500 mt-1">
                         {{ $metode === 'online' ? 'Link konsultasi diisi manual oleh Admin.' : 'Lokasi konsultasi diisi manual oleh Admin.' }}
                     </p>
                 </div>
@@ -308,18 +308,16 @@
 
                     @if ($metode === 'online')
                         <div>
-                            <label for="link_konsultasi" class="block text-[10px] font-semibold text-[#64748b] tracking-[0.25px] uppercase mb-2">Link Konsultasi <span class="text-rose-500">*</span></label>
-                            <input id="link_konsultasi" name="link_konsultasi" type="url" value="{{ old('link_konsultasi', $bookingKonsultasi->link_konsultasi) }}" required placeholder="Masukkan link konsultasi"
-                                class="w-full bg-[#f8fafc] border border-[#e2e8f0] focus:border-[#1e3a8a] focus:ring focus:ring-[#1e3a8a]/20 rounded-[12px] text-[13px] transition shadow-sm h-11 px-4 text-[#0f172a]">
+                            <x-input-label for="link_konsultasi" :value="__('Link Konsultasi')" />
+                            <x-text-input id="link_konsultasi" name="link_konsultasi" type="url" :value="old('link_konsultasi', $bookingKonsultasi->link_konsultasi)" required placeholder="Masukkan link konsultasi" class="w-full text-navy-dark" />
                             @if($errors->has('link_konsultasi'))
                                 <div class="text-rose-600 text-xs font-semibold mt-1.5">{{ $errors->first('link_konsultasi') }}</div>
                             @endif
                         </div>
                     @else
                         <div>
-                            <label for="lokasi_konsultasi" class="block text-[10px] font-semibold text-[#64748b] tracking-[0.25px] uppercase mb-2">Lokasi Konsultasi <span class="text-rose-500">*</span></label>
-                            <input id="lokasi_konsultasi" name="lokasi_konsultasi" type="text" value="{{ old('lokasi_konsultasi', $bookingKonsultasi->lokasi_konsultasi) }}" required placeholder="Masukkan lokasi konsultasi"
-                                class="w-full bg-[#f8fafc] border border-[#e2e8f0] focus:border-[#1e3a8a] focus:ring focus:ring-[#1e3a8a]/20 rounded-[12px] text-[13px] transition shadow-sm h-11 px-4 text-[#0f172a]">
+                            <x-input-label for="lokasi_konsultasi" :value="__('Lokasi Konsultasi')" />
+                            <x-text-input id="lokasi_konsultasi" name="lokasi_konsultasi" type="text" :value="old('lokasi_konsultasi', $bookingKonsultasi->lokasi_konsultasi)" required placeholder="Masukkan lokasi konsultasi" class="w-full text-navy-dark" />
                             @if($errors->has('lokasi_konsultasi'))
                                 <div class="text-rose-600 text-xs font-semibold mt-1.5">{{ $errors->first('lokasi_konsultasi') }}</div>
                             @endif
@@ -327,9 +325,8 @@
                     @endif
 
                     <div>
-                        <label for="catatan_konsultasi" class="block text-[10px] font-semibold text-[#64748b] tracking-[0.25px] uppercase mb-2">Catatan Admin</label>
-                        <textarea id="catatan_konsultasi" name="catatan_konsultasi" rows="4" placeholder="{{ $metode === 'online' ? 'Tuliskan catatan teknis untuk Klien...' : 'Tuliskan catatan lokasi atau instruksi hadir...' }}"
-                            class="w-full bg-[#f8fafc] border border-[#e2e8f0] focus:border-[#1e3a8a] focus:ring focus:ring-[#1e3a8a]/20 rounded-[12px] text-[13px] transition shadow-sm p-4 text-[#0f172a]">{{ old('catatan_konsultasi', $bookingKonsultasi->catatan_konsultasi) }}</textarea>
+                        <x-input-label for="catatan_konsultasi" :value="__('Catatan Admin')" />
+                        <x-text-input tag="textarea" id="catatan_konsultasi" name="catatan_konsultasi" rows="4" placeholder="{{ $metode === 'online' ? 'Tuliskan catatan teknis untuk Klien...' : 'Tuliskan catatan lokasi atau instruksi hadir...' }}" class="w-full text-navy-dark">{{ old('catatan_konsultasi', $bookingKonsultasi->catatan_konsultasi) }}</x-text-input>
                         @if($errors->has('catatan_konsultasi'))
                             <div class="text-rose-600 text-xs font-semibold mt-1.5">{{ $errors->first('catatan_konsultasi') }}</div>
                         @endif
@@ -337,29 +334,29 @@
 
                     @if ($metode === 'online')
                         <!-- Catatan Online Alert Box -->
-                        <div class="bg-[#fffbeb] border border-[#f59e0b] border-l-4 rounded-[14px] p-4 text-[#92400e] flex items-start gap-3">
-                            <svg class="h-4 w-4 shrink-0 text-[#f59e0b] mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <div class="bg-amber-50 border border-amber-400 border-l-4 rounded-xl p-4 text-amber-900 flex items-start gap-3">
+                            <svg class="h-4 w-4 shrink-0 text-amber-500 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path>
                             </svg>
                             <div class="space-y-0.5">
-                                <h4 class="text-[13px] font-semibold text-[#92400e]">Catatan Online</h4>
-                                <p class="text-[12px] text-[#92400e]/90 leading-relaxed">
+                                <h4 class="text-sm font-semibold text-amber-900">Catatan Online</h4>
+                                <p class="text-xs text-amber-800 leading-relaxed">
                                     Link konsultasi diisi manual oleh Admin. Tidak ada integrasi otomatis.
                                 </p>
                             </div>
                         </div>
                     @endif
 
-                    <div class="flex justify-end pt-4 border-t border-[#e2e8f0] gap-3">
-                        <button type="button" @click="showForm = false" class="bg-white border border-[#e2e8f0] hover:bg-gray-50 text-[#334155] rounded-[14px] px-5 py-2.5 text-[13px] font-semibold transition shadow-sm">
+                    <div class="flex justify-end pt-4 border-t border-[#E2E8F0] gap-3">
+                        <x-secondary-button type="button" @click="showForm = false">
                             {{ __('Batal') }}
-                        </button>
-                        <button type="submit" class="bg-[#1e3a8a] hover:bg-blue-900 text-white rounded-[14px] px-5 py-2.5 text-[13px] font-semibold transition shadow-sm inline-flex items-center gap-2">
+                        </x-secondary-button>
+                        <x-primary-button type="submit" class="gap-2">
                             <svg class="h-4 w-4 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
                             </svg>
                             <span>{{ __('Simpan Konfirmasi') }}</span>
-                        </button>
+                        </x-primary-button>
                     </div>
                 </form>
             </div>

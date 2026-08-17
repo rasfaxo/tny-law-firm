@@ -11,7 +11,7 @@
             <div class="absolute right-0 top-0 w-64 h-64 bg-white/5 rounded-full -mr-20 -mt-20 pointer-events-none"></div>
             
             <div class="space-y-2 max-w-2xl relative z-10">
-                <div class="bg-white/15 px-3 py-1 rounded-full text-xxs font-extrabold tracking-wider uppercase inline-block">
+                <div class="bg-white/15 px-3 py-1 rounded-full text-xs font-extrabold tracking-wider uppercase inline-block">
                     Admin Panel
                 </div>
                 <h3 class="font-extrabold text-xl sm:text-2xl tracking-tight">Selamat datang, {{ Auth::user()->nama }}</h3>
@@ -40,7 +40,7 @@
                     <span class="text-3xl font-extrabold text-navy-dark tracking-tight">{{ $statistics['Total Klien'] }}</span>
                 </div>
                 <div>
-                    <span class="block text-sm font-bold text-[#334155]">Total Klien</span>
+                    <span class="block text-sm font-bold text-navy-dark">Total Klien</span>
                     <span class="block text-xs text-gray-400">Akun klien aktif</span>
                 </div>
             </x-card>
@@ -56,7 +56,7 @@
                     <span class="text-3xl font-extrabold text-navy-dark tracking-tight">{{ $statistics['Total Staf Legal'] }}</span>
                 </div>
                 <div>
-                    <span class="block text-sm font-bold text-[#334155]">Total Staf Legal</span>
+                    <span class="block text-sm font-bold text-navy-dark">Total Staf Legal</span>
                     <span class="block text-xs text-gray-400">Akun staf legal</span>
                 </div>
             </x-card>
@@ -72,7 +72,7 @@
                     <span class="text-3xl font-extrabold text-navy-dark tracking-tight">{{ $statistics['Total Pengajuan'] }}</span>
                 </div>
                 <div>
-                    <span class="block text-sm font-bold text-[#334155]">Pra-Pendaftaran</span>
+                    <span class="block text-sm font-bold text-navy-dark">Pra-Pendaftaran</span>
                     <span class="block text-xs text-gray-400">Seluruh data pengajuan</span>
                 </div>
             </x-card>
@@ -88,7 +88,7 @@
                     <span class="text-3xl font-extrabold text-navy-dark tracking-tight">{{ $statistics['Jadwal Tersedia'] }}</span>
                 </div>
                 <div>
-                    <span class="block text-sm font-bold text-[#334155]">Jadwal Aktif</span>
+                    <span class="block text-sm font-bold text-navy-dark">Jadwal Aktif</span>
                     <span class="block text-xs text-gray-400">Slot jadwal tersedia</span>
                 </div>
             </x-card>
@@ -106,7 +106,7 @@
                 <div class="space-y-3">
                     <!-- Menunggu Verifikasi -->
                     <div class="bg-[#F8FAFC] border border-[#E2E8F0] rounded-xl px-4 py-3 flex justify-between items-center">
-                        <span class="bg-[#FEF9C3] border border-[#FDE68A] text-[#A16207] text-xxs font-extrabold px-3 py-1 rounded-full uppercase tracking-wider">
+                        <span class="bg-[#FEF9C3] border border-[#FDE68A] text-[#A16207] text-xs font-extrabold px-3 py-1 rounded-full uppercase tracking-wider">
                             Menunggu Verifikasi
                         </span>
                         <span class="text-lg font-extrabold text-navy-dark">{{ $statistics['Pengajuan Menunggu Verifikasi'] }}</span>
@@ -114,7 +114,7 @@
 
                     <!-- Berkas Tidak Lengkap -->
                     <div class="bg-[#F8FAFC] border border-[#E2E8F0] rounded-xl px-4 py-3 flex justify-between items-center">
-                        <span class="bg-[#FEE2E2] border border-[#FECACA] text-[#B91C1C] text-xxs font-extrabold px-3 py-1 rounded-full uppercase tracking-wider">
+                        <span class="bg-[#FEE2E2] border border-[#FECACA] text-[#B91C1C] text-xs font-extrabold px-3 py-1 rounded-full uppercase tracking-wider">
                             Berkas Tidak Lengkap
                         </span>
                         <span class="text-lg font-extrabold text-navy-dark">{{ $berkasTidakLengkap }}</span>
@@ -122,7 +122,7 @@
 
                     <!-- Berkas Lengkap -->
                     <div class="bg-[#F8FAFC] border border-[#E2E8F0] rounded-xl px-4 py-3 flex justify-between items-center">
-                        <span class="bg-[#DCFCE7] border border-[#BBF7D0] text-[#15803D] text-xxs font-extrabold px-3 py-1 rounded-full uppercase tracking-wider">
+                        <span class="bg-[#DCFCE7] border border-[#BBF7D0] text-[#15803D] text-xs font-extrabold px-3 py-1 rounded-full uppercase tracking-wider">
                             Berkas Lengkap
                         </span>
                         <span class="text-lg font-extrabold text-navy-dark">{{ $statistics['Pengajuan Berkas Lengkap'] }}</span>
@@ -130,7 +130,7 @@
 
                     <!-- Jadwal Dipilih -->
                     <div class="bg-[#F8FAFC] border border-[#E2E8F0] rounded-xl px-4 py-3 flex justify-between items-center">
-                        <span class="bg-[#DBEAFE] border border-[#BFDBFE] text-[#1D4ED8] text-xxs font-extrabold px-3 py-1 rounded-full uppercase tracking-wider">
+                        <span class="bg-[#DBEAFE] border border-[#BFDBFE] text-[#1D4ED8] text-xs font-extrabold px-3 py-1 rounded-full uppercase tracking-wider">
                             Jadwal Dipilih
                         </span>
                         <span class="text-lg font-extrabold text-navy-dark">{{ $statistics['Pengajuan Jadwal Dipilih'] }}</span>
@@ -146,7 +146,7 @@
                             <h3 class="font-bold text-navy-dark text-lg">Pra-Pendaftaran Terbaru</h3>
                             <p class="text-xs text-gray-400 mt-1">3 pengajuan terbaru dari klien.</p>
                         </div>
-                        <a href="{{ route('admin.laporan.pra-pendaftaran') }}" class="text-xs font-bold text-[#1D4ED8] hover:underline">
+                        <a href="{{ route('admin.laporan.pra-pendaftaran') }}" class="text-xs font-bold text-accent-blue hover:underline">
                             Lihat Semua &rarr;
                         </a>
                     </div>
@@ -155,25 +155,25 @@
                         <table class="min-w-full divide-y divide-[#E2E8F0]">
                             <thead class="bg-[#F8FAFC]">
                                 <tr>
-                                    <th class="px-4 py-3 text-left text-xxs font-bold text-gray-400 uppercase tracking-wider">Kode</th>
-                                    <th class="px-4 py-3 text-left text-xxs font-bold text-gray-400 uppercase tracking-wider">Klien</th>
-                                    <th class="px-4 py-3 text-left text-xxs font-bold text-gray-400 uppercase tracking-wider">Status</th>
-                                    <th class="px-4 py-3 text-right text-xxs font-bold text-gray-400 uppercase tracking-wider">Aksi</th>
+                                    <th class="px-6 py-4 text-left text-xs font-bold text-gray-400 uppercase tracking-wider">Kode</th>
+                                    <th class="px-6 py-4 text-left text-xs font-bold text-gray-400 uppercase tracking-wider">Klien</th>
+                                    <th class="px-6 py-4 text-left text-xs font-bold text-gray-400 uppercase tracking-wider">Status</th>
+                                    <th class="px-6 py-4 text-right text-xs font-bold text-gray-400 uppercase tracking-wider">Aksi</th>
                                 </tr>
                             </thead>
                             <tbody class="bg-white divide-y divide-[#E2E8F0]">
                                 @forelse ($pengajuanTerbaru->take(3) as $pengajuan)
                                     <tr>
-                                        <td class="px-4 py-3.5 whitespace-nowrap text-xs font-bold text-[#1E3A8A] font-mono">
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm font-bold text-[#1E3A8A] font-mono">
                                             PP-{{ str_pad($pengajuan->id_pendaftaran, 3, '0', STR_PAD_LEFT) }}
                                         </td>
-                                        <td class="px-4 py-3.5 whitespace-nowrap text-xs font-semibold text-[#334155]">
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm font-semibold text-navy-dark">
                                             {{ $pengajuan->klien?->nama ?? '-' }}
                                         </td>
-                                        <td class="px-4 py-3.5 whitespace-nowrap">
+                                        <td class="px-6 py-4 whitespace-nowrap">
                                             <x-status-badge :status="$pengajuan->status_pengajuan" />
                                         </td>
-                                        <td class="px-4 py-3.5 whitespace-nowrap text-right">
+                                        <td class="px-6 py-4 whitespace-nowrap text-right">
                                             <a href="{{ route('admin.laporan.pra-pendaftaran') }}" class="inline-flex items-center gap-1 text-xs font-bold text-accent-blue hover:underline transition">
                                                 <span>Detail</span>
                                                 <svg class="h-3 w-3 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -184,7 +184,7 @@
                                     </tr>
                                 @empty
                                     <tr>
-                                        <td colspan="4" class="px-4 py-8 text-center text-xs text-gray-400">
+                                        <td colspan="4" class="px-6 py-8 text-center text-sm text-gray-400">
                                             Belum ada pengajuan terbaru.
                                         </td>
                                     </tr>

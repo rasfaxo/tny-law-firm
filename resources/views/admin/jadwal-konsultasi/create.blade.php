@@ -41,9 +41,9 @@
                     </div>
                 </div>
 
-                <div class="bg-blue-50 border border-blue-200 text-[#1E3A8A] rounded-xl p-4 text-xs font-medium leading-relaxed">
+                <x-alert-banner type="info">
                     {{ __('Status slot baru otomatis tersedia. Sistem akan menolak jadwal yang bentrok dengan slot tersedia atau terisi pada tanggal yang sama.') }}
-                </div>
+                </x-alert-banner>
 
                 <div class="flex items-center justify-end gap-3 pt-4 border-t border-[#E2E8F0]">
                     <x-secondary-button href="{{ route('admin.jadwal-konsultasi.index') }}" tag="a">

@@ -12,13 +12,13 @@
                 <table class="min-w-full divide-y divide-[#E2E8F0]">
                     <thead class="bg-[#F8FAFC]">
                         <tr>
-                            <th class="px-6 py-4 text-left text-xxs font-bold text-gray-400 uppercase tracking-wider">Klien</th>
-                            <th class="px-6 py-4 text-left text-xxs font-bold text-gray-400 uppercase tracking-wider">Perkara</th>
-                            <th class="px-6 py-4 text-left text-xxs font-bold text-gray-400 uppercase tracking-wider">Jadwal Lama</th>
-                            <th class="px-6 py-4 text-left text-xxs font-bold text-gray-400 uppercase tracking-wider">Preferensi Baru</th>
-                            <th class="px-6 py-4 text-left text-xxs font-bold text-gray-400 uppercase tracking-wider">Status</th>
-                            <th class="px-6 py-4 text-left text-xxs font-bold text-gray-400 uppercase tracking-wider">Diajukan Pada</th>
-                            <th class="px-6 py-4 text-right text-xxs font-bold text-gray-400 uppercase tracking-wider">Aksi</th>
+                            <th class="px-6 py-4 text-left text-xs font-bold text-gray-400 uppercase tracking-wider">Klien</th>
+                            <th class="px-6 py-4 text-left text-xs font-bold text-gray-400 uppercase tracking-wider">Perkara</th>
+                            <th class="px-6 py-4 text-left text-xs font-bold text-gray-400 uppercase tracking-wider">Jadwal Lama</th>
+                            <th class="px-6 py-4 text-left text-xs font-bold text-gray-400 uppercase tracking-wider">Preferensi Baru</th>
+                            <th class="px-6 py-4 text-left text-xs font-bold text-gray-400 uppercase tracking-wider">Status</th>
+                            <th class="px-6 py-4 text-left text-xs font-bold text-gray-400 uppercase tracking-wider">Diajukan Pada</th>
+                            <th class="px-6 py-4 text-right text-xs font-bold text-gray-400 uppercase tracking-wider">Aksi</th>
                         </tr>
                     </thead>
                     <tbody class="bg-white divide-y divide-[#E2E8F0]">
@@ -34,11 +34,11 @@
                                 </td>
                                 <td class="px-6 py-4">
                                     <div class="font-bold text-navy-dark text-sm">{{ $pengajuan?->judul_perkara ?? '-' }}</div>
-                                    <div class="text-xxs text-gray-400 font-semibold mt-0.5">{{ $pengajuan?->kategori?->nama_kategori ?? '-' }}</div>
+                                    <div class="text-xs text-gray-400 font-semibold mt-0.5">{{ $pengajuan?->kategori?->nama_kategori ?? '-' }}</div>
                                 </td>
                                 <td class="px-6 py-4 whitespace-nowrap">
                                     <div class="font-bold text-navy-dark text-xs">{{ $jadwal?->tanggal?->format('d M Y') ?? '-' }}</div>
-                                    <div class="text-xxs text-gray-400 font-mono mt-0.5">
+                                    <div class="text-xs text-gray-400 font-mono mt-0.5">
                                         {{ $jadwal ? substr((string) $jadwal->waktu_mulai, 0, 5) : '-' }}
                                         @if ($jadwal)
                                             - {{ substr((string) $jadwal->waktu_selesai, 0, 5) }}
@@ -47,7 +47,7 @@
                                 </td>
                                 <td class="px-6 py-4">
                                     <div class="text-xs font-semibold text-gray-600 max-w-xs truncate">{{ $permintaan->preferensi_jadwal ?: '-' }}</div>
-                                    <div class="text-xxs text-gray-400 font-semibold uppercase tracking-wider mt-0.5">{{ $permintaan->preferensi_metode ?: 'Metode lama' }}</div>
+                                    <div class="text-xs text-gray-400 font-semibold uppercase tracking-wider mt-0.5">{{ $permintaan->preferensi_metode ?: 'Metode lama' }}</div>
                                 </td>
                                 <td class="px-6 py-4 whitespace-nowrap">
                                     <x-status-badge :status="$permintaan->status_reschedule" />

@@ -51,29 +51,29 @@
 
                     <div class="space-y-4 divide-y divide-[#E2E8F0]">
                         <div class="pt-0 flex flex-col md:flex-row md:justify-between md:items-center gap-2 py-3">
-                            <span class="text-xxs font-bold text-gray-400 uppercase tracking-wider">Tanggal</span>
+                            <span class="text-xs font-bold text-gray-400 uppercase tracking-wider">Tanggal</span>
                             <span class="text-sm font-semibold text-navy-dark">{{ $jadwalKonsultasi->tanggal?->format('d M Y') ?? '-' }}</span>
                         </div>
 
                         <div class="flex flex-col md:flex-row md:justify-between md:items-center gap-2 py-3">
-                            <span class="text-xxs font-bold text-gray-400 uppercase tracking-wider">Waktu</span>
+                            <span class="text-xs font-bold text-gray-400 uppercase tracking-wider">Waktu</span>
                             <span class="text-sm font-semibold text-navy-dark font-mono">
                                 {{ substr((string) $jadwalKonsultasi->waktu_mulai, 0, 5) }} - {{ substr((string) $jadwalKonsultasi->waktu_selesai, 0, 5) }}
                             </span>
                         </div>
 
                         <div class="flex flex-col md:flex-row md:justify-between md:items-center gap-2 py-3">
-                            <span class="text-xxs font-bold text-gray-400 uppercase tracking-wider">Status Slot</span>
+                            <span class="text-xs font-bold text-gray-400 uppercase tracking-wider">Status Slot</span>
                             <x-status-badge :status="$jadwalKonsultasi->status_slot" />
                         </div>
 
                         <div class="flex flex-col md:flex-row md:justify-between md:items-center gap-2 py-3">
-                            <span class="text-xxs font-bold text-gray-400 uppercase tracking-wider">Admin Pembuat</span>
+                            <span class="text-xs font-bold text-gray-400 uppercase tracking-wider">Admin Pembuat</span>
                             <span class="text-sm font-semibold text-navy-dark">{{ $jadwalKonsultasi->admin?->nama ?? '-' }}</span>
                         </div>
 
                         <div class="flex flex-col md:flex-row md:justify-between md:items-center gap-2 py-3">
-                            <span class="text-xxs font-bold text-gray-400 uppercase tracking-wider">Dibuat Pada</span>
+                            <span class="text-xs font-bold text-gray-400 uppercase tracking-wider">Dibuat Pada</span>
                             <span class="text-xs text-gray-500 font-semibold">{{ $jadwalKonsultasi->created_at?->format('d M Y H:i') ?? '-' }}</span>
                         </div>
                     </div>
@@ -92,12 +92,12 @@
                                 @csrf
                                 @method('PATCH')
                                 <div>
-                                    <x-input-label for="status_slot" :value="__('Ubah Status Slot')" class="text-xxs font-bold text-gray-400 uppercase tracking-wider mb-2" />
+                                    <x-input-label for="status_slot" :value="__('Ubah Status Slot')" class="text-xs font-bold text-gray-400 uppercase tracking-wider mb-2" />
                                     <div class="flex flex-col sm:flex-row gap-3">
-                                        <select name="status_slot" class="w-full sm:flex-1 bg-[#F8FAFC] border-[#E2E8F0] focus:border-accent-blue focus:ring focus:ring-accent-blue/20 rounded-xl text-sm font-semibold text-navy-dark transition shadow-sm h-11 px-4">
+                                        <x-select name="status_slot" class="w-full sm:flex-1 font-semibold text-navy-dark">
                                             <option value="tersedia" @selected($jadwalKonsultasi->status_slot === 'tersedia')>{{ __('Tersedia') }}</option>
                                             <option value="tidak_aktif" @selected($jadwalKonsultasi->status_slot === 'tidak_aktif')>{{ __('Tidak Aktif') }}</option>
-                                        </select>
+                                        </x-select>
                                         <x-primary-button class="justify-center sm:w-auto w-full px-6 whitespace-nowrap">{{ __('Ubah Status') }}</x-primary-button>
                                     </div>
                                 </div>

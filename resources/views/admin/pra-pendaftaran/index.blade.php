@@ -6,10 +6,9 @@
             <form method="GET" action="{{ route('admin.pra-pendaftaran.index') }}" class="grid grid-cols-1 md:grid-cols-12 gap-4 items-end">
                 <!-- Search Input -->
                 <div class="md:col-span-3 space-y-1.5">
-                    <label for="search" class="block text-xs font-bold text-gray-400 uppercase tracking-wider">Cari Pengajuan</label>
+                    <x-input-label for="search" :value="__('Cari Pengajuan')" class="mb-0" />
                     <div class="relative">
-                        <input type="text" name="search" id="search" value="{{ request('search') }}" placeholder="Judul, kode, klien..." 
-                               class="block w-full bg-[#F8FAFC] border-[#E2E8F0] focus:border-accent-blue focus:ring focus:ring-accent-blue/20 rounded-xl text-sm placeholder-gray-400 transition shadow-sm h-11 pl-4 pr-10 py-2">
+                        <x-text-input type="text" name="search" id="search" :value="request('search')" placeholder="Judul, kode, klien..." class="pr-10" />
                         @if(request('search'))
                             <a href="{{ route('admin.pra-pendaftaran.index', request()->except('search')) }}" class="absolute inset-y-0 right-0 pr-3 flex items-center text-gray-400 hover:text-gray-600">
                                 <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -22,35 +21,33 @@
 
                 <!-- Tanggal Mulai -->
                 <div class="md:col-span-2 space-y-1.5">
-                    <label for="tanggal_mulai" class="block text-xs font-bold text-gray-400 uppercase tracking-wider">Tgl Mulai</label>
-                    <input type="date" name="tanggal_mulai" id="tanggal_mulai" value="{{ request('tanggal_mulai') }}" 
-                           class="block w-full bg-[#F8FAFC] border-[#E2E8F0] focus:border-accent-blue focus:ring focus:ring-accent-blue/20 rounded-xl text-sm transition shadow-sm h-11 px-4 py-2 text-gray-700">
+                    <x-input-label for="tanggal_mulai" :value="__('Tgl Mulai')" class="mb-0" />
+                    <x-text-input type="date" name="tanggal_mulai" id="tanggal_mulai" :value="request('tanggal_mulai')" />
                 </div>
 
                 <!-- Tanggal Selesai -->
                 <div class="md:col-span-2 space-y-1.5">
-                    <label for="tanggal_selesai" class="block text-xs font-bold text-gray-400 uppercase tracking-wider">Tgl Selesai</label>
-                    <input type="date" name="tanggal_selesai" id="tanggal_selesai" value="{{ request('tanggal_selesai') }}" 
-                           class="block w-full bg-[#F8FAFC] border-[#E2E8F0] focus:border-accent-blue focus:ring focus:ring-accent-blue/20 rounded-xl text-sm transition shadow-sm h-11 px-4 py-2 text-gray-700">
+                    <x-input-label for="tanggal_selesai" :value="__('Tgl Selesai')" class="mb-0" />
+                    <x-text-input type="date" name="tanggal_selesai" id="tanggal_selesai" :value="request('tanggal_selesai')" />
                 </div>
 
                 <!-- Kategori Filter -->
                 <div class="md:col-span-2 space-y-1.5">
-                    <label for="kategori" class="block text-xs font-bold text-gray-400 uppercase tracking-wider">Kategori</label>
-                    <select name="kategori" id="kategori" class="block w-full bg-[#F8FAFC] border-[#E2E8F0] focus:border-accent-blue focus:ring focus:ring-accent-blue/20 rounded-xl text-sm transition shadow-sm h-11 px-4 py-2 text-gray-700">
+                    <x-input-label for="kategori" :value="__('Kategori')" class="mb-0" />
+                    <x-select name="kategori" id="kategori">
                         <option value="">Semua</option>
                         @foreach($kategoriList as $kategori)
                             <option value="{{ $kategori->id_kategori }}" {{ request('kategori') == $kategori->id_kategori ? 'selected' : '' }}>
                                 {{ $kategori->nama_kategori }}
                             </option>
                         @endforeach
-                    </select>
+                    </x-select>
                 </div>
 
                 <!-- Status Filter -->
                 <div class="md:col-span-2 space-y-1.5">
-                    <label for="status" class="block text-xs font-bold text-gray-400 uppercase tracking-wider">Status</label>
-                    <select name="status" id="status" class="block w-full bg-[#F8FAFC] border-[#E2E8F0] focus:border-accent-blue focus:ring focus:ring-accent-blue/20 rounded-xl text-sm transition shadow-sm h-11 px-4 py-2 text-gray-700">
+                    <x-input-label for="status" :value="__('Status')" class="mb-0" />
+                    <x-select name="status" id="status">
                         <option value="">Semua</option>
                         <option value="menunggu_verifikasi" {{ request('status') === 'menunggu_verifikasi' ? 'selected' : '' }}>Menunggu Verifikasi</option>
                         <option value="berkas_tidak_lengkap" {{ request('status') === 'berkas_tidak_lengkap' ? 'selected' : '' }}>Berkas Tidak Lengkap</option>
@@ -58,12 +55,12 @@
                         <option value="berkas_lengkap" {{ request('status') === 'berkas_lengkap' ? 'selected' : '' }}>Berkas Lengkap</option>
                         <option value="jadwal_dipilih" {{ request('status') === 'jadwal_dipilih' ? 'selected' : '' }}>Jadwal Dipilih</option>
                         <option value="selesai" {{ request('status') === 'selesai' ? 'selected' : '' }}>Selesai</option>
-                    </select>
+                    </x-select>
                 </div>
 
                 <!-- Submit Buttons -->
                 <div class="md:col-span-1 flex items-center justify-end h-11">
-                    <button type="submit" class="bg-[#1e3a8a] hover:bg-blue-900 text-white font-bold text-sm h-full w-full rounded-xl flex items-center justify-center transition shadow-md shadow-blue-900/20" title="Terapkan Filter">
+                    <button type="submit" class="bg-navy-primary hover:bg-navy-dark text-white font-bold text-sm h-full w-full rounded-xl flex items-center justify-center transition shadow-md shadow-blue-900/20" title="Terapkan Filter">
                         <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
                         </svg>

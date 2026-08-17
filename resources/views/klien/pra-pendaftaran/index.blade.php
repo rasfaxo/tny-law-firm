@@ -31,8 +31,7 @@
                 <!-- Status Filter -->
                 <div class="md:col-span-4 space-y-1.5">
                     <x-input-label for="status" :value="__('Filter Status')" />
-                    <select name="status" id="status" onchange="this.form.submit()" 
-                            class="block w-full bg-[#F8FAFC] border-[#E2E8F0] focus:border-accent-blue focus:ring focus:ring-accent-blue/20 rounded-xl text-sm transition shadow-sm h-11 pl-4 py-2 mt-1">
+                    <x-select name="status" id="status" onchange="this.form.submit()" class="mt-1">
                         <option value="">Semua Status</option>
                         <option value="menunggu_verifikasi" {{ request('status') === 'menunggu_verifikasi' ? 'selected' : '' }}>Menunggu Verifikasi</option>
                         <option value="berkas_tidak_lengkap" {{ request('status') === 'berkas_tidak_lengkap' ? 'selected' : '' }}>Berkas Tidak Lengkap</option>
@@ -40,7 +39,7 @@
                         <option value="berkas_lengkap" {{ request('status') === 'berkas_lengkap' ? 'selected' : '' }}>Berkas Lengkap</option>
                         <option value="jadwal_dipilih" {{ request('status') === 'jadwal_dipilih' ? 'selected' : '' }}>Jadwal Dipilih</option>
                         <option value="selesai" {{ request('status') === 'selesai' ? 'selected' : '' }}>Selesai</option>
-                    </select>
+                    </x-select>
                 </div>
 
                 <!-- Submit / Clear Buttons -->

@@ -30,7 +30,7 @@
                 <x-card class="p-0 overflow-hidden">
                     <div class="p-6 space-y-4">
                         <div class="flex items-center gap-4 border-b border-[#F1F5F9] pb-4">
-                            <div class="h-12 w-12 rounded-full bg-blue-50 text-[#1e3a8a] border border-blue-100 flex items-center justify-center font-bold text-lg shrink-0">
+                            <div class="h-12 w-12 rounded-full bg-blue-50 text-accent-blue border border-blue-100 flex items-center justify-center font-bold text-lg shrink-0">
                                 {{ strtoupper(substr($klien->nama, 0, 1)) }}
                             </div>
                             <div>
@@ -91,7 +91,7 @@
                                            class="mt-1 block w-full bg-[#F8FAFC] border-[#E2E8F0] focus:border-accent-blue focus:ring focus:ring-accent-blue/20 rounded-xl text-sm transition shadow-sm">
                                     <x-input-error :messages="$errors->get('password')" class="mt-1" />
                                 </div>
-                                <button type="submit" class="w-full bg-[#1e3a8a] hover:bg-blue-900 text-white font-bold text-xs h-10 rounded-xl flex items-center justify-center transition shadow-md shadow-blue-900/20" x-bind:disabled="isSubmitting" x-bind:class="{ 'opacity-70 cursor-not-allowed': isSubmitting }">
+                                <button type="submit" class="w-full bg-navy-primary hover:bg-navy-dark text-white font-bold text-xs h-10 rounded-xl flex items-center justify-center transition shadow-md shadow-blue-900/20" x-bind:disabled="isSubmitting" x-bind:class="{ 'opacity-70 cursor-not-allowed': isSubmitting }">
                                     <span x-show="!isSubmitting">Update Password</span>
                                     <span x-show="isSubmitting" class="flex items-center gap-2">
                                         <svg class="animate-spin h-4 w-4 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">

@@ -5,7 +5,7 @@
         <x-card class="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-4">
             <div class="space-y-3">
                 <div class="flex flex-wrap items-center gap-2">
-                    <span class="inline-flex bg-blue-50 text-[#1e3a8a] text-xs font-bold font-mono px-3 py-1.5 rounded-lg">
+                    <span class="inline-flex bg-blue-50 text-accent-blue text-xs font-bold font-mono px-3 py-1.5 rounded-lg">
                         PP-{{ str_pad($praPendaftaranPerkara->id_pendaftaran, 3, '0', STR_PAD_LEFT) }}
                     </span>
                     <x-status-badge :status="$praPendaftaranPerkara->status_pengajuan" />
@@ -39,32 +39,32 @@
 
                 <div class="space-y-0 divide-y divide-[#E2E8F0]">
                     <div class="grid grid-cols-1 md:grid-cols-3 gap-2 py-4 pt-0">
-                        <div class="text-xxs font-bold text-gray-400 uppercase tracking-wider flex items-center">Nama</div>
+                        <div class="text-xs font-bold text-gray-400 uppercase tracking-wider flex items-center">Nama</div>
                         <div class="text-sm font-semibold text-navy-dark md:col-span-2">{{ $praPendaftaranPerkara->klien?->nama ?? '-' }}</div>
                     </div>
 
                     <div class="grid grid-cols-1 md:grid-cols-3 gap-2 py-4">
-                        <div class="text-xxs font-bold text-gray-400 uppercase tracking-wider flex items-center">Email</div>
+                        <div class="text-xs font-bold text-gray-400 uppercase tracking-wider flex items-center">Email</div>
                         <div class="text-sm font-semibold text-navy-dark md:col-span-2">{{ $praPendaftaranPerkara->klien?->email ?? '-' }}</div>
                     </div>
 
                     <div class="grid grid-cols-1 md:grid-cols-3 gap-2 py-4">
-                        <div class="text-xxs font-bold text-gray-400 uppercase tracking-wider flex items-center">Telepon</div>
+                        <div class="text-xs font-bold text-gray-400 uppercase tracking-wider flex items-center">Telepon</div>
                         <div class="text-sm font-semibold text-navy-dark font-mono md:col-span-2">{{ $praPendaftaranPerkara->klien?->no_telepon ?? '-' }}</div>
                     </div>
 
                     <div class="grid grid-cols-1 md:grid-cols-3 gap-2 py-4">
-                        <div class="text-xxs font-bold text-gray-400 uppercase tracking-wider flex items-center">Alamat</div>
+                        <div class="text-xs font-bold text-gray-400 uppercase tracking-wider flex items-center">Alamat</div>
                         <div class="text-sm font-semibold text-navy-dark md:col-span-2 leading-relaxed">{{ $profil?->alamat ?? '-' }}</div>
                     </div>
 
                     <div class="grid grid-cols-1 md:grid-cols-3 gap-2 py-4">
-                        <div class="text-xxs font-bold text-gray-400 uppercase tracking-wider flex items-center">NIK</div>
+                        <div class="text-xs font-bold text-gray-400 uppercase tracking-wider flex items-center">NIK</div>
                         <div class="text-sm font-semibold text-navy-dark font-mono md:col-span-2">{{ $profil?->nik ?? '-' }}</div>
                     </div>
 
                     <div class="grid grid-cols-1 md:grid-cols-3 gap-2 py-4 pb-0">
-                        <div class="text-xxs font-bold text-gray-400 uppercase tracking-wider flex items-center">Pekerjaan</div>
+                        <div class="text-xs font-bold text-gray-400 uppercase tracking-wider flex items-center">Pekerjaan</div>
                         <div class="text-sm font-semibold text-navy-dark md:col-span-2">{{ $profil?->pekerjaan ?? '-' }}</div>
                     </div>
                 </div>
@@ -79,29 +79,29 @@
 
                 <div class="space-y-0 divide-y divide-[#E2E8F0]">
                     <div class="grid grid-cols-1 md:grid-cols-3 gap-2 py-4 pt-0">
-                        <div class="text-xxs font-bold text-gray-400 uppercase tracking-wider flex items-center">Kategori</div>
+                        <div class="text-xs font-bold text-gray-400 uppercase tracking-wider flex items-center">Kategori</div>
                         <div class="text-sm font-semibold text-navy-dark md:col-span-2">{{ $praPendaftaranPerkara->kategori?->nama_kategori ?? '-' }}</div>
                     </div>
 
                     <div class="grid grid-cols-1 md:grid-cols-3 gap-2 py-4">
-                        <div class="text-xxs font-bold text-gray-400 uppercase tracking-wider flex items-center">Judul</div>
+                        <div class="text-xs font-bold text-gray-400 uppercase tracking-wider flex items-center">Judul</div>
                         <div class="text-sm font-semibold text-navy-dark md:col-span-2">{{ $praPendaftaranPerkara->judul_perkara }}</div>
                     </div>
 
                     <div class="grid grid-cols-1 md:grid-cols-3 gap-2 py-4">
-                        <div class="text-xxs font-bold text-gray-400 uppercase tracking-wider flex items-center">Tanggal</div>
+                        <div class="text-xs font-bold text-gray-400 uppercase tracking-wider flex items-center">Tanggal</div>
                         <div class="text-sm font-semibold text-navy-dark md:col-span-2">{{ $praPendaftaranPerkara->tanggal_pengajuan?->format('d M Y') ?? '-' }}</div>
                     </div>
 
                     <div class="grid grid-cols-1 md:grid-cols-3 gap-2 py-4">
-                        <div class="text-xxs font-bold text-gray-400 uppercase tracking-wider flex items-center">Status</div>
+                        <div class="text-xs font-bold text-gray-400 uppercase tracking-wider flex items-center">Status</div>
                         <div class="text-sm font-semibold text-navy-dark md:col-span-2">
                             {{ Str::title(str_replace('_', ' ', $praPendaftaranPerkara->status_pengajuan)) }}
                         </div>
                     </div>
 
                     <div class="grid grid-cols-1 md:grid-cols-3 gap-2 py-4 pb-0">
-                        <div class="text-xxs font-bold text-gray-400 uppercase tracking-wider mt-1">Kronologi</div>
+                        <div class="text-xs font-bold text-gray-400 uppercase tracking-wider mt-1">Kronologi</div>
                         <div class="text-sm text-gray-600 leading-relaxed bg-[#F8FAFC] border border-[#E2E8F0] p-4 rounded-xl w-full text-left whitespace-pre-line md:col-span-2">
                             {{ $praPendaftaranPerkara->kronologi }}
                         </div>
@@ -121,10 +121,10 @@
                 <table class="min-w-full divide-y divide-[#E2E8F0]">
                     <thead class="bg-[#F8FAFC]">
                         <tr>
-                            <th class="px-6 py-4 text-left text-xxs font-bold text-gray-400 uppercase tracking-wider">Nama</th>
-                            <th class="px-6 py-4 text-left text-xxs font-bold text-gray-400 uppercase tracking-wider">Jenis</th>
-                            <th class="px-6 py-4 text-left text-xxs font-bold text-gray-400 uppercase tracking-wider">Status</th>
-                            <th class="px-6 py-4 text-right text-xxs font-bold text-gray-400 uppercase tracking-wider">Aksi</th>
+                            <th class="px-6 py-4 text-left text-xs font-bold text-gray-400 uppercase tracking-wider">Nama</th>
+                            <th class="px-6 py-4 text-left text-xs font-bold text-gray-400 uppercase tracking-wider">Jenis</th>
+                            <th class="px-6 py-4 text-left text-xs font-bold text-gray-400 uppercase tracking-wider">Status</th>
+                            <th class="px-6 py-4 text-right text-xs font-bold text-gray-400 uppercase tracking-wider">Aksi</th>
                         </tr>
                     </thead>
                     <tbody class="bg-white divide-y divide-[#E2E8F0]">
@@ -132,7 +132,7 @@
                             <tr class="hover:bg-[#F8FAFC] transition duration-150">
                                 <td class="px-6 py-4">
                                     <div class="font-bold text-navy-dark text-sm">{{ $dokumen->nama_dokumen }}</div>
-                                    <div class="text-xxs text-gray-400 mt-0.5 font-mono">Diupload: {{ $dokumen->created_at?->format('d M Y H:i') }}</div>
+                                    <div class="text-xs text-gray-400 mt-0.5 font-mono">Diupload: {{ $dokumen->created_at?->format('d M Y H:i') }}</div>
                                 </td>
                                 <td class="px-6 py-4 whitespace-nowrap text-xs text-gray-500 font-mono">
                                     {{ strtoupper(pathinfo($dokumen->file_path, PATHINFO_EXTENSION)) ?: 'PDF' }}
@@ -152,13 +152,13 @@
                                             default => 'Terkirim',
                                         };
                                     @endphp
-                                    <span class="inline-flex rounded-full bg-{{ $docStatusColor }}-100 border border-{{ $docStatusColor }}-200 px-2.5 py-0.5 text-xxs font-extrabold uppercase tracking-wider text-{{ $docStatusColor }}-800">
+                                    <span class="inline-flex rounded-full bg-{{ $docStatusColor }}-100 border border-{{ $docStatusColor }}-200 px-2.5 py-0.5 text-xs font-extrabold uppercase tracking-wider text-{{ $docStatusColor }}-800">
                                         {{ $docStatusLabel }}
                                     </span>
                                 </td>
                                 <td class="px-6 py-4 whitespace-nowrap text-right">
                                     <a href="{{ route('admin.dokumen.show', $dokumen) }}" target="_blank" 
-                                        class="inline-flex items-center gap-1.5 text-xs font-bold text-[#1D4ED8] hover:underline transition">
+                                        class="inline-flex items-center gap-1.5 text-xs font-bold text-accent-blue hover:underline transition">
                                         <span>Lihat Dokumen</span>
                                         <svg class="h-3.5 w-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"></path>
@@ -174,6 +174,7 @@
                             </tr>
                         @endforelse
                     </tbody>
+                </table>
             </div>
         </x-card>
     </div>

@@ -57,15 +57,15 @@
 
             <div class="grid grid-cols-1 sm:grid-cols-3 gap-6">
                 <div>
-                    <span class="block text-[11px] font-bold text-gray-400 uppercase tracking-wider mb-2">STATUS BOOKING</span>
+                    <span class="block text-xs font-bold text-gray-400 uppercase tracking-wider mb-2">STATUS BOOKING</span>
                     <x-status-badge :status="$bookingKonsultasi->status_booking" />
                 </div>
                 <div>
-                    <span class="block text-[11px] font-bold text-gray-400 uppercase tracking-wider mb-2">STATUS KONFIRMASI</span>
+                    <span class="block text-xs font-bold text-gray-400 uppercase tracking-wider mb-2">STATUS KONFIRMASI</span>
                     <x-status-badge :status="$bookingKonsultasi->status_konfirmasi_konsultasi ?? 'menunggu_konfirmasi'" />
                 </div>
                 <div>
-                    <span class="block text-[11px] font-bold text-gray-400 uppercase tracking-wider mb-2">METODE KONSULTASI</span>
+                    <span class="block text-xs font-bold text-gray-400 uppercase tracking-wider mb-2">METODE KONSULTASI</span>
                     <span class="inline-flex px-3 py-1 rounded-full text-xs font-bold border 
                         {{ $bookingKonsultasi->metode_konsultasi === 'online' ? 'bg-blue-50 text-blue-700 border-blue-200' : 'bg-gray-100 text-gray-700 border-gray-200' }}">
                         {{ ucfirst($bookingKonsultasi->metode_konsultasi) }}
@@ -82,8 +82,8 @@
 
             <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
                 <!-- Tanggal -->
-                <div class="bg-[#F8FAFC] rounded-2xl p-5 border border-gray-100">
-                    <span class="block text-[11px] font-bold text-gray-400 uppercase tracking-wider mb-2">TANGGAL</span>
+                <div class="bg-[#F8FAFC] rounded-xl p-5 border border-gray-100">
+                    <span class="block text-xs font-bold text-gray-400 uppercase tracking-wider mb-2">TANGGAL</span>
                     <div class="flex items-center gap-3 text-sm font-bold text-navy-dark">
                         <svg class="h-5 w-5 text-accent-blue" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
@@ -93,8 +93,8 @@
                 </div>
 
                 <!-- Jam Mulai -->
-                <div class="bg-[#F8FAFC] rounded-2xl p-5 border border-gray-100">
-                    <span class="block text-[11px] font-bold text-gray-400 uppercase tracking-wider mb-2">JAM MULAI</span>
+                <div class="bg-[#F8FAFC] rounded-xl p-5 border border-gray-100">
+                    <span class="block text-xs font-bold text-gray-400 uppercase tracking-wider mb-2">JAM MULAI</span>
                     <div class="flex items-center gap-3 text-sm font-bold text-navy-dark">
                         <svg class="h-5 w-5 text-accent-blue" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
@@ -104,8 +104,8 @@
                 </div>
 
                 <!-- Jam Selesai -->
-                <div class="bg-[#F8FAFC] rounded-2xl p-5 border border-gray-100">
-                    <span class="block text-[11px] font-bold text-gray-400 uppercase tracking-wider mb-2">JAM SELESAI</span>
+                <div class="bg-[#F8FAFC] rounded-xl p-5 border border-gray-100">
+                    <span class="block text-xs font-bold text-gray-400 uppercase tracking-wider mb-2">JAM SELESAI</span>
                     <div class="flex items-center gap-3 text-sm font-bold text-navy-dark">
                         <svg class="h-5 w-5 text-accent-blue" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
@@ -128,7 +128,7 @@
             <div class="divide-y divide-[#F1F5F9] -my-4">
                 <!-- Link / Lokasi -->
                 <div class="grid grid-cols-1 sm:grid-cols-[200px_1fr] items-start gap-2 sm:gap-6 py-4">
-                    <span class="text-[11px] font-bold text-gray-400 uppercase tracking-wider pt-1">
+                    <span class="text-xs font-bold text-gray-400 uppercase tracking-wider pt-1">
                         {{ $bookingKonsultasi->metode_konsultasi === 'online' ? 'LINK KONSULTASI' : 'LOKASI PERTEMUAN' }}
                     </span>
                     <div>
@@ -153,7 +153,7 @@
 
                 <!-- Catatan Admin -->
                 <div class="grid grid-cols-1 sm:grid-cols-[200px_1fr] items-start gap-2 sm:gap-6 py-4">
-                    <span class="text-[11px] font-bold text-gray-400 uppercase tracking-wider pt-1">CATATAN ADMIN</span>
+                    <span class="text-xs font-bold text-gray-400 uppercase tracking-wider pt-1">CATATAN ADMIN</span>
                     <p class="text-sm font-medium text-navy-dark leading-relaxed whitespace-pre-line">
                         {{ $bookingKonsultasi->catatan_konsultasi ?: '-' }}
                     </p>
@@ -171,7 +171,7 @@
             <x-divider />
 
             <div class="grid grid-cols-1 sm:grid-cols-[200px_1fr] items-start gap-2 sm:gap-6">
-                <span class="text-[11px] font-bold text-gray-400 uppercase tracking-wider pt-1">CATATAN PREFERENSI</span>
+                <span class="text-xs font-bold text-gray-400 uppercase tracking-wider pt-1">CATATAN PREFERENSI</span>
                 <div class="bg-[#F8FAFC] border border-[#E2E8F0] p-5 rounded-xl">
                     <p class="text-sm text-navy-dark font-medium leading-relaxed whitespace-pre-line">
                         {{ $bookingKonsultasi->catatan_preferensi_klien ?: 'Klien tidak menyertakan preferensi khusus.' }}

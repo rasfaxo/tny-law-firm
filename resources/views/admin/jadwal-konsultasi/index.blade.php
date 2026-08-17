@@ -37,11 +37,11 @@
                 <table class="min-w-full divide-y divide-[#E2E8F0]">
                     <thead class="bg-[#F8FAFC]">
                         <tr>
-                            <th class="px-6 py-4 text-left text-xxs font-bold text-gray-400 uppercase tracking-wider">Tanggal</th>
-                            <th class="px-6 py-4 text-left text-xxs font-bold text-gray-400 uppercase tracking-wider">Waktu</th>
-                            <th class="px-6 py-4 text-left text-xxs font-bold text-gray-400 uppercase tracking-wider">Status</th>
-                            <th class="px-6 py-4 text-left text-xxs font-bold text-gray-400 uppercase tracking-wider">Pembuat</th>
-                            <th class="px-6 py-4 text-right text-xxs font-bold text-gray-400 uppercase tracking-wider">Aksi</th>
+                            <th class="px-6 py-4 text-left text-xs font-bold text-gray-400 uppercase tracking-wider">Tanggal</th>
+                            <th class="px-6 py-4 text-left text-xs font-bold text-gray-400 uppercase tracking-wider">Waktu</th>
+                            <th class="px-6 py-4 text-left text-xs font-bold text-gray-400 uppercase tracking-wider">Status</th>
+                            <th class="px-6 py-4 text-left text-xs font-bold text-gray-400 uppercase tracking-wider">Pembuat</th>
+                            <th class="px-6 py-4 text-right text-xs font-bold text-gray-400 uppercase tracking-wider">Aksi</th>
                         </tr>
                     </thead>
                     <tbody class="bg-white divide-y divide-[#E2E8F0]">
@@ -85,7 +85,7 @@
 
                                             <div class="border-t border-[#E2E8F0] my-1"></div>
 
-                                            <div class="px-4 py-1.5 text-[10px] font-bold text-gray-400 uppercase tracking-wider">
+                                            <div class="px-4 py-1.5 text-xs font-bold text-gray-400 uppercase tracking-wider">
                                                 Ubah Status
                                             </div>
 
@@ -93,7 +93,7 @@
                                                 @csrf
                                                 @method('PATCH')
                                                 <select name="status_slot" 
-                                                    class="w-full text-xs font-medium rounded-md border-[#E2E8F0] py-1.5 pl-2 pr-6 focus:ring-accent-blue focus:border-accent-blue {{ $jadwal->status_slot === 'terisi' ? 'bg-gray-50 text-gray-400 cursor-not-allowed opacity-70' : 'bg-white text-gray-700 cursor-pointer hover:border-gray-300 transition-colors' }}"
+                                                    class="w-full text-xs font-semibold rounded-lg border-[#E2E8F0] py-1.5 pl-2.5 pr-6 focus:ring focus:ring-accent-blue/20 focus:border-accent-blue {{ $jadwal->status_slot === 'terisi' ? 'bg-gray-50 text-gray-400 cursor-not-allowed opacity-70' : 'bg-[#F8FAFC] text-navy-dark cursor-pointer hover:border-gray-300 transition' }}"
                                                     {{ $jadwal->status_slot === 'terisi' ? 'disabled' : '' }}
                                                     onchange="this.form.submit()">
                                                     @if($jadwal->status_slot === 'terisi')

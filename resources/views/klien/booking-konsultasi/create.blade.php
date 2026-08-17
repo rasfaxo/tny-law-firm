@@ -41,11 +41,11 @@
             
             <div class="flex flex-row md:flex-col gap-6 md:gap-4 md:text-right border-t md:border-t-0 pt-4 md:pt-0 border-gray-100 shrink-0">
                 <div>
-                    <span class="block text-xxs font-bold text-gray-400 uppercase tracking-wider">Kategori</span>
+                    <span class="block text-xs font-bold text-gray-400 uppercase tracking-wider">Kategori</span>
                     <span class="block text-sm font-bold text-navy-dark mt-1">{{ $praPendaftaranPerkara->kategori?->nama_kategori ?? '-' }}</span>
                 </div>
                 <div>
-                    <span class="block text-xxs font-bold text-gray-400 uppercase tracking-wider">Kode Pengajuan</span>
+                    <span class="block text-xs font-bold text-gray-400 uppercase tracking-wider">Kode Pengajuan</span>
                     <span class="block text-sm font-bold text-accent-blue font-mono mt-1">PP-{{ str_pad($praPendaftaranPerkara->id_pendaftaran, 3, '0', STR_PAD_LEFT) }}</span>
                 </div>
             </div>
@@ -68,7 +68,7 @@
                         <!-- Date Filter Row -->
                         <div class="flex gap-3 items-end mt-6">
                             <div class="flex-1">
-                                <x-input-label for="date-picker-input" :value="__('Filter Tanggal')" class="!text-xxs !font-bold !text-gray-600 !uppercase !tracking-wider mb-2" />
+                                <x-input-label for="date-picker-input" :value="__('Filter Tanggal')" />
                                 <x-text-input type="date" id="date-picker-input" :value="request('tanggal')" class="w-full" />
                             </div>
                             <x-primary-button type="button" onclick="document.getElementById('filter-tanggal-hidden').value = document.getElementById('date-picker-input').value; document.getElementById('filter-form').submit();" class="h-11 px-6">
@@ -142,7 +142,7 @@
 
                         <!-- Method selector -->
                         <div>
-                            <x-input-label for="metode_konsultasi" :value="__('Metode Konsultasi')" class="!text-xs !font-bold !text-gray-600 !uppercase !tracking-wider mb-3" />
+                            <x-input-label for="metode_konsultasi" :value="__('Metode Konsultasi')" class="mb-3" />
                             <div class="flex gap-4">
                                 <label class="cursor-pointer group relative flex items-center justify-center bg-[#F8FAFC] border border-[#E2E8F0] hover:border-accent-blue rounded-xl px-4 py-3 flex-1 transition shadow-sm has-[:checked]:border-accent-blue has-[:checked]:bg-blue-50/50 has-[:checked]:ring-1 has-[:checked]:ring-accent-blue">
                                     <input type="radio" name="metode_konsultasi" value="online" class="peer sr-only" @checked(old('metode_konsultasi') === 'online')>
@@ -169,7 +169,7 @@
 
                         <!-- Catatan Preferensi -->
                         <div>
-                            <x-input-label for="catatan_preferensi_klien" :value="__('Catatan Preferensi (Opsional)')" class="!text-xs !font-bold !text-gray-600 !uppercase !tracking-wider mb-2" />
+                            <x-input-label for="catatan_preferensi_klien" :value="__('Catatan Preferensi (Opsional)')" />
                             <x-text-input tag="textarea" id="catatan_preferensi_klien" name="catatan_preferensi_klien" rows="4" class="w-full resize-none" placeholder="Tuliskan preferensi atau informasi tambahan terkait konsultasi...">{{ old('catatan_preferensi_klien') }}</x-text-input>
                             <x-input-error :messages="$errors->get('catatan_preferensi_klien')" class="mt-2" />
                         </div>

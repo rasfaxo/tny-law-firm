@@ -5,26 +5,26 @@
         <x-card>
             <form method="GET" action="{{ route('klien.booking-konsultasi.index') }}" class="flex flex-col md:flex-row md:items-center justify-between gap-4">
                 <div class="flex-1 max-w-md relative">
-                    <span class="absolute inset-y-0 left-0 pl-3 flex items-center">
+                    <span class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
                         <svg class="h-5 w-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
                         </svg>
                     </span>
-                    <input type="text" name="search" value="{{ request('search') }}" placeholder="Cari berdasarkan judul perkara..." class="w-full bg-[#F8FAFC] border-[#E2E8F0] focus:border-accent-blue focus:ring focus:ring-accent-blue/20 rounded-xl text-sm pl-10 placeholder-gray-400 transition shadow-sm h-11">
+                    <x-text-input type="text" name="search" :value="request('search')" placeholder="Cari berdasarkan judul perkara..." class="w-full pl-10" />
                 </div>
                 
                 <div class="flex items-center gap-3">
-                    <select name="status_booking" onchange="this.form.submit()" class="bg-[#F8FAFC] border-[#E2E8F0] focus:border-accent-blue focus:ring focus:ring-accent-blue/20 rounded-xl text-sm placeholder-gray-400 transition shadow-sm h-11 px-4">
+                    <x-select name="status_booking" onchange="this.form.submit()">
                         <option value="">Semua Status</option>
                         <option value="aktif" @selected(request('status_booking') === 'aktif')>Aktif</option>
                         <option value="selesai" @selected(request('status_booking') === 'selesai')>Selesai</option>
                         <option value="dibatalkan" @selected(request('status_booking') === 'dibatalkan')>Dibatalkan</option>
-                    </select>
+                    </x-select>
                     
                     @if(request('search') || request('status_booking'))
-                        <a href="{{ route('klien.booking-konsultasi.index') }}" class="text-sm font-bold text-gray-500 hover:text-navy-dark transition px-2">
+                        <x-secondary-button href="{{ route('klien.booking-konsultasi.index') }}" tag="a" class="h-11 px-4">
                             Reset
-                        </a>
+                        </x-secondary-button>
                     @endif
                     
                     <x-primary-button class="h-11">
@@ -127,12 +127,12 @@
                         <div class="flex justify-between items-center pt-2 border-t border-gray-100">
                             <div class="text-xs text-gray-400 font-medium">
                                 <div>{{ $jadwal?->tanggal?->translatedFormat('d M Y') ?? '-' }}</div>
-                                <div class="text-[10px] text-gray-400 mt-0.5">
+                                <div class="text-xs text-gray-400 mt-0.5">
                                     {{ $jadwal ? substr((string) $jadwal->waktu_mulai, 0, 5) . ' - ' . substr((string) $jadwal->waktu_selesai, 0, 5) : '-' }} WIB
                                 </div>
                             </div>
                             <div class="flex items-center gap-2">
-                                <span class="inline-flex text-[10px] font-bold px-2 py-0.5 rounded uppercase tracking-wider
+                                <span class="inline-flex text-xs font-bold px-2 py-0.5 rounded uppercase tracking-wider
                                     {{ $booking->metode_konsultasi === 'online' ? 'bg-blue-50 text-blue-700' : 'bg-gray-100 text-gray-700' }}">
                                     {{ $booking->metode_konsultasi }}
                                 </span>

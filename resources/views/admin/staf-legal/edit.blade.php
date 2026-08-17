@@ -42,10 +42,10 @@
 
                     <div>
                         <x-input-label for="status_akun" :value="__('Status Akun')" />
-                        <select id="status_akun" name="status_akun" class="mt-1 block w-full bg-[#F8FAFC] border-[#E2E8F0] focus:border-accent-blue focus:ring focus:ring-accent-blue/20 rounded-xl text-sm transition shadow-sm" required>
+                        <x-select id="status_akun" name="status_akun" class="mt-1" required>
                             <option value="aktif" @selected(old('status_akun', $stafLegal->status_akun) === 'aktif')>Aktif</option>
                             <option value="nonaktif" @selected(old('status_akun', $stafLegal->status_akun) === 'nonaktif')>Nonaktif</option>
-                        </select>
+                        </x-select>
                         <x-input-error class="mt-2" :messages="$errors->get('status_akun')" />
                     </div>
 
