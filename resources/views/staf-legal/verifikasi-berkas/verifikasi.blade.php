@@ -121,12 +121,12 @@
                                 <th class="px-6 py-4 text-right text-xs font-bold text-gray-400 tracking-wider uppercase w-[10%]">Aksi</th>
                             </tr>
                         </thead>
-                        <tbody class="bg-white divide-y divide-[#F1F5F9]">
+                        <tbody class="bg-white divide-y divide-[#E2E8F0]">
                             @forelse ($praPendaftaranPerkara->dokumenAktif as $dokumen)
-                                <tr class="align-top">
+                                <tr class="align-top hover:bg-[#F8FAFC] transition duration-150">
                                     <td class="px-6 py-4 text-sm">
                                         <div class="font-semibold text-navy-dark">{{ $dokumen->nama_dokumen }}</div>
-                                        <div class="text-xs text-gray-500 mt-0.5">{{ $dokumen->jenis_dokumen }}</div>
+                                        <div class="text-xs text-gray-400 mt-0.5 font-mono">{{ $dokumen->jenis_dokumen }}</div>
                                     </td>
                                     <td class="px-6 py-4">
                                         <div class="flex flex-col gap-2">
@@ -162,9 +162,13 @@
                                                   x-bind:disabled="statusVerifikasi === 'berkas_lengkap' || docStatus['{{ $dokumen->id_dokumen }}'] !== 'perlu_perbaikan'"
                                                   x-bind:required="statusVerifikasi === 'berkas_tidak_lengkap' && docStatus['{{ $dokumen->id_dokumen }}'] === 'perlu_perbaikan'">{{ old("dokumen.{$dokumen->id_dokumen}.catatan") }}</x-text-input>
                                     </td>
-                                    <td class="px-6 py-4 text-right text-sm font-semibold">
-                                        <a href="{{ route('staf-legal.dokumen.show', $dokumen) }}" class="text-accent-blue hover:text-blue-800 transition duration-150">
-                                            Lihat
+                                    <td class="px-6 py-4 whitespace-nowrap text-right">
+                                        <a href="{{ route('staf-legal.dokumen.show', $dokumen) }}" target="_blank" 
+                                            class="inline-flex items-center gap-1 text-xs font-bold text-accent-blue hover:underline transition">
+                                            <span>Lihat</span>
+                                            <svg class="h-3.5 w-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"></path>
+                                            </svg>
                                         </a>
                                     </td>
                                 </tr>
@@ -172,8 +176,8 @@
                                 <input type="hidden" name="dokumen[{{ $dokumen->id_dokumen }}][status_dokumen]" :value="docStatus['{{ $dokumen->id_dokumen }}']">
                             @empty
                                 <tr>
-                                    <td colspan="4" class="px-6 py-8 text-center text-sm text-gray-500">
-                                        <x-empty-state title="Belum ada dokumen" message="Belum ada dokumen yang diunggah." />
+                                    <td colspan="4" class="px-6 py-12 text-center">
+                                        <x-empty-state title="Belum ada dokumen" message="Belum ada dokumen yang diunggah untuk perkara ini." />
                                     </td>
                                 </tr>
                             @endforelse
@@ -190,8 +194,8 @@
                                     <div class="font-semibold text-navy-dark text-sm">{{ $dokumen->nama_dokumen }}</div>
                                     <div class="text-xs text-gray-500 mt-0.5">{{ $dokumen->jenis_dokumen }}</div>
                                 </div>
-                                <a href="{{ route('staf-legal.dokumen.show', $dokumen) }}" class="text-accent-blue hover:text-blue-800 text-xs font-bold shrink-0 transition duration-150">
-                                    Lihat Dokumen
+                                <a href="{{ route('staf-legal.dokumen.show', $dokumen) }}" target="_blank" class="inline-flex items-center gap-1 text-xs font-bold text-accent-blue hover:underline shrink-0 transition">
+                                    <span>Lihat Dokumen</span>
                                 </a>
                             </div>
 

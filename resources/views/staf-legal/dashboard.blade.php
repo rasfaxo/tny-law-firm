@@ -100,7 +100,7 @@
             </div>
             
             <div class="overflow-x-auto">
-                <table class="min-w-full divide-y divide-[#F1F5F9]">
+                <table class="min-w-full divide-y divide-[#E2E8F0]">
                     <thead class="bg-[#F8FAFC]">
                         <tr>
                             <th class="px-6 py-4 text-left text-xs font-bold text-gray-400 tracking-wider uppercase">Kode</th>
@@ -111,30 +111,28 @@
                             <th class="px-6 py-4 text-right text-xs font-bold text-gray-400 tracking-wider uppercase">Aksi</th>
                         </tr>
                     </thead>
-                    <tbody class="bg-white divide-y divide-[#F1F5F9]">
+                    <tbody class="bg-white divide-y divide-[#E2E8F0]">
                         @forelse ($pengajuanPerluVerifikasi as $pengajuan)
-                            <tr class="hover:bg-gray-50/40 transition">
-                                <td class="px-6 py-4 whitespace-nowrap text-sm font-mono font-medium text-accent-blue">
+                            <tr class="hover:bg-[#F8FAFC] transition duration-150">
+                                <td class="px-6 py-4 whitespace-nowrap text-sm font-mono font-bold text-accent-blue">
                                     PP-{{ sprintf('%03d', $pengajuan->id_pendaftaran) }}
                                 </td>
                                 <td class="px-6 py-4 whitespace-nowrap text-sm font-bold text-navy-dark">
                                     {{ $pengajuan->klien?->nama ?? '-' }}
                                 </td>
-                                <td class="px-6 py-4 text-sm text-gray-600 font-medium">
+                                <td class="px-6 py-4 text-sm text-gray-700 font-medium">
                                     {{ $pengajuan->judul_perkara }}
                                 </td>
-                                <td class="px-6 py-4 whitespace-nowrap">
-                                    <span class="inline-flex items-center px-2.5 py-1 rounded-lg text-xs font-bold bg-gray-100 text-gray-600">
-                                        {{ $pengajuan->kategori?->nama_kategori ?? '-' }}
-                                    </span>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-700 font-medium">
+                                    {{ $pengajuan->kategori?->nama_kategori ?? '-' }}
                                 </td>
                                 <td class="px-6 py-4 whitespace-nowrap">
                                     <x-status-badge :status="$pengajuan->status_pengajuan" />
                                 </td>
-                                <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-semibold">
-                                    <a href="{{ route('staf-legal.verifikasi-berkas.show', $pengajuan) }}" class="inline-flex items-center gap-1 text-accent-blue hover:text-blue-800 transition">
-                                        Verifikasi
-                                        <svg class="h-3 w-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <td class="px-6 py-4 whitespace-nowrap text-right text-xs font-bold">
+                                    <a href="{{ route('staf-legal.verifikasi-berkas.show', $pengajuan) }}" class="inline-flex items-center gap-1 text-accent-blue hover:underline transition">
+                                        <span>Verifikasi</span>
+                                        <svg class="h-3 w-3 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
                                         </svg>
                                     </a>

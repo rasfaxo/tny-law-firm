@@ -19,7 +19,7 @@
                 </div>
 
                 <div class="overflow-x-auto">
-                    <table class="min-w-full divide-y divide-[#F1F5F9]">
+                    <table class="min-w-full divide-y divide-[#E2E8F0]">
                         <thead class="bg-[#F8FAFC]">
                             <tr>
                                 <th class="px-6 py-4 text-left text-xs font-bold text-gray-400 tracking-wider uppercase">Tanggal Verifikasi</th>
@@ -30,35 +30,32 @@
                                 <th class="px-6 py-4 text-right text-xs font-bold text-gray-400 tracking-wider uppercase">Aksi</th>
                             </tr>
                         </thead>
-                        <tbody class="bg-white divide-y divide-[#F1F5F9]">
+                        <tbody class="bg-white divide-y divide-[#E2E8F0]">
                             @foreach ($riwayat as $item)
                                 @php
                                     $pengajuan = $item->praPendaftaranPerkara;
                                 @endphp
-                                <tr class="hover:bg-gray-50/40 transition">
-                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                                <tr class="hover:bg-[#F8FAFC] transition duration-150">
+                                    <td class="px-6 py-4 whitespace-nowrap text-xs text-gray-500 font-mono">
                                         {{ $item->tanggal_verifikasi?->format('d M Y H:i') ?? '-' }}
                                     </td>
-                                    <td class="px-6 py-4 whitespace-nowrap text-sm font-mono font-medium text-accent-blue">
-                                        PP-{{ sprintf('%03d', $item->id_pendaftaran) }}
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm font-mono font-bold text-accent-blue">
+                                        PP-{{ str_pad($item->id_pendaftaran, 3, '0', STR_PAD_LEFT) }}
                                     </td>
                                     <td class="px-6 py-4 whitespace-nowrap text-sm font-bold text-navy-dark">
                                         {{ $pengajuan?->klien?->nama ?? '-' }}
                                     </td>
-                                    <td class="px-6 py-4 text-sm text-gray-600 font-medium">
+                                    <td class="px-6 py-4 text-sm text-gray-700 font-medium">
                                         {{ $pengajuan?->judul_perkara ?? '-' }}
                                     </td>
                                     <td class="px-6 py-4 whitespace-nowrap">
-                                        @php
-                                            $color = $item->status_verifikasi === 'berkas_lengkap' ? 'green' : 'red';
-                                        @endphp
-                                        <x-status-badge :status="$item->status_verifikasi" :color="$color" />
+                                        <x-status-badge :status="$item->status_verifikasi" />
                                     </td>
-                                    <td class="px-6 py-4 whitespace-nowrap text-right text-sm">
+                                    <td class="px-6 py-4 whitespace-nowrap text-right text-xs font-bold">
                                         @if ($pengajuan)
-                                            <a href="{{ route('staf-legal.verifikasi-berkas.show', $pengajuan) }}" class="inline-flex items-center gap-1 text-accent-blue hover:text-blue-800 transition font-bold">
-                                                Detail
-                                                <svg class="h-3 w-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <a href="{{ route('staf-legal.verifikasi-berkas.show', $pengajuan) }}" class="inline-flex items-center gap-1 text-navy-dark hover:text-accent-blue hover:underline transition">
+                                                <span>Detail</span>
+                                                <svg class="h-3 w-3 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
                                                 </svg>
                                             </a>
@@ -73,7 +70,7 @@
                 </div>
 
                 @if ($riwayat->hasPages())
-                    <div class="px-6 py-4 bg-white border-t border-[#F1F5F9]">
+                    <div class="px-6 py-4 bg-white border-t border-[#E2E8F0]">
                         {{ $riwayat->links() }}
                     </div>
                 @endif

@@ -14,7 +14,6 @@
         @endif
 
         <!-- Filter Bar -->
-        <!-- Filter Bar -->
         <x-card>
             <form method="GET" action="{{ route('staf-legal.verifikasi-berkas.index') }}" class="grid grid-cols-1 md:grid-cols-4 gap-4 items-end">
                 <!-- Cari -->
@@ -62,7 +61,7 @@
         <!-- Table Card -->
         <x-card class="p-0 overflow-hidden sm:p-0">
             <div class="overflow-x-auto">
-                <table class="min-w-full divide-y divide-[#F1F5F9]">
+                <table class="min-w-full divide-y divide-[#E2E8F0]">
                     <thead class="bg-[#F8FAFC]">
                         <tr>
                             <th class="px-6 py-4 text-left text-xs font-bold text-gray-400 tracking-wider uppercase">Kode</th>
@@ -73,41 +72,39 @@
                             <th class="px-6 py-4 text-right text-xs font-bold text-gray-400 tracking-wider uppercase">Aksi</th>
                         </tr>
                     </thead>
-                    <tbody class="bg-white divide-y divide-[#F1F5F9]">
+                    <tbody class="bg-white divide-y divide-[#E2E8F0]">
                         @forelse ($pengajuan as $item)
                             @php
                                 $isVerifiable = in_array($item->status_pengajuan, ['menunggu_verifikasi', 'menunggu_verifikasi_ulang']);
                             @endphp
-                            <tr class="hover:bg-gray-50/40 transition">
-                                <td class="px-6 py-4 whitespace-nowrap text-sm font-mono font-medium text-accent-blue">
+                            <tr class="hover:bg-[#F8FAFC] transition duration-150">
+                                <td class="px-6 py-4 whitespace-nowrap text-sm font-mono font-bold text-accent-blue">
                                     PP-{{ sprintf('%03d', $item->id_pendaftaran) }}
                                 </td>
                                 <td class="px-6 py-4 whitespace-nowrap text-sm font-bold text-navy-dark">
                                     {{ $item->klien?->nama ?? '-' }}
                                 </td>
-                                <td class="px-6 py-4 text-sm text-gray-600 font-medium">
+                                <td class="px-6 py-4 text-sm text-gray-700 font-medium">
                                     {{ $item->judul_perkara }}
                                 </td>
-                                <td class="px-6 py-4 whitespace-nowrap">
-                                    <span class="inline-flex items-center px-2.5 py-1 rounded-lg text-xs font-bold bg-gray-100 text-gray-600">
-                                        {{ $item->kategori?->nama_kategori ?? '-' }}
-                                    </span>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-700 font-medium">
+                                    {{ $item->kategori?->nama_kategori ?? '-' }}
                                 </td>
                                 <td class="px-6 py-4 whitespace-nowrap">
                                     <x-status-badge :status="$item->status_pengajuan" />
                                 </td>
-                                <td class="px-6 py-4 whitespace-nowrap text-right text-sm">
+                                <td class="px-6 py-4 whitespace-nowrap text-right text-xs font-bold">
                                     @if ($isVerifiable)
-                                        <a href="{{ route('staf-legal.verifikasi-berkas.show', $item) }}" class="inline-flex items-center gap-1 text-accent-blue hover:text-blue-800 transition font-bold">
-                                            Verifikasi
-                                            <svg class="h-3 w-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <a href="{{ route('staf-legal.verifikasi-berkas.show', $item) }}" class="inline-flex items-center gap-1 text-accent-blue hover:underline transition">
+                                            <span>Verifikasi</span>
+                                            <svg class="h-3 w-3 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
                                             </svg>
                                         </a>
                                     @else
-                                        <a href="{{ route('staf-legal.verifikasi-berkas.show', $item) }}" class="inline-flex items-center gap-1 text-gray-500 hover:text-gray-800 transition font-bold">
-                                            Detail
-                                            <svg class="h-3 w-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <a href="{{ route('staf-legal.verifikasi-berkas.show', $item) }}" class="inline-flex items-center gap-1 text-navy-dark hover:text-accent-blue hover:underline transition">
+                                            <span>Detail</span>
+                                            <svg class="h-3 w-3 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
                                             </svg>
                                         </a>
