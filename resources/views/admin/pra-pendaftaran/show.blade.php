@@ -1,4 +1,4 @@
-<x-app-layout title="Detail Pra-Pendaftaran" :breadcrumbs="[['label' => 'Admin'], ['label' => 'Laporan', 'url' => route('admin.laporan.index')], ['label' => 'Detail Pra-Pendaftaran']]">
+<x-app-layout title="Detail Pra-Pendaftaran" :breadcrumbs="[['label' => 'Admin'], ['label' => 'Pra-Pendaftaran', 'url' => route('admin.pra-pendaftaran.index')], ['label' => 'PP-' . str_pad($praPendaftaranPerkara->id_pendaftaran, 3, '0', STR_PAD_LEFT)]]">
 
     <div class="space-y-6">
         <!-- Header Card -->
@@ -16,7 +16,7 @@
                 <h3 class="font-extrabold text-2xl text-navy-dark">{{ $praPendaftaranPerkara->judul_perkara }}</h3>
             </div>
             <div class="shrink-0">
-                <x-secondary-button href="{{ route('admin.laporan.pra-pendaftaran') }}" tag="a" class="gap-2 h-10">
+                <x-secondary-button href="{{ route('admin.pra-pendaftaran.index') }}" tag="a" class="gap-2 h-10">
                     <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path>
                     </svg>
@@ -96,7 +96,7 @@
                     <div class="grid grid-cols-1 md:grid-cols-3 gap-2 py-4">
                         <div class="text-xs font-bold text-gray-400 uppercase tracking-wider flex items-center">Status</div>
                         <div class="text-sm font-semibold text-navy-dark md:col-span-2">
-                            {{ Str::title(str_replace('_', ' ', $praPendaftaranPerkara->status_pengajuan)) }}
+                            <x-status-badge :status="$praPendaftaranPerkara->status_pengajuan" />
                         </div>
                     </div>
 
@@ -138,23 +138,7 @@
                                     {{ strtoupper(pathinfo($dokumen->file_path, PATHINFO_EXTENSION)) ?: 'PDF' }}
                                 </td>
                                 <td class="px-6 py-4 whitespace-nowrap">
-                                    @php
-                                        $docStatusColor = match ($dokumen->status_dokumen) {
-                                            'valid' => 'emerald',
-                                            'perlu_perbaikan' => 'rose',
-                                            'diganti' => 'gray',
-                                            default => 'blue',
-                                        };
-                                        $docStatusLabel = match ($dokumen->status_dokumen) {
-                                            'valid' => 'Valid',
-                                            'perlu_perbaikan' => 'Perlu Perbaikan',
-                                            'diganti' => 'Diganti',
-                                            default => 'Terkirim',
-                                        };
-                                    @endphp
-                                    <span class="inline-flex rounded-full bg-{{ $docStatusColor }}-100 border border-{{ $docStatusColor }}-200 px-2.5 py-0.5 text-xs font-extrabold uppercase tracking-wider text-{{ $docStatusColor }}-800">
-                                        {{ $docStatusLabel }}
-                                    </span>
+                                    <x-status-badge :status="$dokumen->status_dokumen" />
                                 </td>
                                 <td class="px-6 py-4 whitespace-nowrap text-right">
                                     <a href="{{ route('admin.dokumen.show', $dokumen) }}" target="_blank" 

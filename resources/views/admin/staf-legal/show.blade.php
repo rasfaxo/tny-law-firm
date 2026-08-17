@@ -49,9 +49,7 @@
                     <div>
                         <div class="text-xs font-bold text-gray-400 uppercase tracking-wider">Status Akun</div>
                         <div class="mt-1">
-                            <span class="inline-flex rounded-full px-2.5 py-0.5 text-xs font-semibold leading-5 {{ $stafLegal->status_akun === 'aktif' ? 'bg-green-50 text-green-700 border border-green-200' : 'bg-red-50 text-red-700 border border-red-200' }}">
-                                {{ ucfirst($stafLegal->status_akun) }}
-                            </span>
+                            <x-status-badge :status="$stafLegal->status_akun" />
                         </div>
                     </div>
 
@@ -60,9 +58,15 @@
                             @csrf
                             @method('PATCH')
                             <input type="hidden" name="status_akun" value="{{ $stafLegal->status_akun === 'aktif' ? 'nonaktif' : 'aktif' }}">
-                            <x-primary-button>
-                                {{ $stafLegal->status_akun === 'aktif' ? __('Nonaktifkan Akun') : __('Aktifkan Akun') }}
-                            </x-primary-button>
+                            @if($stafLegal->status_akun === 'aktif')
+                                <x-danger-button type="submit">
+                                    {{ __('Nonaktifkan Akun') }}
+                                </x-danger-button>
+                            @else
+                                <x-primary-button type="submit">
+                                    {{ __('Aktifkan Akun') }}
+                                </x-primary-button>
+                            @endif
                         </form>
                     </div>
                 </div>

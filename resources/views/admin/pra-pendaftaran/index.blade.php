@@ -60,11 +60,11 @@
 
                 <!-- Submit Buttons -->
                 <div class="md:col-span-1 flex items-center justify-end h-11">
-                    <button type="submit" class="bg-navy-primary hover:bg-navy-dark text-white font-bold text-sm h-full w-full rounded-xl flex items-center justify-center transition shadow-md shadow-blue-900/20" title="Terapkan Filter">
+                    <x-primary-button class="h-full w-full justify-center px-0" title="Terapkan Filter">
                         <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
                         </svg>
-                    </button>
+                    </x-primary-button>
                 </div>
             </form>
             @if(request()->anyFilled(['search', 'tanggal_mulai', 'tanggal_selesai', 'kategori', 'status']))

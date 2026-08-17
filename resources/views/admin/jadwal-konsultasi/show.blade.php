@@ -32,15 +32,6 @@
                 </div>
             @endif
 
-            @php
-                $statusColor = match ($jadwalKonsultasi->status_slot) {
-                    'tersedia' => 'green',
-                    'terisi' => 'blue',
-                    'tidak_aktif' => 'gray',
-                    default => 'blue',
-                };
-            @endphp
-
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <!-- Info Card -->
                 <x-card class="space-y-6">

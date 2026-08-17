@@ -106,33 +106,25 @@
                 <div class="space-y-3">
                     <!-- Menunggu Verifikasi -->
                     <div class="bg-[#F8FAFC] border border-[#E2E8F0] rounded-xl px-4 py-3 flex justify-between items-center">
-                        <span class="bg-[#FEF9C3] border border-[#FDE68A] text-[#A16207] text-xs font-extrabold px-3 py-1 rounded-full uppercase tracking-wider">
-                            Menunggu Verifikasi
-                        </span>
+                        <x-status-badge status="menunggu_verifikasi" />
                         <span class="text-lg font-extrabold text-navy-dark">{{ $statistics['Pengajuan Menunggu Verifikasi'] }}</span>
                     </div>
 
                     <!-- Berkas Tidak Lengkap -->
                     <div class="bg-[#F8FAFC] border border-[#E2E8F0] rounded-xl px-4 py-3 flex justify-between items-center">
-                        <span class="bg-[#FEE2E2] border border-[#FECACA] text-[#B91C1C] text-xs font-extrabold px-3 py-1 rounded-full uppercase tracking-wider">
-                            Berkas Tidak Lengkap
-                        </span>
+                        <x-status-badge status="berkas_tidak_lengkap" />
                         <span class="text-lg font-extrabold text-navy-dark">{{ $berkasTidakLengkap }}</span>
                     </div>
 
                     <!-- Berkas Lengkap -->
                     <div class="bg-[#F8FAFC] border border-[#E2E8F0] rounded-xl px-4 py-3 flex justify-between items-center">
-                        <span class="bg-[#DCFCE7] border border-[#BBF7D0] text-[#15803D] text-xs font-extrabold px-3 py-1 rounded-full uppercase tracking-wider">
-                            Berkas Lengkap
-                        </span>
+                        <x-status-badge status="berkas_lengkap" />
                         <span class="text-lg font-extrabold text-navy-dark">{{ $statistics['Pengajuan Berkas Lengkap'] }}</span>
                     </div>
 
                     <!-- Jadwal Dipilih -->
                     <div class="bg-[#F8FAFC] border border-[#E2E8F0] rounded-xl px-4 py-3 flex justify-between items-center">
-                        <span class="bg-[#DBEAFE] border border-[#BFDBFE] text-[#1D4ED8] text-xs font-extrabold px-3 py-1 rounded-full uppercase tracking-wider">
-                            Jadwal Dipilih
-                        </span>
+                        <x-status-badge status="jadwal_dipilih" />
                         <span class="text-lg font-extrabold text-navy-dark">{{ $statistics['Pengajuan Jadwal Dipilih'] }}</span>
                     </div>
                 </div>

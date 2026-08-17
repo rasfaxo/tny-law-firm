@@ -69,15 +69,7 @@
                                     {{ $user->no_telepon ?? '-' }}
                                 </td>
                                 <td class="px-6 py-4 whitespace-nowrap">
-                                    @if($user->status_akun === 'aktif')
-                                        <span class="inline-flex rounded-full bg-emerald-100 border border-emerald-200 px-2.5 py-0.5 text-xs font-extrabold uppercase tracking-wider text-emerald-800">
-                                            Aktif
-                                        </span>
-                                    @else
-                                        <span class="inline-flex rounded-full bg-rose-100 border border-rose-200 px-2.5 py-0.5 text-xs font-extrabold uppercase tracking-wider text-rose-800">
-                                            Nonaktif
-                                        </span>
-                                    @endif
+                                    <x-status-badge :status="$user->status_akun" />
                                 </td>
                                 <td class="px-6 py-4 whitespace-nowrap text-right">
                                     <div class="flex justify-end items-center gap-4">
@@ -128,15 +120,7 @@
                                     {{ $user->nama }}
                                 </div>
                             </div>
-                            @if($user->status_akun === 'aktif')
-                                <span class="inline-flex rounded-full bg-emerald-100 border border-emerald-200 px-2.5 py-0.5 text-xs font-extrabold uppercase tracking-wider text-emerald-800">
-                                    Aktif
-                                </span>
-                            @else
-                                <span class="inline-flex rounded-full bg-rose-100 border border-rose-200 px-2.5 py-0.5 text-xs font-extrabold uppercase tracking-wider text-rose-800">
-                                    Nonaktif
-                                </span>
-                            @endif
+                            <x-status-badge :status="$user->status_akun" />
                         </div>
                         <div>
                             <p class="text-xs text-gray-500 mt-1"><span class="font-medium">Email:</span> {{ $user->email }}</p>

@@ -47,15 +47,7 @@
                             <div>
                                 <div class="text-xs font-bold text-gray-400 uppercase tracking-wider">Status Akun</div>
                                 <div class="mt-1">
-                                    @if($klien->status_akun === 'aktif')
-                                        <span class="inline-flex rounded-full bg-emerald-100 border border-emerald-200 px-2.5 py-0.5 text-xs font-extrabold uppercase tracking-wider text-emerald-800">
-                                            Aktif
-                                        </span>
-                                    @else
-                                        <span class="inline-flex rounded-full bg-rose-100 border border-rose-200 px-2.5 py-0.5 text-xs font-extrabold uppercase tracking-wider text-rose-800">
-                                            Nonaktif
-                                        </span>
-                                    @endif
+                                    <x-status-badge :status="$klien->status_akun" />
                                 </div>
                             </div>
                             <div>
@@ -86,21 +78,20 @@
                             @method('PATCH')
                             <div class="space-y-4">
                                 <div>
-                                    <label for="password" class="block text-xs font-bold text-gray-400 uppercase tracking-wider">Password Baru</label>
-                                    <input type="password" name="password" id="password" required minlength="8"
-                                           class="mt-1 block w-full bg-[#F8FAFC] border-[#E2E8F0] focus:border-accent-blue focus:ring focus:ring-accent-blue/20 rounded-xl text-sm transition shadow-sm">
+                                    <x-input-label for="password" :value="__('Password Baru')" />
+                                    <x-text-input type="password" name="password" id="password" required minlength="8" class="mt-1 block w-full" placeholder="Minimal 8 karakter..." />
                                     <x-input-error :messages="$errors->get('password')" class="mt-1" />
                                 </div>
-                                <button type="submit" class="w-full bg-navy-primary hover:bg-navy-dark text-white font-bold text-xs h-10 rounded-xl flex items-center justify-center transition shadow-md shadow-blue-900/20" x-bind:disabled="isSubmitting" x-bind:class="{ 'opacity-70 cursor-not-allowed': isSubmitting }">
+                                <x-primary-button class="w-full justify-center" ::disabled="isSubmitting">
                                     <span x-show="!isSubmitting">Update Password</span>
-                                    <span x-show="isSubmitting" class="flex items-center gap-2">
+                                    <span x-show="isSubmitting" class="flex items-center gap-2" style="display: none;">
                                         <svg class="animate-spin h-4 w-4 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
                                             <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
                                             <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
                                         </svg>
-                                        Menyimpan...
+                                        <span>Menyimpan...</span>
                                     </span>
-                                </button>
+                                </x-primary-button>
                             </div>
                         </form>
                     </div>
