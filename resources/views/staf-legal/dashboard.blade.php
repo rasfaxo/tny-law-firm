@@ -37,57 +37,65 @@
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
             <!-- Total Pengajuan Masuk -->
             <x-card class="flex flex-col justify-between h-[160px]">
-                <div class="bg-[#ede9fe] text-purple-700 w-9 h-9 rounded-xl flex items-center justify-center">
-                    <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"></path>
-                    </svg>
+                <div class="flex items-center justify-between">
+                    <div class="bg-[#F5F3FF] p-2.5 rounded-xl text-[#6D28D9]">
+                        <svg class="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"></path>
+                        </svg>
+                    </div>
+                    <span class="text-3xl font-extrabold text-navy-dark tracking-tight">{{ $totalPengajuan }}</span>
                 </div>
-                <div>
-                    <div class="text-3xl font-extrabold text-navy-dark leading-none mt-2">{{ $totalPengajuan }}</div>
-                    <div class="text-sm font-bold text-navy-dark mt-1">Total Pengajuan Masuk</div>
-                    <div class="text-xs text-gray-400 mt-0.5">Seluruh pengajuan</div>
+                <div class="space-y-0.5">
+                    <span class="block text-sm font-bold text-navy-dark">Total Pengajuan Masuk</span>
+                    <span class="block text-xs text-gray-400">Seluruh data pengajuan</span>
                 </div>
             </x-card>
 
             <!-- Menunggu Verifikasi -->
             <x-card class="flex flex-col justify-between h-[160px]">
-                <div class="bg-[#fef9c3] text-[#a16207] w-9 h-9 rounded-xl flex items-center justify-center">
-                    <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-                    </svg>
+                <div class="flex items-center justify-between">
+                    <div class="bg-yellow-50 p-2.5 rounded-xl text-yellow-600">
+                        <svg class="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                        </svg>
+                    </div>
+                    <span class="text-3xl font-extrabold text-navy-dark tracking-tight">{{ $menungguVerifikasi }}</span>
                 </div>
-                <div>
-                    <div class="text-3xl font-extrabold text-navy-dark leading-none mt-2">{{ $menungguVerifikasi }}</div>
-                    <div class="text-sm font-bold text-navy-dark mt-1">Menunggu Verifikasi</div>
-                    <div class="text-xs text-gray-400 mt-0.5">Perlu diperiksa</div>
+                <div class="space-y-0.5">
+                    <span class="block text-sm font-bold text-navy-dark">Menunggu Verifikasi</span>
+                    <span class="block text-xs text-gray-400">Perlu diperiksa</span>
                 </div>
             </x-card>
 
             <!-- Perlu Perbaikan -->
             <x-card class="flex flex-col justify-between h-[160px]">
-                <div class="bg-[#fee2e2] text-red-700 w-9 h-9 rounded-xl flex items-center justify-center">
-                    <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path>
-                    </svg>
+                <div class="flex items-center justify-between">
+                    <div class="bg-red-50 p-2.5 rounded-xl text-red-600">
+                        <svg class="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path>
+                        </svg>
+                    </div>
+                    <span class="text-3xl font-extrabold text-navy-dark tracking-tight">{{ $perluPerbaikan }}</span>
                 </div>
-                <div>
-                    <div class="text-3xl font-extrabold text-navy-dark leading-none mt-2">{{ $perluPerbaikan }}</div>
-                    <div class="text-sm font-bold text-navy-dark mt-1">Perlu Perbaikan</div>
-                    <div class="text-xs text-gray-400 mt-0.5">Catatan telah diberikan</div>
+                <div class="space-y-0.5">
+                    <span class="block text-sm font-bold text-navy-dark">Perlu Perbaikan</span>
+                    <span class="block text-xs text-gray-400">Catatan telah diberikan</span>
                 </div>
             </x-card>
 
             <!-- Berkas Lengkap -->
             <x-card class="flex flex-col justify-between h-[160px]">
-                <div class="bg-[#dcfce7] text-[#15803d] w-9 h-9 rounded-xl flex items-center justify-center">
-                    <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-                    </svg>
+                <div class="flex items-center justify-between">
+                    <div class="bg-green-50 p-2.5 rounded-xl text-green-600">
+                        <svg class="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                        </svg>
+                    </div>
+                    <span class="text-3xl font-extrabold text-navy-dark tracking-tight">{{ $berkasLengkap }}</span>
                 </div>
-                <div>
-                    <div class="text-3xl font-extrabold text-navy-dark leading-none mt-2">{{ $berkasLengkap }}</div>
-                    <div class="text-sm font-bold text-navy-dark mt-1">Berkas Lengkap</div>
-                    <div class="text-xs text-gray-400 mt-0.5">Siap konsultasi</div>
+                <div class="space-y-0.5">
+                    <span class="block text-sm font-bold text-navy-dark">Berkas Lengkap</span>
+                    <span class="block text-xs text-gray-400">Siap konsultasi</span>
                 </div>
             </x-card>
         </div>
