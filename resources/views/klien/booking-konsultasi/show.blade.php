@@ -66,10 +66,7 @@
                 </div>
                 <div>
                     <span class="block text-xs font-bold text-gray-400 uppercase tracking-wider mb-2">METODE KONSULTASI</span>
-                    <span class="inline-flex px-3 py-1 rounded-full text-xs font-bold border 
-                        {{ $bookingKonsultasi->metode_konsultasi === 'online' ? 'bg-blue-50 text-blue-700 border-blue-200' : 'bg-gray-100 text-gray-700 border-gray-200' }}">
-                        {{ ucfirst($bookingKonsultasi->metode_konsultasi) }}
-                    </span>
+                    <x-status-badge :status="$bookingKonsultasi->metode_konsultasi" />
                 </div>
             </div>
         </x-card>
@@ -82,7 +79,7 @@
 
             <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
                 <!-- Tanggal -->
-                <div class="bg-[#F8FAFC] rounded-xl p-5 border border-gray-100">
+                <div class="bg-[#F8FAFC] rounded-xl p-5 border border-[#E2E8F0]">
                     <span class="block text-xs font-bold text-gray-400 uppercase tracking-wider mb-2">TANGGAL</span>
                     <div class="flex items-center gap-3 text-sm font-bold text-navy-dark">
                         <svg class="h-5 w-5 text-accent-blue" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -93,7 +90,7 @@
                 </div>
 
                 <!-- Jam Mulai -->
-                <div class="bg-[#F8FAFC] rounded-xl p-5 border border-gray-100">
+                <div class="bg-[#F8FAFC] rounded-xl p-5 border border-[#E2E8F0]">
                     <span class="block text-xs font-bold text-gray-400 uppercase tracking-wider mb-2">JAM MULAI</span>
                     <div class="flex items-center gap-3 text-sm font-bold text-navy-dark">
                         <svg class="h-5 w-5 text-accent-blue" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -104,7 +101,7 @@
                 </div>
 
                 <!-- Jam Selesai -->
-                <div class="bg-[#F8FAFC] rounded-xl p-5 border border-gray-100">
+                <div class="bg-[#F8FAFC] rounded-xl p-5 border border-[#E2E8F0]">
                     <span class="block text-xs font-bold text-gray-400 uppercase tracking-wider mb-2">JAM SELESAI</span>
                     <div class="flex items-center gap-3 text-sm font-bold text-navy-dark">
                         <svg class="h-5 w-5 text-accent-blue" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -125,7 +122,7 @@
 
             <x-divider />
 
-            <div class="divide-y divide-[#F1F5F9] -my-4">
+            <div class="divide-y divide-[#E2E8F0] -my-4">
                 <!-- Link / Lokasi -->
                 <div class="grid grid-cols-1 sm:grid-cols-[200px_1fr] items-start gap-2 sm:gap-6 py-4">
                     <span class="text-xs font-bold text-gray-400 uppercase tracking-wider pt-1">

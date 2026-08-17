@@ -67,7 +67,7 @@
         <x-card class="p-0 overflow-hidden sm:p-0">
             <!-- Desktop Table Layout -->
             <div class="hidden md:block overflow-x-auto">
-                <table class="min-w-full divide-y divide-[#F1F5F9]">
+                <table class="min-w-full divide-y divide-[#E2E8F0]">
                     <thead class="bg-[#F8FAFC]">
                         <tr>
                             <th class="px-6 py-4 text-left text-xs font-bold text-gray-400 uppercase tracking-wider">Kode</th>
@@ -78,16 +78,16 @@
                             <th class="px-6 py-4 text-right text-xs font-bold text-gray-400 uppercase tracking-wider">Aksi</th>
                         </tr>
                     </thead>
-                    <tbody class="bg-white divide-y divide-[#F1F5F9]">
+                    <tbody class="bg-white divide-y divide-[#E2E8F0]">
                         @forelse ($praPendaftaranPerkara as $pengajuan)
-                            <tr>
+                            <tr class="hover:bg-[#F8FAFC] transition duration-150">
                                 <td class="px-6 py-4 whitespace-nowrap text-sm font-semibold font-mono text-navy-primary">
                                     PP-{{ str_pad($pengajuan->id_pendaftaran, 3, '0', STR_PAD_LEFT) }}
                                 </td>
                                 <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-navy-dark">
                                     {{ \Illuminate\Support\Str::limit($pengajuan->judul_perkara, 40) }}
                                 </td>
-                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-700 font-medium">
                                     {{ $pengajuan->kategori?->nama_kategori ?? '-' }}
                                 </td>
                                 <td class="px-6 py-4 whitespace-nowrap">
@@ -96,10 +96,10 @@
                                 <td class="px-6 py-4 whitespace-nowrap text-xs text-gray-400">
                                     {{ $pengajuan->tanggal_pengajuan?->format('d M Y H:i') ?? '-' }}
                                 </td>
-                                <td class="px-6 py-4 whitespace-nowrap text-right text-sm">
-                                    <a href="{{ route('klien.pra-pendaftaran.show', $pengajuan) }}" class="inline-flex items-center gap-1 font-semibold text-accent-blue hover:text-navy-dark transition">
+                                <td class="px-6 py-4 whitespace-nowrap text-right text-xs font-bold">
+                                    <a href="{{ route('klien.pra-pendaftaran.show', $pengajuan) }}" class="inline-flex items-center gap-1 text-navy-dark hover:text-accent-blue hover:underline transition">
                                         <span>Detail</span>
-                                        <svg class="h-3 w-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <svg class="h-3 w-3 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
                                         </svg>
                                     </a>
@@ -120,7 +120,7 @@
             </div>
 
             <!-- Mobile Card Layout -->
-            <div class="block md:hidden divide-y divide-[#F1F5F9] bg-white">
+            <div class="block md:hidden divide-y divide-[#E2E8F0] bg-white">
                 @forelse ($praPendaftaranPerkara as $pengajuan)
                     <div class="p-4 space-y-3">
                         <div class="flex justify-between items-center">
@@ -134,7 +134,7 @@
                             <p class="text-xs text-gray-500 mt-1">Kategori: {{ $pengajuan->kategori?->nama_kategori ?? '-' }}</p>
                         </div>
                         <div class="flex justify-between items-center pt-2 border-t border-gray-100">
-                            <span class="text-xs text-gray-400 font-medium">Diajukan: {{ $pengajuan->tanggal_pengajuan?->format('d M Y') ?? '-' }}</span>
+                            <span class="text-xs text-gray-400 font-medium">{{ $pengajuan->tanggal_pengajuan?->format('d M Y') ?? '-' }}</span>
                             <a href="{{ route('klien.pra-pendaftaran.show', $pengajuan) }}" class="inline-flex items-center gap-1 text-xs font-bold text-accent-blue hover:underline">
                                 <span>Detail</span>
                                 <svg class="h-3 w-3 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -155,7 +155,7 @@
 
             <!-- Pagination Links -->
             @if ($praPendaftaranPerkara->hasPages())
-                <div class="px-6 py-4 bg-[#F8FAFC] border-t border-[#F1F5F9]">
+                <div class="px-6 py-4 bg-[#F8FAFC] border-t border-[#E2E8F0]">
                     {{ $praPendaftaranPerkara->links() }}
                 </div>
             @endif

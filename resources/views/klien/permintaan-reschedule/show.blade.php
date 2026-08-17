@@ -6,11 +6,6 @@
         $pengajuan = $bookingLama?->praPendaftaranPerkara;
         $jadwalLama = $bookingLama?->jadwalKonsultasi;
         $jadwalBaru = $permintaanReschedule->jadwalBaru ?? $bookingBaru?->jadwalKonsultasi;
-        $statusColor = match ($permintaanReschedule->status_reschedule) {
-            'disetujui' => 'green',
-            'ditolak' => 'red',
-            default => 'yellow',
-        };
     @endphp
 
     <div class="space-y-6">
@@ -39,32 +34,32 @@
             
             <!-- Left Card: Detail Reschedule -->
             <x-card class="p-0 overflow-hidden sm:p-0">
-                <div class="p-6 sm:p-8 border-b border-[#F1F5F9] bg-[#F8FAFC]/50">
+                <div class="p-6 sm:p-8 border-b border-[#E2E8F0] bg-[#F8FAFC]">
                     <h3 class="font-bold text-navy-dark text-lg">Informasi Permintaan</h3>
                 </div>
                 
                 <div class="p-6 sm:p-8 space-y-6">
-                    <div class="border-b border-[#F1F5F9]/60 pb-4 flex justify-between items-center">
+                    <div class="border-b border-[#E2E8F0] pb-4 flex justify-between items-center">
                         <span class="text-xs font-bold text-gray-400 uppercase tracking-wider">Status Permintaan</span>
-                        <x-status-badge :status="$permintaanReschedule->status_reschedule" :color="$statusColor" />
+                        <x-status-badge :status="$permintaanReschedule->status_reschedule" />
                     </div>
 
-                    <div class="border-b border-[#F1F5F9]/60 pb-4 flex justify-between items-center">
+                    <div class="border-b border-[#E2E8F0] pb-4 flex justify-between items-center">
                         <span class="text-xs font-bold text-gray-400 uppercase tracking-wider">Tanggal Pengajuan</span>
                         <span class="text-sm font-bold text-navy-dark">{{ $permintaanReschedule->tanggal_pengajuan?->translatedFormat('d M Y • H:i') ?? '-' }} WIB</span>
                     </div>
 
-                    <div class="border-b border-[#F1F5F9]/60 pb-4 flex justify-between items-center">
+                    <div class="border-b border-[#E2E8F0] pb-4 flex justify-between items-center">
                         <span class="text-xs font-bold text-gray-400 uppercase tracking-wider">Preferensi Metode Baru</span>
                         <span class="text-sm font-semibold text-gray-700 uppercase">{{ $permintaanReschedule->preferensi_metode ?: 'Metode Lama' }}</span>
                     </div>
 
-                    <div class="space-y-2 border-b border-[#F1F5F9]/60 pb-4">
+                    <div class="space-y-2 border-b border-[#E2E8F0] pb-4">
                         <span class="block text-xs font-bold text-gray-400 uppercase tracking-wider">Preferensi Jadwal Baru</span>
                         <span class="text-sm font-semibold text-navy-dark leading-relaxed">{{ $permintaanReschedule->preferensi_jadwal ?: '-' }}</span>
                     </div>
 
-                    <div class="space-y-2 border-b border-[#F1F5F9]/60 pb-4">
+                    <div class="space-y-2 border-b border-[#E2E8F0] pb-4">
                         <span class="block text-xs font-bold text-gray-400 uppercase tracking-wider">Alasan Reschedule</span>
                         <p class="text-sm text-gray-600 leading-relaxed bg-[#F8FAFC] border border-[#E2E8F0] p-4 rounded-xl whitespace-pre-line">
                             {{ $permintaanReschedule->alasan_reschedule }}
@@ -84,7 +79,7 @@
             <div class="space-y-6">
                 <!-- Card Jadwal Lama -->
                 <x-card class="p-0 overflow-hidden sm:p-0">
-                    <div class="p-6 sm:p-8 border-b border-[#F1F5F9] bg-[#F8FAFC]/50">
+                    <div class="p-6 sm:p-8 border-b border-[#E2E8F0] bg-[#F8FAFC]">
                         <h3 class="font-bold text-navy-dark text-lg">Jadwal Lama</h3>
                     </div>
                     <div class="p-6 sm:p-8 space-y-4">
@@ -103,15 +98,15 @@
                         </div>
                         <div>
                             <span class="block text-xs font-bold text-gray-400 uppercase tracking-wider mb-1.5">Status Booking</span>
-                            <x-status-badge :status="$bookingLama?->status_booking ?? '-'" :color="$bookingLama?->status_booking === 'aktif' ? 'green' : 'gray'" />
+                            <x-status-badge :status="$bookingLama?->status_booking ?? '-'" />
                         </div>
                     </div>
-                </div>
+                </x-card>
 
                 <!-- Card Jadwal Baru (Jika Ada) -->
                 @if ($jadwalBaru || $bookingBaru)
                     <x-card class="p-0 overflow-hidden sm:p-0">
-                        <div class="p-6 sm:p-8 border-b border-[#F1F5F9] bg-[#F8FAFC]/50">
+                        <div class="p-6 sm:p-8 border-b border-[#E2E8F0] bg-[#F8FAFC]">
                             <h3 class="font-bold text-navy-dark text-lg">Jadwal Baru (Disetujui)</h3>
                         </div>
                         <div class="p-6 sm:p-8 space-y-4">
@@ -126,10 +121,10 @@
                             </div>
                             <div>
                                 <span class="block text-xs font-bold text-gray-400 uppercase tracking-wider mb-1.5">Status Booking Baru</span>
-                                <x-status-badge :status="$bookingBaru?->status_booking ?? '-'" :color="$bookingBaru?->status_booking === 'aktif' ? 'green' : 'gray'" />
+                                <x-status-badge :status="$bookingBaru?->status_booking ?? '-'" />
                             </div>
-                    </div>
-                </x-card>
+                        </div>
+                    </x-card>
                 @endif
             </div>
 

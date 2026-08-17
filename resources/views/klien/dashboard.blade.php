@@ -118,7 +118,7 @@
 
                     <!-- Desktop Table Layout -->
                     <div class="hidden md:block overflow-x-auto">
-                        <table class="min-w-full divide-y divide-[#F1F5F9]">
+                        <table class="min-w-full divide-y divide-[#E2E8F0]">
                             <thead class="bg-[#F8FAFC]">
                                 <tr>
                                     <th class="px-6 py-4 text-left text-xs font-bold text-gray-400 uppercase tracking-wider">Kode</th>
@@ -129,16 +129,16 @@
                                     <th class="px-6 py-4 text-right text-xs font-bold text-gray-400 uppercase tracking-wider">Aksi</th>
                                 </tr>
                             </thead>
-                            <tbody class="bg-white divide-y divide-[#F1F5F9]">
+                            <tbody class="bg-white divide-y divide-[#E2E8F0]">
                                 @forelse ($pengajuanTerbaru as $pengajuan)
-                                    <tr>
+                                    <tr class="hover:bg-[#F8FAFC] transition duration-150">
                                         <td class="px-6 py-4 whitespace-nowrap text-sm font-semibold font-mono text-navy-primary">
                                             PP-{{ str_pad($pengajuan->id_pendaftaran, 3, '0', STR_PAD_LEFT) }}
                                         </td>
                                         <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-navy-dark">
                                             {{ \Illuminate\Support\Str::limit($pengajuan->judul_perkara, 25) }}
                                         </td>
-                                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-700 font-medium">
                                             {{ $pengajuan->kategori?->nama_kategori ?? '-' }}
                                         </td>
                                         <td class="px-6 py-4 whitespace-nowrap">
@@ -147,7 +147,7 @@
                                         <td class="px-6 py-4 whitespace-nowrap text-xs text-gray-400">
                                             {{ $pengajuan->tanggal_pengajuan?->format('d M Y') ?? '-' }}
                                         </td>
-                                        <td class="px-6 py-4 whitespace-nowrap text-right text-sm">
+                                        <td class="px-6 py-4 whitespace-nowrap text-right text-xs font-bold">
                                             <a href="{{ route('klien.pra-pendaftaran.show', $pengajuan) }}" class="inline-flex items-center gap-1.5 text-xs font-bold text-accent-blue hover:underline transition">
                                                 <span>Detail</span>
                                                 <svg class="h-3.5 w-3.5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -168,7 +168,7 @@
                     </div>
 
                     <!-- Mobile Card Layout -->
-                    <div class="block md:hidden divide-y divide-[#F1F5F9] bg-white">
+                    <div class="block md:hidden divide-y divide-[#E2E8F0] bg-white">
                         @forelse ($pengajuanTerbaru as $pengajuan)
                             <div class="p-4 space-y-3">
                                 <div class="flex justify-between items-center">
@@ -201,14 +201,14 @@
 
                 <!-- Card Permintaan Reschedule Saya -->
                 <x-card class="p-0 overflow-hidden sm:p-0">
-                    <div class="p-6 border-b border-[#F1F5F9]">
+                    <div class="p-6 border-b border-[#E2E8F0]">
                         <h4 class="font-bold text-navy-dark text-base">Permintaan Reschedule Terbaru</h4>
                         <p class="text-xs text-gray-400 mt-1">Status pengajuan permohonan pemindahan jadwal konsultasi Anda</p>
                     </div>
 
                     <!-- Desktop Table Layout -->
                     <div class="hidden md:block overflow-x-auto">
-                        <table class="min-w-full divide-y divide-[#F1F5F9]">
+                        <table class="min-w-full divide-y divide-[#E2E8F0]">
                             <thead class="bg-[#F8FAFC]">
                                 <tr>
                                     <th class="px-6 py-4 text-left text-xs font-bold text-gray-400 uppercase tracking-wider">Perkara</th>
@@ -218,9 +218,9 @@
                                     <th class="px-6 py-4 text-right text-xs font-bold text-gray-400 uppercase tracking-wider">Aksi</th>
                                 </tr>
                             </thead>
-                            <tbody class="bg-white divide-y divide-[#F1F5F9]">
+                            <tbody class="bg-white divide-y divide-[#E2E8F0]">
                                 @forelse ($permintaanRescheduleSaya as $reschedule)
-                                    <tr>
+                                    <tr class="hover:bg-[#F8FAFC] transition duration-150">
                                         <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-navy-dark">
                                             {{ \Illuminate\Support\Str::limit($reschedule->bookingLama?->praPendaftaranPerkara?->judul_perkara ?? '-', 20) }}
                                         </td>
@@ -230,10 +230,10 @@
                                         <td class="px-6 py-4 whitespace-nowrap text-xs text-gray-400">
                                             {{ $reschedule->tanggal_pengajuan?->format('d M Y H:i') ?? '-' }}
                                         </td>
-                                        <td class="px-6 py-4 text-sm text-gray-500 max-w-[200px] truncate">
+                                        <td class="px-6 py-4 text-sm text-gray-600 max-w-[200px] truncate">
                                             {{ $reschedule->catatan_admin ?? '-' }}
                                         </td>
-                                        <td class="px-6 py-4 whitespace-nowrap text-right text-sm">
+                                        <td class="px-6 py-4 whitespace-nowrap text-right text-xs font-bold">
                                             <a href="{{ route('klien.permintaan-reschedule.show', $reschedule) }}" class="inline-flex items-center gap-1.5 text-xs font-bold text-accent-blue hover:underline transition">
                                                 <span>Detail</span>
                                                 <svg class="h-3.5 w-3.5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -254,7 +254,7 @@
                     </div>
 
                     <!-- Mobile Card Layout -->
-                    <div class="block md:hidden divide-y divide-[#F1F5F9] bg-white">
+                    <div class="block md:hidden divide-y divide-[#E2E8F0] bg-white">
                         @forelse ($permintaanRescheduleSaya as $reschedule)
                             <div class="p-4 space-y-3">
                                 <div class="flex justify-between items-center">
@@ -293,7 +293,7 @@
             <!-- Kolom Kanan: Jadwal Konsultasi Saya (lg:col-span-4) -->
             <div class="lg:col-span-4">
                 <x-card class="flex flex-col space-y-4">
-                    <div class="border-b border-[#F1F5F9] pb-3">
+                    <div class="border-b border-[#E2E8F0] pb-3">
                         <h4 class="font-bold text-navy-dark text-base">Jadwal Konsultasi Saya</h4>
                         <p class="text-xs text-gray-400 mt-1">Status pertemuan yang sedang aktif saat ini</p>
                     </div>

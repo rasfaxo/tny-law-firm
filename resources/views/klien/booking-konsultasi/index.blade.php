@@ -38,7 +38,7 @@
         <x-card class="p-0 overflow-hidden sm:p-0">
             <!-- Desktop Table Layout -->
             <div class="hidden md:block overflow-x-auto">
-                <table class="min-w-full divide-y divide-gray-200">
+                <table class="min-w-full divide-y divide-[#E2E8F0]">
                     <thead class="bg-[#F8FAFC]">
                         <tr>
                             <th class="px-6 py-4 text-left text-xs font-bold text-gray-400 uppercase tracking-wider">No. Booking</th>
@@ -50,13 +50,13 @@
                             <th class="px-6 py-4 text-right text-xs font-bold text-gray-400 uppercase tracking-wider">Aksi</th>
                         </tr>
                     </thead>
-                    <tbody class="bg-white divide-y divide-gray-100">
+                    <tbody class="bg-white divide-y divide-[#E2E8F0]">
                         @forelse ($bookingKonsultasi as $booking)
                             @php
                                 $jadwal = $booking->jadwalKonsultasi;
                                 $perkara = $booking->praPendaftaranPerkara;
                             @endphp
-                            <tr class="hover:bg-gray-50/50 transition">
+                            <tr class="hover:bg-[#F8FAFC] transition duration-150">
                                 <td class="px-6 py-4 whitespace-nowrap">
                                     <span class="text-sm font-bold text-accent-blue font-mono">
                                         BK-{{ str_pad($booking->id_booking, 3, '0', STR_PAD_LEFT) }}
@@ -68,7 +68,7 @@
                                     </span>
                                 </td>
                                 <td class="px-6 py-4 whitespace-nowrap">
-                                    <span class="text-sm font-medium text-gray-600">
+                                    <span class="text-sm font-medium text-gray-700">
                                         {{ $perkara->kategori?->nama_kategori ?? '-' }}
                                     </span>
                                 </td>
@@ -81,17 +81,17 @@
                                     </div>
                                 </td>
                                 <td class="px-6 py-4 whitespace-nowrap">
-                                    <span class="inline-flex text-xs font-bold px-2 py-0.5 rounded uppercase tracking-wider
-                                        {{ $booking->metode_konsultasi === 'online' ? 'bg-blue-50 text-blue-700' : 'bg-gray-100 text-gray-700' }}">
-                                        {{ $booking->metode_konsultasi }}
-                                    </span>
+                                    <x-status-badge :status="$booking->metode_konsultasi" />
                                 </td>
                                 <td class="px-6 py-4 whitespace-nowrap">
                                     <x-status-badge :status="$booking->status_booking" />
                                 </td>
-                                <td class="px-6 py-4 whitespace-nowrap text-right">
-                                    <a href="{{ route('klien.booking-konsultasi.show', $booking) }}" class="bg-white border border-[#E2E8F0] hover:border-accent-blue text-navy-dark hover:text-accent-blue font-bold text-xs px-4 py-2 rounded-xl transition shadow-sm inline-flex items-center gap-1.5">
-                                        Detail
+                                <td class="px-6 py-4 whitespace-nowrap text-right text-xs font-bold">
+                                    <a href="{{ route('klien.booking-konsultasi.show', $booking) }}" class="inline-flex items-center gap-1 text-navy-dark hover:text-accent-blue hover:underline transition">
+                                        <span>Detail</span>
+                                        <svg class="h-3 w-3 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+                                        </svg>
                                     </a>
                                 </td>
                             </tr>
@@ -107,7 +107,7 @@
             </div>
 
             <!-- Mobile Card Layout -->
-            <div class="block md:hidden divide-y divide-gray-100 bg-white">
+            <div class="block md:hidden divide-y divide-[#E2E8F0] bg-white">
                 @forelse ($bookingKonsultasi as $booking)
                     @php
                         $jadwal = $booking->jadwalKonsultasi;
@@ -132,12 +132,12 @@
                                 </div>
                             </div>
                             <div class="flex items-center gap-2">
-                                <span class="inline-flex text-xs font-bold px-2 py-0.5 rounded uppercase tracking-wider
-                                    {{ $booking->metode_konsultasi === 'online' ? 'bg-blue-50 text-blue-700' : 'bg-gray-100 text-gray-700' }}">
-                                    {{ $booking->metode_konsultasi }}
-                                </span>
-                                <a href="{{ route('klien.booking-konsultasi.show', $booking) }}" class="bg-white border border-[#E2E8F0] hover:border-accent-blue text-navy-dark hover:text-accent-blue font-bold text-xs px-3 py-1.5 rounded-xl transition shadow-sm">
-                                    Detail
+                                <x-status-badge :status="$booking->metode_konsultasi" />
+                                <a href="{{ route('klien.booking-konsultasi.show', $booking) }}" class="inline-flex items-center gap-1 text-xs font-bold text-navy-dark hover:text-accent-blue hover:underline">
+                                    <span>Detail</span>
+                                    <svg class="h-3 w-3 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+                                    </svg>
                                 </a>
                             </div>
                         </div>
@@ -150,7 +150,7 @@
             </div>
 
             @if($bookingKonsultasi->hasPages())
-                <div class="p-6 border-t border-[#F1F5F9] bg-[#F8FAFC]/50">
+                <div class="p-6 border-t border-[#E2E8F0] bg-[#F8FAFC]">
                     {{ $bookingKonsultasi->links() }}
                 </div>
             @endif

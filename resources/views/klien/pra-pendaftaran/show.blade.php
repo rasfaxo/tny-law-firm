@@ -91,40 +91,45 @@
 
         <!-- 2. INFORMASI & KRONOLOGI GRID -->
         <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 items-stretch">
-            
             <!-- Informasi Pengajuan -->
-            <x-card class="flex flex-col justify-start">
+            <x-card class="space-y-6">
                 <div>
-                    <h3 class="font-bold text-navy-dark text-lg mb-6">Informasi Pengajuan</h3>
-                    <div class="space-y-0">
-                        <div class="grid grid-cols-3 py-4 border-b border-[#F1F5F9]">
-                            <span class="text-xs font-bold text-gray-400 uppercase tracking-wider col-span-1 flex items-center">Kategori</span>
-                            <span class="text-sm font-semibold text-navy-dark col-span-2">{{ $praPendaftaranPerkara->kategori?->nama_kategori ?? '-' }}</span>
-                        </div>
-                        <div class="grid grid-cols-3 py-4 border-b border-[#F1F5F9]">
-                            <span class="text-xs font-bold text-gray-400 uppercase tracking-wider col-span-1 flex items-center">Judul</span>
-                            <span class="text-sm font-semibold text-navy-dark col-span-2">{{ $praPendaftaranPerkara->judul_perkara }}</span>
-                        </div>
-                        <div class="grid grid-cols-3 py-4 border-b border-[#F1F5F9]">
-                            <span class="text-xs font-bold text-gray-400 uppercase tracking-wider col-span-1 flex items-center">Tanggal Pengajuan</span>
-                            <span class="text-sm font-semibold text-navy-dark col-span-2">{{ $praPendaftaranPerkara->tanggal_pengajuan?->format('d M Y') ?? '-' }}</span>
-                        </div>
-                        <div class="grid grid-cols-3 py-4 border-b border-[#F1F5F9]">
-                            <span class="text-xs font-bold text-gray-400 uppercase tracking-wider col-span-1 flex items-center">Status</span>
-                            <span class="text-sm font-semibold text-navy-dark col-span-2">{{ ucwords(str_replace('_', ' ', $praPendaftaranPerkara->status_pengajuan)) }}</span>
+                    <h3 class="font-bold text-navy-dark text-lg">Informasi Pengajuan</h3>
+                    <p class="text-xs text-gray-400 mt-1">Data pokok pra-pendaftaran perkara.</p>
+                </div>
+
+                <div class="space-y-0 divide-y divide-[#E2E8F0]">
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-2 py-4 pt-0">
+                        <span class="text-xs font-bold text-gray-400 uppercase tracking-wider flex items-center">Kategori</span>
+                        <span class="text-sm font-semibold text-navy-dark md:col-span-2">{{ $praPendaftaranPerkara->kategori?->nama_kategori ?? '-' }}</span>
+                    </div>
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-2 py-4">
+                        <span class="text-xs font-bold text-gray-400 uppercase tracking-wider flex items-center">Judul</span>
+                        <span class="text-sm font-semibold text-navy-dark md:col-span-2">{{ $praPendaftaranPerkara->judul_perkara }}</span>
+                    </div>
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-2 py-4">
+                        <span class="text-xs font-bold text-gray-400 uppercase tracking-wider flex items-center">Tanggal Pengajuan</span>
+                        <span class="text-sm font-semibold text-navy-dark md:col-span-2">{{ $praPendaftaranPerkara->tanggal_pengajuan?->format('d M Y') ?? '-' }}</span>
+                    </div>
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-2 py-4 pb-0">
+                        <span class="text-xs font-bold text-gray-400 uppercase tracking-wider flex items-center">Status</span>
+                        <div class="text-sm font-semibold text-navy-dark md:col-span-2">
+                            <x-status-badge :status="$praPendaftaranPerkara->status_pengajuan" />
                         </div>
                     </div>
                 </div>
             </x-card>
 
             <!-- Kronologi Perkara -->
-            <x-card class="flex flex-col">
-                <h3 class="font-bold text-navy-dark text-lg mb-6">Kronologi Perkara</h3>
-                <p class="text-sm text-gray-600 leading-relaxed whitespace-pre-line">
+            <x-card class="space-y-6">
+                <div>
+                    <h3 class="font-bold text-navy-dark text-lg">Kronologi Perkara</h3>
+                    <p class="text-xs text-gray-400 mt-1">Rangkaian peristiwa perkara yang diajukan.</p>
+                </div>
+                <div class="text-sm text-gray-600 leading-relaxed bg-[#F8FAFC] border border-[#E2E8F0] p-4 rounded-xl whitespace-pre-line">
                     {{ $praPendaftaranPerkara->kronologi }}
-                </p>
+                </div>
             </x-card>
-            
         </div>
 
         <!-- 3. INFORMASI KONSULTASI (Jika ada) -->
@@ -138,7 +143,7 @@
                 <div class="flex items-center justify-between">
                     <div>
                         <h3 class="font-bold text-navy-dark text-lg">Informasi Konsultasi</h3>
-                        <p class="text-xs text-gray-500 mt-1">Status dan detail jadwal pertemuan konsultasi Anda.</p>
+                        <p class="text-xs text-gray-400 mt-1">Status dan detail jadwal pertemuan konsultasi Anda.</p>
                     </div>
                     <div class="flex gap-2">
                         <x-status-badge :status="$bookingTampil->status_booking" />
@@ -201,7 +206,7 @@
                 </div>
 
                 @if ($bookingTampil->catatan_preferensi_klien || $bookingTampil->catatan_konsultasi)
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 pt-4 border-t border-[#F1F5F9]">
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 pt-4 border-t border-[#E2E8F0]">
                         @if ($bookingTampil->catatan_preferensi_klien)
                             <div>
                                 <span class="block text-xs font-bold text-gray-400 uppercase tracking-wider">Catatan Preferensi Klien</span>
@@ -218,7 +223,7 @@
                 @endif
 
                 @if ($bisaAjukanReschedule)
-                    <div class="pt-4 border-t border-[#F1F5F9] flex justify-end">
+                    <div class="pt-4 border-t border-[#E2E8F0] flex justify-end">
                         <x-secondary-button href="{{ route('klien.permintaan-reschedule.create', $bookingAktif) }}" tag="a" class="justify-center gap-2">
                             <svg class="h-4 w-4 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path>
@@ -227,7 +232,7 @@
                         </x-secondary-button>
                     </div>
                 @endif
-            </div>
+            </x-card>
         @endif
 
         <!-- 4. CATATAN PERBAIKAN DOKUMEN (Jika berkas_tidak_lengkap) -->
@@ -236,15 +241,15 @@
                 $catatanPerbaikan = $praPendaftaranPerkara->verifikasiBerkas
                     ->flatMap(fn ($verifikasi) => $verifikasi->catatanVerifikasi);
             @endphp
-            <x-card class="p-0 overflow-hidden sm:p-0 border-red-100">
-                <div class="p-6 border-b border-red-50 bg-red-50/30">
+            <x-card class="p-0 overflow-hidden sm:p-0 border-red-100 space-y-6">
+                <div class="p-6 border-b border-red-100 bg-red-50/30">
                     <h4 class="font-bold text-red-900 text-lg">Catatan Perbaikan Dokumen</h4>
-                    <p class="text-sm text-red-700 mt-1">Harap perbaiki dokumen bermasalah di bawah ini sesuai instruksi verifikator Staf Legal.</p>
+                    <p class="text-xs text-red-700 mt-1">Harap perbaiki dokumen bermasalah di bawah ini sesuai instruksi verifikator Staf Legal.</p>
                 </div>
 
                 <!-- Desktop Table Layout -->
-                <div class="hidden md:block overflow-x-auto">
-                    <table class="min-w-full divide-y divide-[#F1F5F9]">
+                <div class="hidden md:block overflow-x-auto border border-[#E2E8F0] rounded-xl mx-6 mb-6">
+                    <table class="min-w-full divide-y divide-[#E2E8F0]">
                         <thead class="bg-[#F8FAFC]">
                             <tr>
                                 <th class="px-6 py-4 text-left text-xs font-bold text-gray-400 uppercase tracking-wider">Nama Dokumen</th>
@@ -253,7 +258,7 @@
                                 <th class="px-6 py-4 text-right text-xs font-bold text-gray-400 uppercase tracking-wider">Aksi</th>
                             </tr>
                         </thead>
-                        <tbody class="bg-white divide-y divide-[#F1F5F9]">
+                        <tbody class="bg-white divide-y divide-[#E2E8F0]">
                             @forelse ($catatanPerbaikan as $catatan)
                                 @php
                                     $dokumenCatatan = $catatan->dokumenPerkara;
@@ -261,10 +266,10 @@
                                         && $dokumenCatatan
                                         && $dokumenCatatan->status_dokumen === 'perlu_perbaikan';
                                 @endphp
-                                <tr>
+                                <tr class="hover:bg-[#F8FAFC] transition duration-150">
                                     <td class="px-6 py-4 text-sm font-semibold text-navy-dark">
                                         <div class="font-semibold">{{ $dokumenCatatan?->nama_dokumen ?? '-' }}</div>
-                                        <div class="text-xs text-gray-400 font-normal mt-0.5">{{ $dokumenCatatan?->jenis_dokumen ?? '-' }}</div>
+                                        <div class="text-xs text-gray-400 font-mono mt-0.5">{{ $dokumenCatatan?->jenis_dokumen ?? '-' }}</div>
                                     </td>
                                     <td class="px-6 py-4 text-sm text-gray-600 max-w-[250px] leading-relaxed whitespace-pre-line">
                                         {{ $catatan->isi_catatan }}
@@ -272,7 +277,7 @@
                                     <td class="px-6 py-4 whitespace-nowrap">
                                         <x-status-badge :status="$catatan->status_perbaikan" />
                                     </td>
-                                    <td class="px-6 py-4 whitespace-nowrap text-right text-sm">
+                                    <td class="px-6 py-4 whitespace-nowrap text-right text-xs font-bold">
                                         @if ($bisaUploadPerbaikan)
                                             <a href="{{ route('klien.perbaikan-dokumen.create', $catatan) }}" class="inline-flex items-center gap-1.5 text-xs font-bold text-accent-blue hover:underline transition">
                                                 <span>Unggah Ulang</span>
@@ -297,7 +302,7 @@
                 </div>
 
                 <!-- Mobile Card Layout -->
-                <div class="block md:hidden divide-y divide-[#F1F5F9] bg-white">
+                <div class="block md:hidden divide-y divide-[#E2E8F0] bg-white">
                     @forelse ($catatanPerbaikan as $catatan)
                         @php
                             $dokumenCatatan = $catatan->dokumenPerkara;
@@ -339,11 +344,11 @@
         @endif
 
         <!-- 5. DOKUMEN PENDUKUNG -->
-        <x-card class="p-0 overflow-hidden sm:p-0">
-            <div class="p-6 sm:p-8 border-b border-[#F1F5F9] flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+        <x-card class="p-0 overflow-hidden sm:p-0 space-y-6">
+            <div class="p-6 border-b border-[#E2E8F0] flex flex-col sm:flex-row sm:items-center justify-between gap-4">
                 <div>
                     <h3 class="font-bold text-navy-dark text-lg">Dokumen Pendukung</h3>
-                    <p class="text-sm text-gray-500 mt-1">Dokumen yang telah diunggah pada pengajuan ini.</p>
+                    <p class="text-xs text-gray-400 mt-1">Dokumen yang telah diunggah pada pengajuan ini.</p>
                 </div>
                 @if ($praPendaftaranPerkara->status_pengajuan === 'menunggu_verifikasi')
                     <x-primary-button href="{{ route('klien.dokumen.create', $praPendaftaranPerkara) }}" tag="a" class="gap-2">
@@ -356,40 +361,40 @@
             </div>
 
             <!-- Desktop Table Layout -->
-            <div class="hidden md:block overflow-x-auto">
-                <table class="min-w-full divide-y divide-[#F1F5F9]">
-                    <thead class="bg-white">
+            <div class="hidden md:block overflow-x-auto border border-[#E2E8F0] rounded-xl mx-6 mb-6">
+                <table class="min-w-full divide-y divide-[#E2E8F0]">
+                    <thead class="bg-[#F8FAFC]">
                         <tr>
-                            <th class="px-8 py-5 text-left text-xs font-bold text-gray-500 uppercase tracking-widest border-b border-[#F1F5F9]">Nama</th>
-                            <th class="px-8 py-5 text-left text-xs font-bold text-gray-500 uppercase tracking-widest border-b border-[#F1F5F9]">Jenis</th>
-                            <th class="px-8 py-5 text-left text-xs font-bold text-gray-500 uppercase tracking-widest border-b border-[#F1F5F9]">Status</th>
-                            <th class="px-8 py-5 text-right text-xs font-bold text-gray-500 uppercase tracking-widest border-b border-[#F1F5F9]">Aksi</th>
+                            <th class="px-6 py-4 text-left text-xs font-bold text-gray-400 uppercase tracking-wider">Nama Dokumen</th>
+                            <th class="px-6 py-4 text-left text-xs font-bold text-gray-400 uppercase tracking-wider">Jenis</th>
+                            <th class="px-6 py-4 text-left text-xs font-bold text-gray-400 uppercase tracking-wider">Status</th>
+                            <th class="px-6 py-4 text-right text-xs font-bold text-gray-400 uppercase tracking-wider">Aksi</th>
                         </tr>
                     </thead>
-                    <tbody class="bg-white divide-y divide-[#F1F5F9]">
+                    <tbody class="bg-white divide-y divide-[#E2E8F0]">
                         @forelse ($praPendaftaranPerkara->dokumenAktif as $dokumen)
-                            <tr class="hover:bg-gray-50/50 transition">
-                                <td class="px-8 py-5 whitespace-nowrap text-sm font-semibold text-navy-dark">
+                            <tr class="hover:bg-[#F8FAFC] transition duration-150">
+                                <td class="px-6 py-4 whitespace-nowrap text-sm font-semibold text-navy-dark">
                                     {{ $dokumen->nama_dokumen }}
                                 </td>
-                                <td class="px-8 py-5 whitespace-nowrap text-xs text-gray-500 font-medium">
-                                    <span class="bg-gray-100 px-3 py-1 rounded-md">{{ $dokumen->jenis_dokumen }}</span>
+                                <td class="px-6 py-4 whitespace-nowrap text-xs text-gray-500 font-mono">
+                                    {{ $dokumen->jenis_dokumen }}
                                 </td>
-                                <td class="px-8 py-5 whitespace-nowrap">
+                                <td class="px-6 py-4 whitespace-nowrap">
                                     <x-status-badge :status="$dokumen->status_dokumen" />
                                 </td>
-                                <td class="px-8 py-5 whitespace-nowrap text-right text-sm">
-                                    <a href="{{ route('klien.dokumen.show', $dokumen) }}" class="inline-flex items-center gap-1.5 text-sm font-bold text-accent-blue hover:text-blue-800 transition">
+                                <td class="px-6 py-4 whitespace-nowrap text-right text-xs font-bold">
+                                    <a href="{{ route('klien.dokumen.show', $dokumen) }}" class="inline-flex items-center gap-1.5 text-xs font-bold text-accent-blue hover:underline transition">
                                         <span>Lihat Dokumen</span>
-                                        <svg class="h-4 w-4 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002-2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"></path>
+                                        <svg class="h-3.5 w-3.5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"></path>
                                         </svg>
                                     </a>
                                 </td>
                             </tr>
                         @empty
                             <tr>
-                                <td colspan="4" class="px-8 py-12 text-center">
+                                <td colspan="4" class="px-6 py-12 text-center">
                                     <x-empty-state title="Tidak Ada Dokumen" message="Belum ada dokumen aktif yang diunggah." />
                                 </td>
                             </tr>
@@ -399,7 +404,7 @@
             </div>
 
             <!-- Mobile Card Layout -->
-            <div class="block md:hidden divide-y divide-[#F1F5F9] bg-white">
+            <div class="block md:hidden divide-y divide-[#E2E8F0] bg-white">
                 @forelse ($praPendaftaranPerkara->dokumenAktif as $dokumen)
                     <div class="p-6 space-y-3">
                         <div class="flex justify-between items-center">
@@ -411,10 +416,10 @@
                             <span class="text-gray-400">{{ $dokumen->created_at?->format('d M Y') ?? '-' }}</span>
                         </div>
                         <div class="flex justify-end pt-3 mt-2 border-t border-gray-50">
-                            <a href="{{ route('klien.dokumen.show', $dokumen) }}" class="inline-flex items-center gap-1.5 text-sm font-bold text-accent-blue hover:text-blue-800 transition">
+                            <a href="{{ route('klien.dokumen.show', $dokumen) }}" class="inline-flex items-center gap-1.5 text-xs font-bold text-accent-blue hover:underline transition">
                                 <span>Lihat Dokumen</span>
-                                <svg class="h-4 w-4 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002-2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"></path>
+                                <svg class="h-3.5 w-3.5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"></path>
                                 </svg>
                             </a>
                         </div>
@@ -431,7 +436,7 @@
         <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 items-start">
             <!-- Timeline Riwayat Status -->
             <x-card class="p-0 overflow-hidden sm:p-0">
-                <div class="p-6 border-b border-[#F1F5F9]">
+                <div class="p-6 border-b border-[#E2E8F0]">
                     <h4 class="font-bold text-navy-dark text-base">Timeline Riwayat Status</h4>
                 </div>
                 <div class="p-6">
@@ -472,7 +477,7 @@
                 <!-- Hasil Verifikasi Berkas -->
                 @if ($verifikasiTerakhir)
                     <x-card class="space-y-4">
-                        <div class="border-b border-[#F1F5F9] pb-3">
+                        <div class="border-b border-[#E2E8F0] pb-3">
                             <h4 class="font-bold text-navy-dark text-base">Hasil Verifikasi Terakhir</h4>
                             <p class="text-xs text-gray-400 mt-1">Catatan pemeriksaan oleh Staf Legal</p>
                         </div>
@@ -483,7 +488,7 @@
                             </div>
                             <div>
                                 <span class="block text-xs font-bold text-gray-400 uppercase tracking-wider">Catatan Umum</span>
-                                <p class="text-xs text-gray-600 bg-gray-50/50 p-3 rounded-xl border border-gray-100 mt-1 leading-relaxed whitespace-pre-line italic">
+                                <p class="text-xs text-gray-600 bg-[#F8FAFC] p-3 rounded-xl border border-[#E2E8F0] mt-1 leading-relaxed whitespace-pre-line italic">
                                     "{{ $verifikasiTerakhir->catatan_verifikasi_umum ?? 'Berkas diperiksa.' }}"
                                 </p>
                             </div>
@@ -494,18 +499,18 @@
                 <!-- Histori Dokumen Lama -->
                 @if ($praPendaftaranPerkara->riwayatDokumen->isNotEmpty())
                     <x-card class="p-0 overflow-hidden sm:p-0">
-                        <div class="p-6 border-b border-[#F1F5F9]">
+                        <div class="p-6 border-b border-[#E2E8F0]">
                             <h4 class="font-bold text-navy-dark text-base">Histori Dokumen Lama</h4>
                             <p class="text-xs text-gray-400 mt-1">Arsip dokumen sebelum perbaikan</p>
                         </div>
-                        <div class="divide-y divide-[#F1F5F9]">
+                        <div class="divide-y divide-[#E2E8F0]">
                             @foreach ($praPendaftaranPerkara->riwayatDokumen as $riwayatDok)
-                                <div class="p-4 flex justify-between items-center hover:bg-gray-50/50 transition">
+                                <div class="p-4 flex justify-between items-center hover:bg-[#F8FAFC] transition duration-150">
                                     <div>
                                         <p class="text-sm font-semibold text-gray-600">{{ $riwayatDok->nama_dokumen }}</p>
                                         <p class="text-xs text-gray-400 mt-0.5">{{ $riwayatDok->created_at?->format('d M Y') ?? '-' }}</p>
                                     </div>
-                                    <a href="{{ route('klien.dokumen.show', $riwayatDok) }}" class="text-xs font-semibold text-accent-blue hover:underline">
+                                    <a href="{{ route('klien.dokumen.show', $riwayatDok) }}" class="text-xs font-bold text-accent-blue hover:underline">
                                         Lihat
                                     </a>
                                 </div>
