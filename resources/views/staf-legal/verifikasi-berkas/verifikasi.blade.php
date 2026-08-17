@@ -159,7 +159,6 @@
                                         <x-text-input tag="textarea" name="dokumen[{{ $dokumen->id_dokumen }}][catatan]" rows="3" 
                                                   class="w-full resize-none"
                                                   placeholder="Tuliskan alasan penolakan atau catatan perbaikan dokumen ini..."
-                                                  x-model="docStatus['{{ $dokumen->id_dokumen }}'] === 'perlu_perbaikan' ? undefined : (docStatus['{{ $dokumen->id_dokumen }}'] = 'valid' ? '' : '')"
                                                   x-bind:disabled="statusVerifikasi === 'berkas_lengkap' || docStatus['{{ $dokumen->id_dokumen }}'] !== 'perlu_perbaikan'"
                                                   x-bind:required="statusVerifikasi === 'berkas_tidak_lengkap' && docStatus['{{ $dokumen->id_dokumen }}'] === 'perlu_perbaikan'">{{ old("dokumen.{$dokumen->id_dokumen}.catatan") }}</x-text-input>
                                     </td>
@@ -230,9 +229,8 @@
                                 <x-text-input tag="textarea" name="dokumen[{{ $dokumen->id_dokumen }}][catatan_mobile]" rows="2" 
                                           class="w-full resize-none"
                                           placeholder="Tuliskan alasan penolakan atau catatan perbaikan..."
-                                          x-model="docStatus['{{ $dokumen->id_dokumen }}'] === 'perlu_perbaikan' ? undefined : (docStatus['{{ $dokumen->id_dokumen }}'] = 'valid' ? '' : '')"
-                                          :disabled="statusVerifikasi === 'berkas_lengkap' || docStatus['{{ $dokumen->id_dokumen }}'] !== 'perlu_perbaikan'"
-                                          :required="statusVerifikasi === 'berkas_tidak_lengkap' && docStatus['{{ $dokumen->id_dokumen }}'] === 'perlu_perbaikan'">{{ old("dokumen.{$dokumen->id_dokumen}.catatan") }}</x-text-input>
+                                          x-bind:disabled="statusVerifikasi === 'berkas_lengkap' || docStatus['{{ $dokumen->id_dokumen }}'] !== 'perlu_perbaikan'"
+                                          x-bind:required="statusVerifikasi === 'berkas_tidak_lengkap' && docStatus['{{ $dokumen->id_dokumen }}'] === 'perlu_perbaikan'">{{ old("dokumen.{$dokumen->id_dokumen}.catatan") }}</x-text-input>
                             </div>
                         </div>
                     @empty
