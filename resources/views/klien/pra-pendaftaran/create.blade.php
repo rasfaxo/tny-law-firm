@@ -112,7 +112,7 @@
                                 <!-- Jenis Dokumen -->
                                 <div class="space-y-2">
                                     <label :for="'jenis_dokumen_' + index" class="block text-xs font-bold text-gray-400 uppercase tracking-wider">Jenis Dokumen <span class="text-red-500">*</span></label>
-                                    <x-select :name="'dokumen[' + index + '][jenis_dokumen]'" :id="'jenis_dokumen_' + index" required>
+                                    <x-select ::name="'dokumen[' + index + '][jenis_dokumen]'" ::id="'jenis_dokumen_' + index" required>
                                         <option value="">Pilih jenis dokumen</option>
                                         <option value="ktp">KTP</option>
                                         <option value="kk">Kartu Keluarga</option>
