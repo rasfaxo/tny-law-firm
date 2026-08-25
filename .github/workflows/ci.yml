@@ -1,0 +1,55 @@
+name: CI Pipeline
+
+on:
+  push:
+    branches:
+      - development
+      - main
+  pull_request:
+    branches:
+      - development
+      - main
+
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.3'
+          coverage: none
+          # shivammathur/setup-php sudah mengaktifkan composer cache secara default
+
+      - name: Install PHP Dependencies
+        # Menghapus --no-scripts agar artisan package:discover dapat berjalan
+        run: composer install -q --no-ansi --no-interaction --prefer-dist
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      - name: Install Frontend Dependencies
+        # Menggunakan npm ci karena package-lock.json tersedia di repository
+        run: npm ci
+
+      - name: Run Laravel Pint (Validation)
+        run: vendor/bin/pint --test
+
+      - name: Prepare Laravel Environment
+        run: |
+          cp .env.example .env
+          php artisan key:generate
+
+      - name: Run Automated Tests
+        # Database testing sudah terkonfigurasi ke SQLite :memory: pada phpunit.xml
+        run: php artisan test
+
+      - name: Run Frontend Production Build
+        run: npm run build
