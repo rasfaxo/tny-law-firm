@@ -39,6 +39,9 @@ jobs:
         # Menggunakan npm ci karena package-lock.json tersedia di repository
         run: npm ci
 
+      - name: Run Frontend Production Build
+        run: npm run build
+
       - name: Run Laravel Pint (Validation)
         run: vendor/bin/pint --test
         continue-on-error: true
@@ -51,6 +54,3 @@ jobs:
       - name: Run Automated Tests
         # Database testing sudah terkonfigurasi ke SQLite :memory: pada phpunit.xml
         run: php artisan test
-
-      - name: Run Frontend Production Build
-        run: npm run build

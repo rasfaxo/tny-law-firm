@@ -22,9 +22,13 @@ class PraPendaftaranPerkaraTest extends TestCase
             "id_kategori" => $kategori->id_kategori,
             "judul_perkara" => "Sengketa Perdata",
             "kronologi" => "Kronologi perkara untuk kebutuhan test.",
-            "nama_dokumen" => "KTP Klien",
-            "jenis_dokumen" => "ktp",
-            "file_dokumen" => \Illuminate\Http\UploadedFile::fake()->image('ktp.jpg')->size(100),
+            "dokumen" => [
+                [
+                    "nama_dokumen" => "KTP Klien",
+                    "jenis_dokumen" => "ktp",
+                    "file_dokumen" => \Illuminate\Http\UploadedFile::fake()->image('ktp.jpg')->size(100),
+                ],
+            ],
         ]);
 
         $pengajuan = PraPendaftaranPerkara::query()->firstOrFail();
