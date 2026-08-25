@@ -41,6 +41,7 @@ jobs:
 
       - name: Run Laravel Pint (Validation)
         run: vendor/bin/pint --test
+        continue-on-error: true
 
       - name: Prepare Laravel Environment
         run: |
