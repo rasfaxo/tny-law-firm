@@ -72,7 +72,7 @@ class PraPendaftaranController extends Controller
         );
 
         abort_unless(
-            \Illuminate\Support\Facades\Storage::disk("local")->exists($dokumenPerkara->file_path),
+            \Illuminate\Support\Facades\Storage::disk(config("filesystems.document_disk"))->exists($dokumenPerkara->file_path),
             404,
         );
 
@@ -80,7 +80,7 @@ class PraPendaftaranController extends Controller
         $baseName = \Illuminate\Support\Str::slug($dokumenPerkara->nama_dokumen) ?: "dokumen-perkara";
         $fileName = $extension ? "{$baseName}.{$extension}" : $baseName;
 
-        return \Illuminate\Support\Facades\Storage::disk("local")->download(
+        return \Illuminate\Support\Facades\Storage::disk(config("filesystems.document_disk"))->download(
             $dokumenPerkara->file_path,
             $fileName
         );

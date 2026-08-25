@@ -24,7 +24,7 @@ class PerbaikanDokumenService
         UploadedFile $file,
         int $klienId,
     ): DokumenPerkara {
-        $filePath = $file->store("dokumen-perkara", "local");
+        $filePath = $file->store("dokumen-perkara", config("filesystems.document_disk"));
 
         if ($filePath === false) {
             throw new RuntimeException(
@@ -104,7 +104,7 @@ class PerbaikanDokumenService
                 return $dokumenBaru;
             });
         } catch (Throwable $exception) {
-            Storage::disk("local")->delete($filePath);
+            Storage::disk(config("filesystems.document_disk"))->delete($filePath);
 
             throw $exception;
         }

@@ -73,11 +73,11 @@ class DokumenPerkaraController extends Controller
         $this->ensureDokumenOwnedByKlien($request, $dokumenPerkara);
 
         abort_unless(
-            Storage::disk("local")->exists($dokumenPerkara->file_path),
+            Storage::disk(config("filesystems.document_disk"))->exists($dokumenPerkara->file_path),
             404,
         );
 
-        return Storage::disk("local")->download(
+        return Storage::disk(config("filesystems.document_disk"))->download(
             $dokumenPerkara->file_path,
             $this->downloadFileName($dokumenPerkara),
         );
