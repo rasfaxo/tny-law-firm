@@ -315,6 +315,57 @@ Aturan:
 
 # Booking Konsultasi Status Rules
 
+## Metode Konsultasi
+
+Kolom:
+
+```text
+booking_konsultasi.metode_konsultasi
+```
+
+Metode konsultasi yang valid:
+
+| Slug      | Label UI | Keterangan                                  |
+| --------- | -------- | ------------------------------------------- |
+| `online`  | Online   | Konsultasi dilakukan secara daring (online) |
+| `offline` | Offline  | Konsultasi dilakukan tatap muka (offline)   |
+
+---
+
+## Status Konfirmasi Konsultasi
+
+Kolom:
+
+```text
+booking_konsultasi.status_konfirmasi_konsultasi
+```
+
+Status konfirmasi yang valid:
+
+| Slug                  | Label UI            | Keterangan                                          |
+| --------------------- | ------------------- | --------------------------------------------------- |
+| `menunggu_konfirmasi` | Menunggu Konfirmasi | Admin belum mengonfirmasi link/lokasi konsultasi    |
+| `terkonfirmasi`       | Terkonfirmasi       | Admin sudah mengonfirmasi link/lokasi konsultasi    |
+
+Aturan:
+
+1. Booking baru mendapat status `menunggu_konfirmasi`.
+2. Admin mengonfirmasi detail dengan menambahkan link untuk metode `online` atau lokasi untuk metode `offline`.
+3. `dikonfirmasi_pada` diisi saat Admin menyimpan konfirmasi.
+4. `id_admin_konfirmasi` berisi Admin yang mengonfirmasi detail konsultasi.
+5. Setelah dikonfirmasi Admin, status menjadi `terkonfirmasi`.
+
+## Status Konfirmasi Transition Flow
+
+Transisi valid:
+
+| Dari                  | Ke                | Dipicu Oleh     | Keterangan                                                    |
+| --------------------- | ----------------- | --------------- | ------------------------------------------------------------- |
+| -                     | `menunggu_konfirmasi` | Klien / Sistem | Booking baru dibuat dan menunggu detail teknis dari Admin     |
+| `menunggu_konfirmasi` | `terkonfirmasi`   | Admin / Sistem  | Admin melengkapi link/lokasi dan instruksi final konsultasi   |
+
+---
+
 ## Status Booking
 
 Kolom:
@@ -328,7 +379,7 @@ Status booking yang valid:
 | Slug         | Label UI   | Keterangan                                                          |
 | ------------ | ---------- | ------------------------------------------------------------------- |
 | `aktif`      | Aktif      | Booking konsultasi aktif dan sedang menunggu pelaksanaan konsultasi |
-| `dibatalkan` | Dibatalkan | Booking dibatalkan jika fitur pembatalan disetujui                  |
+| `dibatalkan` | Dibatalkan | Booking lama dibatalkan karena permintaan reschedule disetujui Admin |
 | `selesai`    | Selesai    | Konsultasi sudah selesai                                            |
 
 ---
@@ -337,11 +388,11 @@ Status booking yang valid:
 
 Transisi valid:
 
-| Dari    | Ke           | Dipicu Oleh           | Keterangan                                  |
-| ------- | ------------ | --------------------- | ------------------------------------------- |
-| -       | `aktif`      | Klien / Sistem        | Booking dibuat setelah Klien memilih jadwal |
-| `aktif` | `selesai`    | Admin / Sistem        | Admin menandai konsultasi selesai           |
-| `aktif` | `dibatalkan` | Sistem / Role terkait | Hanya jika fitur pembatalan disetujui       |
+| Dari    | Ke           | Dipicu Oleh    | Keterangan                                                     |
+| ------- | ------------ | -------------- | -------------------------------------------------------------- |
+| -       | `aktif`      | Klien / Sistem | Booking dibuat setelah Klien memilih jadwal                    |
+| `aktif` | `selesai`    | Admin / Sistem | Admin menandai konsultasi selesai                              |
+| `aktif` | `dibatalkan` | Admin / Sistem | Booking lama dibatalkan karena permintaan reschedule disetujui |
 
 Aturan:
 
@@ -354,9 +405,40 @@ Aturan:
 7. Setelah booking berhasil, status pengajuan menjadi `jadwal_dipilih`.
 8. Setelah konsultasi selesai, status booking menjadi `selesai`.
 9. Setelah konsultasi selesai, status pengajuan terkait menjadi `selesai`.
-10. Perubahan status pengajuan wajib dicatat pada `riwayat_status`.
-11. Fitur pembatalan booking tidak dibuat pada fase awal kecuali disetujui.
-12. Jika booking `selesai`, slot tidak otomatis menjadi `tersedia` kembali kecuali ada aturan baru yang disetujui.
+10. Jika permintaan reschedule disetujui, booking lama menjadi `dibatalkan`, slot lama menjadi `tersedia`, dan booking baru menjadi `aktif` pada slot baru.
+11. Jika permintaan reschedule ditolak, booking lama tetap `aktif` dan slot lama tetap `terisi`.
+12. Persetujuan reschedule tetap membuat `riwayat_status` dengan status pengajuan `jadwal_dipilih` dan keterangan perubahan jadwal.
+13. Perubahan status pengajuan wajib dicatat pada `riwayat_status`.
+14. Fitur pembatalan booking manual di luar alur reschedule tidak dibuat pada fase awal kecuali disetujui.
+15. Jika booking `selesai`, slot tidak otomatis menjadi `tersedia` kembali kecuali ada aturan baru yang disetujui.
+
+---
+
+# Permintaan Reschedule Status Rules
+
+## Status Reschedule
+
+Kolom:
+
+```text
+permintaan_reschedule.status_reschedule
+```
+
+Status yang valid:
+
+| Slug                   | Label UI             | Keterangan                                      |
+| ---------------------- | -------------------- | ----------------------------------------------- |
+| `menunggu_persetujuan` | Menunggu Persetujuan | Klien telah mengajukan reschedule, tunggu Admin |
+| `disetujui`            | Disetujui            | Admin telah menyetujui reschedule Klien         |
+| `ditolak`              | Ditolak              | Admin menolak reschedule Klien                  |
+
+Aturan Transisi:
+
+1. Permintaan baru berstatus `menunggu_persetujuan`.
+2. Selama reschedule menunggu, booking lama tetap `aktif`, jadwal lama tetap `terisi`, dan status pengajuan tetap `jadwal_dipilih`.
+3. Jika Admin menyetujui: reschedule menjadi `disetujui`, booking lama menjadi `dibatalkan`, jadwal lama menjadi `tersedia`, booking baru `aktif` pada `jadwal_baru` yang menjadi `terisi`, dan status pengajuan tetap `jadwal_dipilih`.
+4. Jika Admin menolak: reschedule menjadi `ditolak`, booking lama tetap `aktif`, jadwal lama tetap `terisi`, dan status pengajuan tetap `jadwal_dipilih`.
+5. Persetujuan reschedule wajib membuat record `riwayat_status` dengan keterangan perubahan jadwal walaupun status pengajuan tetap `jadwal_dipilih`.
 
 ---
 
@@ -385,7 +467,8 @@ Aturan:
 5. `keterangan` boleh diisi deskripsi perubahan status.
 6. Waktu perubahan memakai `created_at`.
 7. Jangan menambahkan kolom `tanggal_status`.
-8. Jangan membuat riwayat status untuk status dokumen, status slot, atau status booking kecuali perubahan tersebut juga mengubah `status_pengajuan`.
+8. Jangan membuat riwayat status untuk status dokumen, status slot, atau status booking kecuali perubahan tersebut juga mengubah `status_pengajuan` atau memang diwajibkan oleh alur reschedule yang disetujui.
+9. Persetujuan reschedule membuat record `riwayat_status` dengan status tetap `jadwal_dipilih` dan keterangan bahwa jadwal konsultasi diganti.
 
 Contoh keterangan:
 

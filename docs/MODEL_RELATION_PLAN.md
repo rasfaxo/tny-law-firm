@@ -73,6 +73,7 @@ Model yang digunakan:
 8. `RiwayatStatus`
 9. `JadwalKonsultasi`
 10. `BookingKonsultasi`
+11. `PermintaanReschedule`
 
 ---
 
@@ -178,6 +179,16 @@ public function jadwalKonsultasi()
 public function bookingKonsultasi()
 {
     return $this->hasMany(BookingKonsultasi::class, 'id_user', 'id_user');
+}
+
+public function bookingKonsultasiDikonfirmasi()
+{
+    return $this->hasMany(BookingKonsultasi::class, 'id_admin_konfirmasi', 'id_user');
+}
+
+public function permintaanReschedule()
+{
+    return $this->hasMany(PermintaanReschedule::class, 'id_user', 'id_user');
 }
 
 public function riwayatStatus()
@@ -797,6 +808,11 @@ public function bookingAktif()
     return $this->hasOne(BookingKonsultasi::class, 'id_jadwal', 'id_jadwal')
         ->where('status_booking', 'aktif');
 }
+
+public function permintaanRescheduleBaru()
+{
+    return $this->hasMany(PermintaanReschedule::class, 'id_jadwal_baru', 'id_jadwal');
+}
 ```
 
 Aturan:
@@ -850,6 +866,14 @@ protected $fillable = [
     'id_user',
     'status_booking',
     'tanggal_booking',
+    'metode_konsultasi',
+    'status_konfirmasi_konsultasi',
+    'link_konsultasi',
+    'lokasi_konsultasi',
+    'catatan_konsultasi',
+    'catatan_preferensi_klien',
+    'dikonfirmasi_pada',
+    'id_admin_konfirmasi',
 ];
 ```
 
@@ -858,6 +882,7 @@ Casts:
 ```php
 protected $casts = [
     'tanggal_booking' => 'datetime',
+    'dikonfirmasi_pada' => 'datetime',
 ];
 ```
 
@@ -878,6 +903,16 @@ public function klien()
 {
     return $this->belongsTo(User::class, 'id_user', 'id_user');
 }
+
+public function adminKonfirmasi()
+{
+    return $this->belongsTo(User::class, 'id_admin_konfirmasi', 'id_user');
+}
+
+public function permintaanReschedule()
+{
+    return $this->hasMany(PermintaanReschedule::class, 'id_booking', 'id_booking');
+}
 ```
 
 Aturan:
@@ -886,13 +921,112 @@ Aturan:
 2. Booking hanya boleh dibuat jika pengajuan berstatus `berkas_lengkap`.
 3. Booking baru berstatus `aktif`.
 4. `tanggal_booking` diisi oleh server.
-5. Satu pengajuan hanya boleh memiliki satu booking aktif.
-6. Satu jadwal hanya boleh memiliki satu booking aktif.
-7. Setelah booking berhasil, status slot menjadi `terisi`.
-8. Setelah booking berhasil, status pengajuan menjadi `jadwal_dipilih`.
-9. Setelah konsultasi selesai, status booking menjadi `selesai`.
-10. Setelah konsultasi selesai, status pengajuan menjadi `selesai`.
-11. Semua proses booking dan penyelesaian konsultasi wajib menggunakan transaction.
+5. `metode_konsultasi` hanya boleh `online` atau `offline`.
+6. `status_konfirmasi_konsultasi` awal adalah `menunggu_konfirmasi`.
+7. `link_konsultasi` hanya diisi Admin jika metode `online`.
+8. `lokasi_konsultasi` hanya diisi Admin jika metode `offline`.
+9. `id_admin_konfirmasi` mengarah ke user role `admin` yang mengonfirmasi detail konsultasi.
+10. Satu pengajuan hanya boleh memiliki satu booking aktif.
+11. Satu jadwal hanya boleh memiliki satu booking aktif.
+12. Setelah booking berhasil, status slot menjadi `terisi`.
+13. Setelah booking berhasil, status pengajuan menjadi `jadwal_dipilih`.
+14. Setelah konsultasi selesai, status booking menjadi `selesai`.
+15. Setelah konsultasi selesai, status pengajuan menjadi `selesai`.
+16. Semua proses booking, konfirmasi detail konsultasi, persetujuan reschedule, dan penyelesaian konsultasi wajib menggunakan transaction jika menyentuh lebih dari satu perubahan data yang saling bergantung.
+
+---
+
+# 11. PermintaanReschedule Model
+
+Path:
+
+```text
+app/Models/PermintaanReschedule.php
+```
+
+Tabel:
+
+```text
+permintaan_reschedule
+```
+
+Primary key:
+
+```text
+id_reschedule
+```
+
+Model rule:
+
+```php
+protected $table = 'permintaan_reschedule';
+
+protected $primaryKey = 'id_reschedule';
+
+public $incrementing = true;
+
+protected $keyType = 'int';
+```
+
+Fillable:
+
+```php
+protected $fillable = [
+    'id_booking',
+    'id_user',
+    'alasan_reschedule',
+    'preferensi_jadwal',
+    'preferensi_metode',
+    'status_reschedule',
+    'id_jadwal_baru',
+    'id_booking_baru',
+    'catatan_admin',
+    'tanggal_pengajuan',
+    'tanggal_keputusan',
+];
+```
+
+Casts:
+
+```php
+protected $casts = [
+    'tanggal_pengajuan' => 'datetime',
+    'tanggal_keputusan' => 'datetime',
+];
+```
+
+Relasi:
+
+```php
+public function bookingLama()
+{
+    return $this->belongsTo(BookingKonsultasi::class, 'id_booking', 'id_booking');
+}
+
+public function klien()
+{
+    return $this->belongsTo(User::class, 'id_user', 'id_user');
+}
+
+public function jadwalBaru()
+{
+    return $this->belongsTo(JadwalKonsultasi::class, 'id_jadwal_baru', 'id_jadwal');
+}
+
+public function bookingBaru()
+{
+    return $this->belongsTo(BookingKonsultasi::class, 'id_booking_baru', 'id_booking');
+}
+```
+
+Aturan:
+
+1. `id_user` adalah Klien yang mengajukan reschedule.
+2. Relasi `bookingLama()` mengarah ke booking yang sedang aktif saat permintaan dibuat.
+3. Relasi `klien()` mengarah ke user role `klien` pemilik booking.
+4. Relasi `jadwalBaru()` nullable dan hanya terisi jika Admin menyetujui lalu memilih slot baru.
+5. Relasi `bookingBaru()` nullable dan hanya terisi setelah sistem membuat booking pengganti.
+6. Jika disetujui, `id_jadwal_baru` dan `id_booking_baru` akan terisi.
 
 ---
 
@@ -912,6 +1046,7 @@ Daftar route parameter dan primary key:
 | `{dokumen}`     | `DokumenPerkara`        | `id_dokumen`     |
 | `{jadwal}`      | `JadwalKonsultasi`      | `id_jadwal`      |
 | `{booking}`     | `BookingKonsultasi`     | `id_booking`     |
+| `{reschedule}`  | `PermintaanReschedule`  | `id_reschedule`  |
 | `{verifikasi}`  | `VerifikasiBerkas`      | `id_verifikasi`  |
 | `{catatan}`     | `CatatanVerifikasi`     | `id_catatan`     |
 

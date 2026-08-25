@@ -1,0 +1,85 @@
+<x-app-layout title="Permintaan Reschedule" :breadcrumbs="[['label' => 'Admin'], ['label' => 'Permintaan Reschedule']]">
+
+    <div class="space-y-6">
+        @if (session('success'))
+            <x-alert-banner type="success">
+                {{ session('success') }}
+            </x-alert-banner>
+        @endif
+
+        <x-card class="p-0 overflow-hidden sm:p-0">
+            <div class="overflow-x-auto">
+                <table class="min-w-full divide-y divide-[#E2E8F0]">
+                    <thead class="bg-[#F8FAFC]">
+                        <tr>
+                            <th class="px-6 py-4 text-left text-xs font-bold text-gray-400 uppercase tracking-wider">Klien</th>
+                            <th class="px-6 py-4 text-left text-xs font-bold text-gray-400 uppercase tracking-wider">Perkara</th>
+                            <th class="px-6 py-4 text-left text-xs font-bold text-gray-400 uppercase tracking-wider">Jadwal Lama</th>
+                            <th class="px-6 py-4 text-left text-xs font-bold text-gray-400 uppercase tracking-wider">Preferensi Baru</th>
+                            <th class="px-6 py-4 text-left text-xs font-bold text-gray-400 uppercase tracking-wider">Status</th>
+                            <th class="px-6 py-4 text-left text-xs font-bold text-gray-400 uppercase tracking-wider">Diajukan Pada</th>
+                            <th class="px-6 py-4 text-right text-xs font-bold text-gray-400 uppercase tracking-wider">Aksi</th>
+                        </tr>
+                    </thead>
+                    <tbody class="bg-white divide-y divide-[#E2E8F0]">
+                        @forelse ($permintaanReschedule as $permintaan)
+                            @php
+                                $booking = $permintaan->bookingLama;
+                                $pengajuan = $booking?->praPendaftaranPerkara;
+                                $jadwal = $booking?->jadwalKonsultasi;
+                            @endphp
+                            <tr class="hover:bg-[#F8FAFC] transition duration-150">
+                                <td class="px-6 py-4 whitespace-nowrap text-xs font-semibold text-navy-dark">
+                                    {{ $permintaan->klien?->nama ?? '-' }}
+                                </td>
+                                <td class="px-6 py-4">
+                                    <div class="font-bold text-navy-dark text-sm">{{ $pengajuan?->judul_perkara ?? '-' }}</div>
+                                    <div class="text-xs text-gray-400 font-semibold mt-0.5">{{ $pengajuan?->kategori?->nama_kategori ?? '-' }}</div>
+                                </td>
+                                <td class="px-6 py-4 whitespace-nowrap">
+                                    <div class="font-bold text-navy-dark text-xs">{{ $jadwal?->tanggal?->format('d M Y') ?? '-' }}</div>
+                                    <div class="text-xs text-gray-400 font-mono mt-0.5">
+                                        {{ $jadwal ? substr((string) $jadwal->waktu_mulai, 0, 5) : '-' }}
+                                        @if ($jadwal)
+                                            - {{ substr((string) $jadwal->waktu_selesai, 0, 5) }}
+                                        @endif
+                                    </div>
+                                </td>
+                                <td class="px-6 py-4">
+                                    <div class="text-xs font-semibold text-gray-600 max-w-xs truncate">{{ $permintaan->preferensi_jadwal ?: '-' }}</div>
+                                    <div class="text-xs text-gray-400 font-semibold uppercase tracking-wider mt-0.5">{{ $permintaan->preferensi_metode ?: 'Metode lama' }}</div>
+                                </td>
+                                <td class="px-6 py-4 whitespace-nowrap">
+                                    <x-status-badge :status="$permintaan->status_reschedule" />
+                                </td>
+                                <td class="px-6 py-4 whitespace-nowrap text-xs text-gray-400">
+                                    {{ $permintaan->tanggal_pengajuan?->format('d M Y H:i') ?? '-' }}
+                                </td>
+                                <td class="px-6 py-4 whitespace-nowrap text-right text-xs font-bold">
+                                    <a href="{{ route('admin.permintaan-reschedule.show', $permintaan) }}" class="inline-flex items-center gap-1 text-accent-blue hover:underline transition">
+                                        <span>Detail</span>
+                                        <svg class="h-3 w-3 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+                                        </svg>
+                                    </a>
+                                </td>
+                            </tr>
+                        @empty
+                            <tr>
+                                <td colspan="7" class="px-6 py-12 text-center">
+                                    <x-empty-state title="Belum Ada Permintaan Reschedule" message="Belum ada permintaan reschedule." />
+                                </td>
+                            </tr>
+                        @endforelse
+                    </tbody>
+                </table>
+            </div>
+
+            @if ($permintaanReschedule->hasPages())
+                <div class="px-6 py-4 border-t border-[#E2E8F0]">
+                    {{ $permintaanReschedule->links() }}
+                </div>
+            @endif
+        </x-card>
+    </div>
+</x-app-layout>

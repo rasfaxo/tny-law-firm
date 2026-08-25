@@ -21,13 +21,21 @@ class ProfileController extends Controller
         ]);
     }
 
-    /**
-     * Update the user's profile information.
-     */
     public function update(ProfileUpdateRequest $request): RedirectResponse
     {
-        $request->user()->fill($request->validated());
-        $request->user()->save();
+        $user = $request->user();
+        
+        \Illuminate\Support\Facades\DB::transaction(function () use ($user, $request) {
+            $user->fill($request->safe()->only(['nama', 'email', 'no_telepon']));
+            $user->save();
+
+            if ($user->role === 'klien') {
+                $user->profilKlien()->updateOrCreate(
+                    ['id_user' => $user->id_user],
+                    $request->safe()->only(['alamat', 'jenis_kelamin', 'pekerjaan', 'no_identitas'])
+                );
+            }
+        });
 
         return Redirect::route("profile.edit")->with(
             "status",

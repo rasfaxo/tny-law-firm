@@ -18,30 +18,30 @@ AI agent wajib membaca AGENTS.md terlebih dahulu sebelum membaca file dokumentas
 
 ## Main Tech Stack
 
-* Backend: Laravel
-* Frontend: Blade + Tailwind CSS
-* Authentication: Laravel Breeze
-* Database: MySQL
-* File Storage: Laravel Storage
-* Hosting Target: Cloud VPS
-* Web Server: Apache atau Nginx
-* Runtime: PHP 8.x / PHP-FPM
-* Version Control: Git dan GitHub
-* Editor: Zed
+- Backend: Laravel
+- Frontend: Blade + Tailwind CSS
+- Authentication: Laravel Breeze
+- Database: MySQL
+- File Storage: Laravel Storage
+- Hosting Target: Cloud VPS
+- Web Server: Apache atau Nginx
+- Runtime: PHP 8.x / PHP-FPM
+- Version Control: Git dan GitHub
+- Editor: Zed
 
 ## Main Roles
 
 Role disimpan dalam database menggunakan slug lowercase:
 
-* klien
-* admin
-* staf_legal
+- klien
+- admin
+- staf_legal
 
 Label tampilan:
 
-* klien = Klien
-* admin = Admin
-* staf_legal = Staf Legal
+- klien = Klien
+- admin = Admin
+- staf_legal = Staf Legal
 
 ## Main Actors and Features
 
@@ -49,55 +49,56 @@ Label tampilan:
 
 Klien dapat:
 
-* Registrasi akun
-* Login
-* Mengelola profil
-* Mengajukan pra-pendaftaran perkara
-* Mengunggah dokumen pendukung
-* Memantau status pengajuan
-* Melihat catatan verifikasi
-* Mengunggah ulang dokumen apabila terdapat catatan perbaikan
-* Memilih jadwal konsultasi jika berkas sudah memenuhi syarat
+- Registrasi akun
+- Login
+- Mengelola profil
+- Mengajukan pra-pendaftaran perkara
+- Mengunggah dokumen pendukung
+- Memantau status pengajuan
+- Melihat catatan verifikasi
+- Mengunggah ulang dokumen apabila terdapat catatan perbaikan
+- Memilih jadwal konsultasi jika berkas sudah memenuhi syarat
 
 ### Admin
 
 Admin dapat:
 
-* Login
-* Mengelola data pengguna
-* Membuat akun Staf Legal
-* Mengelola kategori perkara
-* Mengelola data pra-pendaftaran
-* Mengelola slot jadwal konsultasi
-* Mencetak atau menyimpan laporan pra-pendaftaran melalui tampilan tabel dan print browser
-* Melihat dashboard statistik ringkas
+- Login
+- Mengelola data pengguna
+- Membuat akun Staf Legal
+- Mengelola kategori perkara
+- Mengelola data pra-pendaftaran
+- Mengelola slot jadwal konsultasi
+- Mencetak atau menyimpan laporan pra-pendaftaran melalui tampilan tabel dan print browser
+- Melihat dashboard statistik ringkas
 
 ### Staf Legal
 
 Staf Legal dapat:
 
-* Login
-* Melihat daftar pengajuan pra-pendaftaran
-* Memeriksa detail perkara
-* Memeriksa dokumen pendukung
-* Memberikan status verifikasi
-* Memberikan catatan verifikasi umum atau per dokumen
-* Memperbarui status pengajuan berdasarkan hasil pemeriksaan
+- Login
+- Melihat daftar pengajuan pra-pendaftaran
+- Memeriksa detail perkara
+- Memeriksa dokumen pendukung
+- Memberikan status verifikasi
+- Memberikan catatan verifikasi umum atau per dokumen
+- Memperbarui status pengajuan berdasarkan hasil pemeriksaan
 
 ## Required Documentation References
 
 Sebelum membuat fitur atau mengubah kode, AI agent wajib membaca dokumen berikut sesuai kebutuhan:
 
-* docs/PROJECT_CONTEXT.md
-* docs/DATABASE_PLAN.md
-* docs/MODEL_RELATION_PLAN.md
-* docs/STATUS_RULES.md
-* docs/VALIDATION_RULES.md
-* docs/SECURITY_RULES.md
-* docs/FEATURE_LIST.md
-* docs/ROUTES_PLAN.md
-* docs/MANUAL_TESTING_PLAN.md
-* docs/DEPLOYMENT_NOTES.md
+- docs/PROJECT_CONTEXT.md
+- docs/DATABASE_PLAN.md
+- docs/MODEL_RELATION_PLAN.md
+- docs/STATUS_RULES.md
+- docs/VALIDATION_RULES.md
+- docs/SECURITY_RULES.md
+- docs/FEATURE_LIST.md
+- docs/ROUTES_PLAN.md
+- docs/MANUAL_TESTING_PLAN.md
+- docs/DEPLOYMENT_NOTES.md
+- docs/AUDIT_FIXES.md
 
 Apabila file dokumentasi belum tersedia, AI agent harus meminta file tersebut dibuat terlebih dahulu dan tidak boleh membuat asumsi sendiri.
 
@@ -105,16 +106,16 @@ Apabila file dokumentasi belum tersedia, AI agent harus meminta file tersebut di
 
 Gunakan tabel berikut:
 
-* users
-* profil_klien
-* kategori_perkara
-* pra_pendaftaran_perkara
-* dokumen_perkara
-* verifikasi_berkas
-* catatan_verifikasi
-* riwayat_status
-* jadwal_konsultasi
-* booking_konsultasi
+- users
+- profil_klien
+- kategori_perkara
+- pra_pendaftaran_perkara
+- dokumen_perkara
+- verifikasi_berkas
+- catatan_verifikasi
+- riwayat_status
+- jadwal_konsultasi
+- booking_konsultasi
 
 Jangan membuat tabel laporan.
 
@@ -132,12 +133,11 @@ Wajib patuhi keputusan berikut:
 8. tanggal_status tidak digunakan karena waktu perubahan status riwayat diwakili created_at.
 9. tanggal_booking tetap digunakan sebagai atribut bisnis pada booking_konsultasi.
 10. id_user digunakan sesuai konteks role:
-
-    * pra_pendaftaran_perkara.id_user = Klien
-    * booking_konsultasi.id_user = Klien
-    * verifikasi_berkas.id_user = Staf Legal
-    * jadwal_konsultasi.id_user = Admin
-    * riwayat_status.id_user = pengguna yang mengubah status
+    - pra_pendaftaran_perkara.id_user = Klien
+    - booking_konsultasi.id_user = Klien
+    - verifikasi_berkas.id_user = Staf Legal
+    - jadwal_konsultasi.id_user = Admin
+    - riwayat_status.id_user = pengguna yang mengubah status
 
 ## Laravel Table, Primary Key, and Foreign Key Rules
 
@@ -175,13 +175,13 @@ Jangan mengganti custom primary key menjadi default Laravel `id`.
 
 Jangan mengubah:
 
-* id_user menjadi user_id
-* id_kategori menjadi kategori_id
-* id_pendaftaran menjadi pra_pendaftaran_perkara_id
-* id_dokumen menjadi dokumen_perkara_id
-* id_verifikasi menjadi verifikasi_berkas_id
-* id_jadwal menjadi jadwal_konsultasi_id
-* id_booking menjadi booking_konsultasi_id
+- id_user menjadi user_id
+- id_kategori menjadi kategori_id
+- id_pendaftaran menjadi pra_pendaftaran_perkara_id
+- id_dokumen menjadi dokumen_perkara_id
+- id_verifikasi menjadi verifikasi_berkas_id
+- id_jadwal menjadi jadwal_konsultasi_id
+- id_booking menjadi booking_konsultasi_id
 
 ## Migration Rules
 
@@ -275,33 +275,33 @@ Jangan menganggap Laravel selalu melakukan binding menggunakan kolom default `id
 
 Parameter route harus mengarah ke primary key model yang benar, misalnya:
 
-* users.id_user
-* pra_pendaftaran_perkara.id_pendaftaran
-* dokumen_perkara.id_dokumen
-* verifikasi_berkas.id_verifikasi
-* jadwal_konsultasi.id_jadwal
-* booking_konsultasi.id_booking
+- users.id_user
+- pra_pendaftaran_perkara.id_pendaftaran
+- dokumen_perkara.id_dokumen
+- verifikasi_berkas.id_verifikasi
+- jadwal_konsultasi.id_jadwal
+- booking_konsultasi.id_booking
 
 Contoh penting:
 
-* `/klien/pengajuan/{pengajuan}` harus mengarah ke `pra_pendaftaran_perkara.id_pendaftaran`
-* `/admin/jadwal-konsultasi/{jadwal}` harus mengarah ke `jadwal_konsultasi.id_jadwal`
-* `/staf-legal/pengajuan/{pengajuan}` harus mengarah ke `pra_pendaftaran_perkara.id_pendaftaran`
-* `/klien/dokumen/{dokumen}/unggah-ulang` harus mengarah ke `dokumen_perkara.id_dokumen`
+- `/klien/pengajuan/{pengajuan}` harus mengarah ke `pra_pendaftaran_perkara.id_pendaftaran`
+- `/admin/jadwal-konsultasi/{jadwal}` harus mengarah ke `jadwal_konsultasi.id_jadwal`
+- `/staf-legal/pengajuan/{pengajuan}` harus mengarah ke `pra_pendaftaran_perkara.id_pendaftaran`
+- `/klien/dokumen/{dokumen}/unggah-ulang` harus mengarah ke `dokumen_perkara.id_dokumen`
 
 ## Upload Rules
 
-* Format file yang diperbolehkan: PDF, JPG, JPEG, PNG.
-* Ukuran maksimal: 5 MB per file.
-* Storage path: storage/app/public/dokumen-perkara.
-* File lama saat unggah ulang tidak boleh ditimpa.
-* Dokumen lama disimpan sebagai file berbeda.
-* Database hanya menyimpan metadata dan file_path.
-* Gunakan nama file unik atau random saat menyimpan dokumen.
-* Jangan percaya nama file asli dari user.
-* Validasi extension dan MIME type.
-* File dokumen tidak boleh diakses tanpa otorisasi.
-* Akses dokumen harus mempertimbangkan role dan kepemilikan data.
+- Format file yang diperbolehkan: PDF, JPG, JPEG, PNG.
+- Ukuran maksimal: 5 MB per file.
+- Storage path: storage/app/public/dokumen-perkara.
+- File lama saat unggah ulang tidak boleh ditimpa.
+- Dokumen lama disimpan sebagai file berbeda.
+- Database hanya menyimpan metadata dan file_path.
+- Gunakan nama file unik atau random saat menyimpan dokumen.
+- Jangan percaya nama file asli dari user.
+- Validasi extension dan MIME type.
+- File dokumen tidak boleh diakses tanpa otorisasi.
+- Akses dokumen harus mempertimbangkan role dan kepemilikan data.
 
 ## Business Rules
 
@@ -336,24 +336,24 @@ AI agent dilarang menjalankan atau menyarankan command berbahaya tanpa izin eksp
 
 Command yang dilarang tanpa persetujuan eksplisit:
 
-* php artisan migrate:fresh
-* php artisan migrate:refresh
-* php artisan migrate:rollback
-* php artisan db:wipe
-* rm -rf
-* git reset --hard
-* git clean -fd
-* git push --force
-* composer update
-* npm audit fix --force
+- php artisan migrate:fresh
+- php artisan migrate:refresh
+- php artisan migrate:rollback
+- php artisan db:wipe
+- rm -rf
+- git reset --hard
+- git clean -fd
+- git push --force
+- composer update
+- npm audit fix --force
 
 Command yang boleh disarankan setelah konteksnya jelas:
 
-* php artisan migrate
-* php artisan route:list
-* php artisan storage:link
-* php artisan test
-* npm run build
+- php artisan migrate
+- php artisan route:list
+- php artisan storage:link
+- php artisan test
+- npm run build
 
 Catatan: `php artisan migrate` boleh digunakan setelah file migration direview dan disetujui. Command tersebut tidak termasuk command destruktif, tetapi tetap tidak boleh dijalankan sembarangan tanpa memahami dampaknya terhadap database.
 
@@ -383,11 +383,11 @@ AI agent wajib:
 
 ## Git and Debugging Rules
 
-* Setiap fitur sebaiknya dibuat dalam commit terpisah dengan pesan commit yang jelas.
-* Perubahan besar harus dipecah menjadi beberapa commit kecil yang mudah direview.
-* Saat memperbaiki error, AI agent wajib mengutamakan perubahan paling kecil yang menyelesaikan masalah.
-* AI agent tidak boleh melakukan refactor besar saat sedang memperbaiki bug kecil.
-* AI agent harus menjelaskan alasan perubahan sebelum mengubah struktur kode yang sudah berjalan.
+- Setiap fitur sebaiknya dibuat dalam commit terpisah dengan pesan commit yang jelas.
+- Perubahan besar harus dipecah menjadi beberapa commit kecil yang mudah direview.
+- Saat memperbaiki error, AI agent wajib mengutamakan perubahan paling kecil yang menyelesaikan masalah.
+- AI agent tidak boleh melakukan refactor besar saat sedang memperbaiki bug kecil.
+- AI agent harus menjelaskan alasan perubahan sebelum mengubah struktur kode yang sudah berjalan.
 
 ## Definition of Done
 
@@ -456,7 +456,6 @@ AI agent must ask for confirmation before making any change that affects:
 
 If the requested implementation conflicts with the locked thesis design, explain the conflict first and wait for approval.
 
-
 ## No Assumption Coding
 
 AI agent must not create code based on assumptions.
@@ -471,7 +470,6 @@ Before implementing a feature, AI agent must verify:
 6. The related security rules exist in `docs/SECURITY_RULES.md`.
 
 If any required rule is missing, AI agent must stop and ask the project owner.
-
 
 ## Service Layer Preference
 
@@ -488,7 +486,6 @@ Use service classes for complex processes such as:
 7. Generating report queries.
 
 Controllers should focus on receiving requests, calling services, and returning responses.
-
 
 ## Manual Test Before Commit
 

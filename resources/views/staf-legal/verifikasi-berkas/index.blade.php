@@ -1,0 +1,133 @@
+<x-app-layout title="Pengajuan Verifikasi" :breadcrumbs="[['label' => 'Staf Legal'], ['label' => 'Pengajuan Verifikasi']]">
+
+    <div class="space-y-6">
+        @if (session('success'))
+            <x-alert-banner type="success">
+                {{ session('success') }}
+            </x-alert-banner>
+        @endif
+
+        @if (session('error'))
+            <x-alert-banner type="error">
+                {{ session('error') }}
+            </x-alert-banner>
+        @endif
+
+        <!-- Filter Bar -->
+        <x-card>
+            <form method="GET" action="{{ route('staf-legal.verifikasi-berkas.index') }}" class="grid grid-cols-1 md:grid-cols-4 gap-4 items-end">
+                <!-- Cari -->
+                <div class="space-y-2">
+                    <x-input-label for="search" value="Cari" />
+                    <x-text-input type="text" name="search" id="search" value="{{ request('search') }}" placeholder="Cari kode, klien, atau judul…" />
+                </div>
+
+                <!-- Filter Status -->
+                <div class="space-y-2">
+                    <x-input-label for="status" value="Filter Status" />
+                    <x-select name="status" id="status">
+                        <option value="">Semua Status</option>
+                        <option value="menunggu_verifikasi" @selected(request('status') === 'menunggu_verifikasi')>Menunggu Verifikasi</option>
+                        <option value="menunggu_verifikasi_ulang" @selected(request('status') === 'menunggu_verifikasi_ulang')>Verifikasi Ulang</option>
+                        <option value="berkas_tidak_lengkap" @selected(request('status') === 'berkas_tidak_lengkap')>Berkas Tidak Lengkap</option>
+                        <option value="berkas_lengkap" @selected(request('status') === 'berkas_lengkap')>Berkas Lengkap</option>
+                        <option value="jadwal_dipilih" @selected(request('status') === 'jadwal_dipilih')>Jadwal Dipilih</option>
+                        <option value="selesai" @selected(request('status') === 'selesai')>Selesai</option>
+                    </x-select>
+                </div>
+
+                <!-- Filter Kategori -->
+                <div class="space-y-2">
+                    <x-input-label for="kategori" value="Filter Kategori" />
+                    <x-select name="kategori" id="kategori">
+                        <option value="">Semua Kategori</option>
+                        @foreach ($kategoriList as $kategori)
+                            <option value="{{ $kategori->id_kategori }}" @selected(request('kategori') == $kategori->id_kategori)>
+                                {{ $kategori->nama_kategori }}
+                            </option>
+                        @endforeach
+                    </x-select>
+                </div>
+
+                <!-- Terapkan Button -->
+                <div>
+                    <x-primary-button class="w-full">
+                        Terapkan
+                    </x-primary-button>
+                </div>
+            </form>
+        </x-card>
+
+        <!-- Table Card -->
+        <x-card class="p-0 overflow-hidden sm:p-0">
+            <div class="overflow-x-auto">
+                <table class="min-w-full divide-y divide-[#E2E8F0]">
+                    <thead class="bg-[#F8FAFC]">
+                        <tr>
+                            <th class="px-6 py-4 text-left text-xs font-bold text-gray-400 tracking-wider uppercase">Kode</th>
+                            <th class="px-6 py-4 text-left text-xs font-bold text-gray-400 tracking-wider uppercase">Klien</th>
+                            <th class="px-6 py-4 text-left text-xs font-bold text-gray-400 tracking-wider uppercase">Judul</th>
+                            <th class="px-6 py-4 text-left text-xs font-bold text-gray-400 tracking-wider uppercase">Kategori</th>
+                            <th class="px-6 py-4 text-left text-xs font-bold text-gray-400 tracking-wider uppercase">Status</th>
+                            <th class="px-6 py-4 text-right text-xs font-bold text-gray-400 tracking-wider uppercase">Aksi</th>
+                        </tr>
+                    </thead>
+                    <tbody class="bg-white divide-y divide-[#E2E8F0]">
+                        @forelse ($pengajuan as $item)
+                            @php
+                                $isVerifiable = in_array($item->status_pengajuan, ['menunggu_verifikasi', 'menunggu_verifikasi_ulang']);
+                            @endphp
+                            <tr class="hover:bg-[#F8FAFC] transition duration-150">
+                                <td class="px-6 py-4 whitespace-nowrap text-sm font-mono font-bold text-accent-blue">
+                                    PP-{{ sprintf('%03d', $item->id_pendaftaran) }}
+                                </td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm font-bold text-navy-dark">
+                                    {{ $item->klien?->nama ?? '-' }}
+                                </td>
+                                <td class="px-6 py-4 text-sm text-gray-700 font-medium">
+                                    {{ $item->judul_perkara }}
+                                </td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-700 font-medium">
+                                    {{ $item->kategori?->nama_kategori ?? '-' }}
+                                </td>
+                                <td class="px-6 py-4 whitespace-nowrap">
+                                    <x-status-badge :status="$item->status_pengajuan" />
+                                </td>
+                                <td class="px-6 py-4 whitespace-nowrap text-right text-xs font-bold">
+                                    @if ($isVerifiable)
+                                        <a href="{{ route('staf-legal.verifikasi-berkas.show', $item) }}" class="inline-flex items-center gap-1 text-accent-blue hover:underline transition">
+                                            <span>Verifikasi</span>
+                                            <svg class="h-3 w-3 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+                                            </svg>
+                                        </a>
+                                    @else
+                                        <a href="{{ route('staf-legal.verifikasi-berkas.show', $item) }}" class="inline-flex items-center gap-1 text-navy-dark hover:text-accent-blue hover:underline transition">
+                                            <span>Detail</span>
+                                            <svg class="h-3 w-3 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+                                            </svg>
+                                        </a>
+                                    @endif
+                                </td>
+                            </tr>
+                        @empty
+                            <tr>
+                                <td colspan="6" class="p-0">
+                                    <x-empty-state title="Tidak ada data" message="Tidak ada data pengajuan verifikasi yang cocok dengan filter." class="border-0 rounded-none bg-transparent" />
+                                </td>
+                            </tr>
+                        @endforelse
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- Custom Styled Pagination -->
+            @if ($pengajuan->hasPages())
+                <div class="px-6 py-4 bg-white border-t border-[#F1F5F9]">
+                    {{ $pengajuan->links() }}
+                </div>
+            @endif
+        </x-card>
+    </div>
+</x-app-layout>
