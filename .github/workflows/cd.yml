@@ -174,7 +174,7 @@ jobs:
           echo "Initiating database migration on Azure App Service ($KUDU_URL)..."
 
           # Construct JSON payload using jq to guarantee valid formatting without logging secrets
-          CMD='export PATH="/usr/local/bin:/usr/bin:/bin:/opt/php/8.4/bin:/opt/php/8.4.16/bin:/opt/php/bin:/opt/oryx/php/8.4.16/bin:/opt/oryx/php/8.4/bin:$PATH"; PHP_BIN=$(which php 2>/dev/null || find /opt /usr /home -name php -type f -perm -111 2>/dev/null | head -n 1 || echo php); "$PHP_BIN" artisan migrate --force'
+          CMD='php artisan migrate --force'
           PAYLOAD=$(jq -n --arg cmd "$CMD" --arg dir '/home/site/wwwroot' '{command: $cmd, dir: $dir}')
 
           # Call Kudu API command endpoint
