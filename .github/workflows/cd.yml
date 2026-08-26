@@ -55,18 +55,37 @@ jobs:
           [ -f default ] && cp default release/ || true
 
           # Ensure clean storage directory structure
-          mkdir -p release/storage/app/public
-          mkdir -p release/storage/app/private
-          mkdir -p release/storage/framework/cache/data
-          mkdir -p release/storage/framework/sessions
-          mkdir -p release/storage/framework/views
-          mkdir -p release/storage/logs
+          mkdir -p \
+            release/storage/app/public \
+            release/storage/app/private \
+            release/storage/framework/cache/data \
+            release/storage/framework/sessions \
+            release/storage/framework/testing \
+            release/storage/framework/views \
+            release/storage/logs \
+            release/bootstrap/cache
+
+          touch release/storage/app/public/.gitkeep
+          touch release/storage/app/private/.gitkeep
+          touch release/storage/framework/cache/.gitkeep
+          touch release/storage/framework/cache/data/.gitkeep
+          touch release/storage/framework/sessions/.gitkeep
+          touch release/storage/framework/testing/.gitkeep
+          touch release/storage/framework/views/.gitkeep
           touch release/storage/logs/.gitkeep
 
           # Ensure clean bootstrap cache directory
-          mkdir -p release/bootstrap/cache
           rm -f release/bootstrap/cache/*.php
           touch release/bootstrap/cache/.gitkeep
+
+          # Validate artifact structure before packaging
+          test -d release/storage/framework/views
+          test -d release/storage/framework/sessions
+          test -d release/storage/framework/cache/data
+          test -d release/storage/logs
+          test -d release/bootstrap/cache
+          test -f release/default
+          test -f release/public/index.php
 
           # Create production deployment zip artifact
           cd release
