@@ -7,7 +7,7 @@ on:
   workflow_dispatch:
 
 concurrency:
-  group: production-cd
+  group: staging-cd
   cancel-in-progress: false
 
 jobs:
@@ -47,20 +47,6 @@ jobs:
 
       - name: Install PHP Production Dependencies
         run: composer install --no-dev --prefer-dist --optimize-autoloader --no-interaction --no-ansi
-
-      - name: Run Database Migrations
-        env:
-          APP_ENV: staging
-          APP_KEY: ${{ secrets.APP_KEY || 'base64:fakekeyforrunningmigrationsinrunner123=' }}
-          DB_CONNECTION: ${{ secrets.DB_CONNECTION || 'mysql' }}
-          DB_HOST: ${{ secrets.DB_HOST }}
-          DB_PORT: ${{ secrets.DB_PORT || '3306' }}
-          DB_DATABASE: ${{ secrets.DB_DATABASE }}
-          DB_USERNAME: ${{ secrets.DB_USERNAME }}
-          DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
-          MYSQL_ATTR_SSL_CA: certs/ca.pem
-        run: |
-          php artisan migrate --force
 
       - name: Prepare Deployment Package
         run: |
@@ -171,10 +157,57 @@ jobs:
           publish-profile: ${{ secrets.AZURE_WEBAPP_PUBLISH_PROFILE }}
           package: release.zip
 
+      - name: Run Database Migrations on Azure App Service
+        env:
+          PUBLISH_PROFILE: ${{ secrets.AZURE_WEBAPP_PUBLISH_PROFILE }}
+        run: |
+          # Extract Kudu credentials from publish profile XML
+          KUDU_URL=$(echo "$PUBLISH_PROFILE" | grep -oP 'publishUrl="\K[^"]+' | head -n 1 | cut -d: -f1)
+          KUDU_USER=$(echo "$PUBLISH_PROFILE" | grep -oP 'userName="\K[^"]+' | head -n 1)
+          KUDU_PASS=$(echo "$PUBLISH_PROFILE" | grep -oP 'userPWD="\K[^"]+' | head -n 1)
+
+          if [ -z "$KUDU_URL" ] || [ -z "$KUDU_USER" ] || [ -z "$KUDU_PASS" ]; then
+            echo "::error::Failed to extract Kudu credentials from publish profile"
+            exit 1
+          fi
+
+          echo "Initiating database migration on Azure App Service ($KUDU_URL)..."
+
+          # Construct JSON payload using jq to guarantee valid formatting without logging secrets
+          CMD='sh -c '\''export PATH="/usr/local/bin:/usr/bin:/bin:/opt/php/8.4/bin:/opt/php/8.4.16/bin:/opt/php/bin:/opt/oryx/php/8.4.16/bin:/opt/oryx/php/8.4/bin:$PATH"; PHP_BIN=$(which php 2>/dev/null || find /opt /usr /home -name php -type f -perm -111 2>/dev/null | head -n 1 || echo php); $PHP_BIN artisan migrate --force'\'''
+          PAYLOAD=$(jq -n --arg cmd "$CMD" --arg dir '/home/site/wwwroot' '{command: $cmd, dir: $dir}')
+
+          # Call Kudu API command endpoint
+          curl -s -S -f -X POST -u "$KUDU_USER:$KUDU_PASS" \
+            "https://$KUDU_URL/api/command" \
+            -H "Content-Type: application/json" \
+            -d "$PAYLOAD" > kudu_response.json
+
+          echo "=== KUDU MIGRATION OUTPUT ==="
+          jq -r '.Output // empty' kudu_response.json
+
+          if [ -n "$(jq -r '.Error // empty' kudu_response.json)" ]; then
+            echo "=== KUDU MIGRATION STDERR ==="
+            jq -r '.Error' kudu_response.json
+          fi
+
+          EXIT_CODE=$(jq -r '.ExitCode' kudu_response.json)
+          if [ "$EXIT_CODE" != "0" ]; then
+            echo "::error::Migration failed on Azure App Service with exit code $EXIT_CODE"
+            exit 1
+          fi
+
+          echo "Database migration on Azure App Service completed successfully."
+
       - name: Smoke Test (Health Check)
         env:
           STAGING_URL: ${{ secrets.STAGING_URL }}
         run: |
+          if [ -z "$STAGING_URL" ]; then
+            echo "::error::STAGING_URL secret is not set!"
+            exit 1
+          fi
+
           echo "Waiting 15 seconds for application to warm up after deployment..."
           sleep 15
           
@@ -184,4 +217,4 @@ jobs:
           echo "Testing Login Page (GET /login)..."
           curl -fL --retry 3 --retry-delay 5 "$STAGING_URL/login" > /dev/null
           
-          echo "Smoke tests passed!"
+          echo "Smoke tests passed successfully!"
