@@ -1,0 +1,98 @@
+name: CD Pipeline - Deploy to Azure App Service
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+concurrency:
+  group: production-cd
+  cancel-in-progress: false
+
+jobs:
+  build:
+    name: Build Deployment Artifact
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.4'
+          coverage: none
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      - name: Install Frontend Dependencies
+        run: npm ci
+
+      - name: Build Frontend Production Assets
+        run: npm run build
+
+      - name: Install PHP Production Dependencies
+        run: composer install --no-dev --prefer-dist --optimize-autoloader --no-interaction --no-ansi
+
+      - name: Prepare Deployment Package
+        run: |
+          mkdir -p release
+
+          # Copy core application directories and essential runtime files
+          cp -r app bootstrap config database public resources routes vendor release/
+          
+          # Copy optional runtime files if present
+          [ -d certs ] && cp -r certs release/ || true
+          [ -f artisan ] && cp artisan release/ || true
+          [ -f composer.json ] && cp composer.json release/ || true
+          [ -f Procfile ] && cp Procfile release/ || true
+
+          # Ensure clean storage directory structure
+          mkdir -p release/storage/app/public
+          mkdir -p release/storage/app/private
+          mkdir -p release/storage/framework/cache/data
+          mkdir -p release/storage/framework/sessions
+          mkdir -p release/storage/framework/views
+          mkdir -p release/storage/logs
+          touch release/storage/logs/.gitkeep
+
+          # Ensure clean bootstrap cache directory
+          mkdir -p release/bootstrap/cache
+          rm -f release/bootstrap/cache/*.php
+          touch release/bootstrap/cache/.gitkeep
+
+          # Create production deployment zip artifact
+          cd release
+          zip -r -q ../release.zip .
+          cd ..
+
+      - name: Upload Deployment Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: deployment-artifact
+          path: release.zip
+          retention-days: 7
+
+  deploy:
+    name: Deploy to Azure App Service
+    needs: build
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Download Deployment Artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: deployment-artifact
+
+      - name: Deploy to Azure Web App
+        uses: azure/webapps-deploy@v3
+        with:
+          app-name: ${{ secrets.AZURE_WEBAPP_NAME }}
+          publish-profile: ${{ secrets.AZURE_WEBAPP_PUBLISH_PROFILE }}
+          package: release.zip
