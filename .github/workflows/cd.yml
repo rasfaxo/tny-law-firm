@@ -37,6 +37,14 @@ jobs:
       - name: Build Frontend Production Assets
         run: npm run build
 
+      - name: Validate Vite Build Output
+        run: |
+          test -d public/build
+          test -f public/build/manifest.json
+          test -d public/build/assets
+          find public/build/assets -type f -name '*.css' | grep -q .
+          find public/build/assets -type f -name '*.js' | grep -q .
+
       - name: Install PHP Production Dependencies
         run: composer install --no-dev --prefer-dist --optimize-autoloader --no-interaction --no-ansi
 
@@ -78,7 +86,21 @@ jobs:
           rm -f release/bootstrap/cache/*.php
           touch release/bootstrap/cache/.gitkeep
 
-          # Validate artifact structure before packaging
+          # Validate release directory Vite build output
+          test -d release/public/build
+          test -f release/public/build/manifest.json
+          test -d release/public/build/assets
+          find release/public/build/assets -type f -name '*.css' | grep -q .
+          find release/public/build/assets -type f -name '*.js' | grep -q .
+
+          # Diagnostic output
+          echo "=== RELEASE VITE BUILD ==="
+          find release/public/build -maxdepth 2 -type f -printf '%p %s bytes\n'
+
+          echo "=== RELEASE MANIFEST ==="
+          cat release/public/build/manifest.json
+
+          # Validate essential runtime directories and files
           test -d release/storage/framework/views
           test -d release/storage/framework/sessions
           test -d release/storage/framework/cache/data
@@ -91,6 +113,24 @@ jobs:
           cd release
           zip -r -q ../release.zip .
           cd ..
+
+      - name: Validate Deployment ZIP Package
+        run: |
+          test -f release.zip
+
+          echo "=== ZIP FILE DETAILS ==="
+          ls -lh release.zip
+          sha256sum release.zip
+
+          echo "=== VERIFYING REQUIRED FILES IN ZIP ==="
+          unzip -l release.zip | grep 'public/build/manifest.json'
+          unzip -l release.zip | grep -E 'public/build/assets/.*\.css'
+          unzip -l release.zip | grep -E 'public/build/assets/.*\.js'
+          unzip -l release.zip | grep 'storage/framework/views'
+          unzip -l release.zip | grep 'storage/framework/sessions'
+          unzip -l release.zip | grep 'storage/framework/cache/data'
+          unzip -l release.zip | grep 'bootstrap/cache'
+          unzip -l release.zip | grep 'default'
 
       - name: Upload Deployment Artifact
         uses: actions/upload-artifact@v4
