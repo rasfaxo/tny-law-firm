@@ -48,6 +48,20 @@ jobs:
       - name: Install PHP Production Dependencies
         run: composer install --no-dev --prefer-dist --optimize-autoloader --no-interaction --no-ansi
 
+      - name: Run Database Migrations
+        env:
+          APP_ENV: staging
+          APP_KEY: ${{ secrets.APP_KEY || 'base64:fakekeyforrunningmigrationsinrunner123=' }}
+          DB_CONNECTION: ${{ secrets.DB_CONNECTION || 'mysql' }}
+          DB_HOST: ${{ secrets.DB_HOST }}
+          DB_PORT: ${{ secrets.DB_PORT || '3306' }}
+          DB_DATABASE: ${{ secrets.DB_DATABASE }}
+          DB_USERNAME: ${{ secrets.DB_USERNAME }}
+          DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
+          MYSQL_ATTR_SSL_CA: certs/ca.pem
+        run: |
+          php artisan migrate --force
+
       - name: Prepare Deployment Package
         run: |
           mkdir -p release
@@ -156,39 +170,6 @@ jobs:
           app-name: ${{ secrets.AZURE_WEBAPP_NAME }}
           publish-profile: ${{ secrets.AZURE_WEBAPP_PUBLISH_PROFILE }}
           package: release.zip
-
-      - name: Run Database Migrations via Kudu API
-        env:
-          PUBLISH_PROFILE: ${{ secrets.AZURE_WEBAPP_PUBLISH_PROFILE }}
-        run: |
-          # Parse Kudu credentials from publish profile XML securely
-          KUDU_URL=$(echo "$PUBLISH_PROFILE" | grep -oP 'publishUrl="\K[^"]+' | head -n 1 | cut -d: -f1)
-          KUDU_USER=$(echo "$PUBLISH_PROFILE" | grep -oP 'userName="\K[^"]+' | head -n 1)
-          KUDU_PASS=$(echo "$PUBLISH_PROFILE" | grep -oP 'userPWD="\K[^"]+' | head -n 1)
-          
-          echo "Executing migration on Kudu API..."
-          
-          # Execute command and store JSON response in a file to avoid printing secrets directly
-          curl -s -S -f -X POST -u "$KUDU_USER:$KUDU_PASS" \
-            "https://$KUDU_URL/api/command" \
-            -H "Content-Type: application/json" \
-            -d '{"command": "php artisan migrate --force", "dir": "/home/site/wwwroot"}' > kudu_response.json
-          
-          # Print the output and error securely using jq
-          echo "=== MIGRATION OUTPUT ==="
-          jq -r '.Output' kudu_response.json
-          
-          echo "=== MIGRATION ERROR ==="
-          jq -r '.Error' kudu_response.json
-          
-          # Check exit code to ensure migration didn't fail
-          EXIT_CODE=$(jq -r '.ExitCode' kudu_response.json)
-          if [ "$EXIT_CODE" != "0" ]; then
-            echo "Migration failed with exit code $EXIT_CODE"
-            exit 1
-          fi
-          
-          echo "Migration completed successfully!"
 
       - name: Smoke Test (Health Check)
         env:
