@@ -52,6 +52,7 @@ jobs:
           [ -f artisan ] && cp artisan release/ || true
           [ -f composer.json ] && cp composer.json release/ || true
           [ -f Procfile ] && cp Procfile release/ || true
+          [ -f default ] && cp default release/ || true
 
           # Ensure clean storage directory structure
           mkdir -p release/storage/app/public
