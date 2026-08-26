@@ -61,6 +61,8 @@ jobs:
           [ -f composer.json ] && cp composer.json release/ || true
           [ -f Procfile ] && cp Procfile release/ || true
           [ -f default ] && cp default release/ || true
+          [ -f startup.sh ] && cp startup.sh release/ || true
+          chmod +x release/startup.sh 2>/dev/null || true
 
           # Ensure clean storage directory structure
           mkdir -p \
@@ -157,48 +159,6 @@ jobs:
           publish-profile: ${{ secrets.AZURE_WEBAPP_PUBLISH_PROFILE }}
           package: release.zip
 
-      - name: Run Database Migrations on Azure App Service
-        env:
-          PUBLISH_PROFILE: ${{ secrets.AZURE_WEBAPP_PUBLISH_PROFILE }}
-        run: |
-          # Extract Kudu credentials from publish profile XML
-          KUDU_URL=$(echo "$PUBLISH_PROFILE" | grep -oP 'publishUrl="\K[^"]+' | head -n 1 | cut -d: -f1)
-          KUDU_USER=$(echo "$PUBLISH_PROFILE" | grep -oP 'userName="\K[^"]+' | head -n 1)
-          KUDU_PASS=$(echo "$PUBLISH_PROFILE" | grep -oP 'userPWD="\K[^"]+' | head -n 1)
-
-          if [ -z "$KUDU_URL" ] || [ -z "$KUDU_USER" ] || [ -z "$KUDU_PASS" ]; then
-            echo "::error::Failed to extract Kudu credentials from publish profile"
-            exit 1
-          fi
-
-          echo "Initiating database migration on Azure App Service ($KUDU_URL)..."
-
-          # Construct JSON payload using jq to guarantee valid formatting without logging secrets
-          CMD='php artisan migrate --force'
-          PAYLOAD=$(jq -n --arg cmd "$CMD" --arg dir '/home/site/wwwroot' '{command: $cmd, dir: $dir}')
-
-          # Call Kudu API command endpoint
-          curl -s -S -f -X POST -u "$KUDU_USER:$KUDU_PASS" \
-            "https://$KUDU_URL/api/command" \
-            -H "Content-Type: application/json" \
-            -d "$PAYLOAD" > kudu_response.json
-
-          echo "=== KUDU MIGRATION OUTPUT ==="
-          jq -r '.Output // empty' kudu_response.json
-
-          if [ -n "$(jq -r '.Error // empty' kudu_response.json)" ]; then
-            echo "=== KUDU MIGRATION STDERR ==="
-            jq -r '.Error' kudu_response.json
-          fi
-
-          EXIT_CODE=$(jq -r '.ExitCode' kudu_response.json)
-          if [ "$EXIT_CODE" != "0" ]; then
-            echo "::error::Migration failed on Azure App Service with exit code $EXIT_CODE"
-            exit 1
-          fi
-
-          echo "Database migration on Azure App Service completed successfully."
-
       - name: Smoke Test (Health Check)
         env:
           STAGING_URL: ${{ secrets.STAGING_URL }}
@@ -208,13 +168,13 @@ jobs:
             exit 1
           fi
 
-          echo "Waiting 15 seconds for application to warm up after deployment..."
-          sleep 15
+          echo "Waiting 20 seconds for Azure App Service container to initialize and run startup script..."
+          sleep 20
           
           echo "Testing Landing Page (GET /)..."
-          curl -fL --retry 3 --retry-delay 5 "$STAGING_URL" > /dev/null
+          curl -fL --retry 4 --retry-delay 5 "$STAGING_URL" > /dev/null
           
           echo "Testing Login Page (GET /login)..."
-          curl -fL --retry 3 --retry-delay 5 "$STAGING_URL/login" > /dev/null
+          curl -fL --retry 4 --retry-delay 5 "$STAGING_URL/login" > /dev/null
           
           echo "Smoke tests passed successfully!"
