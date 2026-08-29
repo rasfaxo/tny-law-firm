@@ -13,4 +13,8 @@ fi
 echo "Running database migrations..."
 php /home/site/wwwroot/artisan migrate --force
 
+# 3. Seed database accounts and demo testing dataset
+echo "Seeding database for staging..."
+php /home/site/wwwroot/artisan db:seed --class=DatabaseSeeder --force || true
+
 echo "=== Startup script completed successfully ==="
