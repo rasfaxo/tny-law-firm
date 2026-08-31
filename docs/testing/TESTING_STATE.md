@@ -33,9 +33,9 @@ COMPLETED
 
 | Category    |  Total | Executed |  PASS |  FAIL | BLOCKED | Not Executed |
 | ----------- | -----: | -------: | ----: | ----: | ------: | -----------: |
-| Performance |      7 |        2 |     2 |     0 |       0 |            5 |
+| Performance |      7 |        6 |     6 |     0 |       0 |            1 |
 | Security    |      9 |        0 |     0 |     0 |       0 |            9 |
-| **Total**   | **16** |    **2** | **2** | **0** |   **0** |       **14** |
+| **Total**   | **16** |    **6** | **6** | **0** |   **0** |       **10** |
 
 ---
 
@@ -97,10 +97,10 @@ BLOCKED
 | ID    | Status       | Evidence                                             | Notes                                                 |
 | ----- | ------------ | ---------------------------------------------------- | ----------------------------------------------------- |
 | PF-01 | PASS         | `testing/jmeter/results/load-test-{5,10,20}vu.jtl`   | 5, 10, 20 VU: 100% OK, 0% error, avg 1.26s–1.89s      |
-| PF-02 | NOT EXECUTED | -                                                    |                                                       |
-| PF-03 | NOT EXECUTED | -                                                    |                                                       |
-| PF-04 | NOT EXECUTED | -                                                    |                                                       |
-| PF-05 | NOT EXECUTED | -                                                    |                                                       |
+| PF-02 | PASS         | `testing/jmeter/results/load-test-klien-{5,10,20}vu.jtl` | 5, 10, 20 VU: 100% OK, 0% error, avg 1.85s–4.09s  |
+| PF-03 | PASS         | `testing/jmeter/results/load-test-klien-{5,10,20}vu.jtl` | 5, 10, 20 VU: 100% OK, 0% error, avg 3.42s–5.11s  |
+| PF-04 | PASS         | `testing/jmeter/results/load-test-klien-{5,10,20}vu.jtl` | 5, 10, 20 VU: 100% OK, 0% error, avg 1.52s–4.70s  |
+| PF-05 | PASS         | `testing/jmeter/results/load-test-klien-{5,10,20}vu.jtl` | 5, 10, 20 VU: 100% OK, 0% error, avg 2.50s–5.41s  |
 | PF-06 | PASS         | `testing/jmeter/results/load-test-{5,10,20}vu.jtl`   | 5, 10, 20 VU: 100% OK, 0% error, avg 2.50s–3.68s      |
 | PF-07 | NOT EXECUTED | -                                                    |                                                       |
 
@@ -171,7 +171,7 @@ Jika ditemukan discrepancy, jangan menghapus entry sebelumnya.
 # 12. Latest Completed Action
 
 ```text
-Executed full progressive load test (5 VU, 10 VU, 20 VU) via Apache JMeter for PF-01 (Login) and PF-06 (Akses Data Pra-Pendaftaran / Dashboard). Both test cases passed with 0% error rate across all load tiers on Staging.
+Executed full progressive load testing (5 VU, 10 VU, 20 VU) for Klien End-to-End Flow (PF-02 Akses Form, PF-03 Submit Perkara, PF-04 Upload Dokumen, PF-05 Monitoring Status). All test cases passed with 0% error rate on Staging.
 ```
 
 ---
@@ -179,7 +179,7 @@ Executed full progressive load test (5 VU, 10 VU, 20 VU) via Apache JMeter for P
 # 13. Next Action
 
 ```text
-Execute Phase 4 Stage 2: Skenario End-to-End Klien (PF-02 Akses Form, PF-03 Submit Formulir Perkara, PF-04 Upload Dokumen, PF-05 Monitoring Status).
+Execute Phase 4 Stage 3: Skenario Verifikasi Staf Legal (PF-07 Verifikasi Berkas Perkara via JMeter).
 ```
 
 ---

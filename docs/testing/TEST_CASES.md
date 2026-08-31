@@ -115,15 +115,21 @@ Fitur dapat diakses dan request diproses tanpa error yang tidak diharapkan.
 
 ### Actual Result
 
-`TO BE EXECUTED`
+- **5 VU:** 5/5 requests berhasil (Error: 0.00%). Avg Response Time: 1848.40 ms, Min: 1021 ms, Max: 2307 ms, Throughput: 1.92 req/s.
+- **10 VU:** 10/10 requests berhasil (Error: 0.00%). Avg Response Time: 1960.80 ms, Min: 1019 ms, Max: 3367 ms, Throughput: 0.62 req/s.
+- **20 VU:** 20/20 requests berhasil (Error: 0.00%). Avg Response Time: 4094.75 ms, Min: 1002 ms, Max: 6935 ms, Throughput: 0.50 req/s.
+
+Halaman formulir pra-pendaftaran perkara dan data kategori perkara berhasil dimuat tanpa error.
 
 ### Evidence
 
-`TO BE COLLECTED`
+- `testing/jmeter/results/load-test-klien-5vu.jtl`, `testing/jmeter/reports/report-klien-5vu/index.html`
+- `testing/jmeter/results/load-test-klien-10vu.jtl`, `testing/jmeter/reports/report-klien-10vu/index.html`
+- `testing/jmeter/results/load-test-klien-20vu.jtl`, `testing/jmeter/reports/report-klien-20vu/index.html`
 
 ### Status
 
-`NOT EXECUTED`
+`PASS`
 
 ---
 
@@ -158,15 +164,21 @@ Form request diproses sesuai implementasi tanpa unexpected error.
 
 ### Actual Result
 
-`TO BE EXECUTED`
+- **5 VU:** 5/5 submissions berhasil (Error: 0.00%). Avg Response Time: 4008.40 ms (POST) / 6984.40 ms (Total with redirect), Throughput: 1.22 req/s.
+- **10 VU:** 10/10 submissions berhasil (Error: 0.00%). Avg Response Time: 3417.20 ms (POST) / 7628.20 ms (Total with redirect), Throughput: 0.54 req/s.
+- **20 VU:** 20/20 submissions berhasil (Error: 0.00%). Avg Response Time: 5113.45 ms (POST) / 10953.35 ms (Total with redirect), Throughput: 0.45 req/s.
+
+Data perkara baru beserta dokumen awal berhasil tersimpan ke database dan file storage secara konsisten.
 
 ### Evidence
 
-`TO BE COLLECTED`
+- `testing/jmeter/results/load-test-klien-5vu.jtl`, `testing/jmeter/reports/report-klien-5vu/index.html`
+- `testing/jmeter/results/load-test-klien-10vu.jtl`, `testing/jmeter/reports/report-klien-10vu/index.html`
+- `testing/jmeter/results/load-test-klien-20vu.jtl`, `testing/jmeter/reports/report-klien-20vu/index.html`
 
 ### Status
 
-`NOT EXECUTED`
+`PASS`
 
 ---
 
@@ -202,15 +214,21 @@ Upload request diproses sesuai aturan aplikasi tanpa unexpected error.
 
 ### Actual Result
 
-`TO BE EXECUTED`
+- **5 VU:** 5/5 uploads berhasil (Error: 0.00%). Avg Response Time: 1515.00 ms (POST) / 4043.40 ms (Total with redirect), Throughput: 2.48 req/s.
+- **10 VU:** 10/10 uploads berhasil (Error: 0.00%). Avg Response Time: 2804.90 ms (POST) / 6720.90 ms (Total with redirect), Throughput: 0.55 req/s.
+- **20 VU:** 20/20 uploads berhasil (Error: 0.00%). Avg Response Time: 4701.40 ms (POST) / 10390.40 ms (Total with redirect), Throughput: 0.42 req/s.
+
+Unggah dokumen tambahan multipart berhasil divalidasi dan disimpan ke storage tanpa kegagalan transfer.
 
 ### Evidence
 
-`TO BE COLLECTED`
+- `testing/jmeter/results/load-test-klien-5vu.jtl`, `testing/jmeter/reports/report-klien-5vu/index.html`
+- `testing/jmeter/results/load-test-klien-10vu.jtl`, `testing/jmeter/reports/report-klien-10vu/index.html`
+- `testing/jmeter/results/load-test-klien-20vu.jtl`, `testing/jmeter/reports/report-klien-20vu/index.html`
 
 ### Status
 
-`NOT EXECUTED`
+`PASS`
 
 ---
 
@@ -242,15 +260,21 @@ Status pengajuan dapat diakses tanpa unexpected error.
 
 ### Actual Result
 
-`TO BE EXECUTED`
+- **5 VU:** 5/5 requests berhasil (Error: 0.00%). Avg Response Time: 2498.00 ms, Min: 2472 ms, Max: 2517 ms, Throughput: 1.71 req/s.
+- **10 VU:** 10/10 requests berhasil (Error: 0.00%). Avg Response Time: 3399.70 ms, Min: 2453 ms, Max: 4440 ms, Throughput: 0.65 req/s.
+- **20 VU:** 20/20 requests berhasil (Error: 0.00%). Avg Response Time: 5408.55 ms, Min: 2458 ms, Max: 7856 ms, Throughput: 0.44 req/s.
+
+Detail pra-pendaftaran, dokumen aktif, dan timeline riwayat status berhasil ditampilkan secara akurat.
 
 ### Evidence
 
-`TO BE COLLECTED`
+- `testing/jmeter/results/load-test-klien-5vu.jtl`, `testing/jmeter/reports/report-klien-5vu/index.html`
+- `testing/jmeter/results/load-test-klien-10vu.jtl`, `testing/jmeter/reports/report-klien-10vu/index.html`
+- `testing/jmeter/results/load-test-klien-20vu.jtl`, `testing/jmeter/reports/report-klien-20vu/index.html`
 
 ### Status
 
-`NOT EXECUTED`
+`PASS`
 
 ---
 
@@ -689,6 +713,10 @@ Format:
 | ID | Execution Date | Actual Result | Evidence | Status | Notes |
 |---|---|---|---|---|---|
 | PF-01 | 2026-08-31 | Progressive Load (5 VU, 10 VU, 20 VU): 100% OK, 0% error, avg 1.26s–1.89s | `testing/jmeter/results/load-test-{5,10,20}vu.jtl` | PASS | Login & CSRF token extraction |
+| PF-02 | 2026-08-31 | Progressive Load (5 VU, 10 VU, 20 VU): 100% OK, 0% error, avg 1.85s–4.09s | `testing/jmeter/results/load-test-klien-{5,10,20}vu.jtl` | PASS | Akses Form Pra-Pendaftaran |
+| PF-03 | 2026-08-31 | Progressive Load (5 VU, 10 VU, 20 VU): 100% OK, 0% error, avg 3.42s–5.11s | `testing/jmeter/results/load-test-klien-{5,10,20}vu.jtl` | PASS | Pengisian & Submit Formulir Perkara |
+| PF-04 | 2026-08-31 | Progressive Load (5 VU, 10 VU, 20 VU): 100% OK, 0% error, avg 1.52s–4.70s | `testing/jmeter/results/load-test-klien-{5,10,20}vu.jtl` | PASS | Upload Dokumen Pendukung |
+| PF-05 | 2026-08-31 | Progressive Load (5 VU, 10 VU, 20 VU): 100% OK, 0% error, avg 2.50s–5.41s | `testing/jmeter/results/load-test-klien-{5,10,20}vu.jtl` | PASS | Monitoring Status & Timeline Pengajuan |
 | PF-06 | 2026-08-31 | Progressive Load (5 VU, 10 VU, 20 VU): 100% OK, 0% error, avg 2.50s–3.68s | `testing/jmeter/results/load-test-{5,10,20}vu.jtl` | PASS | Akses Dashboard Klien (Data Perkara) |
 
 ````
