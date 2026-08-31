@@ -143,15 +143,15 @@ Environment harus diverifikasi sebelum execution.
 
 Dokumentasikan:
 
-| Item            | Value | Status     |
-| --------------- | ----- | ---------- |
-| Application URL | TBD   | UNVERIFIED |
-| Environment     | TBD   | UNVERIFIED |
-| Browser         | TBD   | UNVERIFIED |
-| Server          | TBD   | UNVERIFIED |
-| Database        | TBD   | UNVERIFIED |
-| JMeter          | TBD   | UNVERIFIED |
-| OWASP ZAP       | TBD   | UNVERIFIED |
+| Item            | Value                                                                                      | Status   |
+| --------------- | ------------------------------------------------------------------------------------------ | -------- |
+| Application URL | `https://tny-law-firm-staging-afb3fqbdfvbteea3.indonesiacentral-01.azurewebsites.net`       | VERIFIED |
+| Environment     | `Staging (Azure App Service Linux - Standard B1 / Cloud VPS)`                              | VERIFIED |
+| Browser         | `Chromium Browser (Google Chrome / Microsoft Edge)`                                        | VERIFIED |
+| Server          | `Nginx + PHP 8.2-FPM (Linux Container)`                                                    | VERIFIED |
+| Database        | `Azure Database for MySQL Flexible Server (MySQL 8.0)`                                     | VERIFIED |
+| JMeter          | `Apache JMeter 5.6.3`                                                                      | VERIFIED |
+| OWASP ZAP       | `OWASP Zed Attack Proxy (ZAP) 2.17.0`                                                      | VERIFIED |
 
 Nilai `TBD` tidak boleh dianggap sebagai hasil final.
 
