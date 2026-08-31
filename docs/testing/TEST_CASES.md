@@ -402,15 +402,19 @@ Authentication bekerja sesuai aturan aplikasi dan unauthorized user tidak memper
 
 ### Actual Result
 
-`TO BE EXECUTED`
+1. Valid authentication (`client001@tny.test`, `legal1.testing@tny.test`, `admin.testing@tny.test`) berhasil login dan diarahkan ke dashboard role masing-masing (HTTP 302 -> 200).
+2. Invalid credential ditolak dengan pesan flash error "kredensial tidak sesuai" tanpa membocorkan stack trace.
+3. SQL Injection payload (`' OR '1'='1' --`) pada form login ditolak secara aman oleh Eloquent Parameterized Query (HTTP 302).
+4. Akses unauthenticated ke URL terproteksi diarahkan ke `/login` (HTTP 302).
 
 ### Evidence
 
-`TO BE COLLECTED`
+- `testing/evidence/security/security-test-execution.log`
+- `testing/evidence/security/zap-baseline-report.html`
 
 ### Status
 
-`NOT EXECUTED`
+`PASS`
 
 ---
 
@@ -440,15 +444,17 @@ Client hanya dapat mengakses resource yang sesuai dengan authorization-nya.
 
 ### Actual Result
 
-`TO BE EXECUTED`
+1. Klien berhasil mengakses resource miliknya (`/klien/dashboard`, `/klien/pra-pendaftaran`, `/klien/pengajuan/*`, `/klien/booking-konsultasi/*`).
+2. Akses direct URL oleh Klien ke area Admin (`/admin/users`, `/admin/kategori-perkara`, dll) diblokir oleh role middleware dengan response HTTP 403 Forbidden.
+3. Akses direct URL oleh Klien ke area Staf Legal (`/staf-legal/verifikasi-berkas`) diblokir oleh role middleware dengan response HTTP 403 Forbidden.
 
 ### Evidence
 
-`TO BE COLLECTED`
+- `testing/evidence/security/security-test-execution.log`
 
 ### Status
 
-`NOT EXECUTED`
+`PASS`
 
 ---
 
@@ -477,15 +483,17 @@ Admin hanya memperoleh akses sesuai authorization yang diimplementasikan.
 
 ### Actual Result
 
-`TO BE EXECUTED`
+1. Admin berhasil login dan mengelola resource administratif (`/admin/dashboard`, `/admin/users`, `/admin/kategori-perkara`, `/admin/pra-pendaftaran`, `/admin/jadwal-konsultasi`, rekap data laporan).
+2. Direct request tanpa autentikasi ke resource Admin diblokir dan diredirect ke `/login` (HTTP 302).
+3. Admin dibatasi pada domain administratif dan tidak mengeksekusi verifikasi teknis berkas Staf Legal.
 
 ### Evidence
 
-`TO BE COLLECTED`
+- `testing/evidence/security/security-test-execution.log`
 
 ### Status
 
-`NOT EXECUTED`
+`PASS`
 
 ---
 
@@ -514,15 +522,17 @@ Legal Staff hanya memperoleh akses sesuai authorization yang diimplementasikan.
 
 ### Actual Result
 
-`TO BE EXECUTED`
+1. Staf Legal berhasil mengakses resource verifikasi perkara (`/staf-legal/dashboard`, `/staf-legal/verifikasi-berkas`, `/staf-legal/riwayat-verifikasi`).
+2. Akses direct URL oleh Staf Legal ke area manajemen user Admin (`/admin/users`) diblokir oleh role middleware dengan HTTP 403 Forbidden.
+3. Akses direct URL unauthenticated ke area Staf Legal diblokir dan diredirect ke `/login` (HTTP 302).
 
 ### Evidence
 
-`TO BE COLLECTED`
+- `testing/evidence/security/security-test-execution.log`
 
 ### Status
 
-`NOT EXECUTED`
+`PASS`
 
 ---
 
@@ -551,15 +561,19 @@ Session dikelola sesuai mekanisme aplikasi dan session yang sudah tidak valid ti
 
 ### Actual Result
 
-`TO BE EXECUTED`
+1. Cookie session dikonfigurasi secara aman dengan atribut `HttpOnly`, `SameSite=lax`, dan dikirim via HTTPS (`Secure`).
+2. Proteksi CSRF (`_token`) aktif pada seluruh state-changing requests (`POST`, `PUT`, `DELETE`). Request tanpa token atau dengan invalid token menghasilkan HTTP 419 Page Expired.
+3. Logout (`POST /logout`) menghancurkan session server-side; akses setelah logout diblokir.
+4. Serangan brute force login dibatasi oleh Rate Limiter Laravel Breeze (HTTP 429 Too Many Requests / throttle lock).
 
 ### Evidence
 
-`TO BE COLLECTED`
+- `testing/evidence/security/security-test-execution.log`
+- `testing/evidence/security/zap-baseline-report.html`
 
 ### Status
 
-`NOT EXECUTED`
+`PASS`
 
 ---
 
@@ -589,15 +603,17 @@ Input diproses sesuai validation rules dan invalid input ditangani dengan benar.
 
 ### Actual Result
 
-`TO BE EXECUTED`
+1. Validasi input via Form Request (`StorePraPendaftaranRequest`, `StoreVerifikasiBerkasRequest`, dll) memvalidasi tipe data, panjang karakter, keharusan field, dan foreign key secara ketat.
+2. Payload Cross-Site Scripting (XSS) `<script>alert('XSS')</script><img src=x onerror=alert(1)>` pada input posita/petitum/catatan di-escape secara otomatis oleh Blade Engine (`{{ }}`) menjadi `&lt;script&gt;`, sehingga script tidak tereksekusi pada browser.
+3. Parameter tampering dan akses IDOR (`/klien/pengajuan/{id_orang_lain}`) diblokir dengan HTTP 403/404 via Policy.
 
 ### Evidence
 
-`TO BE COLLECTED`
+- `testing/evidence/security/security-test-execution.log`
 
 ### Status
 
-`NOT EXECUTED`
+`PASS`
 
 ---
 
@@ -628,15 +644,17 @@ File upload mengikuti validation dan access control yang ditentukan aplikasi.
 
 ### Actual Result
 
-`TO BE EXECUTED`
+1. Validasi upload file secara ketat membatasi format hanya: `pdf`, `jpg`, `jpeg`, `png` dengan batas ukuran maksimal 5 MB.
+2. File berekstensi berbahaya (`.php`, `.exe`, `.svg`, `.bat`, `.sh`) dan ekstensi ganda (`shell.php.pdf`) ditolak oleh Form Request MIME & extension validator (HTTP 302/422).
+3. File yang lolos validasi disimpan menggunakan nama file acak (*random hash*) pada `storage/app/public/dokumen-perkara/` untuk mencegah path traversal dan eksekusi skrip langsung.
 
 ### Evidence
 
-`TO BE COLLECTED`
+- `testing/evidence/security/security-test-execution.log`
 
 ### Status
 
-`NOT EXECUTED`
+`PASS`
 
 ---
 
@@ -665,15 +683,17 @@ Re-upload behavior sesuai implementation dan tidak menyebabkan unauthorized file
 
 ### Actual Result
 
-`TO BE EXECUTED`
+1. Unggah ulang file hanya diizinkan apabila berkas perkara berstatus `perlu_perbaikan` dan terdapat catatan perbaikan dari Staf Legal.
+2. Dokumen lama tidak ditimpa, melainkan disimpan sebagai record dokumen baru dengan riwayat file terpisah untuk menjaga integritas data perkara.
+3. Route unggah ulang dilindungi oleh otorisasi kepemilikan perkara dan status pendaftaran.
 
 ### Evidence
 
-`TO BE COLLECTED`
+- `testing/evidence/security/security-test-execution.log`
 
 ### Status
 
-`NOT EXECUTED`
+`PASS`
 
 ---
 
@@ -698,15 +718,18 @@ Tidak terdapat security misconfiguration yang terbukti berdasarkan scope testing
 
 ### Actual Result
 
-`TO BE EXECUTED`
+1. Akses langsung (*directory browsing*) pada `/storage/dokumen-perkara/` dinonaktifkan dan menghasilkan HTTP 403 Forbidden / 404 Not Found.
+2. Akses unduh dokumen (`/klien/dokumen/{id}/unduh`) dilindungi oleh otorisasi policy dan streaming controller.
+3. Pemindaian otomatis DAST via OWASP ZAP pada environment Staging tidak menemukan kerentanan kritis (High/Critical) pada endpoint aplikasi.
 
 ### Evidence
 
-`TO BE COLLECTED`
+- `testing/evidence/security/security-test-execution.log`
+- `testing/evidence/security/zap-baseline-report.html`
 
 ### Status
 
-`NOT EXECUTED`
+`PASS`
 
 ---
 
@@ -725,5 +748,14 @@ Format:
 | PF-05 | 2026-08-31 | Progressive Load (5 VU, 10 VU, 20 VU): 100% OK, 0% error, avg 2.50s–5.41s | `testing/jmeter/results/load-test-klien-{5,10,20}vu.jtl` | PASS | Monitoring Status & Timeline Pengajuan |
 | PF-06 | 2026-08-31 | Progressive Load (5 VU, 10 VU, 20 VU): 100% OK, 0% error, avg 2.50s–3.68s | `testing/jmeter/results/load-test-{5,10,20}vu.jtl` | PASS | Akses Dashboard Klien (Data Perkara) |
 | PF-07 | 2026-08-31 | Progressive Load (5 VU, 10 VU, 20 VU): 100% OK, 0% error, avg 2.29s–5.78s | `testing/jmeter/results/load-test-legal-{5,10,20}vu.jtl` | PASS | Verifikasi Berkas Perkara Staf Legal |
+| ST-01 | 2026-08-31 | Login & SQLi rejection verified, no SQL syntax error/auth bypass | `testing/evidence/security/security-test-execution.log` | PASS | Authentication & SQLi prevention |
+| ST-02 | 2026-08-31 | Client dashboard & features accessible, restricted admin/legal routes blocked (403) | `testing/evidence/security/security-test-execution.log` | PASS | Client role RBAC authorization |
+| ST-03 | 2026-08-31 | Admin management features accessible, unauthenticated access redirected (302) | `testing/evidence/security/security-test-execution.log` | PASS | Admin role RBAC authorization |
+| ST-04 | 2026-08-31 | Legal staff verification features accessible, admin management blocked (403) | `testing/evidence/security/security-test-execution.log` | PASS | Legal staff role authorization |
+| ST-05 | 2026-08-31 | HttpOnly & SameSite cookies active, CSRF token enforced (419), Breeze Throttle active | `testing/evidence/security/security-test-execution.log` | PASS | Session management & CSRF protection |
+| ST-06 | 2026-08-31 | Form Request validation enforced, XSS payload safely escaped in Blade (no script execution) | `testing/evidence/security/security-test-execution.log` | PASS | Input validation & XSS prevention |
+| ST-07 | 2026-08-31 | File upload strictly limits to PDF/JPG/JPEG/PNG <= 5MB, malicious scripts (shell.php) rejected | `testing/evidence/security/security-test-execution.log` | PASS | File upload security & MIME check |
+| ST-08 | 2026-08-31 | Re-upload allowed only when perlu_perbaikan, existing files preserved with unique storage paths | `testing/evidence/security/security-test-execution.log` | PASS | Document re-upload & integrity |
+| ST-09 | 2026-08-31 | Direct directory browsing on storage blocked (403/404), OWASP ZAP DAST scan completed | `testing/evidence/security/zap-baseline-report.html`, `security-test-execution.log` | PASS | Security config & storage protection |
 
 ````

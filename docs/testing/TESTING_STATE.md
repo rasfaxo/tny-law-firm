@@ -8,7 +8,7 @@ Last Updated: 2026-08-31
 # 1. Current Phase
 
 ```text
-PHASE 4 — PERFORMANCE TESTING
+PHASE 5 — SECURITY TESTING (100% COMPLETED - 9/9 PASS)
 ```
 
 Possible phases:
@@ -34,8 +34,8 @@ COMPLETED
 | Category    |  Total | Executed |  PASS |  FAIL | BLOCKED | Not Executed |
 | ----------- | -----: | -------: | ----: | ----: | ------: | -----------: |
 | Performance |      7 |        7 |     7 |     0 |       0 |            0 |
-| Security    |      9 |        0 |     0 |     0 |       0 |            9 |
-| **Total**   | **16** |    **7** | **7** | **0** |   **0** |        **9** |
+| Security    |      9 |        9 |     9 |     0 |       0 |            0 |
+| **Total**   | **16** |   **16** | **16** | **0** |   **0** |        **0** |
 
 ---
 
@@ -108,17 +108,17 @@ BLOCKED
 
 # 6. Security Testing
 
-| ID    | Status       | Evidence | Notes |
-| ----- | ------------ | -------- | ----- |
-| ST-01 | NOT EXECUTED | -        |       |
-| ST-02 | NOT EXECUTED | -        |       |
-| ST-03 | NOT EXECUTED | -        |       |
-| ST-04 | NOT EXECUTED | -        |       |
-| ST-05 | NOT EXECUTED | -        |       |
-| ST-06 | NOT EXECUTED | -        |       |
-| ST-07 | NOT EXECUTED | -        |       |
-| ST-08 | NOT EXECUTED | -        |       |
-| ST-09 | NOT EXECUTED | -        |       |
+| ID    | Status | Evidence                                             | Notes                                                              |
+| ----- | ------ | ---------------------------------------------------- | ------------------------------------------------------------------ |
+| ST-01 | PASS   | `testing/evidence/security/security-test-execution.log` | Login & SQLi rejection verified, no SQL syntax error/auth bypass   |
+| ST-02 | PASS   | `testing/evidence/security/security-test-execution.log` | Client dashboard accessible, restricted admin/legal blocked (403)  |
+| ST-03 | PASS   | `testing/evidence/security/security-test-execution.log` | Admin management accessible, unauthenticated redirected (302)      |
+| ST-04 | PASS   | `testing/evidence/security/security-test-execution.log` | Legal verification accessible, admin management blocked (403)      |
+| ST-05 | PASS   | `testing/evidence/security/security-test-execution.log` | HttpOnly/SameSite cookies, CSRF token (419), Breeze Throttle active|
+| ST-06 | PASS   | `testing/evidence/security/security-test-execution.log` | Form Request validation, XSS payload safely escaped in Blade       |
+| ST-07 | PASS   | `testing/evidence/security/security-test-execution.log` | Strict extension & MIME validation (PDF/JPG/PNG <= 5MB)            |
+| ST-08 | PASS   | `testing/evidence/security/security-test-execution.log` | Re-upload allowed only when revision requested, old files preserved|
+| ST-09 | PASS   | `testing/evidence/security/zap-baseline-report.html` | Directory browsing blocked (403/404), OWASP ZAP DAST scan completed|
 
 ---
 
@@ -171,7 +171,7 @@ Jika ditemukan discrepancy, jangan menghapus entry sebelumnya.
 # 12. Latest Completed Action
 
 ```text
-Executed full progressive load testing (5 VU, 10 VU, 20 VU) for Staf Legal Verification Flow (PF-07 Verifikasi Berkas Perkara). Performance Testing Phase 4 is now 100% COMPLETED with all 7/7 test cases PASS.
+Executed full security testing suite (ST-01 through ST-09) and OWASP ZAP DAST scan on Staging environment. All 9 Security Test Cases PASSED with 100% success rate. Overall testing across Performance (PF-01 s/d PF-07) and Security (ST-01 s/d ST-09) is now 100% COMPLETE (16/16 PASS).
 ```
 
 ---
@@ -179,7 +179,7 @@ Executed full progressive load testing (5 VU, 10 VU, 20 VU) for Staf Legal Verif
 # 13. Next Action
 
 ```text
-Proceed to Phase 5: Security Testing (OWASP ZAP Baseline & Active Scanning, plus Manual Test Cases ST-01 s/d ST-09).
+Compile final test summary report and documentation artifact.
 ```
 
 ---
