@@ -353,15 +353,21 @@ Verification request diproses sesuai behavior aplikasi tanpa unexpected error.
 
 ### Actual Result
 
-`TO BE EXECUTED`
+- **5 VU:** 5/5 verifikasi berhasil (Error: 0.00%). Avg Response Time: 2292.40 ms (POST) / 3964.40 ms (Total with redirect), Throughput: 1.41 req/s.
+- **10 VU:** 10/10 verifikasi berhasil (Error: 0.00%). Avg Response Time: 3477.90 ms (POST) / 6209.80 ms (Total with redirect), Throughput: 0.51 req/s.
+- **20 VU:** 20/20 verifikasi berhasil (Error: 0.00%). Avg Response Time: 5778.80 ms (POST) / 10691.10 ms (Total with redirect), Throughput: 0.43 req/s.
+
+Pemeriksaan berkas perkara, validasi status dokumen, perubahan status pendaftaran menjadi `berkas_lengkap`, dan pencatatan log riwayat status tersimpan secara konsisten dan aman via database transaction.
 
 ### Evidence
 
-`TO BE COLLECTED`
+- `testing/jmeter/results/load-test-legal-5vu.jtl`, `testing/jmeter/reports/report-legal-5vu/index.html`
+- `testing/jmeter/results/load-test-legal-10vu.jtl`, `testing/jmeter/reports/report-legal-10vu/index.html`
+- `testing/jmeter/results/load-test-legal-20vu.jtl`, `testing/jmeter/reports/report-legal-20vu/index.html`
 
 ### Status
 
-`NOT EXECUTED`
+`PASS`
 
 ---
 
@@ -718,5 +724,6 @@ Format:
 | PF-04 | 2026-08-31 | Progressive Load (5 VU, 10 VU, 20 VU): 100% OK, 0% error, avg 1.52s–4.70s | `testing/jmeter/results/load-test-klien-{5,10,20}vu.jtl` | PASS | Upload Dokumen Pendukung |
 | PF-05 | 2026-08-31 | Progressive Load (5 VU, 10 VU, 20 VU): 100% OK, 0% error, avg 2.50s–5.41s | `testing/jmeter/results/load-test-klien-{5,10,20}vu.jtl` | PASS | Monitoring Status & Timeline Pengajuan |
 | PF-06 | 2026-08-31 | Progressive Load (5 VU, 10 VU, 20 VU): 100% OK, 0% error, avg 2.50s–3.68s | `testing/jmeter/results/load-test-{5,10,20}vu.jtl` | PASS | Akses Dashboard Klien (Data Perkara) |
+| PF-07 | 2026-08-31 | Progressive Load (5 VU, 10 VU, 20 VU): 100% OK, 0% error, avg 2.29s–5.78s | `testing/jmeter/results/load-test-legal-{5,10,20}vu.jtl` | PASS | Verifikasi Berkas Perkara Staf Legal |
 
 ````
