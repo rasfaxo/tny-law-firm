@@ -69,12 +69,17 @@ Login request diproses sesuai behavior aplikasi yang diharapkan dan tidak mengha
 
 ### Actual Result
 
-10 VU: 10/10 requests berhasil diproses tanpa error (Error Rate: 0.00%). Average Response Time: 1268.30 ms, Min: 973 ms, Max: 1644 ms, Throughput: 0.92 req/s. Autentikasi form login dan penarikan token CSRF berjalan sukses.
+- **5 VU:** 5/5 requests berhasil (Error: 0.00%). Avg Response Time: 1300.60 ms, Min: 1055 ms, Max: 1528 ms, Throughput: 1.69 req/s.
+- **10 VU:** 10/10 requests berhasil (Error: 0.00%). Avg Response Time: 1268.30 ms, Min: 973 ms, Max: 1644 ms, Throughput: 0.92 req/s.
+- **20 VU:** 20/20 requests berhasil (Error: 0.00%). Avg Response Time: 1893.05 ms, Min: 1056 ms, Max: 3491 ms, Throughput: 0.84 req/s.
+
+Autentikasi form login dan penarikan token CSRF berjalan stabil dan sukses di semua tingkatan beban.
 
 ### Evidence
 
-- `testing/jmeter/results/load-test-10vu.jtl`
-- `testing/jmeter/reports/report-10vu/index.html`
+- `testing/jmeter/results/load-test-5vu.jtl`, `testing/jmeter/reports/report-5vu/index.html`
+- `testing/jmeter/results/load-test-10vu.jtl`, `testing/jmeter/reports/report-10vu/index.html`
+- `testing/jmeter/results/load-test-20vu.jtl`, `testing/jmeter/reports/report-20vu/index.html`
 
 ### Status
 
@@ -277,12 +282,17 @@ Authorized request dapat memperoleh data sesuai hak akses tanpa unexpected error
 
 ### Actual Result
 
-10 VU: 10/10 requests berhasil diproses tanpa error (Error Rate: 0.00%). Average Response Time: 2502.00 ms, Min: 2437 ms, Max: 2631 ms, Throughput: 0.82 req/s. Halaman dashboard klien berhasil menampilkan ringkasan data perkara terautentikasi.
+- **5 VU:** 5/5 requests berhasil (Error: 0.00%). Avg Response Time: 2662.20 ms, Min: 2627 ms, Max: 2712 ms, Throughput: 1.19 req/s.
+- **10 VU:** 10/10 requests berhasil (Error: 0.00%). Avg Response Time: 2502.00 ms, Min: 2437 ms, Max: 2631 ms, Throughput: 0.82 req/s.
+- **20 VU:** 20/20 requests berhasil (Error: 0.00%). Avg Response Time: 3683.15 ms, Min: 2680 ms, Max: 4541 ms, Throughput: 0.77 req/s.
+
+Halaman dashboard klien berhasil merender data pra-pendaftaran perkara secara konsisten tanpa kegagalan koneksi DB.
 
 ### Evidence
 
-- `testing/jmeter/results/load-test-10vu.jtl`
-- `testing/jmeter/reports/report-10vu/index.html`
+- `testing/jmeter/results/load-test-5vu.jtl`, `testing/jmeter/reports/report-5vu/index.html`
+- `testing/jmeter/results/load-test-10vu.jtl`, `testing/jmeter/reports/report-10vu/index.html`
+- `testing/jmeter/results/load-test-20vu.jtl`, `testing/jmeter/reports/report-20vu/index.html`
 
 ### Status
 
@@ -678,7 +688,7 @@ Format:
 
 | ID | Execution Date | Actual Result | Evidence | Status | Notes |
 |---|---|---|---|---|---|
-| PF-01 | 2026-08-31 | 10 VU: 10/10 OK, 0% error, avg 1268.30 ms | `testing/jmeter/results/load-test-10vu.jtl` | PASS | Login & CSRF token extraction |
-| PF-06 | 2026-08-31 | 10 VU: 10/10 OK, 0% error, avg 2502.00 ms | `testing/jmeter/results/load-test-10vu.jtl` | PASS | Akses Dashboard Klien (Data Perkara) |
+| PF-01 | 2026-08-31 | Progressive Load (5 VU, 10 VU, 20 VU): 100% OK, 0% error, avg 1.26s–1.89s | `testing/jmeter/results/load-test-{5,10,20}vu.jtl` | PASS | Login & CSRF token extraction |
+| PF-06 | 2026-08-31 | Progressive Load (5 VU, 10 VU, 20 VU): 100% OK, 0% error, avg 2.50s–3.68s | `testing/jmeter/results/load-test-{5,10,20}vu.jtl` | PASS | Akses Dashboard Klien (Data Perkara) |
 
 ````
