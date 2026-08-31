@@ -33,9 +33,9 @@ COMPLETED
 
 | Category    |  Total | Executed |  PASS |  FAIL | BLOCKED | Not Executed |
 | ----------- | -----: | -------: | ----: | ----: | ------: | -----------: |
-| Performance |      7 |        0 |     0 |     0 |       0 |            7 |
+| Performance |      7 |        2 |     2 |     0 |       0 |            5 |
 | Security    |      9 |        0 |     0 |     0 |       0 |            9 |
-| **Total**   | **16** |    **0** | **0** | **0** |   **0** |       **16** |
+| **Total**   | **16** |    **2** | **2** | **0** |   **0** |       **14** |
 
 ---
 
@@ -94,15 +94,15 @@ BLOCKED
 
 # 5. Performance Testing
 
-| ID    | Status       | Evidence | Notes |
-| ----- | ------------ | -------- | ----- |
-| PF-01 | NOT EXECUTED | -        |       |
-| PF-02 | NOT EXECUTED | -        |       |
-| PF-03 | NOT EXECUTED | -        |       |
-| PF-04 | NOT EXECUTED | -        |       |
-| PF-05 | NOT EXECUTED | -        |       |
-| PF-06 | NOT EXECUTED | -        |       |
-| PF-07 | NOT EXECUTED | -        |       |
+| ID    | Status       | Evidence                                    | Notes                                   |
+| ----- | ------------ | ------------------------------------------- | --------------------------------------- |
+| PF-01 | PASS         | `testing/jmeter/results/load-test-10vu.jtl` | 10 VU: 10/10 OK, 0% error, avg 1.26s    |
+| PF-02 | NOT EXECUTED | -                                           |                                         |
+| PF-03 | NOT EXECUTED | -                                           |                                         |
+| PF-04 | NOT EXECUTED | -                                           |                                         |
+| PF-05 | NOT EXECUTED | -                                           |                                         |
+| PF-06 | PASS         | `testing/jmeter/results/load-test-10vu.jtl` | 10 VU: 10/10 OK, 0% error, avg 2.50s    |
+| PF-07 | NOT EXECUTED | -                                           |                                         |
 
 ---
 
@@ -171,7 +171,7 @@ Jika ditemukan discrepancy, jangan menghapus entry sebelumnya.
 # 12. Latest Completed Action
 
 ```text
-Phase 1 (Project Reconnaissance), Phase 2 (Implementation Mapping), and Phase 3 (Environment Preparation) completed. Staging target, automated seeder on App Service startup, Apache JMeter test plan (.jmx), and OWASP ZAP GUI guidelines configured and verified.
+Executed 10 VU progressive load test via Apache JMeter for PF-01 (Login) and PF-06 (Akses Data Pra-Pendaftaran / Dashboard). Both test cases passed with 0% error rate on Staging environment.
 ```
 
 ---
@@ -179,7 +179,7 @@ Phase 1 (Project Reconnaissance), Phase 2 (Implementation Mapping), and Phase 3 
 # 13. Next Action
 
 ```text
-PHASE 4 — PERFORMANCE TESTING (Execute progressive load test on Staging via JMeter)
+Continue Performance Testing execution (PF-02 s/d PF-05, PF-07 or load tiers 5 VU / 20 VU) or proceed to Security Testing (ST-01 s/d ST-09 via OWASP ZAP).
 ```
 
 ---

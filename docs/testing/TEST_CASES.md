@@ -69,15 +69,16 @@ Login request diproses sesuai behavior aplikasi yang diharapkan dan tidak mengha
 
 ### Actual Result
 
-`TO BE EXECUTED`
+10 VU: 10/10 requests berhasil diproses tanpa error (Error Rate: 0.00%). Average Response Time: 1268.30 ms, Min: 973 ms, Max: 1644 ms, Throughput: 0.92 req/s. Autentikasi form login dan penarikan token CSRF berjalan sukses.
 
 ### Evidence
 
-`TO BE COLLECTED`
+- `testing/jmeter/results/load-test-10vu.jtl`
+- `testing/jmeter/reports/report-10vu/index.html`
 
 ### Status
 
-`NOT EXECUTED`
+`PASS`
 
 ---
 
@@ -276,15 +277,16 @@ Authorized request dapat memperoleh data sesuai hak akses tanpa unexpected error
 
 ### Actual Result
 
-`TO BE EXECUTED`
+10 VU: 10/10 requests berhasil diproses tanpa error (Error Rate: 0.00%). Average Response Time: 2502.00 ms, Min: 2437 ms, Max: 2631 ms, Throughput: 0.82 req/s. Halaman dashboard klien berhasil menampilkan ringkasan data perkara terautentikasi.
 
 ### Evidence
 
-`TO BE COLLECTED`
+- `testing/jmeter/results/load-test-10vu.jtl`
+- `testing/jmeter/reports/report-10vu/index.html`
 
 ### Status
 
-`NOT EXECUTED`
+`PASS`
 
 ---
 
@@ -676,5 +678,7 @@ Format:
 
 | ID | Execution Date | Actual Result | Evidence | Status | Notes |
 |---|---|---|---|---|---|
+| PF-01 | 2026-08-31 | 10 VU: 10/10 OK, 0% error, avg 1268.30 ms | `testing/jmeter/results/load-test-10vu.jtl` | PASS | Login & CSRF token extraction |
+| PF-06 | 2026-08-31 | 10 VU: 10/10 OK, 0% error, avg 2502.00 ms | `testing/jmeter/results/load-test-10vu.jtl` | PASS | Akses Dashboard Klien (Data Perkara) |
 
 ````
