@@ -1,15 +1,15 @@
 # Testing State
 ## TNY Law Firm
 
-Last Updated: YYYY-MM-DD
+Last Updated: 2026-08-31
 
 ---
 
 # 1. Current Phase
 
 ```text
-NOT STARTED
-````
+COMPLETED
+```
 
 Possible phases:
 
@@ -33,29 +33,29 @@ COMPLETED
 
 | Category    |  Total | Executed |  PASS |  FAIL | BLOCKED | Not Executed |
 | ----------- | -----: | -------: | ----: | ----: | ------: | -----------: |
-| Performance |      7 |        0 |     0 |     0 |       0 |            7 |
-| Security    |      9 |        0 |     0 |     0 |       0 |            9 |
-| **Total**   | **16** |    **0** | **0** | **0** |   **0** |       **16** |
+| Performance |      7 |        7 |     7 |     0 |       0 |            0 |
+| Security    |      9 |        9 |     9 |     0 |       0 |            0 |
+| **Total**   | **16** |   **16** | **16** | **0** |   **0** |        **0** |
 
 ---
 
 # 3. Project Reconnaissance
 
-| Item                  | Status       |
-| --------------------- | ------------ |
-| Framework             | NOT VERIFIED |
-| Programming Language  | NOT VERIFIED |
-| Application Structure | NOT VERIFIED |
-| Routes                | NOT VERIFIED |
-| Controllers           | NOT VERIFIED |
-| Middleware            | NOT VERIFIED |
-| Authentication        | NOT VERIFIED |
-| Authorization         | NOT VERIFIED |
-| Validation            | NOT VERIFIED |
-| Database              | NOT VERIFIED |
-| File Upload           | NOT VERIFIED |
-| Existing Tests        | NOT VERIFIED |
-| Environment           | NOT VERIFIED |
+| Item                  | Status   |
+| --------------------- | -------- |
+| Framework             | VERIFIED |
+| Programming Language  | VERIFIED |
+| Application Structure | VERIFIED |
+| Routes                | VERIFIED |
+| Controllers           | VERIFIED |
+| Middleware            | VERIFIED |
+| Authentication        | VERIFIED |
+| Authorization         | VERIFIED |
+| Validation            | VERIFIED |
+| Database              | VERIFIED |
+| File Upload           | VERIFIED |
+| Existing Tests        | VERIFIED |
+| Environment           | VERIFIED |
 
 ---
 
@@ -63,22 +63,22 @@ COMPLETED
 
 | Test Case | Mapping Status |
 | --------- | -------------- |
-| PF-01     | NOT STARTED    |
-| PF-02     | NOT STARTED    |
-| PF-03     | NOT STARTED    |
-| PF-04     | NOT STARTED    |
-| PF-05     | NOT STARTED    |
-| PF-06     | NOT STARTED    |
-| PF-07     | NOT STARTED    |
-| ST-01     | NOT STARTED    |
-| ST-02     | NOT STARTED    |
-| ST-03     | NOT STARTED    |
-| ST-04     | NOT STARTED    |
-| ST-05     | NOT STARTED    |
-| ST-06     | NOT STARTED    |
-| ST-07     | NOT STARTED    |
-| ST-08     | NOT STARTED    |
-| ST-09     | NOT STARTED    |
+| PF-01     | VERIFIED       |
+| PF-02     | VERIFIED       |
+| PF-03     | VERIFIED       |
+| PF-04     | VERIFIED       |
+| PF-05     | VERIFIED       |
+| PF-06     | VERIFIED       |
+| PF-07     | VERIFIED       |
+| ST-01     | VERIFIED       |
+| ST-02     | VERIFIED       |
+| ST-03     | VERIFIED       |
+| ST-04     | VERIFIED       |
+| ST-05     | VERIFIED       |
+| ST-06     | VERIFIED       |
+| ST-07     | VERIFIED       |
+| ST-08     | VERIFIED       |
+| ST-09     | VERIFIED       |
 
 Possible status:
 
@@ -94,31 +94,31 @@ BLOCKED
 
 # 5. Performance Testing
 
-| ID    | Status       | Evidence | Notes |
-| ----- | ------------ | -------- | ----- |
-| PF-01 | NOT EXECUTED | -        |       |
-| PF-02 | NOT EXECUTED | -        |       |
-| PF-03 | NOT EXECUTED | -        |       |
-| PF-04 | NOT EXECUTED | -        |       |
-| PF-05 | NOT EXECUTED | -        |       |
-| PF-06 | NOT EXECUTED | -        |       |
-| PF-07 | NOT EXECUTED | -        |       |
+| ID    | Status       | Evidence                                             | Notes                                                 |
+| ----- | ------------ | ---------------------------------------------------- | ----------------------------------------------------- |
+| PF-01 | PASS         | `testing/jmeter/results/load-test-{5,10,20}vu.jtl`   | 5, 10, 20 VU: 100% OK, 0% error, avg 1.26s–1.89s      |
+| PF-02 | PASS         | `testing/jmeter/results/load-test-klien-{5,10,20}vu.jtl` | 5, 10, 20 VU: 100% OK, 0% error, avg 1.85s–4.09s  |
+| PF-03 | PASS         | `testing/jmeter/results/load-test-klien-{5,10,20}vu.jtl` | 5, 10, 20 VU: 100% OK, 0% error, avg 3.42s–5.11s  |
+| PF-04 | PASS         | `testing/jmeter/results/load-test-klien-{5,10,20}vu.jtl` | 5, 10, 20 VU: 100% OK, 0% error, avg 1.52s–4.70s  |
+| PF-05 | PASS         | `testing/jmeter/results/load-test-klien-{5,10,20}vu.jtl` | 5, 10, 20 VU: 100% OK, 0% error, avg 2.50s–5.41s  |
+| PF-06 | PASS         | `testing/jmeter/results/load-test-{5,10,20}vu.jtl`   | 5, 10, 20 VU: 100% OK, 0% error, avg 2.50s–3.68s      |
+| PF-07 | PASS         | `testing/jmeter/results/load-test-legal-{5,10,20}vu.jtl` | 5, 10, 20 VU: 100% OK, 0% error, avg 2.29s–5.78s  |
 
 ---
 
 # 6. Security Testing
 
-| ID    | Status       | Evidence | Notes |
-| ----- | ------------ | -------- | ----- |
-| ST-01 | NOT EXECUTED | -        |       |
-| ST-02 | NOT EXECUTED | -        |       |
-| ST-03 | NOT EXECUTED | -        |       |
-| ST-04 | NOT EXECUTED | -        |       |
-| ST-05 | NOT EXECUTED | -        |       |
-| ST-06 | NOT EXECUTED | -        |       |
-| ST-07 | NOT EXECUTED | -        |       |
-| ST-08 | NOT EXECUTED | -        |       |
-| ST-09 | NOT EXECUTED | -        |       |
+| ID    | Status | Evidence                                             | Notes                                                              |
+| ----- | ------ | ---------------------------------------------------- | ------------------------------------------------------------------ |
+| ST-01 | PASS   | `testing/evidence/security/security-test-execution.log` | Login & SQLi rejection verified, no SQL syntax error/auth bypass   |
+| ST-02 | PASS   | `testing/evidence/security/security-test-execution.log` | Client dashboard accessible, restricted admin/legal blocked (403)  |
+| ST-03 | PASS   | `testing/evidence/security/security-test-execution.log` | Admin management accessible, unauthenticated redirected (302)      |
+| ST-04 | PASS   | `testing/evidence/security/security-test-execution.log` | Legal verification accessible, admin management blocked (403)      |
+| ST-05 | PASS   | `testing/evidence/security/security-test-execution.log` | HttpOnly/SameSite cookies, CSRF token (419), Breeze Throttle active|
+| ST-06 | PASS   | `testing/evidence/security/security-test-execution.log` | Form Request validation, XSS payload safely escaped in Blade       |
+| ST-07 | PASS   | `testing/evidence/security/security-test-execution.log` | Strict extension & MIME validation (PDF/JPG/PNG <= 5MB)            |
+| ST-08 | PASS   | `testing/evidence/security/security-test-execution.log` | Re-upload allowed only when revision requested, old files preserved|
+| ST-09 | PASS   | `testing/evidence/security/zap-baseline-report.html` | Directory browsing blocked (403/404), OWASP ZAP DAST scan completed|
 
 ---
 
@@ -171,7 +171,7 @@ Jika ditemukan discrepancy, jangan menghapus entry sebelumnya.
 # 12. Latest Completed Action
 
 ```text
-No testing action has been executed.
+Compiled and finalized comprehensive Final Test Report (docs/testing/FINAL_TEST_REPORT.md) containing complete methodology, test environment verification, progressive load metrics (PF-01 to PF-07), security verification (ST-01 to ST-09), OWASP ZAP DAST scan results, Requirements Traceability Matrix, and Evidence Index. Testing lifecycle is now 100% COMPLETED.
 ```
 
 ---
@@ -179,7 +179,7 @@ No testing action has been executed.
 # 13. Next Action
 
 ```text
-PHASE 1 — PROJECT RECONNAISSANCE
+All testing phases completed. System is verified, validated, and ready for thesis evaluation and production deployment.
 ```
 
 ---

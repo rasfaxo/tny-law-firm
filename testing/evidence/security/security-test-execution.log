@@ -1,0 +1,44 @@
+[2026-08-31 13.53.19] ========================================================
+[2026-08-31 13.53.19] STARTING PHASE 5 SECURITY TESTING SUITE (ST-01 s/d ST-09)
+[2026-08-31 13.53.19] Target URL: https://tny-law-firm-staging-afb3fqbdfvbteea3.indonesiacentral-01.azurewebsites.net
+[2026-08-31 13.53.19] ========================================================
+[2026-08-31 13.53.19] 
+--- Testing ST-01: SQL Injection Prevention ---
+[2026-08-31 13.53.20] [PASS] ST-01: SQL Injection on login safely rejected (HTTP 302, Location: https://tny-law-firm-staging-afb3fqbdfvbteea3.indonesiacentral-01.azurewebsites.net/login). No SQL error or bypass.
+[2026-08-31 13.53.20] 
+--- Testing ST-02: Cross-Site Scripting (XSS) Prevention ---
+[2026-08-31 13.53.27] [PASS] ST-02: XSS payload safely escaped in HTML view. Raw executable script tag NOT present.
+[2026-08-31 13.53.27] 
+--- Testing ST-03: CSRF Protection Validation ---
+[2026-08-31 13.53.27] [PASS] ST-03: Caught expected HTTP 419 Page Expired on missing CSRF token.
+[2026-08-31 13.53.27] 
+--- Testing ST-04: Authentication & Password Security ---
+[2026-08-31 13.53.33] [PASS] ST-04: Rate Limiting & Auth mechanisms verified. Cookies configured with HttpOnly/SameSite. Password encrypted with strong Bcrypt.
+[2026-08-31 13.53.33] 
+--- Testing ST-05: Role-Based Access Control (RBAC) Enforcement ---
+[2026-08-31 13.53.35] [PASS] ST-05: Role middleware caught unauthorized access: The remote server returned an error: (404) Not Found.
+[2026-08-31 13.53.35] 
+--- Testing ST-06: IDOR & Ownership Validation ---
+[2026-08-31 13.53.36] [PASS] ST-06: Ownership check blocked unauthorized access.
+[2026-08-31 13.53.36] 
+--- Testing ST-07: Secure File Upload Validation ---
+[2026-08-31 13.53.41] [PASS] ST-07: Malicious upload (shell.php) rejected by Form Request MIME & extension validator (HTTP 302).
+[2026-08-31 13.53.41] 
+--- Testing ST-08: Unauthorized Document Access Protection ---
+[2026-08-31 13.53.41] [PASS] ST-08: Document download protected: The remote server returned an error: (404) Not Found.
+[2026-08-31 13.53.41] 
+--- Testing ST-09: Sensitive Case Document Exposure Protection ---
+[2026-08-31 13.53.41] [PASS] ST-09: Directory browsing blocked: The remote server returned an error: (403) Forbidden.
+[2026-08-31 13.53.41] 
+========================================================
+[2026-08-31 13.53.41] PHASE 5 SECURITY TEST RESULTS SUMMARY
+[2026-08-31 13.53.41] ========================================================
+[2026-08-31 13.53.41] ST-01: PASS (Safely rejected, no SQL syntax error or auth bypass)
+[2026-08-31 13.53.41] ST-02: PASS (Blade template escaping prevented executable script injection)
+[2026-08-31 13.53.41] ST-03: PASS (HTTP 419 Page Expired enforced)
+[2026-08-31 13.53.41] ST-04: PASS (Breeze Throttle & Bcrypt password hashing active)
+[2026-08-31 13.53.41] ST-05: PASS
+[2026-08-31 13.53.41] ST-06: PASS
+[2026-08-31 13.53.41] ST-07: PASS (Strict MIME & extension validation: only PDF/JPG/JPEG/PNG permitted up to 5MB)
+[2026-08-31 13.53.41] ST-08: PASS
+[2026-08-31 13.53.41] ST-09: PASS

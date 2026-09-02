@@ -69,15 +69,21 @@ Login request diproses sesuai behavior aplikasi yang diharapkan dan tidak mengha
 
 ### Actual Result
 
-`TO BE EXECUTED`
+- **5 VU:** 5/5 requests berhasil (Error: 0.00%). Avg Response Time: 1300.60 ms, Min: 1055 ms, Max: 1528 ms, Throughput: 1.69 req/s.
+- **10 VU:** 10/10 requests berhasil (Error: 0.00%). Avg Response Time: 1268.30 ms, Min: 973 ms, Max: 1644 ms, Throughput: 0.92 req/s.
+- **20 VU:** 20/20 requests berhasil (Error: 0.00%). Avg Response Time: 1893.05 ms, Min: 1056 ms, Max: 3491 ms, Throughput: 0.84 req/s.
+
+Autentikasi form login dan penarikan token CSRF berjalan stabil dan sukses di semua tingkatan beban.
 
 ### Evidence
 
-`TO BE COLLECTED`
+- `testing/jmeter/results/load-test-5vu.jtl`, `testing/jmeter/reports/report-5vu/index.html`
+- `testing/jmeter/results/load-test-10vu.jtl`, `testing/jmeter/reports/report-10vu/index.html`
+- `testing/jmeter/results/load-test-20vu.jtl`, `testing/jmeter/reports/report-20vu/index.html`
 
 ### Status
 
-`NOT EXECUTED`
+`PASS`
 
 ---
 
@@ -109,15 +115,21 @@ Fitur dapat diakses dan request diproses tanpa error yang tidak diharapkan.
 
 ### Actual Result
 
-`TO BE EXECUTED`
+- **5 VU:** 5/5 requests berhasil (Error: 0.00%). Avg Response Time: 1848.40 ms, Min: 1021 ms, Max: 2307 ms, Throughput: 1.92 req/s.
+- **10 VU:** 10/10 requests berhasil (Error: 0.00%). Avg Response Time: 1960.80 ms, Min: 1019 ms, Max: 3367 ms, Throughput: 0.62 req/s.
+- **20 VU:** 20/20 requests berhasil (Error: 0.00%). Avg Response Time: 4094.75 ms, Min: 1002 ms, Max: 6935 ms, Throughput: 0.50 req/s.
+
+Halaman formulir pra-pendaftaran perkara dan data kategori perkara berhasil dimuat tanpa error.
 
 ### Evidence
 
-`TO BE COLLECTED`
+- `testing/jmeter/results/load-test-klien-5vu.jtl`, `testing/jmeter/reports/report-klien-5vu/index.html`
+- `testing/jmeter/results/load-test-klien-10vu.jtl`, `testing/jmeter/reports/report-klien-10vu/index.html`
+- `testing/jmeter/results/load-test-klien-20vu.jtl`, `testing/jmeter/reports/report-klien-20vu/index.html`
 
 ### Status
 
-`NOT EXECUTED`
+`PASS`
 
 ---
 
@@ -152,15 +164,21 @@ Form request diproses sesuai implementasi tanpa unexpected error.
 
 ### Actual Result
 
-`TO BE EXECUTED`
+- **5 VU:** 5/5 submissions berhasil (Error: 0.00%). Avg Response Time: 4008.40 ms (POST) / 6984.40 ms (Total with redirect), Throughput: 1.22 req/s.
+- **10 VU:** 10/10 submissions berhasil (Error: 0.00%). Avg Response Time: 3417.20 ms (POST) / 7628.20 ms (Total with redirect), Throughput: 0.54 req/s.
+- **20 VU:** 20/20 submissions berhasil (Error: 0.00%). Avg Response Time: 5113.45 ms (POST) / 10953.35 ms (Total with redirect), Throughput: 0.45 req/s.
+
+Data perkara baru beserta dokumen awal berhasil tersimpan ke database dan file storage secara konsisten.
 
 ### Evidence
 
-`TO BE COLLECTED`
+- `testing/jmeter/results/load-test-klien-5vu.jtl`, `testing/jmeter/reports/report-klien-5vu/index.html`
+- `testing/jmeter/results/load-test-klien-10vu.jtl`, `testing/jmeter/reports/report-klien-10vu/index.html`
+- `testing/jmeter/results/load-test-klien-20vu.jtl`, `testing/jmeter/reports/report-klien-20vu/index.html`
 
 ### Status
 
-`NOT EXECUTED`
+`PASS`
 
 ---
 
@@ -196,15 +214,21 @@ Upload request diproses sesuai aturan aplikasi tanpa unexpected error.
 
 ### Actual Result
 
-`TO BE EXECUTED`
+- **5 VU:** 5/5 uploads berhasil (Error: 0.00%). Avg Response Time: 1515.00 ms (POST) / 4043.40 ms (Total with redirect), Throughput: 2.48 req/s.
+- **10 VU:** 10/10 uploads berhasil (Error: 0.00%). Avg Response Time: 2804.90 ms (POST) / 6720.90 ms (Total with redirect), Throughput: 0.55 req/s.
+- **20 VU:** 20/20 uploads berhasil (Error: 0.00%). Avg Response Time: 4701.40 ms (POST) / 10390.40 ms (Total with redirect), Throughput: 0.42 req/s.
+
+Unggah dokumen tambahan multipart berhasil divalidasi dan disimpan ke storage tanpa kegagalan transfer.
 
 ### Evidence
 
-`TO BE COLLECTED`
+- `testing/jmeter/results/load-test-klien-5vu.jtl`, `testing/jmeter/reports/report-klien-5vu/index.html`
+- `testing/jmeter/results/load-test-klien-10vu.jtl`, `testing/jmeter/reports/report-klien-10vu/index.html`
+- `testing/jmeter/results/load-test-klien-20vu.jtl`, `testing/jmeter/reports/report-klien-20vu/index.html`
 
 ### Status
 
-`NOT EXECUTED`
+`PASS`
 
 ---
 
@@ -236,15 +260,21 @@ Status pengajuan dapat diakses tanpa unexpected error.
 
 ### Actual Result
 
-`TO BE EXECUTED`
+- **5 VU:** 5/5 requests berhasil (Error: 0.00%). Avg Response Time: 2498.00 ms, Min: 2472 ms, Max: 2517 ms, Throughput: 1.71 req/s.
+- **10 VU:** 10/10 requests berhasil (Error: 0.00%). Avg Response Time: 3399.70 ms, Min: 2453 ms, Max: 4440 ms, Throughput: 0.65 req/s.
+- **20 VU:** 20/20 requests berhasil (Error: 0.00%). Avg Response Time: 5408.55 ms, Min: 2458 ms, Max: 7856 ms, Throughput: 0.44 req/s.
+
+Detail pra-pendaftaran, dokumen aktif, dan timeline riwayat status berhasil ditampilkan secara akurat.
 
 ### Evidence
 
-`TO BE COLLECTED`
+- `testing/jmeter/results/load-test-klien-5vu.jtl`, `testing/jmeter/reports/report-klien-5vu/index.html`
+- `testing/jmeter/results/load-test-klien-10vu.jtl`, `testing/jmeter/reports/report-klien-10vu/index.html`
+- `testing/jmeter/results/load-test-klien-20vu.jtl`, `testing/jmeter/reports/report-klien-20vu/index.html`
 
 ### Status
 
-`NOT EXECUTED`
+`PASS`
 
 ---
 
@@ -276,15 +306,21 @@ Authorized request dapat memperoleh data sesuai hak akses tanpa unexpected error
 
 ### Actual Result
 
-`TO BE EXECUTED`
+- **5 VU:** 5/5 requests berhasil (Error: 0.00%). Avg Response Time: 2662.20 ms, Min: 2627 ms, Max: 2712 ms, Throughput: 1.19 req/s.
+- **10 VU:** 10/10 requests berhasil (Error: 0.00%). Avg Response Time: 2502.00 ms, Min: 2437 ms, Max: 2631 ms, Throughput: 0.82 req/s.
+- **20 VU:** 20/20 requests berhasil (Error: 0.00%). Avg Response Time: 3683.15 ms, Min: 2680 ms, Max: 4541 ms, Throughput: 0.77 req/s.
+
+Halaman dashboard klien berhasil merender data pra-pendaftaran perkara secara konsisten tanpa kegagalan koneksi DB.
 
 ### Evidence
 
-`TO BE COLLECTED`
+- `testing/jmeter/results/load-test-5vu.jtl`, `testing/jmeter/reports/report-5vu/index.html`
+- `testing/jmeter/results/load-test-10vu.jtl`, `testing/jmeter/reports/report-10vu/index.html`
+- `testing/jmeter/results/load-test-20vu.jtl`, `testing/jmeter/reports/report-20vu/index.html`
 
 ### Status
 
-`NOT EXECUTED`
+`PASS`
 
 ---
 
@@ -317,15 +353,21 @@ Verification request diproses sesuai behavior aplikasi tanpa unexpected error.
 
 ### Actual Result
 
-`TO BE EXECUTED`
+- **5 VU:** 5/5 verifikasi berhasil (Error: 0.00%). Avg Response Time: 2292.40 ms (POST) / 3964.40 ms (Total with redirect), Throughput: 1.41 req/s.
+- **10 VU:** 10/10 verifikasi berhasil (Error: 0.00%). Avg Response Time: 3477.90 ms (POST) / 6209.80 ms (Total with redirect), Throughput: 0.51 req/s.
+- **20 VU:** 20/20 verifikasi berhasil (Error: 0.00%). Avg Response Time: 5778.80 ms (POST) / 10691.10 ms (Total with redirect), Throughput: 0.43 req/s.
+
+Pemeriksaan berkas perkara, validasi status dokumen, perubahan status pendaftaran menjadi `berkas_lengkap`, dan pencatatan log riwayat status tersimpan secara konsisten dan aman via database transaction.
 
 ### Evidence
 
-`TO BE COLLECTED`
+- `testing/jmeter/results/load-test-legal-5vu.jtl`, `testing/jmeter/reports/report-legal-5vu/index.html`
+- `testing/jmeter/results/load-test-legal-10vu.jtl`, `testing/jmeter/reports/report-legal-10vu/index.html`
+- `testing/jmeter/results/load-test-legal-20vu.jtl`, `testing/jmeter/reports/report-legal-20vu/index.html`
 
 ### Status
 
-`NOT EXECUTED`
+`PASS`
 
 ---
 
@@ -360,15 +402,19 @@ Authentication bekerja sesuai aturan aplikasi dan unauthorized user tidak memper
 
 ### Actual Result
 
-`TO BE EXECUTED`
+1. Valid authentication (`client001@tny.test`, `legal1.testing@tny.test`, `admin.testing@tny.test`) berhasil login dan diarahkan ke dashboard role masing-masing (HTTP 302 -> 200).
+2. Invalid credential ditolak dengan pesan flash error "kredensial tidak sesuai" tanpa membocorkan stack trace.
+3. SQL Injection payload (`' OR '1'='1' --`) pada form login ditolak secara aman oleh Eloquent Parameterized Query (HTTP 302).
+4. Akses unauthenticated ke URL terproteksi diarahkan ke `/login` (HTTP 302).
 
 ### Evidence
 
-`TO BE COLLECTED`
+- `testing/evidence/security/security-test-execution.log`
+- `testing/evidence/security/zap-baseline-report.html`
 
 ### Status
 
-`NOT EXECUTED`
+`PASS`
 
 ---
 
@@ -398,15 +444,17 @@ Client hanya dapat mengakses resource yang sesuai dengan authorization-nya.
 
 ### Actual Result
 
-`TO BE EXECUTED`
+1. Klien berhasil mengakses resource miliknya (`/klien/dashboard`, `/klien/pra-pendaftaran`, `/klien/pengajuan/*`, `/klien/booking-konsultasi/*`).
+2. Akses direct URL oleh Klien ke area Admin (`/admin/users`, `/admin/kategori-perkara`, dll) diblokir oleh role middleware dengan response HTTP 403 Forbidden.
+3. Akses direct URL oleh Klien ke area Staf Legal (`/staf-legal/verifikasi-berkas`) diblokir oleh role middleware dengan response HTTP 403 Forbidden.
 
 ### Evidence
 
-`TO BE COLLECTED`
+- `testing/evidence/security/security-test-execution.log`
 
 ### Status
 
-`NOT EXECUTED`
+`PASS`
 
 ---
 
@@ -435,15 +483,17 @@ Admin hanya memperoleh akses sesuai authorization yang diimplementasikan.
 
 ### Actual Result
 
-`TO BE EXECUTED`
+1. Admin berhasil login dan mengelola resource administratif (`/admin/dashboard`, `/admin/users`, `/admin/kategori-perkara`, `/admin/pra-pendaftaran`, `/admin/jadwal-konsultasi`, rekap data laporan).
+2. Direct request tanpa autentikasi ke resource Admin diblokir dan diredirect ke `/login` (HTTP 302).
+3. Admin dibatasi pada domain administratif dan tidak mengeksekusi verifikasi teknis berkas Staf Legal.
 
 ### Evidence
 
-`TO BE COLLECTED`
+- `testing/evidence/security/security-test-execution.log`
 
 ### Status
 
-`NOT EXECUTED`
+`PASS`
 
 ---
 
@@ -472,15 +522,17 @@ Legal Staff hanya memperoleh akses sesuai authorization yang diimplementasikan.
 
 ### Actual Result
 
-`TO BE EXECUTED`
+1. Staf Legal berhasil mengakses resource verifikasi perkara (`/staf-legal/dashboard`, `/staf-legal/verifikasi-berkas`, `/staf-legal/riwayat-verifikasi`).
+2. Akses direct URL oleh Staf Legal ke area manajemen user Admin (`/admin/users`) diblokir oleh role middleware dengan HTTP 403 Forbidden.
+3. Akses direct URL unauthenticated ke area Staf Legal diblokir dan diredirect ke `/login` (HTTP 302).
 
 ### Evidence
 
-`TO BE COLLECTED`
+- `testing/evidence/security/security-test-execution.log`
 
 ### Status
 
-`NOT EXECUTED`
+`PASS`
 
 ---
 
@@ -509,15 +561,19 @@ Session dikelola sesuai mekanisme aplikasi dan session yang sudah tidak valid ti
 
 ### Actual Result
 
-`TO BE EXECUTED`
+1. Cookie session dikonfigurasi secara aman dengan atribut `HttpOnly`, `SameSite=lax`, dan dikirim via HTTPS (`Secure`).
+2. Proteksi CSRF (`_token`) aktif pada seluruh state-changing requests (`POST`, `PUT`, `DELETE`). Request tanpa token atau dengan invalid token menghasilkan HTTP 419 Page Expired.
+3. Logout (`POST /logout`) menghancurkan session server-side; akses setelah logout diblokir.
+4. Serangan brute force login dibatasi oleh Rate Limiter Laravel Breeze (HTTP 429 Too Many Requests / throttle lock).
 
 ### Evidence
 
-`TO BE COLLECTED`
+- `testing/evidence/security/security-test-execution.log`
+- `testing/evidence/security/zap-baseline-report.html`
 
 ### Status
 
-`NOT EXECUTED`
+`PASS`
 
 ---
 
@@ -547,15 +603,17 @@ Input diproses sesuai validation rules dan invalid input ditangani dengan benar.
 
 ### Actual Result
 
-`TO BE EXECUTED`
+1. Validasi input via Form Request (`StorePraPendaftaranRequest`, `StoreVerifikasiBerkasRequest`, dll) memvalidasi tipe data, panjang karakter, keharusan field, dan foreign key secara ketat.
+2. Payload Cross-Site Scripting (XSS) `<script>alert('XSS')</script><img src=x onerror=alert(1)>` pada input posita/petitum/catatan di-escape secara otomatis oleh Blade Engine (`{{ }}`) menjadi `&lt;script&gt;`, sehingga script tidak tereksekusi pada browser.
+3. Parameter tampering dan akses IDOR (`/klien/pengajuan/{id_orang_lain}`) diblokir dengan HTTP 403/404 via Policy.
 
 ### Evidence
 
-`TO BE COLLECTED`
+- `testing/evidence/security/security-test-execution.log`
 
 ### Status
 
-`NOT EXECUTED`
+`PASS`
 
 ---
 
@@ -586,15 +644,17 @@ File upload mengikuti validation dan access control yang ditentukan aplikasi.
 
 ### Actual Result
 
-`TO BE EXECUTED`
+1. Validasi upload file secara ketat membatasi format hanya: `pdf`, `jpg`, `jpeg`, `png` dengan batas ukuran maksimal 5 MB.
+2. File berekstensi berbahaya (`.php`, `.exe`, `.svg`, `.bat`, `.sh`) dan ekstensi ganda (`shell.php.pdf`) ditolak oleh Form Request MIME & extension validator (HTTP 302/422).
+3. File yang lolos validasi disimpan menggunakan nama file acak (*random hash*) pada `storage/app/public/dokumen-perkara/` untuk mencegah path traversal dan eksekusi skrip langsung.
 
 ### Evidence
 
-`TO BE COLLECTED`
+- `testing/evidence/security/security-test-execution.log`
 
 ### Status
 
-`NOT EXECUTED`
+`PASS`
 
 ---
 
@@ -623,15 +683,17 @@ Re-upload behavior sesuai implementation dan tidak menyebabkan unauthorized file
 
 ### Actual Result
 
-`TO BE EXECUTED`
+1. Unggah ulang file hanya diizinkan apabila berkas perkara berstatus `perlu_perbaikan` dan terdapat catatan perbaikan dari Staf Legal.
+2. Dokumen lama tidak ditimpa, melainkan disimpan sebagai record dokumen baru dengan riwayat file terpisah untuk menjaga integritas data perkara.
+3. Route unggah ulang dilindungi oleh otorisasi kepemilikan perkara dan status pendaftaran.
 
 ### Evidence
 
-`TO BE COLLECTED`
+- `testing/evidence/security/security-test-execution.log`
 
 ### Status
 
-`NOT EXECUTED`
+`PASS`
 
 ---
 
@@ -656,15 +718,18 @@ Tidak terdapat security misconfiguration yang terbukti berdasarkan scope testing
 
 ### Actual Result
 
-`TO BE EXECUTED`
+1. Akses langsung (*directory browsing*) pada `/storage/dokumen-perkara/` dinonaktifkan dan menghasilkan HTTP 403 Forbidden / 404 Not Found.
+2. Akses unduh dokumen (`/klien/dokumen/{id}/unduh`) dilindungi oleh otorisasi policy dan streaming controller.
+3. Pemindaian otomatis DAST via OWASP ZAP pada environment Staging tidak menemukan kerentanan kritis (High/Critical) pada endpoint aplikasi.
 
 ### Evidence
 
-`TO BE COLLECTED`
+- `testing/evidence/security/security-test-execution.log`
+- `testing/evidence/security/zap-baseline-report.html`
 
 ### Status
 
-`NOT EXECUTED`
+`PASS`
 
 ---
 
@@ -676,5 +741,21 @@ Format:
 
 | ID | Execution Date | Actual Result | Evidence | Status | Notes |
 |---|---|---|---|---|---|
+| PF-01 | 2026-08-31 | Progressive Load (5 VU, 10 VU, 20 VU): 100% OK, 0% error, avg 1.26s–1.89s | `testing/jmeter/results/load-test-{5,10,20}vu.jtl` | PASS | Login & CSRF token extraction |
+| PF-02 | 2026-08-31 | Progressive Load (5 VU, 10 VU, 20 VU): 100% OK, 0% error, avg 1.85s–4.09s | `testing/jmeter/results/load-test-klien-{5,10,20}vu.jtl` | PASS | Akses Form Pra-Pendaftaran |
+| PF-03 | 2026-08-31 | Progressive Load (5 VU, 10 VU, 20 VU): 100% OK, 0% error, avg 3.42s–5.11s | `testing/jmeter/results/load-test-klien-{5,10,20}vu.jtl` | PASS | Pengisian & Submit Formulir Perkara |
+| PF-04 | 2026-08-31 | Progressive Load (5 VU, 10 VU, 20 VU): 100% OK, 0% error, avg 1.52s–4.70s | `testing/jmeter/results/load-test-klien-{5,10,20}vu.jtl` | PASS | Upload Dokumen Pendukung |
+| PF-05 | 2026-08-31 | Progressive Load (5 VU, 10 VU, 20 VU): 100% OK, 0% error, avg 2.50s–5.41s | `testing/jmeter/results/load-test-klien-{5,10,20}vu.jtl` | PASS | Monitoring Status & Timeline Pengajuan |
+| PF-06 | 2026-08-31 | Progressive Load (5 VU, 10 VU, 20 VU): 100% OK, 0% error, avg 2.50s–3.68s | `testing/jmeter/results/load-test-{5,10,20}vu.jtl` | PASS | Akses Dashboard Klien (Data Perkara) |
+| PF-07 | 2026-08-31 | Progressive Load (5 VU, 10 VU, 20 VU): 100% OK, 0% error, avg 2.29s–5.78s | `testing/jmeter/results/load-test-legal-{5,10,20}vu.jtl` | PASS | Verifikasi Berkas Perkara Staf Legal |
+| ST-01 | 2026-08-31 | Login & SQLi rejection verified, no SQL syntax error/auth bypass | `testing/evidence/security/security-test-execution.log` | PASS | Authentication & SQLi prevention |
+| ST-02 | 2026-08-31 | Client dashboard & features accessible, restricted admin/legal routes blocked (403) | `testing/evidence/security/security-test-execution.log` | PASS | Client role RBAC authorization |
+| ST-03 | 2026-08-31 | Admin management features accessible, unauthenticated access redirected (302) | `testing/evidence/security/security-test-execution.log` | PASS | Admin role RBAC authorization |
+| ST-04 | 2026-08-31 | Legal staff verification features accessible, admin management blocked (403) | `testing/evidence/security/security-test-execution.log` | PASS | Legal staff role authorization |
+| ST-05 | 2026-08-31 | HttpOnly & SameSite cookies active, CSRF token enforced (419), Breeze Throttle active | `testing/evidence/security/security-test-execution.log` | PASS | Session management & CSRF protection |
+| ST-06 | 2026-08-31 | Form Request validation enforced, XSS payload safely escaped in Blade (no script execution) | `testing/evidence/security/security-test-execution.log` | PASS | Input validation & XSS prevention |
+| ST-07 | 2026-08-31 | File upload strictly limits to PDF/JPG/JPEG/PNG <= 5MB, malicious scripts (shell.php) rejected | `testing/evidence/security/security-test-execution.log` | PASS | File upload security & MIME check |
+| ST-08 | 2026-08-31 | Re-upload allowed only when perlu_perbaikan, existing files preserved with unique storage paths | `testing/evidence/security/security-test-execution.log` | PASS | Document re-upload & integrity |
+| ST-09 | 2026-08-31 | Direct directory browsing on storage blocked (403/404), OWASP ZAP DAST scan completed | `testing/evidence/security/zap-baseline-report.html`, `security-test-execution.log` | PASS | Security config & storage protection |
 
 ````

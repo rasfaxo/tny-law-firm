@@ -77,9 +77,13 @@ class VerifikasiBerkasService
             ]);
 
             if ($data["status_verifikasi"] === "berkas_lengkap") {
-                $documents->each(function (DokumenPerkara $dokumen): void {
-                    $dokumen->update(["status_dokumen" => "valid"]);
-                });
+                DokumenPerkara::query()
+                    ->where("id_pendaftaran", $lockedPengajuan->id_pendaftaran)
+                    ->aktif()
+                    ->update([
+                        "status_dokumen" => "valid",
+                        "updated_at" => now(),
+                    ]);
             }
 
             if ($data["status_verifikasi"] === "berkas_tidak_lengkap") {
