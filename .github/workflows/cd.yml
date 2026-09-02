@@ -168,13 +168,16 @@ jobs:
             exit 1
           fi
 
-          echo "Waiting 20 seconds for Azure App Service container to initialize and run startup script..."
-          sleep 20
+          echo "Waiting 40 seconds for Azure App Service to fully initialize..."
+          sleep 40
+          
+          echo "Checking basic connectivity..."
+          curl -v "$STAGING_URL" 2>&1 | head -20 || true
           
           echo "Testing Landing Page (GET /)..."
-          curl -fL --retry 8 --retry-delay 5 --retry-all-errors "$STAGING_URL" > /dev/null
+          curl -fL --retry 12 --retry-delay 5 --retry-all-errors "$STAGING_URL" > /dev/null
           
           echo "Testing Login Page (GET /login)..."
-          curl -fL --retry 8 --retry-delay 5 --retry-all-errors "$STAGING_URL/login" > /dev/null
+          curl -fL --retry 12 --retry-delay 5 --retry-all-errors "$STAGING_URL/login" > /dev/null
           
           echo "Smoke tests passed successfully!"
