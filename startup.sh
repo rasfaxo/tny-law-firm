@@ -1,6 +1,7 @@
 #!/bin/sh
 
 echo "=== Starting Azure App Service Startup Script ==="
+echo "App initializing at $(date)" >> /tmp/startup.log
 
 # 1. Configure Nginx document root and URL rewriting for Laravel
 if [ -f /home/site/wwwroot/default ]; then
@@ -11,7 +12,8 @@ fi
 
 # 2. Run Database Migrations natively within the PHP 8.4 runtime
 echo "Running database migrations..."
-php /home/site/wwwroot/artisan migrate --force
+php /home/site/wwwroot/artisan cache:clear
+php /home/site/wwwroot/artisan migrate --force || true
 
 # 3. Seed database accounts and demo testing dataset
 echo "Seeding database for staging..."
