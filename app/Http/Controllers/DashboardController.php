@@ -31,26 +31,22 @@ class DashboardController extends Controller
     {
         $userId = $request->user()->id_user;
 
+        // Consolidate 5 PraPendaftaranPerkara counts into 1 query
+        $pengajuanCounts = PraPendaftaranPerkara::query()
+            ->where("id_user", $userId)
+            ->selectRaw("COUNT(*) as total")
+            ->selectRaw("SUM(status_pengajuan = 'menunggu_verifikasi') as menunggu_verifikasi")
+            ->selectRaw("SUM(status_pengajuan = 'berkas_lengkap') as berkas_lengkap")
+            ->selectRaw("SUM(status_pengajuan = 'jadwal_dipilih') as jadwal_dipilih")
+            ->selectRaw("SUM(status_pengajuan = 'selesai') as selesai")
+            ->first();
+
         $statistics = [
-            "Total Pengajuan Saya" => PraPendaftaranPerkara::query()
-                ->where("id_user", $userId)
-                ->count(),
-            "Pengajuan Menunggu Verifikasi" => PraPendaftaranPerkara::query()
-                ->where("id_user", $userId)
-                ->where("status_pengajuan", "menunggu_verifikasi")
-                ->count(),
-            "Pengajuan Berkas Lengkap" => PraPendaftaranPerkara::query()
-                ->where("id_user", $userId)
-                ->where("status_pengajuan", "berkas_lengkap")
-                ->count(),
-            "Pengajuan Jadwal Dipilih" => PraPendaftaranPerkara::query()
-                ->where("id_user", $userId)
-                ->where("status_pengajuan", "jadwal_dipilih")
-                ->count(),
-            "Pengajuan Selesai" => PraPendaftaranPerkara::query()
-                ->where("id_user", $userId)
-                ->where("status_pengajuan", "selesai")
-                ->count(),
+            "Total Pengajuan Saya" => (int) $pengajuanCounts->total,
+            "Pengajuan Menunggu Verifikasi" => (int) $pengajuanCounts->menunggu_verifikasi,
+            "Pengajuan Berkas Lengkap" => (int) $pengajuanCounts->berkas_lengkap,
+            "Pengajuan Jadwal Dipilih" => (int) $pengajuanCounts->jadwal_dipilih,
+            "Pengajuan Selesai" => (int) $pengajuanCounts->selesai,
             "Booking Aktif" => BookingKonsultasi::query()
                 ->where("id_user", $userId)
                 ->where("status_booking", "aktif")
@@ -96,31 +92,39 @@ class DashboardController extends Controller
 
     public function admin(): View
     {
+        // Consolidate User counts (2 → 1 query)
+        $userCounts = User::query()
+            ->whereIn("role", ["klien", "staf_legal"])
+            ->selectRaw("SUM(role = 'klien') as klien")
+            ->selectRaw("SUM(role = 'staf_legal') as staf_legal")
+            ->first();
+
+        // Consolidate PraPendaftaranPerkara counts (5 → 1 query)
+        $pengajuanCounts = PraPendaftaranPerkara::query()
+            ->selectRaw("COUNT(*) as total")
+            ->selectRaw("SUM(status_pengajuan = 'menunggu_verifikasi') as menunggu_verifikasi")
+            ->selectRaw("SUM(status_pengajuan = 'berkas_lengkap') as berkas_lengkap")
+            ->selectRaw("SUM(status_pengajuan = 'jadwal_dipilih') as jadwal_dipilih")
+            ->selectRaw("SUM(status_pengajuan = 'selesai') as selesai")
+            ->first();
+
+        // Consolidate BookingKonsultasi counts (2 → 1 query)
+        $bookingCounts = BookingKonsultasi::query()
+            ->selectRaw("SUM(status_booking = 'aktif') as aktif")
+            ->selectRaw("SUM(status_booking = 'selesai') as selesai")
+            ->first();
+
         $statistics = [
-            "Total Klien" => User::query()->where("role", "klien")->count(),
-            "Total Staf Legal" => User::query()
-                ->where("role", "staf_legal")
-                ->count(),
+            "Total Klien" => (int) $userCounts->klien,
+            "Total Staf Legal" => (int) $userCounts->staf_legal,
             "Total Kategori Perkara" => KategoriPerkara::query()->count(),
-            "Total Pengajuan" => PraPendaftaranPerkara::query()->count(),
-            "Pengajuan Menunggu Verifikasi" => PraPendaftaranPerkara::query()
-                ->where("status_pengajuan", "menunggu_verifikasi")
-                ->count(),
-            "Pengajuan Berkas Lengkap" => PraPendaftaranPerkara::query()
-                ->where("status_pengajuan", "berkas_lengkap")
-                ->count(),
-            "Pengajuan Jadwal Dipilih" => PraPendaftaranPerkara::query()
-                ->where("status_pengajuan", "jadwal_dipilih")
-                ->count(),
-            "Pengajuan Selesai" => PraPendaftaranPerkara::query()
-                ->where("status_pengajuan", "selesai")
-                ->count(),
-            "Booking Aktif" => BookingKonsultasi::query()
-                ->where("status_booking", "aktif")
-                ->count(),
-            "Booking Selesai" => BookingKonsultasi::query()
-                ->where("status_booking", "selesai")
-                ->count(),
+            "Total Pengajuan" => (int) $pengajuanCounts->total,
+            "Pengajuan Menunggu Verifikasi" => (int) $pengajuanCounts->menunggu_verifikasi,
+            "Pengajuan Berkas Lengkap" => (int) $pengajuanCounts->berkas_lengkap,
+            "Pengajuan Jadwal Dipilih" => (int) $pengajuanCounts->jadwal_dipilih,
+            "Pengajuan Selesai" => (int) $pengajuanCounts->selesai,
+            "Booking Aktif" => (int) $bookingCounts->aktif,
+            "Booking Selesai" => (int) $bookingCounts->selesai,
             "Reschedule Menunggu Persetujuan" => PermintaanReschedule::query()
                 ->where("status_reschedule", "menunggu_persetujuan")
                 ->count(),
@@ -165,28 +169,29 @@ class DashboardController extends Controller
 
     public function stafLegal(Request $request): View
     {
+        // Consolidate 4 PraPendaftaranPerkara counts into 1 query
+        $pengajuanCounts = PraPendaftaranPerkara::query()
+            ->selectRaw("SUM(status_pengajuan = 'menunggu_verifikasi') as menunggu_verifikasi")
+            ->selectRaw("SUM(status_pengajuan = 'menunggu_verifikasi_ulang') as menunggu_verifikasi_ulang")
+            ->selectRaw("SUM(status_pengajuan = 'berkas_lengkap') as berkas_lengkap")
+            ->selectRaw("SUM(status_pengajuan = 'berkas_tidak_lengkap') as berkas_tidak_lengkap")
+            ->first();
+
+        // Consolidate 3 DokumenPerkara counts into 1 query
+        $dokumenCounts = DokumenPerkara::query()
+            ->selectRaw("SUM(status_dokumen = 'terkirim') as terkirim")
+            ->selectRaw("SUM(status_dokumen = 'perlu_perbaikan') as perlu_perbaikan")
+            ->selectRaw("SUM(status_dokumen = 'valid') as valid")
+            ->first();
+
         $statistics = [
-            "Pengajuan Menunggu Verifikasi" => PraPendaftaranPerkara::query()
-                ->where("status_pengajuan", "menunggu_verifikasi")
-                ->count(),
-            "Pengajuan Menunggu Verifikasi Ulang" => PraPendaftaranPerkara::query()
-                ->where("status_pengajuan", "menunggu_verifikasi_ulang")
-                ->count(),
-            "Pengajuan Berkas Lengkap" => PraPendaftaranPerkara::query()
-                ->where("status_pengajuan", "berkas_lengkap")
-                ->count(),
-            "Pengajuan Berkas Tidak Lengkap" => PraPendaftaranPerkara::query()
-                ->where("status_pengajuan", "berkas_tidak_lengkap")
-                ->count(),
-            "Dokumen Terkirim" => DokumenPerkara::query()
-                ->where("status_dokumen", "terkirim")
-                ->count(),
-            "Dokumen Perlu Perbaikan" => DokumenPerkara::query()
-                ->where("status_dokumen", "perlu_perbaikan")
-                ->count(),
-            "Dokumen Valid" => DokumenPerkara::query()
-                ->where("status_dokumen", "valid")
-                ->count(),
+            "Pengajuan Menunggu Verifikasi" => (int) $pengajuanCounts->menunggu_verifikasi,
+            "Pengajuan Menunggu Verifikasi Ulang" => (int) $pengajuanCounts->menunggu_verifikasi_ulang,
+            "Pengajuan Berkas Lengkap" => (int) $pengajuanCounts->berkas_lengkap,
+            "Pengajuan Berkas Tidak Lengkap" => (int) $pengajuanCounts->berkas_tidak_lengkap,
+            "Dokumen Terkirim" => (int) $dokumenCounts->terkirim,
+            "Dokumen Perlu Perbaikan" => (int) $dokumenCounts->perlu_perbaikan,
+            "Dokumen Valid" => (int) $dokumenCounts->valid,
         ];
 
         $pengajuanPerluVerifikasi = PraPendaftaranPerkara::query()

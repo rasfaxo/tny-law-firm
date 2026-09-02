@@ -80,6 +80,7 @@ class PraPendaftaranPerkaraController extends Controller
             403,
         );
 
+        // Always-needed relations (used in every status)
         $praPendaftaranPerkara->load([
             "kategori",
             "dokumenAktif" => fn($query) => $query->latest(),
@@ -87,26 +88,34 @@ class PraPendaftaranPerkaraController extends Controller
             "verifikasiBerkas" => fn($query) => $query->latest(
                 "tanggal_verifikasi",
             ),
-            "verifikasiBerkas.catatanVerifikasi" => fn($query) => $query
-                ->whereNotNull("id_dokumen")
-                ->latest(),
-            "verifikasiBerkas.catatanVerifikasi.dokumenPerkara",
-            "bookingAktif.adminKonfirmasi",
-            "bookingAktif.jadwalKonsultasi",
-            "bookingAktif.permintaanReschedule" => fn($query) => $query->latest(
-                "tanggal_pengajuan",
-            ),
-            "bookingAktif.permintaanReschedule.bookingBaru.jadwalKonsultasi",
-            "bookingAktif.permintaanReschedule.jadwalBaru",
-            "bookingTerakhir.adminKonfirmasi",
-            "bookingTerakhir.jadwalKonsultasi",
-            "bookingKonsultasi.permintaanReschedule" => fn(
-                $query,
-            ) => $query->latest("tanggal_pengajuan"),
-            "bookingKonsultasi.permintaanReschedule.bookingBaru.jadwalKonsultasi",
-            "bookingKonsultasi.permintaanReschedule.jadwalBaru",
             "riwayatStatus" => fn($query) => $query->with("user")->oldest(),
         ]);
+
+        $status = $praPendaftaranPerkara->status_pengajuan;
+
+        // Conditional: catatan verifikasi + dokumen perkara (only for berkas_tidak_lengkap)
+        if ($status === "berkas_tidak_lengkap") {
+            $praPendaftaranPerkara->load([
+                "verifikasiBerkas.catatanVerifikasi" => fn($query) => $query
+                    ->whereNotNull("id_dokumen")
+                    ->latest(),
+                "verifikasiBerkas.catatanVerifikasi.dokumenPerkara",
+            ]);
+        }
+
+        // Conditional: booking + konsultasi relations (only when booking may exist)
+        if (in_array($status, ["jadwal_dipilih", "selesai"], true)) {
+            $praPendaftaranPerkara->load([
+                "bookingAktif.jadwalKonsultasi",
+                "bookingAktif.permintaanReschedule" => fn($query) => $query->latest(
+                    "tanggal_pengajuan",
+                ),
+                "bookingTerakhir.jadwalKonsultasi",
+                "bookingKonsultasi.permintaanReschedule" => fn(
+                    $query,
+                ) => $query->latest("tanggal_pengajuan"),
+            ]);
+        }
 
         return view(
             "klien.pra-pendaftaran.show",

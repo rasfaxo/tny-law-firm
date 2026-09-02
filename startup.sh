@@ -16,5 +16,12 @@ php /home/site/wwwroot/artisan migrate --force
 # 3. Seed database accounts and demo testing dataset
 echo "Seeding database for staging..."
 php /home/site/wwwroot/artisan db:seed --class=DatabaseSeeder --force || true
+# 4. Cache Laravel configuration, routes, and views for performance
+echo "Caching configuration..."
+php /home/site/wwwroot/artisan config:cache
+echo "Caching routes..."
+php /home/site/wwwroot/artisan route:cache
+echo "Caching views..."
+php /home/site/wwwroot/artisan view:cache
 
 echo "=== Startup script completed successfully ==="
