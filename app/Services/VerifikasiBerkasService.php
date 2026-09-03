@@ -8,6 +8,7 @@ use App\Models\DokumenPerkara;
 use App\Models\PraPendaftaranPerkara;
 use App\Models\RiwayatStatus;
 use App\Models\VerifikasiBerkas;
+use App\Support\PerformanceTelemetry;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\ValidationException;
 use Throwable;
@@ -35,7 +36,9 @@ class VerifikasiBerkasService
         array $data,
         int $stafLegalId,
     ): VerifikasiBerkas {
-        return DB::transaction(function () use (
+        $transactionStartedAt = PerformanceTelemetry::start();
+
+        $verifikasi = DB::transaction(function () use (
             $pengajuan,
             $data,
             $stafLegalId,
@@ -87,29 +90,44 @@ class VerifikasiBerkasService
             }
 
             if ($data["status_verifikasi"] === "berkas_tidak_lengkap") {
+                $documentIdsByStatus = [];
+                $catatanRows = [];
+                $timestamp = now();
+
                 foreach ($submittedDocuments as $documentId => $documentData) {
                     $dokumen = $documents->get((int) $documentId);
 
-                    if (!$dokumen instanceof DokumenPerkara) {
+                    if (! $dokumen instanceof DokumenPerkara) {
                         continue;
                     }
 
-                    $dokumen->update([
-                        "status_dokumen" => $documentData["status_dokumen"],
-                    ]);
+                    $documentIdsByStatus[$documentData['status_dokumen']][] = $dokumen->id_dokumen;
 
-                    if ($documentData["status_dokumen"] !== "perlu_perbaikan") {
-                        continue;
+                    if ($documentData['status_dokumen'] === 'perlu_perbaikan') {
+                        $catatanRows[] = [
+                            'id_verifikasi' => $verifikasi->id_verifikasi,
+                            'id_dokumen' => $dokumen->id_dokumen,
+                            // Form request already requires this note. The fallback
+                            // keeps the current defensive behaviour unchanged.
+                            'isi_catatan' => $documentData['catatan'] ?? '',
+                            'status_perbaikan' => 'belum_diperbaiki',
+                            'created_at' => $timestamp,
+                            'updated_at' => $timestamp,
+                        ];
                     }
+                }
 
-                    CatatanVerifikasi::create([
-                        "id_verifikasi" => $verifikasi->id_verifikasi,
-                        "id_dokumen" => $dokumen->id_dokumen,
-                        // Gunakan ?? '' sebagai safety net; validasi form sudah
-                        // memastikan catatan wajib saat status perlu_perbaikan.
-                        "isi_catatan" => $documentData["catatan"] ?? "",
-                        "status_perbaikan" => "belum_diperbaiki",
-                    ]);
+                foreach ($documentIdsByStatus as $status => $documentIds) {
+                    DokumenPerkara::query()
+                        ->whereKey($documentIds)
+                        ->update([
+                            'status_dokumen' => $status,
+                            'updated_at' => $timestamp,
+                        ]);
+                }
+
+                if ($catatanRows !== []) {
+                    CatatanVerifikasi::query()->insert($catatanRows);
                 }
             }
 
@@ -126,6 +144,12 @@ class VerifikasiBerkasService
 
             return $verifikasi;
         });
+
+        PerformanceTelemetry::record('case_verification.database_transaction', $transactionStartedAt, [
+            'submitted_document_count' => count($data['dokumen'] ?? []),
+        ]);
+
+        return $verifikasi;
     }
 
     /**

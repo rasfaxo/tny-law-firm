@@ -7,6 +7,7 @@ use App\Http\Requests\Klien\StorePraPendaftaranPerkaraRequest;
 use App\Models\KategoriPerkara;
 use App\Models\PraPendaftaranPerkara;
 use App\Services\PraPendaftaranPerkaraService;
+use App\Support\PerformanceTelemetry;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
@@ -75,6 +76,7 @@ class PraPendaftaranPerkaraController extends Controller
         Request $request,
         PraPendaftaranPerkara $praPendaftaranPerkara,
     ): View {
+        $startedAt = PerformanceTelemetry::start();
         abort_unless(
             $praPendaftaranPerkara->id_user === $request->user()->id_user,
             403,
@@ -117,9 +119,13 @@ class PraPendaftaranPerkaraController extends Controller
             ]);
         }
 
-        return view(
+        $view = view(
             "klien.pra-pendaftaran.show",
             compact("praPendaftaranPerkara"),
         );
+
+        PerformanceTelemetry::record('case_detail.render', $startedAt);
+
+        return $view;
     }
 }

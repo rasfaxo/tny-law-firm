@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Auth\LoginRequest;
+use App\Support\PerformanceTelemetry;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -24,9 +25,13 @@ class AuthenticatedSessionController extends Controller
      */
     public function store(LoginRequest $request): RedirectResponse
     {
+        $authenticationStartedAt = PerformanceTelemetry::start();
         $request->authenticate();
+        PerformanceTelemetry::record('login.authenticate', $authenticationStartedAt);
 
+        $sessionStartedAt = PerformanceTelemetry::start();
         $request->session()->regenerate();
+        PerformanceTelemetry::record('login.session_regenerate', $sessionStartedAt);
 
         return redirect()->intended(route('dashboard', absolute: false));
     }
