@@ -3,6 +3,9 @@
 namespace App\Providers;
 
 use Illuminate\Filesystem\FilesystemAdapter;
+use Illuminate\Database\Events\QueryExecuted;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\ServiceProvider;
 use League\Flysystem\AzureBlobStorage\AzureBlobStorageAdapter;
@@ -25,6 +28,24 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
+        if (config('observability.enabled', false)) {
+            DB::listen(function (QueryExecuted $query): void {
+                if ($query->time < config('observability.slow_query_ms', 250)) {
+                    return;
+                }
+
+                // Query bindings are deliberately not logged because they can
+                // contain credentials, personal data, or case details.
+                $fingerprint = preg_replace('/\s+/', ' ', trim($query->sql));
+
+                Log::channel(config('observability.channel', 'stack'))->warning('performance.slow_query', [
+                    'duration_ms' => round($query->time, 2),
+                    'connection' => $query->connectionName,
+                    'fingerprint' => $fingerprint,
+                ]);
+            });
+        }
+
         Storage::extend('azure', function ($app, $config) {
             $connectionString = ! empty($config['connection_string'])
                 ? $config['connection_string']

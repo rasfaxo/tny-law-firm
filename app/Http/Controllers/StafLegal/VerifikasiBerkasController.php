@@ -7,6 +7,7 @@ use App\Http\Requests\StafLegal\StoreVerifikasiBerkasRequest;
 use App\Models\DokumenPerkara;
 use App\Models\PraPendaftaranPerkara;
 use App\Services\VerifikasiBerkasService;
+use App\Support\PerformanceTelemetry;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
@@ -49,13 +50,18 @@ class VerifikasiBerkasController extends Controller
 
     public function riwayat(): View
     {
+        $startedAt = PerformanceTelemetry::start();
         $riwayat = \App\Models\VerifikasiBerkas::query()
             ->with(["praPendaftaranPerkara.klien", "praPendaftaranPerkara.kategori"])
             ->where("id_user", auth()->id())
             ->latest("tanggal_verifikasi")
             ->paginate(10);
 
-        return view("staf-legal.verifikasi-berkas.riwayat", compact("riwayat"));
+        $view = view("staf-legal.verifikasi-berkas.riwayat", compact("riwayat"));
+
+        PerformanceTelemetry::record('verification_history.render', $startedAt);
+
+        return $view;
     }
 
     public function show(PraPendaftaranPerkara $praPendaftaranPerkara): View

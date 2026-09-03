@@ -10,6 +10,7 @@ use App\Models\PermintaanReschedule;
 use App\Models\PraPendaftaranPerkara;
 use App\Models\User;
 use App\Models\VerifikasiBerkas;
+use App\Support\PerformanceTelemetry;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -29,6 +30,7 @@ class DashboardController extends Controller
 
     public function klien(Request $request): View
     {
+        $startedAt = PerformanceTelemetry::start();
         $userId = $request->user()->id_user;
 
         // Consolidate 5 PraPendaftaranPerkara counts into 1 query
@@ -79,7 +81,7 @@ class DashboardController extends Controller
             ->limit(5)
             ->get();
 
-        return view(
+        $view = view(
             "klien.dashboard",
             compact(
                 "statistics",
@@ -88,6 +90,10 @@ class DashboardController extends Controller
                 "permintaanRescheduleSaya",
             ),
         );
+
+        PerformanceTelemetry::record('dashboard.klien', $startedAt);
+
+        return $view;
     }
 
     public function admin(): View
