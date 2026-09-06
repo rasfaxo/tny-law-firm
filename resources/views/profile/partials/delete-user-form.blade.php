@@ -10,7 +10,7 @@
     </header>
 
     <x-danger-button
-        x-data=""
+        x-data="dropdown"
         x-on:click.prevent="$dispatch('open-modal', 'confirm-user-deletion')"
     >{{ __('Delete Account') }}</x-danger-button>
 

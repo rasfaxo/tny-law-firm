@@ -62,7 +62,7 @@
                                 <td class="px-6 py-4 whitespace-nowrap text-right">
                                     <x-dropdown align="right" width="48">
                                         <x-slot name="trigger">
-                                            <button class="inline-flex items-center justify-center h-8 w-8 text-gray-400 hover:text-navy-dark hover:bg-gray-100 rounded-lg transition">
+                                            <button type="button" aria-label="Buka tindakan jadwal" class="inline-flex items-center justify-center h-8 w-8 text-gray-400 hover:text-navy-dark hover:bg-gray-100 rounded-lg transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent-blue">
                                                 <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 5v.01M12 12v.01M12 19v.01M12 6a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2z"></path>
                                                 </svg>
@@ -95,7 +95,7 @@
                                                 <select name="status_slot" 
                                                     class="w-full text-xs font-semibold rounded-lg border-[#E2E8F0] py-1.5 pl-2.5 pr-6 focus:ring focus:ring-accent-blue/20 focus:border-accent-blue {{ $jadwal->status_slot === 'terisi' ? 'bg-gray-50 text-gray-400 cursor-not-allowed opacity-70' : 'bg-[#F8FAFC] text-navy-dark cursor-pointer hover:border-gray-300 transition' }}"
                                                     {{ $jadwal->status_slot === 'terisi' ? 'disabled' : '' }}
-                                                    onchange="this.form.submit()">
+                                                    data-auto-submit>
                                                     @if($jadwal->status_slot === 'terisi')
                                                         <option value="terisi" selected>Terisi</option>
                                                     @else

@@ -190,7 +190,7 @@
                             <div class="bg-green-50/50 border border-green-100 p-4 rounded-xl text-green-700 leading-relaxed text-sm">
                                 <strong>Lokasi / Link Pertemuan:</strong><br>
                                 @if ($metodeBooking === 'online')
-                                    <a href="{{ $bookingTampil->link_konsultasi }}" target="_blank" class="text-accent-blue hover:underline break-all font-semibold mt-1 inline-block">
+                                    <a href="{{ $bookingTampil->link_konsultasi }}" target="_blank" rel="noopener noreferrer" class="text-accent-blue hover:underline break-all font-semibold mt-1 inline-block">
                                         {{ $bookingTampil->link_konsultasi }}
                                     </a>
                                 @else
@@ -350,14 +350,6 @@
                     <h3 class="font-bold text-navy-dark text-lg">Dokumen Pendukung</h3>
                     <p class="text-xs text-gray-400 mt-1">Dokumen yang telah diunggah pada pengajuan ini.</p>
                 </div>
-                @if ($praPendaftaranPerkara->status_pengajuan === 'menunggu_verifikasi')
-                    <x-primary-button href="{{ route('klien.dokumen.create', $praPendaftaranPerkara) }}" tag="a" class="gap-2">
-                        <svg class="h-4 w-4 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"></path>
-                        </svg>
-                        Upload Dokumen Baru
-                    </x-primary-button>
-                @endif
             </div>
 
             <!-- Desktop Table Layout -->
@@ -462,7 +454,7 @@
                                         {{ ucwords(str_replace('_', ' ', $riwayat->status)) }}
                                     </p>
                                     <p class="text-xs text-gray-400 mt-1">
-                                        {{ $riwayat->keterangan ?? 'Tercatat oleh sistem' }} • {{ $riwayat->created_at?->format('d M Y H:i') ?? '-' }}
+                                        {{ $riwayat->keterangan ?? 'Tercatat oleh sistem' }} • {{ $riwayat->created_at?->format('d M Y H:i') ?? '-' }} WIB
                                     </p>
                                 </div>
                             </div>

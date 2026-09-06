@@ -118,7 +118,7 @@
                                     <x-status-badge :status="$item->status_pengajuan" />
                                 </td>
                                 <td class="px-6 py-4 whitespace-nowrap text-xs text-gray-400">
-                                    {{ $item->tanggal_pengajuan?->format('d M Y H:i') ?? '-' }}
+                                    {{ $item->tanggal_pengajuan?->format('d M Y H:i') ?? '-' }} WIB
                                 </td>
                                 <td class="px-6 py-4 whitespace-nowrap text-right text-sm">
                                     <a href="{{ route('admin.pra-pendaftaran.show', $item) }}" class="inline-flex items-center gap-1 font-semibold text-accent-blue hover:text-navy-dark transition">

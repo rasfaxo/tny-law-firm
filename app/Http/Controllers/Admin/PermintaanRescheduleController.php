@@ -17,38 +17,39 @@ class PermintaanRescheduleController extends Controller
     {
         $permintaanReschedule = PermintaanReschedule::query()
             ->with([
-                "bookingLama.jadwalKonsultasi",
-                "bookingLama.praPendaftaranPerkara.kategori",
-                "klien",
+                'bookingLama.jadwalKonsultasi',
+                'bookingLama.praPendaftaranPerkara.kategori',
+                'klien',
             ])
-            ->latest("tanggal_pengajuan")
+            ->latest('tanggal_pengajuan')
             ->paginate(10);
 
         return view(
-            "admin.permintaan-reschedule.index",
-            compact("permintaanReschedule"),
+            'admin.permintaan-reschedule.index',
+            compact('permintaanReschedule'),
         );
     }
 
     public function show(PermintaanReschedule $permintaanReschedule): View
     {
+        $this->authorize('view', $permintaanReschedule);
         $permintaanReschedule->load([
-            "bookingBaru.jadwalKonsultasi",
-            "bookingLama.jadwalKonsultasi",
-            "bookingLama.praPendaftaranPerkara.kategori",
-            "jadwalBaru",
-            "klien",
+            'bookingBaru.jadwalKonsultasi',
+            'bookingLama.jadwalKonsultasi',
+            'bookingLama.praPendaftaranPerkara.kategori',
+            'jadwalBaru',
+            'klien',
         ]);
 
         $jadwalTersedia = JadwalKonsultasi::query()
-            ->where("status_slot", "tersedia")
-            ->orderBy("tanggal")
-            ->orderBy("waktu_mulai")
+            ->where('status_slot', 'tersedia')
+            ->orderBy('tanggal')
+            ->orderBy('waktu_mulai')
             ->get();
 
         return view(
-            "admin.permintaan-reschedule.show",
-            compact("permintaanReschedule", "jadwalTersedia"),
+            'admin.permintaan-reschedule.show',
+            compact('permintaanReschedule', 'jadwalTersedia'),
         );
     }
 
@@ -57,6 +58,8 @@ class PermintaanRescheduleController extends Controller
         PermintaanReschedule $permintaanReschedule,
         PermintaanRescheduleService $service,
     ): RedirectResponse {
+        $this->authorize('view', $permintaanReschedule);
+
         $service->approve(
             $permintaanReschedule,
             $request->validated(),
@@ -64,8 +67,8 @@ class PermintaanRescheduleController extends Controller
         );
 
         return redirect()
-            ->route("admin.permintaan-reschedule.show", $permintaanReschedule)
-            ->with("success", "Permintaan reschedule berhasil disetujui.");
+            ->route('admin.permintaan-reschedule.show', $permintaanReschedule)
+            ->with('success', 'Permintaan reschedule berhasil disetujui.');
     }
 
     public function reject(
@@ -73,10 +76,16 @@ class PermintaanRescheduleController extends Controller
         PermintaanReschedule $permintaanReschedule,
         PermintaanRescheduleService $service,
     ): RedirectResponse {
-        $service->reject($permintaanReschedule, $request->validated());
+        $this->authorize('view', $permintaanReschedule);
+
+        $service->reject(
+            $permintaanReschedule,
+            $request->validated(),
+            $request->user()->id_user,
+        );
 
         return redirect()
-            ->route("admin.permintaan-reschedule.show", $permintaanReschedule)
-            ->with("success", "Permintaan reschedule berhasil ditolak.");
+            ->route('admin.permintaan-reschedule.show', $permintaanReschedule)
+            ->with('success', 'Permintaan reschedule berhasil ditolak.');
     }
 }

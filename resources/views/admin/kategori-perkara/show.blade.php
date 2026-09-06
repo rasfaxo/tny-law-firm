@@ -48,7 +48,7 @@
                     </div>
 
                     <div class="flex items-center justify-end pt-4 border-t border-[#F1F5F9]">
-                        <form method="POST" action="{{ route('admin.kategori-perkara.destroy', $kategoriPerkara) }}" onsubmit="return confirm('Hapus kategori perkara ini?');">
+                        <form method="POST" action="{{ route('admin.kategori-perkara.destroy', $kategoriPerkara) }}" data-confirm="Hapus kategori perkara ini?">
                             @csrf
                             @method('DELETE')
                             <x-danger-button class="transition">{{ __('Hapus Kategori') }}</x-danger-button>

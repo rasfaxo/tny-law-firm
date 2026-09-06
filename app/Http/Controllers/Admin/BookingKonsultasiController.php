@@ -18,34 +18,35 @@ class BookingKonsultasiController extends Controller
     {
         $bookingKonsultasi = BookingKonsultasi::query()
             ->with([
-                "jadwalKonsultasi",
-                "klien",
-                "praPendaftaranPerkara.kategori",
+                'jadwalKonsultasi',
+                'klien',
+                'praPendaftaranPerkara.kategori',
             ])
-            ->latest("tanggal_booking")
+            ->latest('tanggal_booking')
             ->paginate(10);
 
         return view(
-            "admin.booking-konsultasi.index",
-            compact("bookingKonsultasi"),
+            'admin.booking-konsultasi.index',
+            compact('bookingKonsultasi'),
         );
     }
 
     public function show(BookingKonsultasi $bookingKonsultasi): View
     {
+        $this->authorize('view', $bookingKonsultasi);
         $bookingKonsultasi->load([
-            "adminKonfirmasi",
-            "jadwalKonsultasi",
-            "klien",
-            "permintaanReschedule" => fn($query) => $query->latest(
-                "tanggal_pengajuan",
+            'adminKonfirmasi',
+            'jadwalKonsultasi',
+            'klien',
+            'permintaanReschedule' => fn ($query) => $query->latest(
+                'tanggal_pengajuan',
             ),
-            "praPendaftaranPerkara.kategori",
+            'praPendaftaranPerkara.kategori',
         ]);
 
         return view(
-            "admin.booking-konsultasi.show",
-            compact("bookingKonsultasi"),
+            'admin.booking-konsultasi.show',
+            compact('bookingKonsultasi'),
         );
     }
 
@@ -54,6 +55,8 @@ class BookingKonsultasiController extends Controller
         BookingKonsultasi $bookingKonsultasi,
         KonfirmasiKonsultasiService $service,
     ): RedirectResponse {
+        $this->authorize('view', $bookingKonsultasi);
+
         $service->confirm(
             $bookingKonsultasi,
             $request->validated(),
@@ -61,8 +64,8 @@ class BookingKonsultasiController extends Controller
         );
 
         return redirect()
-            ->route("admin.booking-konsultasi.show", $bookingKonsultasi)
-            ->with("success", "Informasi konsultasi berhasil dikonfirmasi.");
+            ->route('admin.booking-konsultasi.show', $bookingKonsultasi)
+            ->with('success', 'Informasi konsultasi berhasil dikonfirmasi.');
     }
 
     public function selesai(
@@ -70,19 +73,21 @@ class BookingKonsultasiController extends Controller
         BookingKonsultasi $bookingKonsultasi,
         SelesaikanKonsultasiService $service,
     ): RedirectResponse {
+        $this->authorize('view', $bookingKonsultasi);
+
         try {
             $service->selesaikan($bookingKonsultasi, $request->user()->id_user);
         } catch (ValidationException $exception) {
             $message = collect($exception->errors())->flatten()->first();
 
             return back()->with(
-                "error",
-                $message ?: "Konsultasi tidak dapat diselesaikan.",
+                'error',
+                $message ?: 'Konsultasi tidak dapat diselesaikan.',
             );
         }
 
         return redirect()
-            ->route("admin.booking-konsultasi.show", $bookingKonsultasi)
-            ->with("success", "Konsultasi berhasil ditandai selesai.");
+            ->route('admin.booking-konsultasi.show', $bookingKonsultasi)
+            ->with('success', 'Konsultasi berhasil ditandai selesai.');
     }
 }

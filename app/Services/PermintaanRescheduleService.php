@@ -7,11 +7,15 @@ use App\Models\JadwalKonsultasi;
 use App\Models\PermintaanReschedule;
 use App\Models\PraPendaftaranPerkara;
 use App\Models\RiwayatStatus;
+use App\Models\User;
+use App\Notifications\RescheduleDecisionNotification;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\ValidationException;
 
 class PermintaanRescheduleService
 {
+    public function __construct(private AuditLogService $auditLog) {}
+
     public function createForKlien(
         BookingKonsultasi $bookingKonsultasi,
         array $data,
@@ -35,17 +39,17 @@ class PermintaanRescheduleService
             $this->ensureKlienCanRequest($booking, $pengajuan, $klienId);
 
             return PermintaanReschedule::create([
-                "id_booking" => $booking->id_booking,
-                "id_user" => $klienId,
-                "alasan_reschedule" => $data["alasan_reschedule"],
-                "preferensi_jadwal" => $data["preferensi_jadwal"] ?? null,
-                "preferensi_metode" => $data["preferensi_metode"] ?? null,
-                "status_reschedule" => "menunggu_persetujuan",
-                "id_jadwal_baru" => null,
-                "id_booking_baru" => null,
-                "catatan_admin" => null,
-                "tanggal_pengajuan" => now(),
-                "tanggal_keputusan" => null,
+                'id_booking' => $booking->id_booking,
+                'id_user' => $klienId,
+                'alasan_reschedule' => $data['alasan_reschedule'],
+                'preferensi_jadwal' => $data['preferensi_jadwal'] ?? null,
+                'preferensi_metode' => $data['preferensi_metode'] ?? null,
+                'status_reschedule' => 'menunggu_persetujuan',
+                'id_jadwal_baru' => null,
+                'id_booking_baru' => null,
+                'catatan_admin' => null,
+                'tanggal_pengajuan' => now(),
+                'tanggal_keputusan' => null,
             ]);
         });
     }
@@ -55,7 +59,7 @@ class PermintaanRescheduleService
         array $data,
         int $adminId,
     ): PermintaanReschedule {
-        return DB::transaction(function () use (
+        $permintaan = DB::transaction(function () use (
             $permintaanReschedule,
             $data,
             $adminId,
@@ -81,7 +85,7 @@ class PermintaanRescheduleService
                 ->firstOrFail();
 
             $jadwalBaru = JadwalKonsultasi::query()
-                ->whereKey((int) $data["id_jadwal_baru"])
+                ->whereKey((int) $data['id_jadwal_baru'])
                 ->lockForUpdate()
                 ->firstOrFail();
 
@@ -94,86 +98,111 @@ class PermintaanRescheduleService
             );
 
             $bookingLama->update([
-                "status_booking" => "dibatalkan",
+                'status_booking' => 'dibatalkan',
             ]);
 
             $jadwalLama->update([
-                "status_slot" => "tersedia",
+                'status_slot' => 'tersedia',
             ]);
 
             $bookingBaru = BookingKonsultasi::create([
-                "id_pendaftaran" => $bookingLama->id_pendaftaran,
-                "id_jadwal" => $jadwalBaru->id_jadwal,
-                "id_user" => $bookingLama->id_user,
-                "status_booking" => "aktif",
-                "metode_konsultasi" =>
-                    $permintaan->preferensi_metode ?:
+                'id_pendaftaran' => $bookingLama->id_pendaftaran,
+                'id_jadwal' => $jadwalBaru->id_jadwal,
+                'id_user' => $bookingLama->id_user,
+                'status_booking' => 'aktif',
+                'metode_konsultasi' => $permintaan->preferensi_metode ?:
                     ($bookingLama->metode_konsultasi ?:
-                    "offline"),
-                "status_konfirmasi_konsultasi" => "menunggu_konfirmasi",
-                "link_konsultasi" => null,
-                "lokasi_konsultasi" => null,
-                "catatan_konsultasi" => null,
-                "catatan_preferensi_klien" => $this->buildCatatanPreferensi(
+                    'offline'),
+                'status_konfirmasi_konsultasi' => 'menunggu_konfirmasi',
+                'link_konsultasi' => null,
+                'lokasi_konsultasi' => null,
+                'catatan_konsultasi' => null,
+                'catatan_preferensi_klien' => $this->buildCatatanPreferensi(
                     $permintaan,
                 ),
-                "dikonfirmasi_pada" => null,
-                "id_admin_konfirmasi" => null,
-                "tanggal_booking" => now(),
+                'dikonfirmasi_pada' => null,
+                'id_admin_konfirmasi' => null,
+                'tanggal_booking' => now(),
             ]);
 
             $jadwalBaru->update([
-                "status_slot" => "terisi",
+                'status_slot' => 'terisi',
             ]);
 
             $permintaan->update([
-                "status_reschedule" => "disetujui",
-                "id_jadwal_baru" => $jadwalBaru->id_jadwal,
-                "id_booking_baru" => $bookingBaru->id_booking,
-                "catatan_admin" => $data["catatan_admin"] ?? null,
-                "tanggal_keputusan" => now(),
+                'status_reschedule' => 'disetujui',
+                'id_admin_keputusan' => $adminId,
+                'id_jadwal_baru' => $jadwalBaru->id_jadwal,
+                'id_booking_baru' => $bookingBaru->id_booking,
+                'catatan_admin' => $data['catatan_admin'] ?? null,
+                'tanggal_keputusan' => now(),
             ]);
 
             RiwayatStatus::create([
-                "id_pendaftaran" => $pengajuan->id_pendaftaran,
-                "id_user" => $adminId,
-                "status" => "jadwal_dipilih",
-                "keterangan" =>
-                    "Reschedule konsultasi disetujui oleh admin. Booking lama dibatalkan dan jadwal baru dipilih.",
+                'id_pendaftaran' => $pengajuan->id_pendaftaran,
+                'id_user' => $adminId,
+                'status' => 'jadwal_dipilih',
+                'keterangan' => 'Reschedule konsultasi disetujui oleh admin. Booking lama dibatalkan dan jadwal baru dipilih.',
             ]);
+
+            $this->auditLog->record(
+                'reschedule.approved',
+                $permintaan,
+                User::query()->findOrFail($adminId),
+                ['status' => 'disetujui'],
+            );
 
             return $permintaan->refresh();
         });
+
+        $permintaan->loadMissing('klien');
+        $permintaan->klien?->notify(new RescheduleDecisionNotification($permintaan));
+
+        return $permintaan;
     }
 
     public function reject(
         PermintaanReschedule $permintaanReschedule,
         array $data,
+        int $adminId,
     ): PermintaanReschedule {
-        return DB::transaction(function () use (
+        $permintaan = DB::transaction(function () use (
             $permintaanReschedule,
             $data,
+            $adminId,
         ): PermintaanReschedule {
             $permintaan = PermintaanReschedule::query()
                 ->whereKey($permintaanReschedule->getKey())
                 ->lockForUpdate()
                 ->firstOrFail();
 
-            if ($permintaan->status_reschedule !== "menunggu_persetujuan") {
+            if ($permintaan->status_reschedule !== 'menunggu_persetujuan') {
                 throw ValidationException::withMessages([
-                    "catatan_admin" =>
-                        "Permintaan reschedule ini sudah diproses.",
+                    'catatan_admin' => 'Permintaan reschedule ini sudah diproses.',
                 ]);
             }
 
             $permintaan->update([
-                "status_reschedule" => "ditolak",
-                "catatan_admin" => $data["catatan_admin"],
-                "tanggal_keputusan" => now(),
+                'status_reschedule' => 'ditolak',
+                'id_admin_keputusan' => $adminId,
+                'catatan_admin' => $data['catatan_admin'],
+                'tanggal_keputusan' => now(),
             ]);
+
+            $this->auditLog->record(
+                'reschedule.rejected',
+                $permintaan,
+                User::query()->findOrFail($adminId),
+                ['status' => 'ditolak'],
+            );
 
             return $permintaan->refresh();
         });
+
+        $permintaan->loadMissing('klien');
+        $permintaan->klien?->notify(new RescheduleDecisionNotification($permintaan));
+
+        return $permintaan;
     }
 
     private function ensureKlienCanRequest(
@@ -186,34 +215,30 @@ class PermintaanRescheduleService
             $pengajuan->id_user !== $klienId
         ) {
             throw ValidationException::withMessages([
-                "alasan_reschedule" =>
-                    "Booking ini tidak dapat diajukan reschedule oleh akun ini.",
+                'alasan_reschedule' => 'Booking ini tidak dapat diajukan reschedule oleh akun ini.',
             ]);
         }
 
-        if ($booking->status_booking !== "aktif") {
+        if ($booking->status_booking !== 'aktif') {
             throw ValidationException::withMessages([
-                "alasan_reschedule" =>
-                    "Reschedule hanya dapat diajukan untuk booking aktif.",
+                'alasan_reschedule' => 'Reschedule hanya dapat diajukan untuk booking aktif.',
             ]);
         }
 
-        if ($pengajuan->status_pengajuan !== "jadwal_dipilih") {
+        if ($pengajuan->status_pengajuan !== 'jadwal_dipilih') {
             throw ValidationException::withMessages([
-                "alasan_reschedule" =>
-                    "Reschedule hanya dapat diajukan setelah jadwal konsultasi dipilih.",
+                'alasan_reschedule' => 'Reschedule hanya dapat diajukan setelah jadwal konsultasi dipilih.',
             ]);
         }
 
         $hasPendingRequest = PermintaanReschedule::query()
-            ->where("id_booking", $booking->id_booking)
-            ->where("status_reschedule", "menunggu_persetujuan")
+            ->where('id_booking', $booking->id_booking)
+            ->where('status_reschedule', 'menunggu_persetujuan')
             ->exists();
 
         if ($hasPendingRequest) {
             throw ValidationException::withMessages([
-                "alasan_reschedule" =>
-                    "Booking ini masih memiliki permintaan reschedule yang menunggu persetujuan.",
+                'alasan_reschedule' => 'Booking ini masih memiliki permintaan reschedule yang menunggu persetujuan.',
             ]);
         }
     }
@@ -225,35 +250,33 @@ class PermintaanRescheduleService
         JadwalKonsultasi $jadwalLama,
         JadwalKonsultasi $jadwalBaru,
     ): void {
-        if ($permintaan->status_reschedule !== "menunggu_persetujuan") {
+        if ($permintaan->status_reschedule !== 'menunggu_persetujuan') {
             throw ValidationException::withMessages([
-                "id_jadwal_baru" => "Permintaan reschedule ini sudah diproses.",
+                'id_jadwal_baru' => 'Permintaan reschedule ini sudah diproses.',
             ]);
         }
 
-        if ($bookingLama->status_booking !== "aktif") {
+        if ($bookingLama->status_booking !== 'aktif') {
             throw ValidationException::withMessages([
-                "id_jadwal_baru" => "Booking lama sudah tidak aktif.",
+                'id_jadwal_baru' => 'Booking lama sudah tidak aktif.',
             ]);
         }
 
-        if ($pengajuan->status_pengajuan !== "jadwal_dipilih") {
+        if ($pengajuan->status_pengajuan !== 'jadwal_dipilih') {
             throw ValidationException::withMessages([
-                "id_jadwal_baru" =>
-                    "Pengajuan tidak berada pada status jadwal dipilih.",
+                'id_jadwal_baru' => 'Pengajuan tidak berada pada status jadwal dipilih.',
             ]);
         }
 
         if ($jadwalBaru->id_jadwal === $jadwalLama->id_jadwal) {
             throw ValidationException::withMessages([
-                "id_jadwal_baru" =>
-                    "Jadwal baru tidak boleh sama dengan jadwal lama.",
+                'id_jadwal_baru' => 'Jadwal baru tidak boleh sama dengan jadwal lama.',
             ]);
         }
 
-        if ($jadwalBaru->status_slot !== "tersedia") {
+        if ($jadwalBaru->status_slot !== 'tersedia') {
             throw ValidationException::withMessages([
-                "id_jadwal_baru" => "Jadwal baru tidak tersedia.",
+                'id_jadwal_baru' => 'Jadwal baru tidak tersedia.',
             ]);
         }
     }
@@ -262,16 +285,16 @@ class PermintaanRescheduleService
         PermintaanReschedule $permintaan,
     ): string {
         $parts = [
-            "Reschedule konsultasi diajukan oleh klien.",
-            "Alasan: " . $permintaan->alasan_reschedule,
+            'Reschedule konsultasi diajukan oleh klien.',
+            'Alasan: '.$permintaan->alasan_reschedule,
         ];
 
         if ($permintaan->preferensi_jadwal) {
-            $parts[] = "Preferensi jadwal: " . $permintaan->preferensi_jadwal;
+            $parts[] = 'Preferensi jadwal: '.$permintaan->preferensi_jadwal;
         }
 
         if ($permintaan->preferensi_metode) {
-            $parts[] = "Preferensi metode: " . $permintaan->preferensi_metode;
+            $parts[] = 'Preferensi metode: '.$permintaan->preferensi_metode;
         }
 
         return implode("\n", $parts);

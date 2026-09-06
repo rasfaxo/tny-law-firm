@@ -31,7 +31,7 @@
                 <!-- Status Filter -->
                 <div class="md:col-span-4 space-y-1.5">
                     <x-input-label for="status" :value="__('Filter Status')" />
-                    <x-select name="status" id="status" onchange="this.form.submit()" class="mt-1">
+                    <x-select name="status" id="status" data-auto-submit class="mt-1">
                         <option value="">Semua Status</option>
                         <option value="menunggu_verifikasi" {{ request('status') === 'menunggu_verifikasi' ? 'selected' : '' }}>Menunggu Verifikasi</option>
                         <option value="berkas_tidak_lengkap" {{ request('status') === 'berkas_tidak_lengkap' ? 'selected' : '' }}>Berkas Tidak Lengkap</option>
@@ -94,7 +94,7 @@
                                     <x-status-badge :status="$pengajuan->status_pengajuan" />
                                 </td>
                                 <td class="px-6 py-4 whitespace-nowrap text-xs text-gray-400">
-                                    {{ $pengajuan->tanggal_pengajuan?->format('d M Y H:i') ?? '-' }}
+                                    {{ $pengajuan->tanggal_pengajuan?->format('d M Y H:i') ?? '-' }} WIB
                                 </td>
                                 <td class="px-6 py-4 whitespace-nowrap text-right text-xs font-bold">
                                     <a href="{{ route('klien.pra-pendaftaran.show', $pengajuan) }}" class="inline-flex items-center gap-1 text-navy-dark hover:text-accent-blue hover:underline transition">

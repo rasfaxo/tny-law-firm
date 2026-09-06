@@ -25,14 +25,13 @@
 @endphp
 
 <!-- Desktop Sidebar -->
-<aside class="w-[264px] bg-[#0b1830] text-gray-300 h-screen flex flex-col justify-between shrink-0 hidden lg:flex border-r border-[#1a2e4a]">
+<aside class="w-60 bg-[#0b1830] text-gray-300 h-screen flex flex-col justify-between shrink-0 hidden lg:flex border-r border-[#1a2e4a]">
     <div class="flex flex-col">
         <!-- Sidebar Branding (Logo) -->
-        <div class="flex items-center gap-2.5 pb-5 pt-7 px-6">
-            <!-- Gold Accent Stripe -->
-            <div class="bg-[#d4af37] h-7 w-2 rounded shrink-0"></div>
+        <div class="flex items-center gap-2.5 pb-4 pt-5 px-4">
+            <x-application-logo class="h-9 w-9 shrink-0" />
             <div class="flex flex-col">
-                <span class="font-bold text-base leading-tight text-white tracking-tight">TNY Law Firm</span>
+                <span class="font-bold text-sm leading-tight text-white tracking-tight">{{ config('firm.name') }}</span>
                 <span class="font-medium text-[#7c9cc5] text-xs uppercase tracking-wider mt-0.5">{{ $portalSubtitle }}</span>
             </div>
         </div>
@@ -270,13 +269,13 @@
 <!-- Mobile Sidebar Drawer (Overlay & Panel) -->
 <div class="fixed inset-0 z-40 lg:hidden" 
      x-show="sidebarOpen" 
+     x-cloak
      x-transition:enter="transition-opacity ease-linear duration-300"
      x-transition:enter-start="opacity-0"
      x-transition:enter-end="opacity-100"
      x-transition:leave="transition-opacity ease-linear duration-300"
      x-transition:leave-start="opacity-100"
-     x-transition:leave-end="opacity-0" 
-     style="display: none;">
+     x-transition:leave-end="opacity-0">
     
     <!-- Backdrop -->
     <div class="fixed inset-0 bg-gray-900/60 backdrop-blur-sm" @click="sidebarOpen = false"></div>
@@ -295,13 +294,13 @@
         <!-- Drawer Header -->
         <div class="flex items-center justify-between pb-5 pt-7 px-6 border-b border-[#1a2e4a]">
             <div class="flex items-center gap-2.5">
-                <div class="bg-[#d4af37] h-6 w-1.5 rounded shrink-0"></div>
+                <x-application-logo class="h-9 w-9 shrink-0" />
                 <div class="flex flex-col">
-                    <span class="font-bold text-base leading-tight text-white tracking-tight">TNY Law Firm</span>
+                    <span class="font-bold text-sm leading-tight text-white tracking-tight">{{ config('firm.name') }}</span>
                     <span class="font-medium text-[#7c9cc5] text-xs uppercase tracking-wider mt-0.5">{{ $portalSubtitle }}</span>
                 </div>
             </div>
-            <button @click="sidebarOpen = false" class="text-gray-400 hover:text-white focus:outline-none shrink-0">
+            <button type="button" aria-label="Tutup navigasi" @click="sidebarOpen = false" class="text-gray-400 hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white rounded-lg shrink-0">
                 <svg class="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
                 </svg>

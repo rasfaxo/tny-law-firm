@@ -90,7 +90,7 @@
                                 </span>
                             </td>
                             <td class="border border-slate-400 px-3 py-2 text-center text-slate-600 font-mono text-[11px] whitespace-nowrap">
-                                {{ $verifikasi->tanggal_verifikasi?->format('d/m/Y H:i') ?? '-' }}
+                                {{ $verifikasi->tanggal_verifikasi?->format('d/m/Y H:i') ?? '-' }} WIB
                             </td>
                             <td class="border border-slate-400 px-3 py-2 text-slate-700 text-[11px]">
                                 {{ $verifikasi->catatan_umum ?: 'Tidak ada catatan.' }}

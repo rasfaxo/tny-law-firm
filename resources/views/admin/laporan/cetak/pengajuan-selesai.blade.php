@@ -76,7 +76,7 @@
                                 {{ $pengajuan->tanggal_pengajuan?->format('d/m/Y') ?? '-' }}
                             </td>
                             <td class="border border-slate-400 px-3 py-2 text-center text-emerald-950 font-mono font-semibold text-[11px] whitespace-nowrap">
-                                {{ $tglSelesai?->format('d/m/Y H:i') ?? '-' }}
+                                {{ $tglSelesai?->format('d/m/Y H:i') ?? '-' }} WIB
                             </td>
                             <td class="border border-slate-400 px-3 py-2 text-center font-semibold whitespace-nowrap">
                                 <span class="px-2 py-0.5 rounded text-[10px] font-bold tracking-wide bg-emerald-100 text-emerald-900 border border-emerald-400">

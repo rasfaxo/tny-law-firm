@@ -70,7 +70,7 @@
                 </x-card>
 
                 <!-- Card Reset Password -->
-                <x-card class="p-0 overflow-hidden" x-data="{ isSubmitting: false }">
+                <x-card class="p-0 overflow-hidden" x-data="submissionForm">
                     <div class="p-6">
                         <h4 class="font-bold text-navy-dark text-sm mb-4">Reset Password Klien</h4>
                         <form method="POST" action="{{ route('admin.klien.password', $klien) }}" @submit="isSubmitting = true">
@@ -82,9 +82,13 @@
                                     <x-password-input name="password" id="password" required minlength="8" class="mt-1 block w-full" placeholder="Minimal 8 karakter..." />
                                     <x-input-error :messages="$errors->get('password')" class="mt-1" />
                                 </div>
+                                <div>
+                                    <x-input-label for="password_confirmation" :value="__('Konfirmasi Password Baru')" />
+                                    <x-password-input name="password_confirmation" id="password_confirmation" required minlength="8" class="mt-1 block w-full" />
+                                </div>
                                 <x-primary-button class="w-full justify-center" ::disabled="isSubmitting">
                                     <span x-show="!isSubmitting">Update Password</span>
-                                    <span x-show="isSubmitting" class="flex items-center gap-2" style="display: none;">
+                                    <span x-show="isSubmitting" x-cloak class="flex items-center gap-2">
                                         <svg class="animate-spin h-4 w-4 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
                                             <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
                                             <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
@@ -121,7 +125,7 @@
                                         </div>
                                         <h4 class="font-bold text-navy-dark text-sm">{{ $item->judul_perkara }}</h4>
                                         <p class="text-xs text-gray-500 mt-1"><span class="font-medium">Kategori:</span> {{ $item->kategori?->nama_kategori ?? '-' }}</p>
-                                        <p class="text-xs text-gray-400 mt-0.5"><span class="font-medium">Diajukan:</span> {{ $item->tanggal_pengajuan?->format('d M Y H:i') ?? '-' }}</p>
+                                        <p class="text-xs text-gray-400 mt-0.5"><span class="font-medium">Diajukan:</span> {{ $item->tanggal_pengajuan?->format('d M Y H:i') ?? '-' }} WIB</p>
                                     </div>
                                     <div class="shrink-0">
                                         <a href="{{ route('admin.pra-pendaftaran.show', $item) }}" class="inline-flex items-center gap-1 text-xs font-bold text-accent-blue hover:underline bg-blue-50 px-3 py-1.5 rounded-lg border border-blue-100">

@@ -37,7 +37,7 @@
                                 @endphp
                                 <tr class="hover:bg-[#F8FAFC] transition duration-150">
                                     <td class="px-6 py-4 whitespace-nowrap text-xs text-gray-500 font-mono">
-                                        {{ $item->tanggal_verifikasi?->format('d M Y H:i') ?? '-' }}
+                                        {{ $item->tanggal_verifikasi?->format('d M Y H:i') ?? '-' }} WIB
                                     </td>
                                     <td class="px-6 py-4 whitespace-nowrap text-sm font-mono font-bold text-accent-blue">
                                         PP-{{ str_pad($item->id_pendaftaran, 3, '0', STR_PAD_LEFT) }}

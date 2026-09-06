@@ -3,7 +3,9 @@
 namespace App\Http\Controllers\Klien;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\IndexFilterRequest;
 use App\Http\Requests\Klien\StoreBookingKonsultasiRequest;
+use App\Models\BookingKonsultasi;
 use App\Models\JadwalKonsultasi;
 use App\Models\PraPendaftaranPerkara;
 use App\Services\BookingKonsultasiService;
@@ -14,46 +16,44 @@ use Illuminate\View\View;
 class BookingKonsultasiController extends Controller
 {
     public function create(
-        Request $request,
+        IndexFilterRequest $request,
         PraPendaftaranPerkara $praPendaftaranPerkara,
     ): View|RedirectResponse {
-        $this->ensureOwnedByKlien(
-            $praPendaftaranPerkara,
-            $request->user()->id_user,
-        );
+        $this->authorize('view', $praPendaftaranPerkara);
 
-        $praPendaftaranPerkara->load("bookingAktif.jadwalKonsultasi");
+        $praPendaftaranPerkara->load('bookingAktif.jadwalKonsultasi');
 
-        if ($praPendaftaranPerkara->status_pengajuan !== "berkas_lengkap") {
+        if ($praPendaftaranPerkara->status_pengajuan !== 'berkas_lengkap') {
             return redirect()
-                ->route("klien.pra-pendaftaran.show", $praPendaftaranPerkara)
+                ->route('klien.pra-pendaftaran.show', $praPendaftaranPerkara)
                 ->with(
-                    "error",
-                    "Jadwal konsultasi hanya dapat dipilih setelah berkas dinyatakan lengkap.",
+                    'error',
+                    'Jadwal konsultasi hanya dapat dipilih setelah berkas dinyatakan lengkap.',
                 );
         }
 
         if ($praPendaftaranPerkara->bookingAktif !== null) {
             return redirect()
-                ->route("klien.pra-pendaftaran.show", $praPendaftaranPerkara)
-                ->with("error", "Pengajuan ini sudah memiliki booking aktif.");
+                ->route('klien.pra-pendaftaran.show', $praPendaftaranPerkara)
+                ->with('error', 'Pengajuan ini sudah memiliki booking aktif.');
         }
 
         $query = JadwalKonsultasi::query()
-            ->where("status_slot", "tersedia");
+            ->where('status_slot', 'tersedia');
 
-        if ($request->filled("tanggal")) {
-            $query->whereDate("tanggal", $request->tanggal);
+        $filters = $request->validated();
+        if (isset($filters['tanggal'])) {
+            $query->whereDate('tanggal', $filters['tanggal']);
         }
 
-        $jadwalKonsultasi = $query->orderBy("tanggal")
-            ->orderBy("waktu_mulai")
+        $jadwalKonsultasi = $query->orderBy('tanggal')
+            ->orderBy('waktu_mulai')
             ->paginate(10)
             ->withQueryString();
 
         return view(
-            "klien.booking-konsultasi.create",
-            compact("praPendaftaranPerkara", "jadwalKonsultasi"),
+            'klien.booking-konsultasi.create',
+            compact('praPendaftaranPerkara', 'jadwalKonsultasi'),
         );
     }
 
@@ -62,10 +62,7 @@ class BookingKonsultasiController extends Controller
         PraPendaftaranPerkara $praPendaftaranPerkara,
         BookingKonsultasiService $service,
     ): RedirectResponse {
-        $this->ensureOwnedByKlien(
-            $praPendaftaranPerkara,
-            $request->user()->id_user,
-        );
+        $this->authorize('view', $praPendaftaranPerkara);
 
         $service->book(
             $praPendaftaranPerkara,
@@ -74,56 +71,50 @@ class BookingKonsultasiController extends Controller
         );
 
         return redirect()
-            ->route("klien.pra-pendaftaran.show", $praPendaftaranPerkara)
-            ->with("success", "Jadwal konsultasi berhasil dipilih.");
+            ->route('klien.pra-pendaftaran.show', $praPendaftaranPerkara)
+            ->with('success', 'Jadwal konsultasi berhasil dipilih.');
     }
 
-    public function index(Request $request): View
+    public function index(IndexFilterRequest $request): View
     {
-        $query = \App\Models\BookingKonsultasi::query()
-            ->with(["jadwalKonsultasi", "praPendaftaranPerkara.kategori"])
-            ->where("id_user", $request->user()->id_user);
+        $filters = $request->validated();
+        $query = BookingKonsultasi::query()
+            ->with(['jadwalKonsultasi', 'praPendaftaranPerkara.kategori'])
+            ->where('id_user', $request->user()->id_user);
 
-        if ($request->filled("search")) {
-            $query->whereHas("praPendaftaranPerkara", function ($q) use ($request) {
-                $q->where("judul_perkara", "like", "%" . $request->search . "%");
+        if (isset($filters['search'])) {
+            $query->whereHas('praPendaftaranPerkara', function ($q) use ($filters) {
+                $q->where('judul_perkara', 'like', '%'.$filters['search'].'%');
             });
         }
 
-        if ($request->filled("status_booking")) {
-            $query->where("status_booking", $request->status_booking);
+        if (isset($filters['status_booking'])) {
+            $query->where('status_booking', $filters['status_booking']);
         }
 
-        $bookingKonsultasi = $query->latest("tanggal_booking")
+        $bookingKonsultasi = $query->latest('tanggal_booking')
             ->paginate(10)
             ->withQueryString();
 
         return view(
-            "klien.booking-konsultasi.index",
-            compact("bookingKonsultasi"),
+            'klien.booking-konsultasi.index',
+            compact('bookingKonsultasi'),
         );
     }
 
-    public function show(Request $request, \App\Models\BookingKonsultasi $bookingKonsultasi): View
+    public function show(Request $request, BookingKonsultasi $bookingKonsultasi): View
     {
-        abort_unless($bookingKonsultasi->id_user === $request->user()->id_user, 403);
+        $this->authorize('view', $bookingKonsultasi);
 
         $bookingKonsultasi->load([
-            "jadwalKonsultasi",
-            "praPendaftaranPerkara.kategori",
-            "permintaanReschedule" => fn($q) => $q->latest("tanggal_pengajuan"),
+            'jadwalKonsultasi',
+            'praPendaftaranPerkara.kategori',
+            'permintaanReschedule' => fn ($q) => $q->latest('tanggal_pengajuan'),
         ]);
 
         return view(
-            "klien.booking-konsultasi.show",
-            compact("bookingKonsultasi"),
+            'klien.booking-konsultasi.show',
+            compact('bookingKonsultasi'),
         );
-    }
-
-    private function ensureOwnedByKlien(
-        PraPendaftaranPerkara $praPendaftaranPerkara,
-        int $klienId,
-    ): void {
-        abort_unless($praPendaftaranPerkara->id_user === $klienId, 403);
     }
 }

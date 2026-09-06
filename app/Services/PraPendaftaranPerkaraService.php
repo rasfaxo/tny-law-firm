@@ -4,18 +4,21 @@ namespace App\Services;
 
 use App\Models\PraPendaftaranPerkara;
 use App\Models\RiwayatStatus;
-use Illuminate\Support\Facades\DB;
+use App\Models\User;
 use App\Support\PerformanceTelemetry;
+use Illuminate\Http\UploadedFile;
+use Illuminate\Support\Facades\DB;
 use Throwable;
 
 class PraPendaftaranPerkaraService
 {
     public function __construct(
-        private DokumenPerkaraService $dokumenService
+        private DokumenPerkaraService $dokumenService,
+        private AuditLogService $auditLog,
     ) {}
 
     /**
-     * @param array{id_kategori: mixed, judul_perkara: string, kronologi: string, dokumen: array<int, array{nama_dokumen: string, jenis_dokumen: string, file_dokumen: \Illuminate\Http\UploadedFile}>} $data
+     * @param  array{id_kategori: mixed, judul_perkara: string, kronologi: string, dokumen: array<int, array{nama_dokumen: string, jenis_dokumen: string, file_dokumen: UploadedFile}>}  $data
      */
     public function createForKlien(array $data, int $userId): PraPendaftaranPerkara
     {
@@ -40,27 +43,40 @@ class PraPendaftaranPerkaraService
 
         try {
             $pengajuan = DB::transaction(function () use ($data, $userId, $uploadedDocuments): PraPendaftaranPerkara {
-            $pengajuan = PraPendaftaranPerkara::create([
-                "id_user" => $userId,
-                "id_kategori" => $data["id_kategori"],
-                "judul_perkara" => $data["judul_perkara"],
-                "kronologi" => $data["kronologi"],
-                "status_pengajuan" => "menunggu_verifikasi",
-                "tanggal_pengajuan" => now(),
-            ]);
+                $pengajuan = PraPendaftaranPerkara::create([
+                    'id_user' => $userId,
+                    'id_kategori' => $data['id_kategori'],
+                    'judul_perkara' => $data['judul_perkara'],
+                    'kronologi' => $data['kronologi'],
+                    'status_pengajuan' => 'menunggu_verifikasi',
+                    'tanggal_pengajuan' => now(),
+                ]);
 
-            RiwayatStatus::create([
-                "id_pendaftaran" => $pengajuan->id_pendaftaran,
-                "id_user" => $userId,
-                "status" => "menunggu_verifikasi",
-                "keterangan" => "Pengajuan pra-pendaftaran perkara dibuat oleh klien",
-            ]);
+                RiwayatStatus::create([
+                    'id_pendaftaran' => $pengajuan->id_pendaftaran,
+                    'id_user' => $userId,
+                    'status' => 'menunggu_verifikasi',
+                    'keterangan' => 'Pengajuan pra-pendaftaran perkara dibuat oleh klien',
+                ]);
 
-            foreach ($uploadedDocuments as $document) {
-                $this->dokumenService->createMetadata($pengajuan, $document, $document['file_path']);
-            }
+                foreach ($uploadedDocuments as $document) {
+                    $dokumen = $this->dokumenService->createMetadata($pengajuan, $document, $document['file_path']);
+                    $this->auditLog->record(
+                        'document.uploaded',
+                        $dokumen,
+                        User::query()->findOrFail($userId),
+                        ['status' => 'terkirim'],
+                    );
+                }
 
-            return $pengajuan;
+                $this->auditLog->record(
+                    'case.submitted',
+                    $pengajuan,
+                    User::query()->findOrFail($userId),
+                    ['document_count' => count($uploadedDocuments), 'status' => 'menunggu_verifikasi'],
+                );
+
+                return $pengajuan;
             });
         } catch (Throwable $exception) {
             $this->deleteUploadedDocuments($uploadedDocuments);

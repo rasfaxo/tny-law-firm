@@ -18,7 +18,7 @@
             && !$permintaanRescheduleMenunggu;
     @endphp
 
-    <div x-data="{ showForm: {{ $errors->any() ? 'true' : 'false' }} }">
+    <div x-data="bookingDetails" data-show-form="{{ $errors->any() ? 'true' : 'false' }}">
         
         <!-- ============================================== -->
         <!-- VIEW 1: DETAIL BOOKING (FIGMA NODE 84-2982)    -->
@@ -70,7 +70,7 @@
                         <form method="POST" action="{{ route('admin.booking-konsultasi.selesai', $bookingKonsultasi) }}">
                             @csrf
                             @method('PATCH')
-                            <x-secondary-button type="submit" onclick="return confirm('Apakah Anda yakin sesi konsultasi telah selesai? Status tidak dapat dikembalikan.')">
+                            <x-secondary-button type="submit" data-confirm="Apakah Anda yakin sesi konsultasi telah selesai? Status tidak dapat dikembalikan.">
                                 {{ __('Tandai Selesai') }}
                             </x-secondary-button>
                         </form>
@@ -228,13 +228,13 @@
                         <div class="pt-3.5">
                             <span class="text-xs font-bold text-gray-400 uppercase tracking-wider block">Tanggal Booking</span>
                             <p class="text-sm font-bold text-navy-dark mt-1">
-                                {{ $bookingKonsultasi->tanggal_booking ? \Carbon\Carbon::parse($bookingKonsultasi->tanggal_booking)->format('d M Y, H.i') : ($bookingKonsultasi->created_at ? $bookingKonsultasi->created_at->format('d M Y, H.i') : '–') }}
+                                {{ $bookingKonsultasi->tanggal_booking ? \Carbon\Carbon::parse($bookingKonsultasi->tanggal_booking)->format('d M Y, H.i').' WIB' : ($bookingKonsultasi->created_at ? $bookingKonsultasi->created_at->format('d M Y, H.i').' WIB' : '–') }}
                             </p>
                         </div>
                         <div class="pt-3.5">
                             <span class="text-xs font-bold text-gray-400 uppercase tracking-wider block">Dikonfirmasi Pada</span>
                             <p class="text-sm font-semibold text-navy-dark mt-1">
-                                {{ $bookingKonsultasi->dikonfirmasi_pada ? $bookingKonsultasi->dikonfirmasi_pada->format('d M Y, H.i') : '–' }}
+                                {{ $bookingKonsultasi->dikonfirmasi_pada ? $bookingKonsultasi->dikonfirmasi_pada->format('d M Y, H.i').' WIB' : '–' }}
                             </p>
                         </div>
                     </div>

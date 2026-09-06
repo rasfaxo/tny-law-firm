@@ -2,9 +2,7 @@
     <div class="flex items-center justify-between gap-6">
         <!-- Logo / Icon Badge -->
         <div class="flex items-center gap-4">
-            <div class="w-16 h-16 rounded-xl bg-[#0F1E3A] text-white flex items-center justify-center font-extrabold text-xl tracking-wider shadow-sm border border-slate-700 shrink-0">
-                TNY
-            </div>
+            <x-application-logo class="w-16 h-16 shrink-0" />
             <div>
                 <h1 class="text-2xl font-black tracking-wider text-[#0F1E3A] uppercase font-serif">
                     {{ config('firm.name', 'TNY & PARTNERS') }}

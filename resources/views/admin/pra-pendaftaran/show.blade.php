@@ -132,7 +132,7 @@
                             <tr class="hover:bg-[#F8FAFC] transition duration-150">
                                 <td class="px-6 py-4">
                                     <div class="font-bold text-navy-dark text-sm">{{ $dokumen->nama_dokumen }}</div>
-                                    <div class="text-xs text-gray-400 mt-0.5 font-mono">Diupload: {{ $dokumen->created_at?->format('d M Y H:i') }}</div>
+                                    <div class="text-xs text-gray-400 mt-0.5 font-mono">Diupload: {{ $dokumen->created_at?->format('d M Y H:i') }} WIB</div>
                                 </td>
                                 <td class="px-6 py-4 whitespace-nowrap text-xs text-gray-500 font-mono">
                                     {{ strtoupper(pathinfo($dokumen->file_path, PATHINFO_EXTENSION)) ?: 'PDF' }}
@@ -141,7 +141,7 @@
                                     <x-status-badge :status="$dokumen->status_dokumen" />
                                 </td>
                                 <td class="px-6 py-4 whitespace-nowrap text-right">
-                                    <a href="{{ route('admin.dokumen.show', $dokumen) }}" target="_blank" 
+                                    <a href="{{ route('admin.dokumen.show', $dokumen) }}" target="_blank" rel="noopener noreferrer"
                                         class="inline-flex items-center gap-1.5 text-xs font-bold text-accent-blue hover:underline transition">
                                         <span>Lihat Dokumen</span>
                                         <svg class="h-3.5 w-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">

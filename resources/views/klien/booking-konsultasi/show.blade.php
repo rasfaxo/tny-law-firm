@@ -131,7 +131,7 @@
                     <div>
                         @if($bookingKonsultasi->metode_konsultasi === 'online')
                             @if($bookingKonsultasi->link_konsultasi)
-                                <a href="{{ $bookingKonsultasi->link_konsultasi }}" target="_blank" class="inline-flex items-center gap-2 text-sm font-semibold text-accent-blue hover:text-blue-800 hover:underline transition">
+                                <a href="{{ $bookingKonsultasi->link_konsultasi }}" target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-2 text-sm font-semibold text-accent-blue hover:text-blue-800 hover:underline transition">
                                     <svg class="h-4 w-4 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z"></path>
                                     </svg>

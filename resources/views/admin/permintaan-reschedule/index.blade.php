@@ -53,7 +53,7 @@
                                     <x-status-badge :status="$permintaan->status_reschedule" />
                                 </td>
                                 <td class="px-6 py-4 whitespace-nowrap text-xs text-gray-400">
-                                    {{ $permintaan->tanggal_pengajuan?->format('d M Y H:i') ?? '-' }}
+                                    {{ $permintaan->tanggal_pengajuan?->format('d M Y H:i') ?? '-' }} WIB
                                 </td>
                                 <td class="px-6 py-4 whitespace-nowrap text-right text-xs font-bold">
                                     <a href="{{ route('admin.permintaan-reschedule.show', $permintaan) }}" class="inline-flex items-center gap-1 text-accent-blue hover:underline transition">
