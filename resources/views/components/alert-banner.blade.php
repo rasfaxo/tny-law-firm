@@ -19,7 +19,7 @@
     };
 @endphp
 
-<div {{ $attributes->merge(['class' => "border rounded-xl p-4 flex gap-3 shadow-sm {$styles}"]) }}>
+<div {{ $attributes->merge(['class' => "border rounded-xl p-3 flex gap-3 shadow-sm {$styles}"]) }}>
     <div class="shrink-0 pt-0.5">
         @if ($type === 'success')
             <svg class="h-5 w-5 {{ $iconColor }}" fill="none" stroke="currentColor" viewBox="0 0 24 24">

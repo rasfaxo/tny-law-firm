@@ -1,2 +1,11 @@
 User-agent: *
-Disallow:
+Disallow: /admin/
+Disallow: /klien/
+Disallow: /staf-legal/
+Disallow: /dashboard
+Disallow: /profile
+Disallow: /login
+Disallow: /register
+Disallow: /verify-email
+Disallow: /forgot-password
+Disallow: /reset-password

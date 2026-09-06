@@ -7,7 +7,9 @@ use App\Models\CatatanVerifikasi;
 use App\Models\DokumenPerkara;
 use App\Models\PraPendaftaranPerkara;
 use App\Models\RiwayatStatus;
+use App\Models\User;
 use App\Models\VerifikasiBerkas;
+use App\Notifications\VerificationResultNotification;
 use App\Support\PerformanceTelemetry;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\ValidationException;
@@ -15,11 +17,13 @@ use Throwable;
 
 class VerifikasiBerkasService
 {
+    public function __construct(private AuditLogService $auditLog) {}
+
     // Dipindahkan ke StatusPengajuan::verifiableStatuses() agar satu source of truth.
     // Const ini dipertahankan untuk backward compat internal service.
     private const VERIFIABLE_STATUSES = [
-        "menunggu_verifikasi",
-        "menunggu_verifikasi_ulang",
+        'menunggu_verifikasi',
+        'menunggu_verifikasi_ulang',
     ];
 
     /**
@@ -49,47 +53,46 @@ class VerifikasiBerkasService
                 ->firstOrFail();
 
             if (
-                !in_array(
+                ! in_array(
                     $lockedPengajuan->status_pengajuan,
                     self::VERIFIABLE_STATUSES,
                     true,
                 )
             ) {
                 throw ValidationException::withMessages([
-                    "status_verifikasi" =>
-                        "Pengajuan ini tidak dapat diverifikasi pada status saat ini.",
+                    'status_verifikasi' => 'Pengajuan ini tidak dapat diverifikasi pada status saat ini.',
                 ]);
             }
 
             $documents = DokumenPerkara::query()
-                ->where("id_pendaftaran", $lockedPengajuan->id_pendaftaran)
+                ->where('id_pendaftaran', $lockedPengajuan->id_pendaftaran)
                 ->aktif()
                 ->lockForUpdate()
                 ->get()
-                ->keyBy("id_dokumen");
+                ->keyBy('id_dokumen');
 
-            $submittedDocuments = $data["dokumen"] ?? [];
-            $newPengajuanStatus = $data["status_verifikasi"];
+            $submittedDocuments = $data['dokumen'] ?? [];
+            $newPengajuanStatus = $data['status_verifikasi'];
 
             $verifikasi = VerifikasiBerkas::create([
-                "id_pendaftaran" => $lockedPengajuan->id_pendaftaran,
-                "id_user" => $stafLegalId,
-                "status_verifikasi" => $data["status_verifikasi"],
-                "tanggal_verifikasi" => now(),
-                "catatan_umum" => $data["catatan_umum"] ?? null,
+                'id_pendaftaran' => $lockedPengajuan->id_pendaftaran,
+                'id_user' => $stafLegalId,
+                'status_verifikasi' => $data['status_verifikasi'],
+                'tanggal_verifikasi' => now(),
+                'catatan_umum' => $data['catatan_umum'] ?? null,
             ]);
 
-            if ($data["status_verifikasi"] === "berkas_lengkap") {
+            if ($data['status_verifikasi'] === 'berkas_lengkap') {
                 DokumenPerkara::query()
-                    ->where("id_pendaftaran", $lockedPengajuan->id_pendaftaran)
+                    ->where('id_pendaftaran', $lockedPengajuan->id_pendaftaran)
                     ->aktif()
                     ->update([
-                        "status_dokumen" => "valid",
-                        "updated_at" => now(),
+                        'status_dokumen' => 'valid',
+                        'updated_at' => now(),
                     ]);
             }
 
-            if ($data["status_verifikasi"] === "berkas_tidak_lengkap") {
+            if ($data['status_verifikasi'] === 'berkas_tidak_lengkap') {
                 $documentIdsByStatus = [];
                 $catatanRows = [];
                 $timestamp = now();
@@ -132,15 +135,22 @@ class VerifikasiBerkasService
             }
 
             $lockedPengajuan->update([
-                "status_pengajuan" => $newPengajuanStatus,
+                'status_pengajuan' => $newPengajuanStatus,
             ]);
 
             RiwayatStatus::create([
-                "id_pendaftaran" => $lockedPengajuan->id_pendaftaran,
-                "id_user" => $stafLegalId,
-                "status" => $newPengajuanStatus,
-                "keterangan" => $this->riwayatKeterangan($newPengajuanStatus),
+                'id_pendaftaran' => $lockedPengajuan->id_pendaftaran,
+                'id_user' => $stafLegalId,
+                'status' => $newPengajuanStatus,
+                'keterangan' => $this->riwayatKeterangan($newPengajuanStatus),
             ]);
+
+            $this->auditLog->record(
+                'verification.completed',
+                $verifikasi,
+                User::query()->findOrFail($stafLegalId),
+                ['status' => $newPengajuanStatus],
+            );
 
             return $verifikasi;
         });
@@ -148,6 +158,13 @@ class VerifikasiBerkasService
         PerformanceTelemetry::record('case_verification.database_transaction', $transactionStartedAt, [
             'submitted_document_count' => count($data['dokumen'] ?? []),
         ]);
+
+        $notifiablePengajuan = $verifikasi->praPendaftaranPerkara()
+            ->with('klien')
+            ->firstOrFail();
+        $notifiablePengajuan->klien?->notify(
+            new VerificationResultNotification($notifiablePengajuan),
+        );
 
         return $verifikasi;
     }
@@ -163,10 +180,9 @@ class VerifikasiBerkasService
     private function riwayatKeterangan(string $status): string
     {
         return match ($status) {
-            "berkas_lengkap" => "Berkas diverifikasi lengkap oleh Staf Legal.",
-            "berkas_tidak_lengkap"
-                => "Berkas diverifikasi tidak lengkap oleh Staf Legal.",
-            default => "Status pengajuan diperbarui oleh Staf Legal.",
+            'berkas_lengkap' => 'Berkas diverifikasi lengkap oleh Staf Legal.',
+            'berkas_tidak_lengkap' => 'Berkas diverifikasi tidak lengkap oleh Staf Legal.',
+            default => 'Status pengajuan diperbarui oleh Staf Legal.',
         };
     }
 }

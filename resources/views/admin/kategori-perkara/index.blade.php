@@ -52,7 +52,7 @@
                                         <a href="{{ route('admin.kategori-perkara.edit', $kategori) }}" class="inline-flex items-center gap-1 text-xs font-bold text-accent-blue hover:underline transition">
                                             <span>Edit</span>
                                         </a>
-                                        <form method="POST" action="{{ route('admin.kategori-perkara.destroy', $kategori) }}" onsubmit="return confirm('Hapus kategori perkara ini?');" class="inline">
+                                        <form method="POST" action="{{ route('admin.kategori-perkara.destroy', $kategori) }}" data-confirm="Hapus kategori perkara ini?" class="inline">
                                             @csrf
                                             @method('DELETE')
                                             <button type="submit" class="text-xs font-bold text-rose-600 hover:underline transition">

@@ -65,7 +65,7 @@
 
                         <div class="flex flex-col md:flex-row md:justify-between md:items-center gap-2 py-3">
                             <span class="text-xs font-bold text-gray-400 uppercase tracking-wider">Dibuat Pada</span>
-                            <span class="text-xs text-gray-500 font-semibold">{{ $jadwalKonsultasi->created_at?->format('d M Y H:i') ?? '-' }}</span>
+                            <span class="text-xs text-gray-500 font-semibold">{{ $jadwalKonsultasi->created_at?->format('d M Y H:i') ?? '-' }} WIB</span>
                         </div>
                     </div>
                 </x-card>

@@ -1,13 +1,5 @@
 <x-app-layout title="Laporan Reschedule Konsultasi" :breadcrumbs="[['label' => 'Admin'], ['label' => 'Laporan', 'url' => route('admin.laporan.index')], ['label' => 'Reschedule Konsultasi']]">
 
-    <style>
-        @media print {
-            nav, header, .no-print { display: none !important; }
-            body { background: #fff !important; }
-            .print-area { box-shadow: none !important; border: none !important; padding: 0 !important; }
-        }
-    </style>
-
     @php
         $statusOptions = [
             'menunggu_persetujuan' => 'Menunggu Persetujuan',
@@ -120,7 +112,7 @@
                         </svg>
                         <span>{{ __('Reset Filter') }}</span>
                     </x-secondary-button>
-                    <a href="{{ route('admin.laporan.reschedule-konsultasi.cetak', request()->query()) }}" target="_blank" class="bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl h-11 px-5 text-sm font-semibold transition shadow-sm inline-flex items-center gap-2 ml-auto">
+                    <a href="{{ route('admin.laporan.reschedule-konsultasi.cetak', request()->query()) }}" target="_blank" rel="noopener noreferrer" class="bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl h-11 px-5 text-sm font-semibold transition shadow-sm inline-flex items-center gap-2 ml-auto">
                         <svg class="h-4 w-4 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z"></path>
                         </svg>
@@ -200,10 +192,10 @@
                                     <x-status-badge :status="$reschedule->status_reschedule" />
                                 </td>
                                 <td class="px-4 py-4 whitespace-nowrap text-xs text-gray-500">
-                                    {{ $reschedule->tanggal_pengajuan?->format('d M Y H:i') ?? '-' }}
+                                    {{ $reschedule->tanggal_pengajuan?->format('d M Y H:i') ?? '-' }} WIB
                                 </td>
                                 <td class="px-4 py-4 whitespace-nowrap text-xs text-gray-500">
-                                    {{ $reschedule->tanggal_keputusan?->format('d M Y H:i') ?? '-' }}
+                                    {{ $reschedule->tanggal_keputusan?->format('d M Y H:i') ?? '-' }} WIB
                                 </td>
                                 <td class="px-4 py-4 text-xs text-gray-500 max-w-xs truncate">
                                     {{ $reschedule->catatan_admin ?: '-' }}

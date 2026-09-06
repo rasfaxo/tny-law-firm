@@ -6,6 +6,7 @@ use App\Models\CatatanVerifikasi;
 use App\Models\DokumenPerkara;
 use App\Models\PraPendaftaranPerkara;
 use App\Models\RiwayatStatus;
+use App\Models\User;
 use App\Models\VerifikasiBerkas;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\DB;
@@ -16,6 +17,8 @@ use Throwable;
 
 class PerbaikanDokumenService
 {
+    public function __construct(private AuditLogService $auditLog) {}
+
     /**
      * @throws Throwable
      */
@@ -24,11 +27,11 @@ class PerbaikanDokumenService
         UploadedFile $file,
         int $klienId,
     ): DokumenPerkara {
-        $filePath = $file->store("dokumen-perkara", config("filesystems.document_disk"));
+        $filePath = $file->store('dokumen-perkara', config('filesystems.document_disk'));
 
         if ($filePath === false) {
             throw new RuntimeException(
-                "File dokumen pengganti gagal disimpan.",
+                'File dokumen pengganti gagal disimpan.',
             );
         }
 
@@ -45,8 +48,7 @@ class PerbaikanDokumenService
 
                 if ($catatan->id_dokumen === null) {
                     throw ValidationException::withMessages([
-                        "file" =>
-                            "Catatan verifikasi ini tidak terhubung dengan dokumen perkara.",
+                        'file' => 'Catatan verifikasi ini tidak terhubung dengan dokumen perkara.',
                     ]);
                 }
 
@@ -72,39 +74,45 @@ class PerbaikanDokumenService
                 );
 
                 $dokumenLama->update([
-                    "status_dokumen" => "diganti",
+                    'status_dokumen' => 'diganti',
                 ]);
 
                 $dokumenBaru = DokumenPerkara::create([
-                    "id_pendaftaran" => $pengajuan->id_pendaftaran,
-                    "nama_dokumen" => $dokumenLama->nama_dokumen,
-                    "jenis_dokumen" => $dokumenLama->jenis_dokumen,
-                    "file_path" => $filePath,
-                    "status_dokumen" => "terkirim",
+                    'id_pendaftaran' => $pengajuan->id_pendaftaran,
+                    'nama_dokumen' => $dokumenLama->nama_dokumen,
+                    'jenis_dokumen' => $dokumenLama->jenis_dokumen,
+                    'file_path' => $filePath,
+                    'status_dokumen' => 'terkirim',
                 ]);
 
                 $catatan->update([
-                    "status_perbaikan" => "sudah_diperbaiki",
+                    'status_perbaikan' => 'sudah_diperbaiki',
                 ]);
 
-                if (!$this->hasPendingCatatanPerbaikan($pengajuan)) {
+                $this->auditLog->record(
+                    'document.replaced',
+                    $dokumenBaru,
+                    User::query()->findOrFail($klienId),
+                    ['status' => 'terkirim'],
+                );
+
+                if (! $this->hasPendingCatatanPerbaikan($pengajuan)) {
                     $pengajuan->update([
-                        "status_pengajuan" => "menunggu_verifikasi_ulang",
+                        'status_pengajuan' => 'menunggu_verifikasi_ulang',
                     ]);
 
                     RiwayatStatus::create([
-                        "id_pendaftaran" => $pengajuan->id_pendaftaran,
-                        "id_user" => $klienId,
-                        "status" => "menunggu_verifikasi_ulang",
-                        "keterangan" =>
-                            "Dokumen perbaikan telah diunggah oleh klien dan menunggu verifikasi ulang",
+                        'id_pendaftaran' => $pengajuan->id_pendaftaran,
+                        'id_user' => $klienId,
+                        'status' => 'menunggu_verifikasi_ulang',
+                        'keterangan' => 'Dokumen perbaikan telah diunggah oleh klien dan menunggu verifikasi ulang',
                     ]);
                 }
 
                 return $dokumenBaru;
             });
         } catch (Throwable $exception) {
-            Storage::disk(config("filesystems.document_disk"))->delete($filePath);
+            Storage::disk(config('filesystems.document_disk'))->delete($filePath);
 
             throw $exception;
         }
@@ -118,32 +126,31 @@ class PerbaikanDokumenService
     ): void {
         if ($pengajuan->id_user !== $klienId) {
             throw ValidationException::withMessages([
-                "file" => "Dokumen ini tidak dapat diperbaiki oleh akun ini.",
+                'file' => 'Dokumen ini tidak dapat diperbaiki oleh akun ini.',
             ]);
         }
 
-        if ($pengajuan->status_pengajuan !== "berkas_tidak_lengkap") {
+        if ($pengajuan->status_pengajuan !== 'berkas_tidak_lengkap') {
             throw ValidationException::withMessages([
-                "file" =>
-                    "Dokumen hanya dapat diperbaiki saat status pengajuan berkas tidak lengkap.",
+                'file' => 'Dokumen hanya dapat diperbaiki saat status pengajuan berkas tidak lengkap.',
             ]);
         }
 
-        if ($catatan->status_perbaikan !== "belum_diperbaiki") {
+        if ($catatan->status_perbaikan !== 'belum_diperbaiki') {
             throw ValidationException::withMessages([
-                "file" => "Catatan verifikasi ini sudah diperbaiki.",
+                'file' => 'Catatan verifikasi ini sudah diperbaiki.',
             ]);
         }
 
         if ($dokumenLama->id_pendaftaran !== $pengajuan->id_pendaftaran) {
             throw ValidationException::withMessages([
-                "file" => "Dokumen tidak sesuai dengan pengajuan perkara.",
+                'file' => 'Dokumen tidak sesuai dengan pengajuan perkara.',
             ]);
         }
 
-        if ($dokumenLama->status_dokumen !== "perlu_perbaikan") {
+        if ($dokumenLama->status_dokumen !== 'perlu_perbaikan') {
             throw ValidationException::withMessages([
-                "file" => "Dokumen ini tidak berstatus perlu perbaikan.",
+                'file' => 'Dokumen ini tidak berstatus perlu perbaikan.',
             ]);
         }
     }
@@ -152,12 +159,12 @@ class PerbaikanDokumenService
         PraPendaftaranPerkara $pengajuan,
     ): bool {
         return CatatanVerifikasi::query()
-            ->where("status_perbaikan", "belum_diperbaiki")
-            ->whereNotNull("id_dokumen")
-            ->whereHas("verifikasiBerkas", function ($query) use (
+            ->where('status_perbaikan', 'belum_diperbaiki')
+            ->whereNotNull('id_dokumen')
+            ->whereHas('verifikasiBerkas', function ($query) use (
                 $pengajuan,
             ): void {
-                $query->where("id_pendaftaran", $pengajuan->id_pendaftaran);
+                $query->where('id_pendaftaran', $pengajuan->id_pendaftaran);
             })
             ->exists();
     }

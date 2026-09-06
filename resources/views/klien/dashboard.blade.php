@@ -228,7 +228,7 @@
                                             <x-status-badge :status="$reschedule->status_reschedule" />
                                         </td>
                                         <td class="px-6 py-4 whitespace-nowrap text-xs text-gray-400">
-                                            {{ $reschedule->tanggal_pengajuan?->format('d M Y H:i') ?? '-' }}
+                                            {{ $reschedule->tanggal_pengajuan?->format('d M Y H:i') ?? '-' }} WIB
                                         </td>
                                         <td class="px-6 py-4 text-sm text-gray-600 max-w-[200px] truncate">
                                             {{ $reschedule->catatan_admin ?? '-' }}
@@ -333,7 +333,7 @@
                                 <div class="bg-green-50/50 border border-green-100 p-3 rounded-xl text-xs text-green-700 leading-relaxed">
                                     <strong>Lokasi / Link Pertemuan:</strong><br>
                                     @if($booking->metode_konsultasi === 'online')
-                                        <a href="{{ $booking->link_konsultasi }}" target="_blank" class="text-accent-blue hover:underline break-all font-semibold">
+                                        <a href="{{ $booking->link_konsultasi }}" target="_blank" rel="noopener noreferrer" class="text-accent-blue hover:underline break-all font-semibold">
                                             {{ $booking->link_konsultasi }}
                                         </a>
                                     @else

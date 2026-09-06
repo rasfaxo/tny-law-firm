@@ -117,7 +117,7 @@
                                 {{ $reschedule->alasan_reschedule ?: 'Belum diberikan.' }}
                             </td>
                             <td class="border border-slate-400 px-3 py-2 text-center text-slate-600 font-mono text-[11px] whitespace-nowrap">
-                                {{ $reschedule->tanggal_pengajuan?->format('d/m/Y H:i') ?? '-' }}
+                                {{ $reschedule->tanggal_pengajuan?->format('d/m/Y H:i') ?? '-' }} WIB
                             </td>
                         </tr>
                     @empty

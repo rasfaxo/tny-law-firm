@@ -16,3 +16,75 @@
         font-family: 'Inter', ui-sans-serif, system-ui, sans-serif;
     }
 }
+
+[x-cloak] {
+    display: none !important;
+}
+
+@media screen {
+    main table th,
+    main table td {
+        padding-top: 0.625rem !important;
+        padding-bottom: 0.625rem !important;
+        padding-left: 0.875rem !important;
+        padding-right: 0.875rem !important;
+    }
+
+    main .space-y-6 > :not([hidden]) ~ :not([hidden]) {
+        margin-top: 1.25rem;
+    }
+
+    aside nav a {
+        height: 2.5rem !important;
+        border-radius: 0.5rem;
+    }
+}
+
+@page {
+    size: A4 portrait;
+    margin: 12mm 15mm;
+}
+
+@media print {
+    nav,
+    header,
+    .no-print {
+        display: none !important;
+    }
+
+    body {
+        background: #fff !important;
+        color: #0f172a !important;
+        font-size: 10.5pt;
+        line-height: 1.35;
+        -webkit-print-color-adjust: exact !important;
+        print-color-adjust: exact !important;
+    }
+
+    .print-area,
+    .print-container {
+        width: 100% !important;
+        max-width: none !important;
+        padding: 0 !important;
+        margin: 0 !important;
+        box-shadow: none !important;
+        border: none !important;
+    }
+
+    table {
+        page-break-inside: auto;
+    }
+
+    tr {
+        page-break-inside: avoid;
+        page-break-after: auto;
+    }
+
+    thead {
+        display: table-header-group;
+    }
+
+    tfoot {
+        display: table-footer-group;
+    }
+}

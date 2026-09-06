@@ -3,7 +3,13 @@
     <head>
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
-        <title>Portal Pra-Pendaftaran Perkara - TNY Law Firm</title>
+        <title>Portal Pra-Pendaftaran Perkara - {{ config('firm.name') }}</title>
+
+        @if (is_file(public_path('brand/favicon.svg')))
+            <link rel="icon" href="{{ asset('brand/favicon.svg') }}" type="image/svg+xml">
+            <link rel="icon" href="{{ asset('brand/favicon-64.png') }}" type="image/png" sizes="64x64">
+            <link rel="shortcut icon" href="{{ asset('favicon.ico') }}">
+        @endif
 
         <!-- Scripts & Styles -->
         @vite(['resources/css/app.css', 'resources/js/app.js'])
@@ -11,10 +17,11 @@
     <body class="font-sans antialiased bg-[#F8FAFC] text-navy-dark">
         <!-- Header / Navigation -->
         <header class="bg-white border-b border-[#E2E8F0] sticky top-0 z-50 transition-all duration-300">
-            <div class="max-w-7xl mx-auto px-6 lg:px-8 h-[82px] flex items-center justify-between">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
                 <!-- Logo -->
                 <div class="flex items-center gap-2">
-                    <span class="font-extrabold text-xl text-navy-dark tracking-wider">TNY Law Firm</span>
+                    <x-application-logo class="h-9 w-auto" />
+                    <span class="hidden sm:inline font-extrabold text-base text-navy-dark tracking-wider">{{ config('firm.name') }}</span>
                 </div>
 
                 <!-- Navigation Links -->
@@ -34,10 +41,10 @@
                         </a>
                     @else
                         <a href="{{ route('login') }}" class="text-sm font-semibold text-navy-primary hover:text-navy-dark transition duration-150">
-                            Login
+                            Masuk
                         </a>
                         <a href="{{ route('register') }}" class="bg-navy-primary text-white text-sm font-semibold px-5 py-2.5 rounded-xl hover:bg-navy-dark hover:shadow-lg transition duration-200">
-                            Register
+                            Daftar
                         </a>
                     @endauth
                 </div>
@@ -45,7 +52,7 @@
         </header>
 
         <!-- Hero Section -->
-        <section id="beranda" class="bg-white relative overflow-hidden py-16 md:py-24 border-b border-[#E2E8F0]">
+        <section id="beranda" class="bg-white relative overflow-hidden py-12 md:py-16 border-b border-[#E2E8F0]">
             <!-- Decorative blobs -->
             <div class="absolute bg-navy-dark/5 rounded-full w-[420px] h-[420px] top-[70px] -right-[50px] blur-3xl -z-10"></div>
             <div class="absolute bg-[#F59E0B]/10 rounded-full w-[128px] h-[128px] top-[115px] right-[400px] blur-2xl -z-10"></div>
@@ -56,22 +63,22 @@
                     <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-blue-50 text-accent-blue border border-blue-100">
                         Portal Pra-Pendaftaran Perkara
                     </span>
-                    <h1 class="text-4xl md:text-5xl lg:text-6xl font-extrabold text-navy-dark leading-[1.1] tracking-tight">
+                    <h1 class="text-3xl md:text-4xl lg:text-5xl font-extrabold text-navy-dark leading-[1.1] tracking-tight">
                         Pra-Pendaftaran Perkara Lebih Mudah
                     </h1>
-                    <p class="text-lg text-gray-500 max-w-2xl leading-relaxed">
+                    <p class="text-base text-gray-500 max-w-2xl leading-relaxed">
                         Ajukan pra-pendaftaran perkara secara online, unggah dokumen pendukung, pantau status verifikasi, dan pilih jadwal konsultasi (online/offline) melalui satu portal sistem yang terstruktur.
                     </p>
                     <div class="flex flex-wrap items-center gap-4 pt-2">
                         @auth
-                            <a href="{{ route('dashboard') }}" class="bg-accent-blue text-white font-semibold px-8 py-3.5 rounded-xl hover:bg-blue-700 hover:shadow-lg transition duration-200">
+                            <a href="{{ route('dashboard') }}" class="bg-accent-blue text-white text-sm font-semibold px-5 py-2.5 rounded-lg hover:bg-blue-700 hover:shadow-lg transition duration-200">
                                 Masuk Dashboard
                             </a>
                         @else
-                            <a href="{{ route('register') }}" class="bg-accent-blue text-white font-semibold px-8 py-3.5 rounded-xl hover:bg-blue-700 hover:shadow-lg transition duration-200">
+                            <a href="{{ route('register') }}" class="bg-accent-blue text-white text-sm font-semibold px-5 py-2.5 rounded-lg hover:bg-blue-700 hover:shadow-lg transition duration-200">
                                 Mulai Registrasi
                             </a>
-                            <a href="{{ route('login') }}" class="bg-white border border-[#E2E8F0] text-navy-dark font-semibold px-8 py-3.5 rounded-xl hover:bg-gray-50 hover:border-gray-300 transition duration-200">
+                            <a href="{{ route('login') }}" class="bg-white border border-[#E2E8F0] text-navy-dark text-sm font-semibold px-5 py-2.5 rounded-lg hover:bg-gray-50 hover:border-gray-300 transition duration-200">
                                 Login Akun
                             </a>
                         @endauth
@@ -125,7 +132,7 @@
         </section>
 
         <!-- Services Section -->
-        <section id="layanan" class="py-16 md:py-24 bg-[#F8FAFC]">
+        <section id="layanan" class="py-12 md:py-16 bg-[#F8FAFC]">
             <div class="max-w-7xl mx-auto px-6 lg:px-8 space-y-12">
                 <div class="text-center max-w-3xl mx-auto space-y-4">
                     <h2 class="text-3xl md:text-4xl font-extrabold text-navy-dark tracking-tight">
@@ -186,7 +193,7 @@
                         </div>
                         <h3 class="text-lg font-bold text-navy-dark">Jadwal Konsultasi</h3>
                         <p class="text-sm text-gray-500 leading-relaxed">
-                            Setelah berkas dinyatakan lengkap, Klien dapat langsung memesan slot waktu konsultasi dengan tim pengacara TNY Law Firm.
+                            Setelah berkas dinyatakan lengkap, Klien dapat langsung memesan slot waktu konsultasi dengan tim pengacara {{ config('firm.name') }}.
                         </p>
                     </div>
 
@@ -220,7 +227,7 @@
         </section>
 
         <!-- Workflow Section -->
-        <section id="alur" class="py-16 md:py-24 bg-white border-t border-b border-[#E2E8F0]">
+        <section id="alur" class="py-12 md:py-16 bg-white border-t border-b border-[#E2E8F0]">
             <div class="max-w-7xl mx-auto px-6 lg:px-8 space-y-12">
                 <div class="text-center max-w-3xl mx-auto space-y-4">
                     <h2 class="text-3xl md:text-4xl font-extrabold text-navy-dark tracking-tight">
@@ -301,12 +308,12 @@
         </section>
 
         <!-- About Section -->
-        <section id="tentang" class="py-16 md:py-24 bg-[#F8FAFC]">
+        <section id="tentang" class="py-12 md:py-16 bg-[#F8FAFC]">
             <div class="max-w-7xl mx-auto px-6 lg:px-8 grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
                 <div class="space-y-6">
-                    <h2 class="text-3xl font-extrabold text-navy-dark tracking-tight">Tentang TNY Law Firm</h2>
+                    <h2 class="text-3xl font-extrabold text-navy-dark tracking-tight">Tentang {{ config('firm.name') }}</h2>
                     <p class="text-gray-500 leading-relaxed">
-                        TNY Law Firm adalah kantor hukum terpercaya yang didedikasikan untuk menyediakan jasa hukum berkualitas tinggi bagi klien individu maupun korporasi. Didukung oleh tim advokat berpengalaman, kami mendampingi setiap kasus secara profesional dengan integritas yang tinggi.
+                        {{ config('firm.name') }} adalah kantor advokat dan konsultan hukum yang menyediakan layanan hukum bagi klien individu maupun korporasi. {{ config('firm.description') }}.
                     </p>
                     <p class="text-gray-500 leading-relaxed">
                         Portal ini dirancang untuk mewujudkan efisiensi layanan hukum sejak tahap persiapan perkara. Klien dapat dengan aman mengirim dokumen perkara dan memesan waktu pertemuan secara real-time dari mana saja.
@@ -314,26 +321,26 @@
                 </div>
                 <div class="bg-white p-8 rounded-3xl border border-[#E2E8F0] shadow-sm flex flex-col justify-center space-y-4">
                     <span class="text-xs font-bold text-accent-blue uppercase tracking-wide">Hubungi Kami</span>
-                    <span class="text-xl font-bold text-navy-dark">Kantor Pusat TNY Law Firm</span>
+                    <span class="text-xl font-bold text-navy-dark">Kantor {{ config('firm.name') }}</span>
                     <div class="text-sm text-gray-500 space-y-2">
                         <p class="flex items-center gap-2">
                             <svg class="h-4 w-4 text-accent-blue" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path>
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path>
                             </svg>
-                            <span>Jakarta, Indonesia</span>
+                            <span>{{ config('firm.address') }}</span>
                         </p>
                         <p class="flex items-center gap-2">
                             <svg class="h-4 w-4 text-accent-blue" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.94.725l.548 2.2a1 1 0 01-.321.988l-1.305.98a10.582 10.582 0 004.872 4.872l.98-1.305a1 1 0 01.988-.321l2.2.548a1 1 0 01.725.94V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"></path>
                             </svg>
-                            <span>+62 812-3456-7890</span>
+                            <span>{{ config('firm.phone') }}</span>
                         </p>
                         <p class="flex items-center gap-2">
                             <svg class="h-4 w-4 text-accent-blue" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path>
                             </svg>
-                            <span>info@tnylawfirm.com</span>
+                            <span>{{ config('firm.email') }}</span>
                         </p>
                     </div>
                 </div>
@@ -341,10 +348,10 @@
         </section>
 
         <!-- Footer -->
-        <footer class="bg-navy-dark text-gray-400 py-12 border-t border-[#1E293B]">
+        <footer class="bg-navy-dark text-gray-400 py-8 border-t border-[#1E293B]">
             <div class="max-w-7xl mx-auto px-6 lg:px-8 flex flex-col md:flex-row items-center justify-between gap-6">
-                <span class="text-sm font-semibold text-white tracking-wider">TNY Law Firm</span>
-                <span class="text-xs">&copy; 2026 Sistem Informasi Pra-Pendaftaran Perkara. Hak Cipta Dilindungi.</span>
+                <span class="text-sm font-semibold text-white tracking-wider">{{ config('firm.name') }}</span>
+                <span class="text-xs">&copy; {{ now()->year }} Sistem Informasi Pra-Pendaftaran Perkara. Hak cipta dilindungi.</span>
             </div>
         </footer>
     </body>

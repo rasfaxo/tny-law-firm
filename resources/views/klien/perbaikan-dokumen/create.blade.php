@@ -1,8 +1,8 @@
 <x-app-layout title="Unggah Ulang Dokumen" :breadcrumbs="[['label' => 'Klien'], ['label' => 'Pengajuan', 'url' => route('klien.pra-pendaftaran.index')], ['label' => 'PP-' . str_pad($pengajuan->id_pendaftaran, 3, '0', STR_PAD_LEFT), 'url' => route('klien.pra-pendaftaran.show', $pengajuan)], ['label' => 'Unggah Ulang']]">
 
-    <div class="space-y-6" x-data="{ isSubmitting: false }">
+    <div class="space-y-6" x-data="submissionForm">
         @if ($errors->any())
-            <x-alert-banner type="error" x-init="$nextTick(() => { $el.scrollIntoView({ behavior: 'smooth', block: 'start' }); })">
+            <x-alert-banner type="error" data-scroll-error>
                 <ul class="list-disc list-inside space-y-1">
                     @foreach ($errors->all() as $error)
                         <li>{{ $error }}</li>
@@ -54,7 +54,7 @@
 
                     <!-- Action: Lihat Dokumen Lama -->
                     <div class="p-6 sm:p-8 border-t border-[#F1F5F9] bg-[#F8FAFC]/50 flex items-center">
-                        <x-secondary-button href="{{ route('klien.dokumen.show', $dokumen) }}" tag="a" target="_blank" class="gap-2">
+                        <x-secondary-button href="{{ route('klien.dokumen.show', $dokumen) }}" tag="a" target="_blank" rel="noopener noreferrer" class="gap-2">
                             <svg class="h-4 w-4 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path>
@@ -77,7 +77,7 @@
                             <x-input-label for="file" :value="__('File Dokumen Pengganti')" />
                             
                             <div class="border-2 border-dashed border-[#E2E8F0] hover:border-accent-blue rounded-xl p-8 bg-[#F8FAFC]/50 text-center transition cursor-pointer relative group">
-                                <input id="file" name="file" type="file" accept=".pdf,.jpg,.jpeg,.png,application/pdf,image/jpeg,image/png" class="absolute inset-0 opacity-0 cursor-pointer z-10" required onchange="updateFileName(this)">
+                                <input id="file" name="file" type="file" accept=".pdf,.jpg,.jpeg,.png,application/pdf,image/jpeg,image/png" class="absolute inset-0 opacity-0 cursor-pointer z-10" required data-file-input data-file-display="file-name-display" data-file-instruction="upload-instruction">
                                 
                                 <svg class="mx-auto h-10 w-10 text-gray-400 group-hover:text-accent-blue transition" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"></path>
@@ -101,7 +101,7 @@
                         </x-secondary-button>
                         <x-primary-button ::disabled="isSubmitting">
                             <span x-show="!isSubmitting">Upload Dokumen Pengganti</span>
-                            <span x-show="isSubmitting" class="flex items-center gap-2" style="display: none;">
+                            <span x-show="isSubmitting" x-cloak class="flex items-center gap-2">
                                 <svg class="animate-spin h-4 w-4 text-white" fill="none" viewBox="0 0 24 24">
                                     <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
                                     <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
@@ -116,18 +116,4 @@
         </form>
     </div>
 
-    <script>
-        function updateFileName(input) {
-            const display = document.getElementById('file-name-display');
-            const instruction = document.getElementById('upload-instruction');
-            if (input.files && input.files.length > 0) {
-                display.textContent = input.files[0].name;
-                display.classList.remove('hidden');
-                instruction.textContent = "Mengubah file:";
-            } else {
-                display.classList.add('hidden');
-                instruction.textContent = "Pilih file untuk diunggah";
-            }
-        }
-    </script>
 </x-app-layout>

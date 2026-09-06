@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Klien;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Klien\StorePermintaanRescheduleRequest;
 use App\Models\BookingKonsultasi;
+use App\Models\JadwalKonsultasi;
 use App\Models\PermintaanReschedule;
 use App\Services\PermintaanRescheduleService;
 use Illuminate\Http\RedirectResponse;
@@ -17,42 +18,42 @@ class PermintaanRescheduleController extends Controller
         Request $request,
         BookingKonsultasi $bookingKonsultasi,
     ): View|RedirectResponse {
-        abort_unless($bookingKonsultasi->id_user === $request->user()->id_user, 403);
+        $this->authorize('view', $bookingKonsultasi);
 
         $bookingKonsultasi->load([
-            "jadwalKonsultasi",
-            "praPendaftaranPerkara.kategori",
-            "permintaanReschedule" => fn($query) => $query->latest(
-                "tanggal_pengajuan",
+            'jadwalKonsultasi',
+            'praPendaftaranPerkara.kategori',
+            'permintaanReschedule' => fn ($query) => $query->latest(
+                'tanggal_pengajuan',
             ),
         ]);
 
         $pengajuan = $bookingKonsultasi->praPendaftaranPerkara;
         $permintaanMenunggu = $bookingKonsultasi->permintaanReschedule
-            ->firstWhere("status_reschedule", "menunggu_persetujuan");
+            ->firstWhere('status_reschedule', 'menunggu_persetujuan');
 
         if (
-            $bookingKonsultasi->status_booking !== "aktif" ||
-            $pengajuan?->status_pengajuan !== "jadwal_dipilih" ||
+            $bookingKonsultasi->status_booking !== 'aktif' ||
+            $pengajuan?->status_pengajuan !== 'jadwal_dipilih' ||
             $permintaanMenunggu
         ) {
             return redirect()
-                ->route("klien.pra-pendaftaran.show", $pengajuan)
+                ->route('klien.pra-pendaftaran.show', $pengajuan)
                 ->with(
-                    "error",
-                    "Permintaan reschedule tidak dapat diajukan untuk booking ini.",
+                    'error',
+                    'Permintaan reschedule tidak dapat diajukan untuk booking ini.',
                 );
         }
 
-        $jadwalKonsultasi = \App\Models\JadwalKonsultasi::query()
-            ->where("status_slot", "tersedia")
-            ->orderBy("tanggal")
-            ->orderBy("waktu_mulai")
+        $jadwalKonsultasi = JadwalKonsultasi::query()
+            ->where('status_slot', 'tersedia')
+            ->orderBy('tanggal')
+            ->orderBy('waktu_mulai')
             ->get();
 
         return view(
-            "klien.permintaan-reschedule.create",
-            compact("bookingKonsultasi", "jadwalKonsultasi"),
+            'klien.permintaan-reschedule.create',
+            compact('bookingKonsultasi', 'jadwalKonsultasi'),
         );
     }
 
@@ -61,7 +62,7 @@ class PermintaanRescheduleController extends Controller
         BookingKonsultasi $bookingKonsultasi,
         PermintaanRescheduleService $service,
     ): RedirectResponse {
-        abort_unless($bookingKonsultasi->id_user === $request->user()->id_user, 403);
+        $this->authorize('view', $bookingKonsultasi);
 
         $permintaanReschedule = $service->createForKlien(
             $bookingKonsultasi,
@@ -70,10 +71,10 @@ class PermintaanRescheduleController extends Controller
         );
 
         return redirect()
-            ->route("klien.permintaan-reschedule.show", $permintaanReschedule)
+            ->route('klien.permintaan-reschedule.show', $permintaanReschedule)
             ->with(
-                "success",
-                "Permintaan reschedule berhasil diajukan dan menunggu persetujuan Admin.",
+                'success',
+                'Permintaan reschedule berhasil diajukan dan menunggu persetujuan Admin.',
             );
     }
 
@@ -81,18 +82,18 @@ class PermintaanRescheduleController extends Controller
         Request $request,
         PermintaanReschedule $permintaanReschedule,
     ): View {
-        abort_unless($permintaanReschedule->id_user === $request->user()->id_user, 403);
+        $this->authorize('view', $permintaanReschedule);
 
         $permintaanReschedule->load([
-            "bookingLama.jadwalKonsultasi",
-            "bookingLama.praPendaftaranPerkara.kategori",
-            "jadwalBaru",
-            "bookingBaru.jadwalKonsultasi",
+            'bookingLama.jadwalKonsultasi',
+            'bookingLama.praPendaftaranPerkara.kategori',
+            'jadwalBaru',
+            'bookingBaru.jadwalKonsultasi',
         ]);
 
         return view(
-            "klien.permintaan-reschedule.show",
-            compact("permintaanReschedule"),
+            'klien.permintaan-reschedule.show',
+            compact('permintaanReschedule'),
         );
     }
 }

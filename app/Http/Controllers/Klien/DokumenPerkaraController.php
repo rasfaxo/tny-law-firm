@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\Klien\StoreDokumenPerkaraRequest;
 use App\Models\DokumenPerkara;
 use App\Models\PraPendaftaranPerkara;
+use App\Services\AuditLogService;
 use App\Services\DokumenPerkaraService;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -23,17 +24,17 @@ class DokumenPerkaraController extends Controller
         $this->ensurePengajuanOwnedByKlien($request, $praPendaftaranPerkara);
 
         if (
-            $praPendaftaranPerkara->status_pengajuan !== "menunggu_verifikasi"
+            $praPendaftaranPerkara->status_pengajuan !== 'menunggu_verifikasi'
         ) {
             return redirect()
-                ->route("klien.pra-pendaftaran.show", $praPendaftaranPerkara)
+                ->route('klien.pra-pendaftaran.show', $praPendaftaranPerkara)
                 ->with(
-                    "error",
-                    "Dokumen hanya dapat diunggah saat status pengajuan menunggu verifikasi.",
+                    'error',
+                    'Dokumen hanya dapat diunggah saat status pengajuan menunggu verifikasi.',
                 );
         }
 
-        return view("klien.dokumen.create", compact("praPendaftaranPerkara"));
+        return view('klien.dokumen.create', compact('praPendaftaranPerkara'));
     }
 
     public function store(
@@ -44,13 +45,13 @@ class DokumenPerkaraController extends Controller
         $this->ensurePengajuanOwnedByKlien($request, $praPendaftaranPerkara);
 
         if (
-            $praPendaftaranPerkara->status_pengajuan !== "menunggu_verifikasi"
+            $praPendaftaranPerkara->status_pengajuan !== 'menunggu_verifikasi'
         ) {
             return redirect()
-                ->route("klien.pra-pendaftaran.show", $praPendaftaranPerkara)
+                ->route('klien.pra-pendaftaran.show', $praPendaftaranPerkara)
                 ->with(
-                    "error",
-                    "Dokumen hanya dapat diunggah saat status pengajuan menunggu verifikasi.",
+                    'error',
+                    'Dokumen hanya dapat diunggah saat status pengajuan menunggu verifikasi.',
                 );
         }
 
@@ -60,24 +61,29 @@ class DokumenPerkaraController extends Controller
         );
 
         return redirect()
-            ->route("klien.pra-pendaftaran.show", $praPendaftaranPerkara)
-            ->with("success", "Dokumen perkara berhasil diunggah.");
+            ->route('klien.pra-pendaftaran.show', $praPendaftaranPerkara)
+            ->with('success', 'Dokumen perkara berhasil diunggah.');
     }
 
     public function show(
         Request $request,
         DokumenPerkara $dokumenPerkara,
+        AuditLogService $auditLog,
     ): StreamedResponse {
-        $dokumenPerkara->load("praPendaftaranPerkara");
+        $dokumenPerkara->load('praPendaftaranPerkara');
 
-        $this->ensureDokumenOwnedByKlien($request, $dokumenPerkara);
+        $this->authorize('view', $dokumenPerkara);
 
         abort_unless(
-            Storage::disk(config("filesystems.document_disk"))->exists($dokumenPerkara->file_path),
+            Storage::disk(config('filesystems.document_disk'))->exists($dokumenPerkara->file_path),
             404,
         );
 
-        return Storage::disk(config("filesystems.document_disk"))->download(
+        $auditLog->record('document.downloaded', $dokumenPerkara, $request->user(), [
+            'status' => $dokumenPerkara->status_dokumen,
+        ]);
+
+        return Storage::disk(config('filesystems.document_disk'))->download(
             $dokumenPerkara->file_path,
             $this->downloadFileName($dokumenPerkara),
         );
@@ -108,7 +114,7 @@ class DokumenPerkaraController extends Controller
     {
         $extension = pathinfo($dokumenPerkara->file_path, PATHINFO_EXTENSION);
         $baseName =
-            Str::slug($dokumenPerkara->nama_dokumen) ?: "dokumen-perkara";
+            Str::slug($dokumenPerkara->nama_dokumen) ?: 'dokumen-perkara';
 
         return $extension ? "{$baseName}.{$extension}" : $baseName;
     }

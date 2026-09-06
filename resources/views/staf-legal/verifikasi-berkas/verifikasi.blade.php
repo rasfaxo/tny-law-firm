@@ -1,24 +1,22 @@
 <x-app-layout title="Verifikasi Berkas" :breadcrumbs="[['label' => 'Staf Legal'], ['label' => 'Pengajuan Verifikasi', 'url' => route('staf-legal.verifikasi-berkas.index')], ['label' => 'PP-' . sprintf('%03d', $praPendaftaranPerkara->id_pendaftaran), 'url' => route('staf-legal.verifikasi-berkas.show', $praPendaftaranPerkara)], ['label' => 'Verifikasi']]">
 
-    <div class="space-y-6" x-data="{ 
-        statusVerifikasi: '{{ old('status_verifikasi', 'berkas_lengkap') }}',
-        docStatus: {
-            @foreach ($praPendaftaranPerkara->dokumenAktif as $dokumen)
-                '{{ $dokumen->id_dokumen }}': '{{ old("dokumen.{$dokumen->id_dokumen}.status_dokumen", "valid") }}',
-            @endforeach
-        },
-        isSubmitting: false,
-        setToLengkap() {
-            this.statusVerifikasi = 'berkas_lengkap';
-            // Set all docs to valid automatically
-            for (let id in this.docStatus) {
-                this.docStatus[id] = 'valid';
-            }
-        }
-    }">
+    @php
+        $initialDocumentStatuses = $praPendaftaranPerkara->dokumenAktif
+            ->mapWithKeys(fn ($dokumen) => [
+                (string) $dokumen->id_dokumen => old("dokumen.{$dokumen->id_dokumen}.status_dokumen", 'valid'),
+            ])
+            ->all();
+    @endphp
+
+    <div
+        class="space-y-6"
+        x-data="verificationForm"
+        data-initial-status="{{ old('status_verifikasi', 'berkas_lengkap') }}"
+        data-document-statuses="{{ json_encode($initialDocumentStatuses) }}"
+    >
         @if ($errors->any())
             <x-alert-banner type="error">
-                <div class="font-bold flex items-center gap-1.5" x-init="$nextTick(() => { $el.scrollIntoView({ behavior: 'smooth', block: 'start' }); })">
+                <div class="font-bold flex items-center gap-1.5" data-scroll-error>
                     Data verifikasi belum valid. Silakan periksa kembali:
                 </div>
                 <ul class="mt-2 list-disc list-inside space-y-1 pl-1">
@@ -137,7 +135,9 @@
                                                        :name="'dummy_status_' + '{{ $dokumen->id_dokumen }}'" 
                                                        value="valid" 
                                                        class="border-gray-300 text-green-600 focus:ring-green-500"
-                                                       x-model="docStatus['{{ $dokumen->id_dokumen }}']"
+                                                       data-document-id="{{ $dokumen->id_dokumen }}"
+                                                       x-bind:checked="docStatus['{{ $dokumen->id_dokumen }}'] === 'valid'"
+                                                       x-on:change="setDocumentStatus"
                                                        :disabled="statusVerifikasi === 'berkas_lengkap'">
                                                 <span class="inline-flex items-center rounded-full px-2 py-0.5 text-xs font-semibold bg-green-50 text-green-700 border border-green-200">Valid</span>
                                             </label>
@@ -149,7 +149,9 @@
                                                        :name="'dummy_status_' + '{{ $dokumen->id_dokumen }}'" 
                                                        value="perlu_perbaikan" 
                                                        class="border-gray-300 text-red-600 focus:ring-red-500"
-                                                       x-model="docStatus['{{ $dokumen->id_dokumen }}']"
+                                                       data-document-id="{{ $dokumen->id_dokumen }}"
+                                                       x-bind:checked="docStatus['{{ $dokumen->id_dokumen }}'] === 'perlu_perbaikan'"
+                                                       x-on:change="setDocumentStatus"
                                                        :disabled="statusVerifikasi === 'berkas_lengkap'">
                                                 <span class="inline-flex items-center rounded-full px-2 py-0.5 text-xs font-semibold bg-red-50 text-red-700 border border-red-200">Perlu Perbaikan</span>
                                             </label>
@@ -163,7 +165,7 @@
                                                   x-bind:required="statusVerifikasi === 'berkas_tidak_lengkap' && docStatus['{{ $dokumen->id_dokumen }}'] === 'perlu_perbaikan'">{{ old("dokumen.{$dokumen->id_dokumen}.catatan") }}</x-text-input>
                                     </td>
                                     <td class="px-6 py-4 whitespace-nowrap text-right">
-                                        <a href="{{ route('staf-legal.dokumen.show', $dokumen) }}" target="_blank" 
+                                        <a href="{{ route('staf-legal.dokumen.show', $dokumen) }}" target="_blank" rel="noopener noreferrer"
                                             class="inline-flex items-center gap-1 text-xs font-bold text-accent-blue hover:underline transition">
                                             <span>Lihat</span>
                                             <svg class="h-3.5 w-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -194,7 +196,7 @@
                                     <div class="font-semibold text-navy-dark text-sm">{{ $dokumen->nama_dokumen }}</div>
                                     <div class="text-xs text-gray-500 mt-0.5">{{ $dokumen->jenis_dokumen }}</div>
                                 </div>
-                                <a href="{{ route('staf-legal.dokumen.show', $dokumen) }}" target="_blank" class="inline-flex items-center gap-1 text-xs font-bold text-accent-blue hover:underline shrink-0 transition">
+                                <a href="{{ route('staf-legal.dokumen.show', $dokumen) }}" target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-1 text-xs font-bold text-accent-blue hover:underline shrink-0 transition">
                                     <span>Lihat Dokumen</span>
                                 </a>
                             </div>
@@ -209,7 +211,9 @@
                                                :name="'dummy_status_mobile_' + '{{ $dokumen->id_dokumen }}'" 
                                                value="valid" 
                                                class="border-gray-300 text-green-600 focus:ring-green-500"
-                                               x-model="docStatus['{{ $dokumen->id_dokumen }}']"
+                                               data-document-id="{{ $dokumen->id_dokumen }}"
+                                               x-bind:checked="docStatus['{{ $dokumen->id_dokumen }}'] === 'valid'"
+                                               x-on:change="setDocumentStatus"
                                                :disabled="statusVerifikasi === 'berkas_lengkap'">
                                         <span class="inline-flex items-center rounded-full px-2 py-0.5 text-xs font-semibold bg-green-50 text-green-700 border border-green-200">Valid</span>
                                     </label>
@@ -221,7 +225,9 @@
                                                :name="'dummy_status_mobile_' + '{{ $dokumen->id_dokumen }}'" 
                                                value="perlu_perbaikan" 
                                                class="border-gray-300 text-red-600 focus:ring-red-500"
-                                               x-model="docStatus['{{ $dokumen->id_dokumen }}']"
+                                               data-document-id="{{ $dokumen->id_dokumen }}"
+                                               x-bind:checked="docStatus['{{ $dokumen->id_dokumen }}'] === 'perlu_perbaikan'"
+                                               x-on:change="setDocumentStatus"
                                                :disabled="statusVerifikasi === 'berkas_lengkap'">
                                         <span class="inline-flex items-center rounded-full px-2 py-0.5 text-xs font-semibold bg-red-50 text-red-700 border border-red-200">Perlu Perbaikan</span>
                                     </label>
@@ -230,7 +236,7 @@
 
                             <div class="space-y-1.5">
                                 <span class="block text-xs font-bold text-gray-400 uppercase tracking-wider">Catatan Perbaikan</span>
-                                <x-text-input tag="textarea" name="dokumen[{{ $dokumen->id_dokumen }}][catatan_mobile]" rows="2" 
+                                <x-text-input tag="textarea" name="dokumen[{{ $dokumen->id_dokumen }}][catatan]" rows="2"
                                           class="w-full resize-none"
                                           placeholder="Tuliskan alasan penolakan atau catatan perbaikan..."
                                           x-bind:disabled="statusVerifikasi === 'berkas_lengkap' || docStatus['{{ $dokumen->id_dokumen }}'] !== 'perlu_perbaikan'"

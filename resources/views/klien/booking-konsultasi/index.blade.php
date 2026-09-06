@@ -14,7 +14,7 @@
                 </div>
                 
                 <div class="flex items-center gap-3">
-                    <x-select name="status_booking" onchange="this.form.submit()">
+                    <x-select name="status_booking" data-auto-submit>
                         <option value="">Semua Status</option>
                         <option value="aktif" @selected(request('status_booking') === 'aktif')>Aktif</option>
                         <option value="selesai" @selected(request('status_booking') === 'selesai')>Selesai</option>

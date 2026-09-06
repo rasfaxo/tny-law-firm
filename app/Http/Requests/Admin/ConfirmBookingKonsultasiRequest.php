@@ -24,26 +24,26 @@ class ConfirmBookingKonsultasiRequest extends FormRequest
      */
     public function rules(): array
     {
-        $booking = $this->route("bookingKonsultasi");
+        $booking = $this->route('bookingKonsultasi');
         $metode =
             $booking instanceof BookingKonsultasi
                 ? $booking->metode_konsultasi
                 : null;
 
         return [
-            "link_konsultasi" => [
-                Rule::requiredIf($metode === "online"),
-                "nullable",
-                "url",
-                "max:255",
+            'link_konsultasi' => [
+                Rule::requiredIf($metode === 'online'),
+                'nullable',
+                'url:http,https',
+                'max:255',
             ],
-            "lokasi_konsultasi" => [
-                Rule::requiredIf($metode === "offline"),
-                "nullable",
-                "string",
-                "max:255",
+            'lokasi_konsultasi' => [
+                Rule::requiredIf($metode === 'offline'),
+                'nullable',
+                'string',
+                'max:255',
             ],
-            "catatan_konsultasi" => ["nullable", "string", "max:2000"],
+            'catatan_konsultasi' => ['nullable', 'string', 'max:2000'],
         ];
     }
 }

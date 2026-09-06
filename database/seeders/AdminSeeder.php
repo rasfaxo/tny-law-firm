@@ -14,16 +14,37 @@ class AdminSeeder extends Seeder
      */
     public function run(): void
     {
-        User::firstOrCreate(
-            ['email' => 'admin@example.com'],
-            [
-                'nama' => 'Admin TNY Law Firm',
-                'password' => Hash::make($this->resolveDefaultPassword()),
-                'role' => 'admin',
-                'no_telepon' => null,
-                'status_akun' => 'aktif',
-            ]
-        );
+        $email = $this->requiredConfig('app.admin.email', 'ADMIN_EMAIL', 'admin@example.com');
+        $name = $this->requiredConfig('app.admin.name', 'ADMIN_NAME', 'Admin TNY Law Firm');
+
+        if (User::query()->where('email', $email)->exists()) {
+            return;
+        }
+
+        User::query()->create([
+            'nama' => $name,
+            'email' => $email,
+            'email_verified_at' => now(),
+            'password' => Hash::make($this->resolveDefaultPassword()),
+            'role' => 'admin',
+            'no_telepon' => null,
+            'status_akun' => 'aktif',
+        ]);
+    }
+
+    private function requiredConfig(string $key, string $environmentKey, string $localFallback): string
+    {
+        $value = config($key);
+
+        if (is_string($value) && $value !== '') {
+            return $value;
+        }
+
+        if (app()->environment('production')) {
+            throw new RuntimeException("{$environmentKey} belum didefinisikan untuk bootstrap Admin.");
+        }
+
+        return $localFallback;
     }
 
     /**
@@ -46,8 +67,8 @@ class AdminSeeder extends Seeder
 
         if (app()->environment('production')) {
             throw new RuntimeException(
-                'ADMIN_DEFAULT_PASSWORD belum didefinisikan. ' .
-                'Tambahkan key ADMIN_DEFAULT_PASSWORD pada file .env ' .
+                'ADMIN_DEFAULT_PASSWORD belum didefinisikan. '.
+                'Tambahkan key ADMIN_DEFAULT_PASSWORD pada file .env '.
                 'sebelum menjalankan seeder di production.'
             );
         }

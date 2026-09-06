@@ -161,7 +161,7 @@
                     <div class="pt-3.5">
                         <span class="text-xs font-bold text-gray-400 uppercase tracking-wider block">Tanggal Pengajuan</span>
                         <p class="text-sm font-semibold text-navy-dark mt-1">
-                            {{ $permintaanReschedule->tanggal_pengajuan ? $permintaanReschedule->tanggal_pengajuan->format('d M Y, H.i') : '–' }}
+                            {{ $permintaanReschedule->tanggal_pengajuan ? $permintaanReschedule->tanggal_pengajuan->format('d M Y, H.i').' WIB' : '–' }}
                         </p>
                     </div>
                     <div class="pt-3.5">
@@ -189,7 +189,7 @@
                         <div class="pt-3.5">
                             <span class="text-xs font-bold text-gray-400 uppercase tracking-wider block">Tanggal Keputusan</span>
                             <p class="text-sm font-semibold text-navy-dark mt-1">
-                                {{ $permintaanReschedule->tanggal_keputusan ? $permintaanReschedule->tanggal_keputusan->format('d M Y, H.i') : '–' }}
+                                {{ $permintaanReschedule->tanggal_keputusan ? $permintaanReschedule->tanggal_keputusan->format('d M Y, H.i').' WIB' : '–' }}
                             </p>
                         </div>
                         <div class="pt-3.5">
@@ -315,7 +315,7 @@
                     </div>
 
                     <div class="flex justify-end pt-4 border-t border-[#E2E8F0]">
-                        <x-danger-button type="submit" form="reject-form" onclick="return confirm('Apakah Anda yakin ingin menolak permintaan reschedule ini?')" class="gap-2">
+                        <x-danger-button type="submit" form="reject-form" data-confirm="Apakah Anda yakin ingin menolak permintaan reschedule ini?" class="gap-2">
                             <svg class="h-4 w-4 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
                             </svg>

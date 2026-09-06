@@ -2,16 +2,12 @@
 
 namespace App\Providers;
 
-use Illuminate\Filesystem\FilesystemAdapter;
 use Illuminate\Database\Events\QueryExecuted;
+use Illuminate\Queue\Events\JobFailed;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
-use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\Queue;
 use Illuminate\Support\ServiceProvider;
-use League\Flysystem\AzureBlobStorage\AzureBlobStorageAdapter;
-use League\Flysystem\Filesystem;
-use MicrosoftAzure\Storage\Blob\BlobRestProxy;
-use MicrosoftAzure\Storage\Common\Internal\StorageServiceSettings;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -28,6 +24,15 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
+        Queue::failing(function (JobFailed $event): void {
+            Log::error('queue.job_failed', [
+                'connection' => $event->connectionName,
+                'queue' => $event->job->getQueue(),
+                'job' => $event->job->resolveName(),
+                'exception' => $event->exception::class,
+            ]);
+        });
+
         if (config('observability.enabled', false)) {
             DB::listen(function (QueryExecuted $query): void {
                 if ($query->time < config('observability.slow_query_ms', 250)) {
@@ -45,40 +50,5 @@ class AppServiceProvider extends ServiceProvider
                 ]);
             });
         }
-
-        Storage::extend('azure', function ($app, $config) {
-            $connectionString = ! empty($config['connection_string'])
-                ? $config['connection_string']
-                : sprintf(
-                    'DefaultEndpointsProtocol=https;AccountName=%s;AccountKey=%s;',
-                    $config['name'] ?? $config['account_name'] ?? '',
-                    $config['key'] ?? $config['account_key'] ?? ''
-                );
-
-            $client = BlobRestProxy::createBlobService($connectionString);
-
-            $settings = null;
-            try {
-                $settings = StorageServiceSettings::createFromConnectionString($connectionString);
-            } catch (\Throwable) {
-                // If connection string parsing fails, fallback gracefully
-            }
-
-            $adapter = new AzureBlobStorageAdapter(
-                $client,
-                $config['container'] ?? '',
-                $config['prefix'] ?? '',
-                null,
-                $config['max_results_for_contents_listing'] ?? 5000,
-                $config['visibility_handling'] ?? AzureBlobStorageAdapter::ON_VISIBILITY_THROW_ERROR,
-                $settings
-            );
-
-            return new FilesystemAdapter(
-                new Filesystem($adapter, $config),
-                $adapter,
-                $config
-            );
-        });
     }
 }

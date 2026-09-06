@@ -8,6 +8,6 @@ return [
     'phone' => env('FIRM_PHONE', '+62 858-1055-4047'),
     'email' => env('FIRM_EMAIL', 'tny.partnerhukum@gmail.com'),
     'secondary_email' => env('FIRM_SECONDARY_EMAIL', 'tny.partnershukum@gmail.com'),
-    'website' => env('FIRM_WEBSITE', 'tnylawfirm.com'),
+    'website' => env('FIRM_WEBSITE', 'https://tnypartners.com'),
     'city' => env('FIRM_CITY', 'Jakarta Selatan'),
 ];

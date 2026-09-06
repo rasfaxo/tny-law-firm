@@ -5,6 +5,8 @@ namespace Tests\Feature\Klien;
 use App\Models\PraPendaftaranPerkara;
 use App\Models\RiwayatStatus;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Http\UploadedFile;
+use Illuminate\Support\Facades\Storage;
 use Tests\Concerns\CreatesTestingData;
 use Tests\TestCase;
 
@@ -15,35 +17,44 @@ class PraPendaftaranPerkaraTest extends TestCase
 
     public function test_klien_can_create_pra_pendaftaran_perkara(): void
     {
+        config()->set('filesystems.document_disk', 'azure');
+        Storage::fake('azure');
         $klien = $this->createKlien();
         $kategori = $this->createKategori();
 
-        $response = $this->actingAs($klien)->post(route("klien.pra-pendaftaran.store"), [
-            "id_kategori" => $kategori->id_kategori,
-            "judul_perkara" => "Sengketa Perdata",
-            "kronologi" => "Kronologi perkara untuk kebutuhan test.",
-            "dokumen" => [
+        $response = $this->actingAs($klien)->post(route('klien.pra-pendaftaran.store'), [
+            'id_kategori' => $kategori->id_kategori,
+            'judul_perkara' => 'Sengketa Perdata',
+            'kronologi' => 'Kronologi perkara untuk kebutuhan test.',
+            'dokumen' => [
                 [
-                    "nama_dokumen" => "KTP Klien",
-                    "jenis_dokumen" => "ktp",
-                    "file_dokumen" => \Illuminate\Http\UploadedFile::fake()->image('ktp.jpg')->size(100),
+                    'nama_dokumen' => 'KTP Klien',
+                    'jenis_dokumen' => 'ktp',
+                    'file_dokumen' => UploadedFile::fake()->image('ktp.jpg')->size(100),
                 ],
             ],
         ]);
 
         $pengajuan = PraPendaftaranPerkara::query()->firstOrFail();
 
-        $response->assertRedirect(route("klien.pra-pendaftaran.show", $pengajuan));
+        $response->assertRedirect(route('klien.pra-pendaftaran.show', $pengajuan));
 
         $this->assertSame($klien->id_user, $pengajuan->id_user);
         $this->assertSame($kategori->id_kategori, $pengajuan->id_kategori);
-        $this->assertSame("menunggu_verifikasi", $pengajuan->status_pengajuan);
+        $this->assertSame('menunggu_verifikasi', $pengajuan->status_pengajuan);
         $this->assertNotNull($pengajuan->tanggal_pengajuan);
 
-        $this->assertDatabaseHas("riwayat_status", [
-            "id_pendaftaran" => $pengajuan->id_pendaftaran,
-            "id_user" => $klien->id_user,
-            "status" => "menunggu_verifikasi",
+        $this->assertDatabaseHas('riwayat_status', [
+            'id_pendaftaran' => $pengajuan->id_pendaftaran,
+            'id_user' => $klien->id_user,
+            'status' => 'menunggu_verifikasi',
+        ]);
+
+        $dokumen = $pengajuan->dokumenPerkara()->firstOrFail();
+        Storage::disk('azure')->assertExists($dokumen->file_path);
+        $this->assertDatabaseHas('audit_logs', [
+            'event' => 'document.uploaded',
+            'auditable_id' => $dokumen->getKey(),
         ]);
     }
 
@@ -54,7 +65,7 @@ class PraPendaftaranPerkaraTest extends TestCase
         $pengajuanB = $this->createPengajuan($klienB);
 
         $this->actingAs($klienA)
-            ->get(route("klien.pra-pendaftaran.show", $pengajuanB))
+            ->get(route('klien.pra-pendaftaran.show', $pengajuanB))
             ->assertForbidden();
     }
 
@@ -63,30 +74,30 @@ class PraPendaftaranPerkaraTest extends TestCase
         $klienA = $this->createKlien();
         $klienB = $this->createKlien();
 
-        $owned = $this->createPengajuan($klienA, ["judul_perkara" => "Milik Klien A"]);
-        $other = $this->createPengajuan($klienB, ["judul_perkara" => "Milik Klien B"]);
+        $owned = $this->createPengajuan($klienA, ['judul_perkara' => 'Milik Klien A']);
+        $other = $this->createPengajuan($klienB, ['judul_perkara' => 'Milik Klien B']);
 
         RiwayatStatus::factory()->create([
-            "id_pendaftaran" => $owned->id_pendaftaran,
-            "id_user" => $klienA->id_user,
-            "status" => $owned->status_pengajuan,
+            'id_pendaftaran' => $owned->id_pendaftaran,
+            'id_user' => $klienA->id_user,
+            'status' => $owned->status_pengajuan,
         ]);
         RiwayatStatus::factory()->create([
-            "id_pendaftaran" => $other->id_pendaftaran,
-            "id_user" => $klienB->id_user,
-            "status" => $other->status_pengajuan,
+            'id_pendaftaran' => $other->id_pendaftaran,
+            'id_user' => $klienB->id_user,
+            'status' => $other->status_pengajuan,
         ]);
 
         $this->actingAs($klienA)
-            ->get(route("klien.pra-pendaftaran.index"))
+            ->get(route('klien.pra-pendaftaran.index'))
             ->assertOk()
-            ->assertSee("Milik Klien A")
-            ->assertDontSee("Milik Klien B");
+            ->assertSee('Milik Klien A')
+            ->assertDontSee('Milik Klien B');
 
         $this->actingAs($klienA)
-            ->get(route("klien.dashboard"))
+            ->get(route('klien.dashboard'))
             ->assertOk()
-            ->assertSee("Milik Klien A")
-            ->assertDontSee("Milik Klien B");
+            ->assertSee('Milik Klien A')
+            ->assertDontSee('Milik Klien B');
     }
 }

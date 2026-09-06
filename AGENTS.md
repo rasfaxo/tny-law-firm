@@ -1,6 +1,6 @@
 # AGENTS.md
 
-## Project Identity
+## 1. Project Identity
 
 Nama project:
 
@@ -8,146 +8,151 @@ Sistem Informasi Pra-Pendaftaran Perkara Berbasis Web pada TNY Law Firm.
 
 Project ini adalah aplikasi skripsi berbasis Laravel yang digunakan untuk membantu proses pra-pendaftaran perkara secara online, mulai dari registrasi Klien, pengajuan data perkara, unggah dokumen pendukung, verifikasi berkas oleh Staf Legal, pemantauan status pengajuan, unggah ulang dokumen apabila terdapat catatan perbaikan, pemilihan jadwal konsultasi, hingga pembuatan laporan pra-pendaftaran oleh Admin.
 
-## Single Source of Truth
+## 2. Instruction Priority / Single Source of Truth
 
-AGENTS.md adalah sumber instruksi utama untuk semua AI agent.
+`AGENTS.md` adalah sumber instruksi utama dan single source of truth untuk semua AI agent pada project ini.
 
-File CLAUDE.md, GEMINI.md, dan GPT.md hanya berfungsi sebagai adapter atau ringkasan untuk masing-masing AI assistant. Jika ada perbedaan aturan antara AGENTS.md dan file lain, maka AGENTS.md harus dianggap sebagai aturan yang paling benar.
+File `CLAUDE.md`, `GEMINI.md`, dan `GPT.md` hanya berfungsi sebagai adapter. Jika ada perbedaan aturan, `AGENTS.md` adalah yang paling benar.
 
-AI agent wajib membaca AGENTS.md terlebih dahulu sebelum membaca file dokumentasi lain.
+## 3. Main Tech Stack
 
-## Main Tech Stack
+- **Backend:** Laravel 13.x
+- **Frontend:** Blade + Tailwind CSS + Vite
+- **Authentication:** Laravel Session Authentication (awalnya di-scaffold menggunakan Breeze)
+- **Database Engine:** MySQL
+- **File Storage:** Laravel Filesystem Abstraction
+- **Version Control:** Git dan GitHub
 
-- Backend: Laravel
-- Frontend: Blade + Tailwind CSS
-- Authentication: Laravel Breeze
-- Database: MySQL
-- File Storage: Laravel Storage
-- Hosting Target: Cloud VPS
-- Web Server: Apache atau Nginx
-- Runtime: PHP 8.x / PHP-FPM
-- Version Control: Git dan GitHub
-- Editor: Zed
+## 4. Current Staging Environment
 
-## Main Roles
+Current staging environment diverifikasi dari repository configuration, CI/CD workflow, dan runtime/deployment evidence.
+
+- **Hosting:** Azure App Service (Linux)
+- **Web Server:** Nginx + PHP-FPM
+- **PHP Runtime:** PHP 8.4
+- **Node.js:** Versi 20
+- **Database:** MySQL
+- **Document Storage:** Azure Blob Storage
+
+## 5. Main Roles
 
 Role disimpan dalam database menggunakan slug lowercase:
 
-- klien
-- admin
-- staf_legal
+- `klien` (Klien)
+- `admin` (Admin)
+- `staf_legal` (Staf Legal)
 
-Label tampilan:
-
-- klien = Klien
-- admin = Admin
-- staf_legal = Staf Legal
-
-## Main Actors and Features
+## 6. Main Actors and Features
 
 ### Klien
 
-Klien dapat:
-
-- Registrasi akun
-- Login
-- Mengelola profil
+- Registrasi akun, Login, Mengelola profil
 - Mengajukan pra-pendaftaran perkara
 - Mengunggah dokumen pendukung
-- Memantau status pengajuan
-- Melihat catatan verifikasi
+- Memantau status pengajuan & Melihat catatan verifikasi
 - Mengunggah ulang dokumen apabila terdapat catatan perbaikan
 - Memilih jadwal konsultasi jika berkas sudah memenuhi syarat
+- Melihat detail booking konsultasi
+- Mengajukan permintaan reschedule konsultasi
+- Melihat status/detail permintaan reschedule
 
 ### Admin
 
-Admin dapat:
-
-- Login
-- Mengelola data pengguna
-- Membuat akun Staf Legal
+- Login, Mengelola data pengguna, Membuat akun Staf Legal
 - Mengelola kategori perkara
 - Mengelola data pra-pendaftaran
 - Mengelola slot jadwal konsultasi
-- Mencetak atau menyimpan laporan pra-pendaftaran melalui tampilan tabel dan print browser
+- Mengelola booking konsultasi
+- Mengonfirmasi detail teknis konsultasi
+- Memproses permintaan reschedule konsultasi
+- Mencetak laporan pra-pendaftaran dari tampilan tabel dan print browser
 - Melihat dashboard statistik ringkas
 
 ### Staf Legal
 
-Staf Legal dapat:
-
-- Login
-- Melihat daftar pengajuan pra-pendaftaran
-- Memeriksa detail perkara
-- Memeriksa dokumen pendukung
-- Memberikan status verifikasi
-- Memberikan catatan verifikasi umum atau per dokumen
+- Login, Melihat daftar pengajuan
+- Memeriksa detail perkara & dokumen pendukung
+- Memberikan status verifikasi & catatan verifikasi (umum/per dokumen)
 - Memperbarui status pengajuan berdasarkan hasil pemeriksaan
 
-## Required Documentation References
+## 7. Documentation Reference Policy
 
-Sebelum membuat fitur atau mengubah kode, AI agent wajib membaca dokumen berikut sesuai kebutuhan:
+Agent wajib membaca dokumentasi secara kontekstual sesuai task. Jangan asumsikan file ada jika tidak terbukti ada.
 
-- docs/PROJECT_CONTEXT.md
-- docs/DATABASE_PLAN.md
-- docs/MODEL_RELATION_PLAN.md
-- docs/STATUS_RULES.md
-- docs/VALIDATION_RULES.md
-- docs/SECURITY_RULES.md
-- docs/FEATURE_LIST.md
-- docs/ROUTES_PLAN.md
-- docs/MANUAL_TESTING_PLAN.md
-- docs/DEPLOYMENT_NOTES.md
-- docs/AUDIT_FIXES.md
+**Always Read:**
 
-Apabila file dokumentasi belum tersedia, AI agent harus meminta file tersebut dibuat terlebih dahulu dan tidak boleh membuat asumsi sendiri.
+- `AGENTS.md`
+- `docs/PROJECT_CONTEXT.md`
+- `docs/FEATURE_LIST.md`
 
-## Locked Database Tables
+**Database / Model Tasks:**
 
-Gunakan tabel berikut:
+- `docs/DATABASE_PLAN.md`
+- `docs/MODEL_RELATION_PLAN.md`
 
-- users
-- profil_klien
-- kategori_perkara
-- pra_pendaftaran_perkara
-- dokumen_perkara
-- verifikasi_berkas
-- catatan_verifikasi
-- riwayat_status
-- jadwal_konsultasi
-- booking_konsultasi
+**Business / Status Tasks:**
 
-Jangan membuat tabel laporan.
+- `docs/STATUS_RULES.md`
+- `docs/FEATURE_LIST.md`
 
-## Locked Architecture Decisions
+**Validation / Security Tasks:**
 
-Wajib patuhi keputusan berikut:
+- `docs/VALIDATION_RULES.md`
+- `docs/SECURITY_RULES.md`
 
-1. Tidak membuat tabel laporan.
-2. Laporan dihasilkan dari query dan rekap data.
-3. Role dan status menggunakan VARCHAR di database, bukan ENUM.
-4. Validasi role dan status dilakukan pada level aplikasi Laravel.
-5. File dokumen disimpan di Laravel Storage.
-6. Database hanya menyimpan metadata dokumen dan file_path.
-7. uploaded_at tidak digunakan karena waktu unggah dokumen diwakili created_at.
-8. tanggal_status tidak digunakan karena waktu perubahan status riwayat diwakili created_at.
-9. tanggal_booking tetap digunakan sebagai atribut bisnis pada booking_konsultasi.
-10. id_user digunakan sesuai konteks role:
-    - pra_pendaftaran_perkara.id_user = Klien
-    - booking_konsultasi.id_user = Klien
-    - verifikasi_berkas.id_user = Staf Legal
-    - jadwal_konsultasi.id_user = Admin
-    - riwayat_status.id_user = pengguna yang mengubah status
+**Testing Tasks:**
 
-## Laravel Table, Primary Key, and Foreign Key Rules
+- `docs/testing/TEST_PLAN.md`, `TEST_CASES.md`, `TESTING_STATE.md`, raw evidence
+- task-specific execution specification
 
-Project ini menggunakan nama tabel dan primary key custom sesuai rancangan skripsi.
+**Deployment Tasks:**
 
-Jangan mengandalkan penebakan nama tabel Laravel.
+- `.github/workflows/*`
+- deployment docs, runtime config
 
-Semua model Eloquent wajib mendefinisikan nama tabel dan primary key secara eksplisit.
+## 8. Zero-Assumption Verification Rules
 
-Contoh:
+Jika ada informasi atau file yang tidak ditemukan, Agent **tidak boleh membuat asumsi**.
+Gunakan alur berikut:
+
+1. Cari fakta dari source code aktual.
+2. Cari dari migration yang committed.
+3. Cari dari testing documentation.
+4. Cari dari runtime configuration dan evidence (contoh: GitHub Actions).
+5. Jika fakta ditemukan dan dapat diverifikasi: lanjut kerjakan task.
+6. Jika tidak dapat diverifikasi dan membutuhkan keputusan bisnis/desain: stop, mark sebagai `NOT VERIFIED`, dan minta keputusan dari pemilik project.
+
+## 9. Database and Schema Rules
+
+**A. Locked Schema Naming Conventions**
+
+- Semua tabel menggunakan nama spesifik sesuai rancangan skripsi (contoh: `users`, `profil_klien`, `pra_pendaftaran_perkara`).
+- Jangan mengandalkan penebakan nama tabel Laravel.
+- Tidak boleh membuat tabel laporan. (Laporan dihasilkan dari query data).
+- Tidak boleh menggunakan ENUM di database (Role dan status menggunakan VARCHAR dan divalidasi di aplikasi).
+
+**B. Existing Schema Inventory (Core)**
+
+- `users`
+- `profil_klien`
+- `kategori_perkara`
+- `pra_pendaftaran_perkara`
+- `dokumen_perkara`
+- `verifikasi_berkas`
+- `catatan_verifikasi`
+- `riwayat_status`
+- `jadwal_konsultasi`
+- `booking_konsultasi`
+- `permintaan_reschedule`
+
+**C. Rules for Future Migration Changes**
+Setiap perubahan struktur harus disetujui terlebih dahulu, dan dilarang mengubah primary key default menjadi `id`.
+
+## 10. Custom PK / FK Rules
+
+Setiap model Eloquent wajib mendefinisikan nama tabel dan primary key secara eksplisit karena project ini tidak memakai default `id` milik Laravel.
+
+Contoh Model:
 
 ```php
 protected $table = 'users';
@@ -156,374 +161,222 @@ public $incrementing = true;
 protected $keyType = 'int';
 ```
 
-Gunakan tabel dan primary key berikut:
+Primary Key Map:
 
-| Model                 | Table                   | Primary Key    |
-| --------------------- | ----------------------- | -------------- |
-| User                  | users                   | id_user        |
-| ProfilKlien           | profil_klien            | id_profil      |
-| KategoriPerkara       | kategori_perkara        | id_kategori    |
-| PraPendaftaranPerkara | pra_pendaftaran_perkara | id_pendaftaran |
-| DokumenPerkara        | dokumen_perkara         | id_dokumen     |
-| VerifikasiBerkas      | verifikasi_berkas       | id_verifikasi  |
-| CatatanVerifikasi     | catatan_verifikasi      | id_catatan     |
-| RiwayatStatus         | riwayat_status          | id_riwayat     |
-| JadwalKonsultasi      | jadwal_konsultasi       | id_jadwal      |
-| BookingKonsultasi     | booking_konsultasi      | id_booking     |
+- `users` -> `id_user`
+- `profil_klien` -> `id_profil`
+- `kategori_perkara` -> `id_kategori`
+- `pra_pendaftaran_perkara` -> `id_pendaftaran`
+- `dokumen_perkara` -> `id_dokumen`
+- `verifikasi_berkas` -> `id_verifikasi`
+- `catatan_verifikasi` -> `id_catatan`
+- `riwayat_status` -> `id_riwayat`
+- `jadwal_konsultasi` -> `id_jadwal`
+- `booking_konsultasi` -> `id_booking`
+- `permintaan_reschedule` -> `id_reschedule`
 
-Jangan mengganti custom primary key menjadi default Laravel `id`.
+Karena menggunakan custom primary key, route model binding juga harus didefinisikan jika menggunakan implicit binding (menggunakan method `getRouteKeyName()`).
 
-Jangan mengubah:
-
-- id_user menjadi user_id
-- id_kategori menjadi kategori_id
-- id_pendaftaran menjadi pra_pendaftaran_perkara_id
-- id_dokumen menjadi dokumen_perkara_id
-- id_verifikasi menjadi verifikasi_berkas_id
-- id_jadwal menjadi jadwal_konsultasi_id
-- id_booking menjadi booking_konsultasi_id
-
-## Migration Rules
-
-Saat membuat migration, gunakan nama primary key custom secara eksplisit.
-
-Contoh:
-
-```php
-$table->id('id_user');
-```
-
-Untuk foreign key, gunakan referensi eksplisit.
-
-Contoh:
+Contoh Penulisan Foreign Key pada Migration:
 
 ```php
 $table->unsignedBigInteger('id_user');
-
-$table->foreign('id_user')
-    ->references('id_user')
-    ->on('users')
-    ->cascadeOnDelete();
+$table->foreign('id_user')->references('id_user')->on('users');
 ```
 
-Contoh di atas hanya contoh teknis penulisan foreign key.
+Hindari penggunaan `$table->id()` atau `foreignId('user_id')->constrained()` karena tidak sesuai skema skripsi.
 
-Penggunaan `cascadeOnDelete()`, `restrictOnDelete()`, atau `nullOnDelete()` harus mengikuti aturan relasi pada `docs/DATABASE_PLAN.md` dan tidak boleh diterapkan secara otomatis ke semua foreign key.
+## 11. Migration Safety Rules
 
-Jangan gunakan `$table->id()` jika tabel membutuhkan custom primary key.
+**A. Creating a New Migration**
+Selalu gunakan konvensi custom PK/FK secara manual.
 
-Jangan gunakan foreign key shorthand jika menghasilkan nama kolom default Laravel yang bertentangan dengan rancangan skripsi.
+**B. Running Existing Migrations in CI/CD**
+Pada deployment staging, pipeline menjalankan `php artisan migrate --force` saat container start. Migration baru yang dijalankan pada staging deployment MUST dirancang non-destructive terhadap existing data. Perlu dipahami bahwa `migrate --force` hanya menjalankan pending migrations dan tidak menjamin isi migration aman.
 
-Hindari ini jika menghasilkan nama kolom yang salah:
+**C. Destructive Commands**
+Dilarang keras menjalankan secara lokal maupun menyarankan:
 
-```php
-$table->foreignId('user_id')->constrained();
-```
+- `php artisan migrate:fresh`
+- `php artisan migrate:refresh`
+- `php artisan migrate:rollback` (tanpa alasan sangat darurat)
+- `php artisan db:wipe`
 
-Gunakan foreign key eksplisit seperti ini:
+## 12. Authentication and Authorization Rules
 
-```php
-$table->unsignedBigInteger('id_user');
+- Aplikasi ini menggunakan mekanisme Session Authentication milik Laravel. Scaffolding awal dibuat menggunakan Laravel Breeze, namun arsitektur autentikasinya murni berdasarkan email & password, custom `id_user`, session regeneration, dan controller auth.
+- Akses ke sistem, termasuk fitur dan resource/dokumen, harus diproteksi menggunakan middleware dan Policy/Gate berbasis Role.
 
-$table->foreign('id_user')
-    ->references('id_user')
-    ->on('users');
-```
+## 13. Document Storage Rules
 
-Migration boleh dijalankan menggunakan `php artisan migrate` setelah file migration direview dan disetujui.
+Operasi file (unggah, akses, hapus) wajib mematuhi aturan berikut:
 
-## User Model Authentication Rule
+- Seluruh operasi menggunakan **Laravel Filesystem abstraction**. Business document operations SHOULD use `Storage::disk(config('filesystems.document_disk'))` atau equivalent abstraction.
+- Jangan hardcode `public`, `local`, atau `azure` di business logic kecuali ada alasan infrastructure-specific yang terdokumentasi.
+- Physical storage path tidak boleh dijadikan business contract.
+- Pada lingkungan _staging_, storage menggunakan Azure Blob Storage.
+- Database hanya menyimpan metadata file dan reference path-nya.
+- Akses ke file dokumen **wajib** melalui mekanisme authorization/ownership (tidak boleh bisa diakses publik secara bebas).
+- Nama file asli dari user tidak boleh dipercaya. Gunakan nama file unik/random.
+- Harus ada validasi extension, MIME type, dan ukuran file untuk setiap operasi upload sesuai dengan aturan yang berlaku.
 
-Model User menggunakan Laravel Authenticatable dan wajib memakai custom primary key `id_user`.
-
-Contoh:
-
-```php
-class User extends Authenticatable
-{
-    protected $table = 'users';
-    protected $primaryKey = 'id_user';
-    public $incrementing = true;
-    protected $keyType = 'int';
-}
-```
-
-Jangan mengubah `users.id_user` menjadi `id`.
-
-Laravel Breeze authentication harus tetap menggunakan `email` dan `password` untuk login.
-
-Jika scaffolding Breeze memakai field `name`, sesuaikan menjadi `nama` sesuai rancangan final tabel `users`.
-
-Field `role` hanya digunakan untuk role-based access control setelah autentikasi berhasil.
-
-## Route Model Binding Rule
-
-Karena project ini memakai custom primary key, setiap model Eloquent harus mendukung route model binding dengan benar.
-
-Jika menggunakan implicit route model binding, definisikan `getRouteKeyName()` saat diperlukan.
-
-Contoh:
-
-```php
-public function getRouteKeyName(): string
-{
-    return 'id_pendaftaran';
-}
-```
-
-Jangan menganggap Laravel selalu melakukan binding menggunakan kolom default `id`.
-
-Parameter route harus mengarah ke primary key model yang benar, misalnya:
-
-- users.id_user
-- pra_pendaftaran_perkara.id_pendaftaran
-- dokumen_perkara.id_dokumen
-- verifikasi_berkas.id_verifikasi
-- jadwal_konsultasi.id_jadwal
-- booking_konsultasi.id_booking
-
-Contoh penting:
-
-- `/klien/pengajuan/{pengajuan}` harus mengarah ke `pra_pendaftaran_perkara.id_pendaftaran`
-- `/admin/jadwal-konsultasi/{jadwal}` harus mengarah ke `jadwal_konsultasi.id_jadwal`
-- `/staf-legal/pengajuan/{pengajuan}` harus mengarah ke `pra_pendaftaran_perkara.id_pendaftaran`
-- `/klien/dokumen/{dokumen}/unggah-ulang` harus mengarah ke `dokumen_perkara.id_dokumen`
-
-## Upload Rules
-
-- Format file yang diperbolehkan: PDF, JPG, JPEG, PNG.
-- Ukuran maksimal: 5 MB per file.
-- Storage path: storage/app/public/dokumen-perkara.
-- File lama saat unggah ulang tidak boleh ditimpa.
-- Dokumen lama disimpan sebagai file berbeda.
-- Database hanya menyimpan metadata dan file_path.
-- Gunakan nama file unik atau random saat menyimpan dokumen.
-- Jangan percaya nama file asli dari user.
-- Validasi extension dan MIME type.
-- File dokumen tidak boleh diakses tanpa otorisasi.
-- Akses dokumen harus mempertimbangkan role dan kepemilikan data.
-
-## Business Rules
+## 14. Business Rules
 
 1. Klien tidak boleh mengubah data pengajuan setelah dikirim.
-2. Klien hanya boleh mengunggah ulang dokumen jika ada catatan perbaikan.
+2. Klien hanya boleh mengunggah ulang dokumen jika ada catatan perbaikan. File lama saat unggah ulang **tidak boleh ditimpa**. Dokumen lama disimpan sebagai file berbeda.
 3. Staf Legal dapat memberikan catatan umum atau catatan per dokumen.
 4. Satu pengajuan hanya boleh memiliki satu booking aktif.
-5. Jadwal konsultasi hanya boleh dipilih jika status pengajuan adalah berkas_lengkap.
+5. Jadwal konsultasi hanya boleh dipilih jika status pengajuan adalah `berkas_lengkap`.
 6. Laporan menggunakan filter tanggal, status, dan kategori.
-7. Sistem tidak menggunakan email untuk fase awal.
+7. Dilarang menambahkan email notification / transactional email integration tanpa explicit approval. (Authentication via email tidak termasuk larangan ini).
 8. Admin dapat membuat akun Staf Legal.
 9. Dashboard menampilkan statistik ringkas.
 
-## Database Transaction Rules
+## 15. Database Transaction Rules
 
-Gunakan database transaction untuk proses yang menyimpan atau mengubah lebih dari satu tabel.
+Proses yang melakukan multiple persistent writes MUST menjaga atomicity. Gunakan database transaction apabila satu business operation melakukan beberapa perubahan database yang harus berhasil/gagal bersama.
+Contoh kasus utama:
 
-Transaction wajib digunakan pada proses berikut:
+- Membuat pra-pendaftaran perkara beserta dokumen dan riwayat status.
+- Verifikasi berkas oleh Staf Legal.
+- Pembuatan catatan verifikasi umum atau per dokumen.
+- Unggah ulang dokumen oleh Klien.
+- Booking jadwal konsultasi oleh Klien.
+- Perubahan status pengajuan yang harus disertai pencatatan riwayat status.
 
-1. Membuat pra-pendaftaran perkara beserta dokumen dan riwayat status.
-2. Verifikasi berkas oleh Staf Legal.
-3. Pembuatan catatan verifikasi umum atau catatan per dokumen.
-4. Unggah ulang dokumen oleh Klien.
-5. Booking jadwal konsultasi oleh Klien.
-6. Perubahan status pengajuan yang harus disertai pencatatan riwayat status.
+## 16. Coding / Architecture Rules
 
-Jika salah satu proses dalam transaction gagal, semua perubahan harus dibatalkan agar data tetap konsisten.
+1. Gunakan service class untuk logika bisnis yang kompleks (Business logic tidak boleh hanya berada di Controller).
+2. Form Request wajib digunakan untuk request yang menerima user input dan memiliki non-trivial validation rules, kecuali ada alasan teknis yang terdokumentasi.
+3. Gunakan Laravel best practices (Eloquent, Middleware, Policies).
+4. Bangun fitur secara bertahap.
+5. Sediakan empty state ketika data kosong.
+6. Gunakan flash message untuk notifikasi aksi berhasil/gagal.
+7. Halaman list harus menggunakan pagination (dan filter/search untuk data penting).
 
-## Dangerous Command Rules
+## 17. Environment Safety
 
-AI agent dilarang menjalankan atau menyarankan command berbahaya tanpa izin eksplisit dari pemilik project.
+- Current implementation / testing target adalah **STAGING**.
+- Lingkungan **PRODUCTION** sepenuhnya _OUT OF SCOPE_ kecuali mendapat autorisasi eksplisit.
+- Dilarang keras melakukan reset/wipe pada database staging tanpa explicit approval.
+- Data testing yang digunakan harus data anonim / non-production.
+- Security scans hanya boleh menargetkan lingkungan/target yang diotorisasi.
+- Jangan asumsikan environment lokal akan sama persis konfigurasinya dengan staging/production, harus diverifikasi.
 
-Command yang dilarang tanpa persetujuan eksplisit:
+## 18. Secrets and Credentials
 
-- php artisan migrate:fresh
-- php artisan migrate:refresh
-- php artisan migrate:rollback
-- php artisan db:wipe
-- rm -rf
-- git reset --hard
-- git clean -fd
-- git push --force
-- composer update
-- npm audit fix --force
+AI Agent **DILARANG KERAS**:
 
-Command yang boleh disarankan setelah konteksnya jelas:
+- Mencetak secret (token, password) ke chat atau logs.
+- Melakukan commit yang mengandung file `.env` atau hardcoded secrets.
+- Menyertakan credentials pada reports Markdown.
+- Mengekspos publish profiles, DB passwords, Azure storage keys, API tokens.
 
-- php artisan migrate
-- php artisan route:list
-- php artisan storage:link
-- php artisan test
-- npm run build
+Cara yang benar:
 
-Catatan: `php artisan migrate` boleh digunakan setelah file migration direview dan disetujui. Command tersebut tidak termasuk command destruktif, tetapi tetap tidak boleh dijalankan sembarangan tanpa memahami dampaknya terhadap database.
+- Gunakan environment variables.
+- Gunakan GitHub Secrets.
+- Gunakan Azure App Service settings.
+  Jika secara tidak sengaja membaca secret, agent harus me-redact nilainya dalam respons atau laporan.
 
-Jika command berisiko menghapus database, file, dependency, konfigurasi, atau riwayat Git, AI agent wajib menjelaskan risiko terlebih dahulu dan meminta persetujuan sebelum menjalankan atau menyarankannya.
+## 19. CI/CD Rules
 
-## Coding Rules
+Pipeline otomatis dikelola melalui GitHub Actions.
+Konsep Flow (berdasarkan file `.github/workflows/cd.yml` dan `startup.sh`):
+`GitHub Actions → Build → Package → Deploy Azure → Azure startup → Nginx setup → migration → smoke test`.
 
-AI agent wajib:
+Aturan:
 
-1. Menjelaskan rencana implementasi sebelum mengubah kode.
-2. Menyebutkan file yang akan dibuat atau diubah.
-3. Membangun fitur secara bertahap.
-4. Menggunakan Laravel best practice.
-5. Menggunakan migration untuk struktur tabel.
-6. Menggunakan Eloquent model dan relasi.
-7. Menggunakan Form Request untuk validasi.
-8. Menggunakan middleware role untuk proteksi akses.
-9. Menggunakan policy untuk proteksi data sensitif.
-10. Menggunakan service class untuk logika bisnis penting.
-11. Menggunakan database transaction untuk proses yang menyimpan banyak tabel.
-12. Menggunakan Blade + Tailwind untuk tampilan.
-13. Menggunakan pagination untuk daftar data.
-14. Menggunakan search dan filter pada data penting.
-15. Menggunakan flash message untuk hasil aksi.
-16. Menyediakan empty state ketika data kosong.
-17. Menjelaskan cara testing manual setelah fitur selesai.
+- Gunakan GitHub Actions pipeline yang sudah ada sebagai metode deploy utama.
+- Production deployment adalah out of scope.
 
-## Git and Debugging Rules
+## 20. Testing Evidence Integrity
 
-- Setiap fitur sebaiknya dibuat dalam commit terpisah dengan pesan commit yang jelas.
-- Perubahan besar harus dipecah menjadi beberapa commit kecil yang mudah direview.
-- Saat memperbaiki error, AI agent wajib mengutamakan perubahan paling kecil yang menyelesaikan masalah.
-- AI agent tidak boleh melakukan refactor besar saat sedang memperbaiki bug kecil.
-- AI agent harus menjelaskan alasan perubahan sebelum mengubah struktur kode yang sudah berjalan.
+- **Existing BEFORE testing evidence MUST be treated as immutable.** AI Agent dilarang: overwrite, edit, delete, regenerate raw BEFORE evidence dengan nama/path yang sama. AFTER/retest evidence harus disimpan terpisah.
+- "Actual Result" pada saat testing **harus** berasal dari eksekusi nyata, bukan sekadar asumsi atau claim fiktif.
+- **Never fabricate:** response time, throughput, request count, security alert, PASS/FAIL status, atau screenshot/log.
+- Hasil dari scan otomatis (misal: OWASP ZAP) tidak otomatis menjadi kerentanan terkonfirmasi, perlu ada root-cause analysis dan verifikasi.
 
-## Definition of Done
+## 21. Testing Specification Precedence
 
-Sebuah fitur dianggap selesai hanya jika:
+Jika terdapat beberapa testing docs:
 
-1. Route sudah dibuat dan memakai middleware yang benar.
-2. Controller method sudah dibuat.
-3. Form Request validation sudah tersedia jika fitur menerima input user.
-4. Model relation sudah sesuai rancangan database dan MODEL_RELATION_PLAN.md.
-5. Policy atau ownership check diterapkan jika fitur menyentuh data sensitif.
-6. Blade view sudah dibuat dan mudah dibaca.
-7. Flash message sukses dan gagal tersedia.
-8. Empty state tersedia untuk kondisi data kosong.
-9. Pagination tersedia untuk daftar data.
-10. Search atau filter tersedia jika dibutuhkan oleh fitur.
-11. Testing manual sudah dijelaskan.
-12. Tidak ada perubahan database tanpa persetujuan.
-13. Tidak ada fitur tambahan di luar rancangan skripsi.
-14. Tidak ada command berbahaya yang dijalankan tanpa izin.
-15. Tidak ada pelanggaran terhadap AGENTS.md dan dokumen pendukung di folder docs.
+- Locked Test Plan/Test Case specification mempertahankan scope.
+- Task-specific execution specification yang lebih baru boleh mengatur execution detail.
+- Execution spec tidak boleh diam-diam mengubah scope/test case resmi.
+  Jika terjadi conflict: verifikasi dan documentasikan.
 
-## Forbidden Actions
+## 22. Performance Improvement Rules
 
-AI agent dilarang:
+- Optimisasi hanya boleh dilakukan berdasarkan evidence/profiling.
+- Business behavior eksisting wajib dipertahankan setelah optimisasi.
+- Harus menampilkan komparasi before/after dengan parameter yang sama.
+- **No Benchmark Gaming:** AI Agent MUST NOT menurunkan jumlah virtual users, mengubah workload hanya agar hasil lebih bagus, menghapus HTTP request dari scenario, bypass database/storage operation yang memang bagian dari business flow, menonaktifkan validation/security, mendeteksi JMeter lalu memberi special response, atau menggunakan data artifisial yang membuat workload tidak comparable. Retest harus comparable dengan baseline.
 
-1. Membuat tabel laporan.
-2. Menggunakan ENUM pada database.
-3. Mengubah nama tabel tanpa izin.
-4. Mengubah nama kolom tanpa izin.
-5. Menghapus migration yang sudah dibuat tanpa izin.
-6. Menjalankan migration tanpa menjelaskan file migration yang dibuat dan tanpa persetujuan pemilik project.
-7. Menghapus file upload user tanpa izin.
-8. Menambahkan fitur email tanpa izin.
-9. Menambahkan payment tanpa izin.
-10. Menambahkan integrasi e-Court tanpa izin.
-11. Menambahkan fitur di luar ruang lingkup skripsi.
-12. Menggabungkan seluruh logic ke controller.
-13. Membuat semua fitur sekaligus tanpa tahapan.
-14. Mengabaikan ERD, LRS, Class Diagram, Sequence Diagram, Component Diagram, dan Deployment Diagram.
-15. Mengubah struktur database hanya karena mengikuti default Laravel.
-16. Menjalankan command berbahaya tanpa izin eksplisit.
-17. Menyarankan reset database tanpa menjelaskan risiko.
-18. Menyarankan reset Git tanpa menjelaskan risiko.
-19. Mengabaikan VALIDATION_RULES.md.
-20. Mengabaikan SECURITY_RULES.md.
-21. Membuat fitur selesai tanpa memenuhi Definition of Done.
-22. Membuka akses dokumen perkara tanpa otorisasi.
-23. Menyimpan file upload memakai nama file asli user tanpa proses pengamanan.
+## 23. Security Improvement Rules
 
-## Ask Before Changing Design
+- Temuan wajib dipetakan ke baris/kode aktual di aplikasi.
+- Perbaikan harus sebisa mungkin _minimal_ tanpa merusak otorisasi eksisting.
+- Tetap harus diuji _direct access/ownership_ (apakah resource tetap terproteksi).
+- Harus diretest setelah diperbaiki.
+- Production scanning secara eksplisit dilarang.
 
-AI agent must ask for confirmation before making any change that affects:
+## 24. Git Safety
 
-1. Database structure.
-2. Table names.
-3. Column names.
-4. Primary keys.
-5. Foreign keys.
-6. Status values.
-7. Role values.
-8. Authentication flow.
-9. Authorization rules.
-10. Business rules.
-11. File upload rules.
-12. Report structure.
+- Dilarang menjalankan `git reset --hard` atau `git clean -fd` tanpa alasan mendesak dan izin.
+- Dilarang keras `git push --force`.
+- Jangan commit file yang tidak relevan dengan task (unrelated file).
+- Review hasil `git status` dan `git diff` secara reguler.
 
-If the requested implementation conflicts with the locked thesis design, explain the conflict first and wait for approval.
+## 25. Debugging Protocol
 
-## No Assumption Coding
+Saat menemui error, Agent harus:
 
-AI agent must not create code based on assumptions.
+1. Membaca pesan error yang akurat (stack trace/logs).
+2. Menemukan titik lokasi (file/line) masalahnya.
+3. Menganalisis penyebab utama (root cause).
+4. Menyuguhkan solusi (fix) terkecil/paling aman, menghindari _large refactoring_ untuk masalah sepele.
+5. Menjelaskan cara memvalidasi/testing setelah fix diterapkan.
 
-Before implementing a feature, AI agent must verify:
+## 26. Approval Boundaries
 
-1. The related feature exists in `docs/FEATURE_LIST.md`.
-2. The related tables exist in `docs/DATABASE_PLAN.md`.
-3. The related model relationships exist in `docs/MODEL_RELATION_PLAN.md`.
-4. The related status values exist in `docs/STATUS_RULES.md`.
-5. The related validation rules exist in `docs/VALIDATION_RULES.md`.
-6. The related security rules exist in `docs/SECURITY_RULES.md`.
+Jika task sudah eksplisit diminta, memiliki spesifikasi eksekusi, dan ruang lingkupnya jelas, AI Agent **boleh** beroperasi secara mandiri:
+`READ → PLAN INTERNALLY → EXECUTE → VALIDATE → REPORT` tanpa meminta persetujuan iteratif.
 
-If any required rule is missing, AI agent must stop and ask the project owner.
+AI Agent hanya **wajib** berhenti dan meminta persetujuan untuk:
 
-## Service Layer Preference
+- Destructive database actions (wipe, migrate:fresh).
+- Perubahan di Production environment.
+- Perubahan pada locked business rule (misalnya mengubah alur verifikasi).
+- Perubahan semantik role atau permission.
+- Redesain skema database / auth architecture.
+- Ruang lingkup tugas yang membesar di luar spesifikasi awal secara drastis.
+- Temuan bug vs redesign (Jika sekadar bug/security missing check, langsung perbaiki. Jika mengubah logic permission, minta approval).
 
-Business logic should not be placed entirely inside controllers.
+## 27. Task-Specific Definition of Done (DoD)
 
-Use service classes for complex processes such as:
+Kriteria selesai bergantung pada tipe task:
 
-1. Creating pra-pendaftaran perkara.
-2. Uploading documents.
-3. Verifying case documents.
-4. Re-uploading corrected documents.
-5. Booking consultation schedules.
-6. Updating status with riwayat_status.
-7. Generating report queries.
+- **Feature:** Implementasi selesai, ada Form Request (jika sesuai rule), Model relasi benar, Authorization/Policy diterapkan, Blade (UI state/empty state) ada, dites/divalidasi.
+- **Bug Fix:** Error berhasil di-reproduce, root cause ketemu, fix minimal diterapkan, regression check aman.
+- **Performance:** Ada before evidence, bottleneck diidentifikasi, optimisasi dilakukan, before/after comparison dengan retest.
+- **Security Fix:** Evidence kerentanan valid, root cause ada, fix minimal diterapkan tanpa merusak fungsi bisnis, hasil retest membuktikan perbaikan.
+- **Deployment:** Build sukses, deploy ke staging sukses, migration jalan, smoke test (HTTP 200) sukses.
+- **Documentation:** Factual consistency, sumber divalidasi dari source/konfigurasi asli, tidak ada asumsi fiktif.
 
-Controllers should focus on receiving requests, calling services, and returning responses.
+## 28. Forbidden Actions
 
-## Manual Test Before Commit
+AI Agent DILARANG KERAS:
 
-Before suggesting a Git commit, AI agent must provide manual testing steps and confirm that:
+- Mengubah nama tabel atau nama kolom tanpa izin.
+- Menghapus migration file yang sudah committed dan dijalankan.
+- Menyimpan file upload memakai nama file asli user tanpa proses pengamanan.
+- Membuka akses dokumen perkara ke publik/tanpa otorisasi.
+- Menambahkan integrasi e-Court.
+- Menyarankan command berbahaya tanpa izin eksplisit.
 
-1. The feature can be accessed by the correct role.
-2. Unauthorized roles are blocked.
-3. Validation errors appear correctly.
-4. Success flow works correctly.
-5. Database records are created or updated correctly.
-6. No unrelated files were changed.
-7. No thesis design rule was violated.
+## 29. Documentation Modification Rules
 
-## Error Debugging Protocol
+Dokumentasi ini (`AGENTS.md`, dsb) tidak boleh dimodifikasi selama pengerjaan task koding harian.
 
-When debugging an error, AI agent must:
-
-1. Read the exact error message first.
-2. Identify the file and line related to the error.
-3. Explain the most likely cause.
-4. Suggest the smallest safe fix.
-5. Avoid large refactors unless necessary.
-6. Avoid changing database structure unless the error truly requires it.
-7. Explain how to test the fix.
-
-## Locked Documentation Rule
-
-AI agent must not modify locked documentation files unless explicitly asked.
-
-Locked documentation includes:
-
-1. `AGENTS.md`
-2. `CLAUDE.md`
-3. `GEMINI.md`
-4. `GPT.md`
-5. `docs/PROJECT_CONTEXT.md`
-6. `docs/FEATURE_LIST.md`
-7. `docs/DATABASE_PLAN.md`
-8. `docs/MODEL_RELATION_PLAN.md`
-
-If a code change requires documentation change, AI agent must explain the required change first and ask for approval.
+**Pengecualian:** Jika pemilik project memberikan task secara _eksplisit_ (explicitly requested documentation maintenance/update), Agent dipersilakan untuk memodifikasi dokumentasi terkait, hanya setelah melakukan verifikasi fakta pada project aktual.

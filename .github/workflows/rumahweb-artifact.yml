@@ -1,0 +1,143 @@
+name: Build Rumahweb Manual Artifact
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    name: Validate and package for cPanel
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup PHP 8.4
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.4'
+          extensions: curl, dom, fileinfo, intl, mbstring, openssl, pdo_mysql, sqlite3, xml, zip
+          ini-values: upload_max_filesize=8M, post_max_size=32M, memory_limit=256M, max_execution_time=120, max_input_time=120
+          coverage: none
+
+      - name: Setup Node.js 20
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: npm
+
+      - name: Install dependencies for validation
+        run: |
+          composer install --prefer-dist --no-interaction --no-ansi
+          npm ci
+
+      - name: Validate dependencies and application
+        run: |
+          composer validate --strict
+          composer audit --locked
+          npm audit
+          npm run brand:optimize
+          git diff --exit-code -- public/brand/logo.svg
+          ! grep -Eiq '<(script|foreignObject|image)\b|[[:space:]]on[a-z]+[[:space:]]*=|(xlink:)?href[[:space:]]*=|url[[:space:]]*\(' public/brand/logo.svg
+          npm run build
+          php artisan test
+
+      - name: Prepare production dependencies
+        run: |
+          composer install --no-dev --prefer-dist --optimize-autoloader --classmap-authoritative --no-interaction --no-ansi
+          composer check-platform-reqs --no-dev
+
+      - name: Assemble Rumahweb packages
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          release_root="$RUNNER_TEMP/rumahweb-release"
+          app_root="$release_root/application/tny-law-firm"
+          public_root="$release_root/public-html"
+
+          mkdir -p "$app_root" "$public_root"
+
+          for directory in app bootstrap config public resources routes vendor; do
+            rsync -a "$directory/" "$app_root/$directory/"
+          done
+
+          mkdir -p "$app_root/database"
+          rsync -a database/migrations/ "$app_root/database/migrations/"
+          mkdir -p "$app_root/database/seeders"
+          cp \
+            database/seeders/AdminSeeder.php \
+            database/seeders/DatabaseSeeder.php \
+            database/seeders/KategoriPerkaraSeeder.php \
+            "$app_root/database/seeders/"
+
+          cp artisan composer.json composer.lock "$app_root/"
+
+          mkdir -p \
+            "$app_root/storage/app/private" \
+            "$app_root/storage/app/public" \
+            "$app_root/storage/framework/cache/data" \
+            "$app_root/storage/framework/sessions" \
+            "$app_root/storage/framework/testing" \
+            "$app_root/storage/framework/views" \
+            "$app_root/storage/logs" \
+            "$app_root/bootstrap/cache"
+
+          rm -f \
+            "$app_root/bootstrap/cache/config.php" \
+            "$app_root/bootstrap/cache/events.php" \
+            "$app_root/bootstrap/cache/routes.php" \
+            "$app_root/bootstrap/cache/routes-v7.php"
+
+          rsync -a --exclude='index.php' --exclude='storage' public/ "$public_root/"
+          cp .deploy/rumahweb/public-index.php "$public_root/index.php"
+
+          commit_sha="${GITHUB_SHA}"
+          built_at="$(date -u +'%Y-%m-%dT%H:%M:%SZ')"
+          printf '{\n  "commit": "%s",\n  "built_at_utc": "%s",\n  "php": "8.4",\n  "node": "20",\n  "deployment": "manual-cpanel"\n}\n' \
+            "$commit_sha" "$built_at" > "$release_root/manifest.json"
+
+          cd "$release_root/application"
+          zip -q -r "$GITHUB_WORKSPACE/rumahweb-application.zip" tny-law-firm
+
+          cd "$public_root"
+          zip -q -r "$GITHUB_WORKSPACE/rumahweb-public-html.zip" .
+
+          cd "$GITHUB_WORKSPACE"
+          sha256sum rumahweb-application.zip rumahweb-public-html.zip > rumahweb-sha256.txt
+          cp "$release_root/manifest.json" rumahweb-manifest.json
+
+      - name: Validate package boundaries
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          unzip -l rumahweb-application.zip | grep -q 'tny-law-firm/vendor/autoload.php'
+          unzip -l rumahweb-application.zip | grep -q 'tny-law-firm/public/build/manifest.json'
+          unzip -l rumahweb-application.zip | grep -q 'tny-law-firm/public/brand/logo.svg'
+          unzip -l rumahweb-public-html.zip | grep -q 'index.php'
+          unzip -l rumahweb-public-html.zip | grep -q 'build/manifest.json'
+          unzip -l rumahweb-public-html.zip | grep -q 'brand/logo.svg'
+
+          ! unzip -l rumahweb-application.zip | grep -E '(^|/)(\.env|\.git|node_modules|testing|tests)(/|$)'
+          ! unzip -l rumahweb-application.zip | grep -E '\.(sqlite|db)$'
+          ! unzip -l rumahweb-application.zip | grep -q 'DemoTestingSeeder.php'
+          ! unzip -l rumahweb-public-html.zip | grep -E '(^|/)(\.env|vendor|storage)(/|$)'
+          unzip -p rumahweb-public-html.zip index.php | grep -q "dirname(__DIR__).'/tny-law-firm'"
+
+          sha256sum --check rumahweb-sha256.txt
+
+      - name: Upload manual cPanel artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: rumahweb-cpanel-${{ github.sha }}
+          path: |
+            rumahweb-application.zip
+            rumahweb-public-html.zip
+            rumahweb-manifest.json
+            rumahweb-sha256.txt
+          if-no-files-found: error
+          retention-days: 7

@@ -111,8 +111,13 @@ return [
     */
 
     'from' => [
-        'address' => env('MAIL_FROM_ADDRESS', 'hello@example.com'),
-        'name' => env('MAIL_FROM_NAME', env('APP_NAME', 'Laravel')),
+        'address' => env('MAIL_FROM_ADDRESS', 'no-reply@example.invalid'),
+        'name' => env('MAIL_FROM_NAME', env('APP_NAME', 'TNY Law Firm')),
+    ],
+
+    'reply_to' => [
+        'address' => env('MAIL_REPLY_TO_ADDRESS'),
+        'name' => env('MAIL_REPLY_TO_NAME', env('FIRM_NAME', 'TNY & PARTNERS')),
     ],
 
 ];
