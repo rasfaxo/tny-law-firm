@@ -23,10 +23,6 @@ Route::get('/', function () {
     return view('welcome');
 });
 
-Route::get('/health', function () {
-    return response()->json(['ok' => true]);
-});
-
 Route::get('/kebijakan-privasi', [PrivacyConsentController::class, 'policy'])
     ->name('privacy.policy');
 
