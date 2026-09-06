@@ -159,5 +159,25 @@ jobs:
           publish-profile: ${{ secrets.AZURE_WEBAPP_PUBLISH_PROFILE }}
           package: release.zip
 
-      # Smoke test disabled sementara karena health check endpoint
-      # masih mengembalikan HTTP 400 pada environment staging.
+      - name: Smoke Test (Health, Landing & Login)
+        env:
+          STAGING_URL: ${{ secrets.STAGING_URL }}
+        run: |
+          if [ -z "$STAGING_URL" ]; then
+            echo "::error::STAGING_URL secret is not set!"
+            exit 1
+          fi
+
+          echo "Waiting 40 seconds for Azure App Service to fully initialize..."
+          sleep 40
+
+          echo "Testing Laravel health endpoint (GET /up)..."
+          curl -fL --retry 12 --retry-delay 5 --retry-all-errors "$STAGING_URL/up" > /dev/null
+
+          echo "Testing Landing Page (GET /)..."
+          curl -fL --retry 12 --retry-delay 5 --retry-all-errors "$STAGING_URL" > /dev/null
+
+          echo "Testing Login Page (GET /login)..."
+          curl -fL --retry 12 --retry-delay 5 --retry-all-errors "$STAGING_URL/login" > /dev/null
+
+          echo "Smoke tests passed successfully!"
