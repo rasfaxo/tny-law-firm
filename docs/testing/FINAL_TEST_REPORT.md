@@ -9,6 +9,8 @@
 **Metodologi Pengujian:** *Performance Testing* (Apache JMeter) & *Security Testing* (OWASP WSTG, OWASP ZAP, *Manual/Probe Verification*)  
 **Status Pengujian:** **100% COMPLETED (16/16 TEST CASES EXECUTED)**
 
+> Laporan ini adalah rekaman hasil pada environment dan tanggal yang tercantum. Nilainya tidak menyatakan bahwa release Rumahweb telah lulus dan tidak diperbarui menggunakan asumsi dari kondisi aplikasi terbaru.
+
 ---
 
 # 1. Ringkasan Eksekutif (Executive Summary)
@@ -228,16 +230,16 @@ ST-01–ST-09 remained PASS within tested scope. Security Retest Regression veri
 # 10. Indeks Bukti Pengujian (Evidence Index)
 
 1. **Bukti Pengujian Kinerja (JMeter)**:
-   - JMX Test Plan: [`testing/jmeter/tny-law-firm-load-test.jmx`](file:///d:/SKRIPSI/PROJECT/tny-law-firm/testing/jmeter/tny-law-firm-load-test.jmx)
+   - JMX Test Plan: [`testing/jmeter/tny-law-firm-load-test.jmx`](../../testing/jmeter/tny-law-firm-load-test.jmx)
    - Raw JTL Results (BEFORE): `testing/jmeter/results/load-test-{5,10,20}vu.jtl`
    - Raw JTL Results (AFTER): `testing/after/performance/load-test-{5,10,20}vu-after.jtl`
 2. **Bukti Pengujian Keamanan (Security)**:
-   - Execution Logs: [`testing/evidence/security/security-test-execution.log`](file:///d:/SKRIPSI/PROJECT/tny-law-firm/testing/evidence/security/security-test-execution.log) (BEFORE) dan `testing/after/security/security-test-execution.log` (AFTER).
-   - Laporan DAST OWASP ZAP: [`testing/evidence/security/zap-baseline-report.html`](file:///d:/SKRIPSI/PROJECT/tny-law-firm/testing/evidence/security/zap-baseline-report.html) (BEFORE) dan `testing/after/security/zap-baseline-report.html` (AFTER).
+   - Execution Logs: [`testing/evidence/security/security-test-execution.log`](../../testing/evidence/security/security-test-execution.log) (BEFORE) dan `testing/after/security/security-test-execution.log` (AFTER).
+   - Laporan DAST OWASP ZAP: [`testing/evidence/security/zap-baseline-report.html`](../../testing/evidence/security/zap-baseline-report.html) (BEFORE) dan `testing/after/security/zap-baseline-report.html` (AFTER).
 3. **Dokumentasi Spesifikasi**:
-   - Master Test Plan: [`docs/testing/TEST_PLAN.md`](file:///d:/SKRIPSI/PROJECT/tny-law-firm/docs/testing/TEST_PLAN.md)
-   - Test Cases Matrix: [`docs/testing/TEST_CASES.md`](file:///d:/SKRIPSI/PROJECT/tny-law-firm/docs/testing/TEST_CASES.md)
-   - Testing State Tracker: [`docs/testing/TESTING_STATE.md`](file:///d:/SKRIPSI/PROJECT/tny-law-firm/docs/testing/TESTING_STATE.md)
+   - Master Test Plan: [`docs/testing/TEST_PLAN.md`](TEST_PLAN.md)
+   - Test Cases Matrix: [`docs/testing/TEST_CASES.md`](TEST_CASES.md)
+   - Testing State Tracker: [`docs/testing/TESTING_STATE.md`](TESTING_STATE.md)
 
 ---
 

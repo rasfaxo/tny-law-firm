@@ -81,7 +81,6 @@ jobs:
             "$app_root/storage/app/public" \
             "$app_root/storage/framework/cache/data" \
             "$app_root/storage/framework/sessions" \
-            "$app_root/storage/framework/testing" \
             "$app_root/storage/framework/views" \
             "$app_root/storage/logs" \
             "$app_root/bootstrap/cache"
@@ -115,17 +114,33 @@ jobs:
         run: |
           set -euo pipefail
 
-          unzip -l rumahweb-application.zip | grep -q 'tny-law-firm/vendor/autoload.php'
-          unzip -l rumahweb-application.zip | grep -q 'tny-law-firm/public/build/manifest.json'
-          unzip -l rumahweb-application.zip | grep -q 'tny-law-firm/public/brand/logo.svg'
-          unzip -l rumahweb-public-html.zip | grep -q 'index.php'
-          unzip -l rumahweb-public-html.zip | grep -q 'build/manifest.json'
-          unzip -l rumahweb-public-html.zip | grep -q 'brand/logo.svg'
+          zipinfo -1 rumahweb-application.zip > application-entries.txt
+          zipinfo -1 rumahweb-public-html.zip > public-entries.txt
 
-          ! unzip -l rumahweb-application.zip | grep -E '(^|/)(\.env|\.git|node_modules|testing|tests)(/|$)'
-          ! unzip -l rumahweb-application.zip | grep -E '\.(sqlite|db)$'
-          ! unzip -l rumahweb-application.zip | grep -q 'DemoTestingSeeder.php'
-          ! unzip -l rumahweb-public-html.zip | grep -E '(^|/)(\.env|vendor|storage)(/|$)'
+          grep -Fxq 'tny-law-firm/vendor/autoload.php' application-entries.txt
+          grep -Fxq 'tny-law-firm/public/build/manifest.json' application-entries.txt
+          grep -Fxq 'tny-law-firm/public/brand/logo.svg' application-entries.txt
+          grep -Fxq 'tny-law-firm/artisan' application-entries.txt
+          grep -Fxq 'index.php' public-entries.txt
+          grep -Fxq 'build/manifest.json' public-entries.txt
+          grep -Fxq 'brand/logo.svg' public-entries.txt
+          grep -Fxq '.htaccess' public-entries.txt
+
+          ! grep -Eq '(^/|^[A-Za-z]:|(^|/)\.\.(/|$))' application-entries.txt
+          ! grep -Eq '(^/|^[A-Za-z]:|(^|/)\.\.(/|$))' public-entries.txt
+          ! grep -Eq '(^|/)\.env($|\.)|(^|/)\.git(/|$)|(^|/)node_modules(/|$)' application-entries.txt
+          ! grep -Eq '^tny-law-firm/(tests|testing)(/|$)' application-entries.txt
+          ! grep -Eq '\.(sqlite|db|log|pem|pfx|p12|key)$' application-entries.txt
+          ! grep -Eq '^tny-law-firm/storage/.+[^/]$' application-entries.txt
+          ! grep -Eq '(^|/)(\.env($|\.)|vendor(/|$)|storage(/|$)|tests?(/|$)|testing(/|$)|node_modules(/|$))' public-entries.txt
+
+          expected_seeders="$(printf '%s\n' \
+            'tny-law-firm/database/seeders/AdminSeeder.php' \
+            'tny-law-firm/database/seeders/DatabaseSeeder.php' \
+            'tny-law-firm/database/seeders/KategoriPerkaraSeeder.php')"
+          actual_seeders="$(grep -E '^tny-law-firm/database/seeders/[^/]+\.php$' application-entries.txt | sort)"
+          test "$actual_seeders" = "$expected_seeders"
+
           unzip -p rumahweb-public-html.zip index.php | grep -q "dirname(__DIR__).'/tny-law-firm'"
 
           sha256sum --check rumahweb-sha256.txt

@@ -4,6 +4,8 @@
 Version: 1.0
 Status: Execution Specification
 
+> Actual Result dan path evidence di dokumen ini adalah rekaman pengujian historis. Perubahan implementasi setelah periode pengujian tidak boleh digunakan untuk menulis ulang hasil tersebut.
+
 ---
 
 # 1. Test Case Rules
