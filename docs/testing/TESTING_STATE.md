@@ -3,6 +3,8 @@
 
 Last Updated: 2026-09-02
 
+> State ini merekam pengujian skripsi yang telah dilaksanakan, bukan status release gate hosting saat ini. Evidence lama tetap immutable.
+
 ---
 
 # 1. Current Phase

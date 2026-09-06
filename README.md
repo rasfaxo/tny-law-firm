@@ -1,58 +1,79 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# Sistem Pra-Pendaftaran Perkara TNY & PARTNERS
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+Aplikasi Laravel untuk registrasi Klien, pra-pendaftaran perkara, verifikasi dokumen oleh Staf Legal, konsultasi, reschedule, administrasi pengguna, dan laporan.
 
-## About Laravel
+## Stack
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+- PHP 8.3+; runtime staging dan target hosting menggunakan PHP 8.4.
+- Laravel 13, Blade, Tailwind CSS, Alpine CSP, dan Vite.
+- MySQL/MariaDB dengan database session, cache, dan queue.
+- Resend untuk email transaksional.
+- Azure Blob private untuk dokumen perkara.
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+## Menjalankan secara lokal
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
-
-## Learning Laravel
-
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
-
-In addition, [Laracasts](https://laracasts.com) contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
-
-You can also watch bite-sized lessons with real-world projects on [Laravel Learn](https://laravel.com/learn), where you will be guided through building a Laravel application from scratch while learning PHP fundamentals.
-
-## Agentic Development
-
-Laravel's predictable structure and conventions make it ideal for AI coding agents like Claude Code, Cursor, and GitHub Copilot. Install [Laravel Boost](https://laravel.com/docs/ai) to supercharge your AI workflow:
+Prasyarat: PHP, Composer, Node.js 20+, NPM, dan database yang didukung Laravel.
 
 ```bash
-composer require laravel/boost --dev
-
-php artisan boost:install
+composer install
+npm ci
 ```
 
-Boost provides your agent 15+ tools and skills that help agents build Laravel applications while following best practices.
+Salin `.env.example` menjadi `.env`, isi konfigurasi lokal tanpa memasukkan secret ke Git, lalu jalankan:
 
-## Contributing
+```bash
+php artisan key:generate
+php artisan migrate
+npm run build
+php artisan serve
+```
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+Untuk development terpadu tersedia `composer dev`. Queue production diproses oleh scheduler; definisinya berada di `routes/console.php`.
 
-## Code of Conduct
+## Validasi
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+```bash
+composer validate --strict
+composer audit --locked
+npm audit
+npm run brand:optimize
+npm run build
+php artisan test
+composer check-platform-reqs --no-dev
+```
 
-## Security Vulnerabilities
+Jangan gunakan `migrate:fresh`, `migrate:refresh`, `db:wipe`, atau rollback terhadap database staging/hosting.
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+## Konfigurasi penting
 
-## License
+Semua konfigurasi deployment berasal dari environment, termasuk URL, timezone `Asia/Jakarta`, locale Indonesia, database, session, queue, Resend, Azure Blob, trusted host/proxy, identitas firma, dan versi kebijakan privasi.
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+Jalankan pemeriksaan tanpa menampilkan secret:
+
+```bash
+php artisan app:production-readiness --phase=bootstrap
+```
+
+Runtime gate hanya dijalankan setelah kebijakan privasi disahkan dan password bootstrap Admin dihapus.
+
+## Release
+
+- CI memvalidasi build dan automated test.
+- Azure App Service masih dipertahankan sebagai staging transisi.
+- Workflow **Build Rumahweb Manual Artifact** menghasilkan paket aplikasi dan `public_html` terpisah untuk cPanel tanpa SSH.
+- Hanya isi paket public yang ditempatkan di `public_html`; aplikasi berada di luar web root.
+- Situs Rumahweb tetap dilindungi Directory Privacy sampai seluruh release gate lulus.
+
+Panduan operasional terdapat di `docs/release/RUMAHWEB_RELEASE_GATE.md`. Aturan kontribusi dan batas keselamatan project terdapat di `AGENTS.md`.
+
+## Struktur utama
+
+- `app/`: controller, request, middleware, policy, model, notification, dan service.
+- `database/`: migration serta seeder bootstrap production.
+- `resources/`: Blade, CSS, JavaScript, dan sumber branding.
+- `routes/`: route web, autentikasi, dan scheduler.
+- `tests/`: automated test.
+- `testing/`: evidence skripsi yang tidak dikirim ke hosting.
+- `docs/`: dokumentasi canonical dan release gate.
+
+Dokumen perkara selalu private dan hanya diakses melalui controller yang terotorisasi.

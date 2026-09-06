@@ -34,6 +34,8 @@ Current staging environment diverifikasi dari repository configuration, CI/CD wo
 - **Database:** MySQL
 - **Document Storage:** Azure Blob Storage
 
+Target berikutnya adalah rehearsal privat pada Rumahweb shared hosting tanpa SSH. Azure tetap dipertahankan sebagai staging transisi sampai seluruh release gate Rumahweb lulus.
+
 ## 5. Main Roles
 
 Role disimpan dalam database menggunakan slug lowercase:

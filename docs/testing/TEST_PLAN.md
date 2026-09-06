@@ -4,6 +4,8 @@
 Version: 1.0
 Status: Approved Testing Scope
 
+> Dokumen ini mempertahankan scope dan kondisi environment saat evidence skripsi direkam. Kondisi release terbaru diverifikasi melalui CI dan release gate, bukan dengan mengubah hasil historis di dokumen ini.
+
 ---
 
 # 1. Testing Objective
