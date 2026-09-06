@@ -20,6 +20,7 @@ jobs:
         with:
           php-version: '8.4'
           extensions: curl, dom, fileinfo, intl, mbstring, openssl, pdo_mysql, sqlite3, xml, zip
+          ini-values: upload_max_filesize=8M, post_max_size=32M, memory_limit=256M, max_execution_time=120, max_input_time=120
           coverage: none
 
       - name: Setup Node.js 20
