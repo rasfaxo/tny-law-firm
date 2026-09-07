@@ -172,7 +172,13 @@ jobs:
           curl -fL --retry 12 --retry-delay 5 --retry-all-errors "$STAGING_URL/up" > /dev/null
 
           echo "Testing Landing Page (GET /)..."
-          curl -fL --retry 12 --retry-delay 5 --retry-all-errors "$STAGING_URL" > /dev/null
+          LANDING_BODY=$(curl -fL --retry 12 --retry-delay 5 --retry-all-errors "$STAGING_URL")
+
+          echo "Verifying no insecure HTTP asset references on Landing Page..."
+          if echo "$LANDING_BODY" | grep -E 'href="http://[^"]+build/assets|src="http://[^"]+build/assets'; then
+            echo "::error::Insecure HTTP asset URLs found in landing page response!"
+            exit 1
+          fi
 
           echo "Testing Login Page (GET /login)..."
           curl -fL --retry 12 --retry-delay 5 --retry-all-errors "$STAGING_URL/login" > /dev/null

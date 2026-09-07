@@ -7,6 +7,7 @@ use Illuminate\Queue\Events\JobFailed;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Queue;
+use Illuminate\Support\Facades\URL;
 use Illuminate\Support\ServiceProvider;
 
 class AppServiceProvider extends ServiceProvider
@@ -24,6 +25,13 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
+        if (
+            ! $this->app->environment('local', 'testing')
+            && str_starts_with((string) config('app.url'), 'https://')
+        ) {
+            URL::forceScheme('https');
+        }
+
         Queue::failing(function (JobFailed $event): void {
             Log::error('queue.job_failed', [
                 'connection' => $event->connectionName,

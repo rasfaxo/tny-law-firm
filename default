@@ -7,6 +7,14 @@ server {
     index index.php index.html index.htm;
     server_tokens off;
 
+    set $fastcgi_https off;
+    if ($http_x_forwarded_proto = "https") {
+        set $fastcgi_https on;
+    }
+    if ($http_x_arr_ssl) {
+        set $fastcgi_https on;
+    }
+
     # These headers also cover static assets and Nginx error responses, which
     # do not pass through Laravel's SecurityHeaders middleware.
     add_header X-Content-Type-Options "nosniff" always;
@@ -42,6 +50,7 @@ server {
         fastcgi_param HTTP_MOD_REWRITE On;
         fastcgi_param PHP_ADMIN_VALUE "expose_php=Off";
         fastcgi_hide_header X-Powered-By;
+        fastcgi_param HTTPS $fastcgi_https;
         fastcgi_read_timeout 300;
         fastcgi_buffer_size 128k;
         fastcgi_buffers 4 256k;
