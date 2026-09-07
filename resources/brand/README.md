@@ -12,6 +12,6 @@ Perintah regenerasi SVG:
 npx svgo --multipass resources/brand/TNY_LOGO.source.svg -o public/brand/logo.svg
 ```
 
-SHA-256 sumber yang diterima pada 6 September 2026:
+SHA-256 sumber pengganti yang diterima pada 7 September 2026:
 
-`734B2465359E92D918049201885244BBD6B8A74B3278B8260A6644B26010F32B`
+`4E61D4BC20A079DB64AA6FEFBD4BE0FBC3EE625C3CC1913C3D6DA13594A43404`
