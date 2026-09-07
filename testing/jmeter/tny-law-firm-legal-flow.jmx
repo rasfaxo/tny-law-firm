@@ -13,12 +13,32 @@
         <collectionProp name="Arguments.arguments">
           <elementProp name="STAGING_URL" elementType="Argument">
             <stringProp name="Argument.name">STAGING_URL</stringProp>
-            <stringProp name="Argument.value">tny-law-firm-staging-afb3fqbdfvbteea3.indonesiacentral-01.azurewebsites.net</stringProp>
+            <stringProp name="Argument.value">${__groovy(System.getenv('JMETER_STAGING_HOST') ?: 'tny-law-firm-staging-afb3fqbdfvbteea3.indonesiacentral-01.azurewebsites.net')}</stringProp>
             <stringProp name="Argument.metadata">=</stringProp>
           </elementProp>
           <elementProp name="PROTOCOL" elementType="Argument">
             <stringProp name="Argument.name">PROTOCOL</stringProp>
-            <stringProp name="Argument.value">https</stringProp>
+            <stringProp name="Argument.value">${__groovy(System.getenv('JMETER_PROTOCOL') ?: 'https')}</stringProp>
+            <stringProp name="Argument.metadata">=</stringProp>
+          </elementProp>
+          <elementProp name="CLIENT_EMAIL" elementType="Argument">
+            <stringProp name="Argument.name">CLIENT_EMAIL</stringProp>
+            <stringProp name="Argument.value">${__groovy(System.getenv('JMETER_CLIENT_EMAIL') ?: 'client001@tny.test')}</stringProp>
+            <stringProp name="Argument.metadata">=</stringProp>
+          </elementProp>
+          <elementProp name="CLIENT_PASSWORD" elementType="Argument">
+            <stringProp name="Argument.name">CLIENT_PASSWORD</stringProp>
+            <stringProp name="Argument.value">${__groovy(System.getenv('JMETER_CLIENT_PASSWORD') ?: '')}</stringProp>
+            <stringProp name="Argument.metadata">=</stringProp>
+          </elementProp>
+          <elementProp name="LEGAL_EMAIL" elementType="Argument">
+            <stringProp name="Argument.name">LEGAL_EMAIL</stringProp>
+            <stringProp name="Argument.value">${__groovy(System.getenv('JMETER_LEGAL_EMAIL') ?: 'legal1.testing@tny.test')}</stringProp>
+            <stringProp name="Argument.metadata">=</stringProp>
+          </elementProp>
+          <elementProp name="LEGAL_PASSWORD" elementType="Argument">
+            <stringProp name="Argument.name">LEGAL_PASSWORD</stringProp>
+            <stringProp name="Argument.value">${__groovy(System.getenv('JMETER_LEGAL_PASSWORD') ?: '')}</stringProp>
             <stringProp name="Argument.metadata">=</stringProp>
           </elementProp>
         </collectionProp>
@@ -102,14 +122,14 @@
               </elementProp>
               <elementProp name="email" elementType="HTTPArgument">
                 <boolProp name="HTTPArgument.always_encode">true</boolProp>
-                <stringProp name="Argument.value">client001@tny.test</stringProp>
+                <stringProp name="Argument.value">${CLIENT_EMAIL}</stringProp>
                 <stringProp name="Argument.metadata">=</stringProp>
                 <boolProp name="HTTPArgument.use_equals">true</boolProp>
                 <stringProp name="Argument.name">email</stringProp>
               </elementProp>
               <elementProp name="password" elementType="HTTPArgument">
                 <boolProp name="HTTPArgument.always_encode">true</boolProp>
-                <stringProp name="Argument.value">Password123!</stringProp>
+                <stringProp name="Argument.value">${CLIENT_PASSWORD}</stringProp>
                 <stringProp name="Argument.metadata">=</stringProp>
                 <boolProp name="HTTPArgument.use_equals">true</boolProp>
                 <stringProp name="Argument.name">password</stringProp>
@@ -325,14 +345,14 @@
               </elementProp>
               <elementProp name="email" elementType="HTTPArgument">
                 <boolProp name="HTTPArgument.always_encode">true</boolProp>
-                <stringProp name="Argument.value">legal1.testing@tny.test</stringProp>
+                <stringProp name="Argument.value">${LEGAL_EMAIL}</stringProp>
                 <stringProp name="Argument.metadata">=</stringProp>
                 <boolProp name="HTTPArgument.use_equals">true</boolProp>
                 <stringProp name="Argument.name">email</stringProp>
               </elementProp>
               <elementProp name="password" elementType="HTTPArgument">
                 <boolProp name="HTTPArgument.always_encode">true</boolProp>
-                <stringProp name="Argument.value">Password123!</stringProp>
+                <stringProp name="Argument.value">${LEGAL_PASSWORD}</stringProp>
                 <stringProp name="Argument.metadata">=</stringProp>
                 <boolProp name="HTTPArgument.use_equals">true</boolProp>
                 <stringProp name="Argument.name">password</stringProp>

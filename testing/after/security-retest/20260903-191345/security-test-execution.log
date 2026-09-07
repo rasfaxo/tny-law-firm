@@ -1,0 +1,11 @@
+2026-09-03T19:13:45.2834148+07:00 Starting ST-01 to ST-09 against https://tny-law-firm-staging-afb3fqbdfvbteea3.indonesiacentral-01.azurewebsites.net (run 20260903-191345).
+2026-09-03T19:13:47.2388691+07:00 [ERROR] ST-01 - The property 'Response' cannot be found on this object. Verify that the property exists.
+2026-09-03T19:13:49.0494734+07:00 [ERROR] ST-02 - The property 'Response' cannot be found on this object. Verify that the property exists.
+2026-09-03T19:13:49.3912042+07:00 [PASS] ST-03 - Missing and invalid CSRF tokens are rejected with HTTP 419.
+2026-09-03T19:13:49.7326651+07:00 [ERROR] ST-04 - Method invocation failed because [System.Collections.Generic.Dictionary`2[[System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089],[System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089]]] does not contain a method named 'GetValues'.
+2026-09-03T19:13:49.9285039+07:00 [ERROR] ST-05 - The property 'Response' cannot be found on this object. Verify that the property exists.
+2026-09-03T19:13:51.4166064+07:00 [ERROR] ST-06 - The property 'Response' cannot be found on this object. Verify that the property exists.
+2026-09-03T19:13:53.6535732+07:00 [ERROR] ST-07 - The property 'Response' cannot be found on this object. Verify that the property exists.
+2026-09-03T19:13:55.2133764+07:00 [ERROR] ST-08 - The property 'Response' cannot be found on this object. Verify that the property exists.
+2026-09-03T19:13:55.9519726+07:00 [FAIL] ST-09 - Storage HTTP 403; header/server or external-font verification did not match the expected policy.
+2026-09-03T19:13:56.5522289+07:00 Security retest completed. Evidence: D:\SKRIPSI\PROJECT\tny-law-firm\testing\security\..\after\security-retest\20260903-191345

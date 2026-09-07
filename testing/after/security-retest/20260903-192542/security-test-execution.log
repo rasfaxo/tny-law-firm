@@ -1,0 +1,11 @@
+2026-09-03T19:25:42.4199810+07:00 Starting ST-01 to ST-09 against https://tny-law-firm-staging-afb3fqbdfvbteea3.indonesiacentral-01.azurewebsites.net (run 20260903-192542).
+2026-09-03T19:25:43.9883432+07:00 [PASS] ST-01 - Injection payload rejected (HTTP 302).
+2026-09-03T19:25:46.7899557+07:00 [PASS] ST-02 - Search payload is not returned as an executable script.
+2026-09-03T19:25:46.9667291+07:00 [PASS] ST-03 - Missing and invalid CSRF tokens are rejected with HTTP 419.
+2026-09-03T19:25:51.8957780+07:00 [PASS] ST-04 - Session cookie flags and login rate limiting/auth failure redirect are enforced.
+2026-09-03T19:26:02.2990137+07:00 [PASS] ST-05 - Anonymous, client, legal-staff, and admin route controls matched expected responses.
+2026-09-03T19:26:08.6474932+07:00 [PASS] ST-06 - Cross-client case access is forbidden and owner access succeeds.
+2026-09-03T19:26:13.7037841+07:00 [PASS] ST-07 - Disallowed upload was rejected (HTTP 302).
+2026-09-03T19:26:18.8018029+07:00 [PASS] ST-08 - Document download requires authentication and ownership.
+2026-09-03T19:26:18.9922527+07:00 [PASS] ST-09 - Private storage is blocked (HTTP 403); security headers and local font assets verified.
+2026-09-03T19:26:19.1576621+07:00 Security retest completed. Evidence: D:\SKRIPSI\PROJECT\tny-law-firm\testing\security\..\after\security-retest\20260903-192542
