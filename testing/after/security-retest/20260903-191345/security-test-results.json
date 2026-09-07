@@ -1,0 +1,38 @@
+﻿{
+    "ST-01":  {
+                  "status":  "ERROR",
+                  "evidence":  "The property \u0027Response\u0027 cannot be found on this object. Verify that the property exists."
+              },
+    "ST-02":  {
+                  "status":  "ERROR",
+                  "evidence":  "The property \u0027Response\u0027 cannot be found on this object. Verify that the property exists."
+              },
+    "ST-03":  {
+                  "status":  "PASS",
+                  "evidence":  "Missing and invalid CSRF tokens are rejected with HTTP 419."
+              },
+    "ST-04":  {
+                  "status":  "ERROR",
+                  "evidence":  "Method invocation failed because [System.Collections.Generic.Dictionary`2[[System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089],[System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089]]] does not contain a method named \u0027GetValues\u0027."
+              },
+    "ST-05":  {
+                  "status":  "ERROR",
+                  "evidence":  "The property \u0027Response\u0027 cannot be found on this object. Verify that the property exists."
+              },
+    "ST-06":  {
+                  "status":  "ERROR",
+                  "evidence":  "The property \u0027Response\u0027 cannot be found on this object. Verify that the property exists."
+              },
+    "ST-07":  {
+                  "status":  "ERROR",
+                  "evidence":  "The property \u0027Response\u0027 cannot be found on this object. Verify that the property exists."
+              },
+    "ST-08":  {
+                  "status":  "ERROR",
+                  "evidence":  "The property \u0027Response\u0027 cannot be found on this object. Verify that the property exists."
+              },
+    "ST-09":  {
+                  "status":  "FAIL",
+                  "evidence":  "Storage HTTP 403; header/server or external-font verification did not match the expected policy."
+              }
+}

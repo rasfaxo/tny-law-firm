@@ -1,0 +1,38 @@
+﻿{
+    "ST-01":  {
+                  "status":  "PASS",
+                  "evidence":  "Injection payload rejected (HTTP 302)."
+              },
+    "ST-02":  {
+                  "status":  "PASS",
+                  "evidence":  "Payload is safely reflected as HTML-escaped text (\u0026lt;script\u0026gt;) and script execution is prevented."
+              },
+    "ST-03":  {
+                  "status":  "PASS",
+                  "evidence":  "Missing and invalid CSRF tokens are rejected with HTTP 419."
+              },
+    "ST-04":  {
+                  "status":  "PASS",
+                  "evidence":  "Session cookie flags valid (Secure, HttpOnly, SameSite=Lax); rate limit lockout confirmed (Too many login attempts)."
+              },
+    "ST-05":  {
+                  "status":  "PASS",
+                  "evidence":  "Anonymous, client, legal-staff, and admin route controls matched expected responses."
+              },
+    "ST-06":  {
+                  "status":  "PASS",
+                  "evidence":  "Cross-client case access is forbidden and owner access succeeds."
+              },
+    "ST-07":  {
+                  "status":  "PARTIAL_PASS",
+                  "evidence":  "Upload .exe rejected (HTTP 302); file type validation error confirmed (\u0027The file field must be a file of type: pdf, jpg, jpeg, png\u0027); document metadata unchanged (1 -\u003e 1); backend Azure Blob Storage telemetry is UNVERIFIED (external probe cannot read Azure Storage logs)."
+              },
+    "ST-08":  {
+                  "status":  "PASS",
+                  "evidence":  "Document download requires authentication and ownership."
+              },
+    "ST-09":  {
+                  "status":  "PASS",
+                  "evidence":  "Storage blocked (HTTP 403); all 8 explicit security headers present (CSP, HSTS, X-Content-Type-Options, X-Frame-Options, Referrer-Policy, Permissions-Policy, COOP, CORP); X-Powered-By absent; Server version hidden (nginx); external Google fonts absent."
+              }
+}

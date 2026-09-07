@@ -1,5 +1,10 @@
 * text=auto eol=lf
 
+# Raw retest evidence is archived byte-for-byte. Do not normalize its line
+# endings when adding or checking out the evidence files.
+/testing/after/security-retest/** -text
+/testing/retest/** -text
+
 *.blade.php diff=html
 *.css diff=css
 *.html diff=html

@@ -1,0 +1,8 @@
+timeStamp,elapsed,label,responseCode,responseMessage,threadName,dataType,success,failureMessage,bytes,sentBytes,grpThreads,allThreads,URL,Latency,IdleTime,Connect
+1788443549779,2618,GET Landing Page,200,OK,Baseline Staging Users 1-1,text,true,,27464,177,1,1,https://tny-law-firm-staging-afb3fqbdfvbteea3.indonesiacentral-01.azurewebsites.net/,2535,0,1702
+1788443552452,112,GET Login Page,200,OK,Baseline Staging Users 1-1,text,true,,9781,905,1,1,https://tny-law-firm-staging-afb3fqbdfvbteea3.indonesiacentral-01.azurewebsites.net/login,110,0,0
+1788443552570,4637,POST Login Klien,200,OK,Baseline Staging Users 1-1,text,true,,59449,2912,1,1,https://tny-law-firm-staging-afb3fqbdfvbteea3.indonesiacentral-01.azurewebsites.net/klien/dashboard,1408,0,0
+1788443552570,1409,POST Login Klien-0,302,Found,Baseline Staging Users 1-1,text,true,,2902,1088,1,1,https://tny-law-firm-staging-afb3fqbdfvbteea3.indonesiacentral-01.azurewebsites.net/login,1408,0,0
+1788443553982,841,POST Login Klien-1,302,Found,Baseline Staging Users 1-1,text,true,,2932,909,1,1,https://tny-law-firm-staging-afb3fqbdfvbteea3.indonesiacentral-01.azurewebsites.net/dashboard,840,0,0
+1788443554826,2382,POST Login Klien-2,200,OK,Baseline Staging Users 1-1,text,true,,53615,915,1,1,https://tny-law-firm-staging-afb3fqbdfvbteea3.indonesiacentral-01.azurewebsites.net/klien/dashboard,2370,0,0
+1788443557214,2039,GET Klien Dashboard,200,OK,Baseline Staging Users 1-1,text,true,,53615,915,1,1,https://tny-law-firm-staging-afb3fqbdfvbteea3.indonesiacentral-01.azurewebsites.net/klien/dashboard,1985,0,0
