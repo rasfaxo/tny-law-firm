@@ -5,7 +5,6 @@ namespace App\Console\Commands;
 use App\Models\User;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
@@ -15,7 +14,7 @@ class ProductionReadinessCheck extends Command
 {
     protected $signature = 'app:production-readiness
         {--phase=runtime : Fase pemeriksaan: bootstrap atau runtime}
-        {--external : Verifikasi koneksi read-only ke Resend dan Azure}
+        {--external : Verifikasi koneksi read-only ke Azure Blob}
         {--storage-roundtrip : Buat, baca, dan hapus object uji pada prefix release-gate Azure}';
 
     protected $description = 'Validate production configuration and hosting capabilities without exposing secret values';
@@ -82,6 +81,11 @@ class ProductionReadinessCheck extends Command
         $this->check('Queue database', config('queue.default') === 'database');
         $this->check('Mailer Resend', config('mail.default') === 'resend');
         $this->check('Alamat pengirim tersedia', $this->validEmail(config('mail.from.address')));
+        $this->check(
+            'Domain pengirim Resend sesuai APP_URL',
+            $this->mailFromMatchesAppHost(),
+            'gunakan alamat pengirim pada domain aplikasi yang terverifikasi',
+        );
         $this->check('Reply-To firma tersedia', $this->validEmail(config('mail.reply_to.address')));
         $this->check('Resend API key tersedia', filled(config('services.resend.key')));
         $this->check('Document disk Azure', config('filesystems.document_disk') === 'azure');
@@ -176,23 +180,6 @@ class ProductionReadinessCheck extends Command
     private function runExternalChecks(): void
     {
         try {
-            $response = Http::withToken((string) config('services.resend.key'))
-                ->acceptJson()
-                ->timeout(10)
-                ->get('https://api.resend.com/domains');
-
-            $host = parse_url((string) config('app.url'), PHP_URL_HOST);
-            $verified = $response->successful()
-                && collect($response->json('data', []))->contains(
-                    fn (array $domain): bool => ($domain['name'] ?? null) === $host
-                        && ($domain['status'] ?? null) === 'verified',
-                );
-            $this->check('Domain Resend terverifikasi', $verified, 'periksa API key, SPF, dan DKIM');
-        } catch (Throwable) {
-            $this->check('Domain Resend terverifikasi', false, 'koneksi HTTPS atau respons Resend gagal');
-        }
-
-        try {
             Storage::disk('azure')->files('');
             $this->check('Azure Blob dapat diakses secara read-only', true);
         } catch (Throwable) {
@@ -252,6 +239,18 @@ class ProductionReadinessCheck extends Command
         return is_string($value)
             && filter_var($value, FILTER_VALIDATE_EMAIL) !== false
             && ! str_ends_with($value, '@example.invalid');
+    }
+
+    private function mailFromMatchesAppHost(): bool
+    {
+        $from = config('mail.from.address');
+        $host = parse_url((string) config('app.url'), PHP_URL_HOST);
+
+        if (! $this->validEmail($from) || ! is_string($host) || $host === '') {
+            return false;
+        }
+
+        return strcasecmp((string) str($from)->after('@'), $host) === 0;
     }
 
     private function iniUnlimitedOrAtLeast(string $key, int $minimumBytes): bool

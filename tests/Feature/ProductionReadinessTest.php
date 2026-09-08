@@ -4,7 +4,6 @@ namespace Tests\Feature;
 
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Storage;
 use Tests\TestCase;
 
@@ -45,15 +44,6 @@ class ProductionReadinessTest extends TestCase
         $this->configureReadiness();
         config()->set('app.admin.default_password', 'Bootstrap-Aman-123!');
         Storage::fake('azure');
-        Http::fake([
-            'api.resend.com/domains' => Http::response([
-                'data' => [[
-                    'name' => 'tnypartners.com',
-                    'status' => 'verified',
-                ]],
-            ]),
-        ]);
-
         $this->artisan('app:production-readiness', [
             '--phase' => 'bootstrap',
             '--external' => true,
