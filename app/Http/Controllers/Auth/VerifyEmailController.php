@@ -15,11 +15,22 @@ class VerifyEmailController extends Controller
     public function __invoke(EmailVerificationRequest $request): RedirectResponse
     {
         if ($request->user()->hasVerifiedEmail()) {
-            return redirect()->intended(route('dashboard', absolute: false).'?verified=1');
+            return $this->redirectAfterVerification();
         }
 
         if ($request->user()->markEmailAsVerified()) {
             event(new Verified($request->user()));
+        }
+
+        return $this->redirectAfterVerification();
+    }
+
+    private function redirectAfterVerification(): RedirectResponse
+    {
+        if (! config('privacy.ready')) {
+            return redirect()
+                ->route('privacy.policy')
+                ->with('status', 'email-verified-policy-pending');
         }
 
         return redirect()->intended(route('dashboard', absolute: false).'?verified=1');

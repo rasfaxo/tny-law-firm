@@ -69,6 +69,18 @@ class PraPendaftaranPerkaraTest extends TestCase
             ->assertForbidden();
     }
 
+    public function test_klien_can_view_owned_pengajuan_when_mysql_returns_foreign_key_as_string(): void
+    {
+        $klien = $this->createKlien();
+        $pengajuan = $this->createPengajuan($klien);
+
+        $pengajuan->setRawAttributes(array_merge($pengajuan->getAttributes(), [
+            'id_user' => (string) $klien->id_user,
+        ]));
+
+        $this->assertTrue($klien->can('view', $pengajuan));
+    }
+
     public function test_klien_dashboard_and_index_only_include_owned_pengajuan(): void
     {
         $klienA = $this->createKlien();
