@@ -28,6 +28,23 @@ class PrivacyConsentTest extends TestCase
         $this->assertDatabaseCount('privacy_consents', 0);
     }
 
+    public function test_approved_policy_uses_final_wording(): void
+    {
+        config()->set([
+            'privacy.ready' => true,
+            'privacy.policy_version' => 'v1.0',
+            'privacy.effective_date' => '2026-09-08',
+        ]);
+
+        $this->get(route('privacy.policy'))
+            ->assertOk()
+            ->assertSee('Masa retensi')
+            ->assertSee('Periode retensi')
+            ->assertSee('Berlaku sejak 2026-09-08 · Versi v1.0')
+            ->assertDontSee('USULAN—WAJIB DISETUJUI FIRMA')
+            ->assertDontSee('Seluruh periode berikut masih berupa usulan');
+    }
+
     public function test_verified_client_without_current_consent_is_redirected_to_consent_page(): void
     {
         $user = User::factory()->create();

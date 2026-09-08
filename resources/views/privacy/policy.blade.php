@@ -32,14 +32,14 @@
             </section>
 
             <section aria-labelledby="privacy-retention">
-                <h2 id="privacy-retention" class="font-bold text-navy-dark">Usulan masa retensi</h2>
-                <p class="mt-1">Seluruh periode berikut masih berupa usulan dan belum menjadi dasar penghapusan otomatis.</p>
+                <h2 id="privacy-retention" class="font-bold text-navy-dark">Masa retensi</h2>
+                <p class="mt-1">Data disimpan sesuai periode retensi berikut.</p>
                 <div class="mt-3 overflow-x-auto rounded-lg border border-slate-200">
                     <table class="min-w-full divide-y divide-slate-200 text-left text-xs">
                         <thead class="bg-slate-50 text-slate-700">
                             <tr>
                                 <th scope="col" class="px-3 py-2 font-semibold">Kelompok data</th>
-                                <th scope="col" class="px-3 py-2 font-semibold">Usulan retensi</th>
+                                <th scope="col" class="px-3 py-2 font-semibold">Periode retensi</th>
                             </tr>
                         </thead>
                         <tbody class="divide-y divide-slate-100 bg-white">
@@ -49,7 +49,7 @@
                             <tr><td class="px-3 py-2">Audit log aplikasi</td><td class="px-3 py-2">2 tahun</td></tr>
                             <tr><td class="px-3 py-2">Log aplikasi</td><td class="px-3 py-2">14 hari</td></tr>
                             <tr><td class="px-3 py-2">Failed jobs</td><td class="px-3 py-2">7 hari</td></tr>
-                            <tr><td class="px-3 py-2">Backup operasional</td><td class="px-3 py-2">Target rolling 30 hari, menunggu kemampuan provider</td></tr>
+                            <tr><td class="px-3 py-2">Backup operasional</td><td class="px-3 py-2">Rolling 30 hari</td></tr>
                             <tr><td class="px-3 py-2">Soft-deleted blob/container</td><td class="px-3 py-2">14 hari</td></tr>
                             <tr><td class="px-3 py-2">Versi Blob sebelumnya</td><td class="px-3 py-2">90 hari</td></tr>
                         </tbody>
@@ -62,7 +62,7 @@
                 <p class="mt-1">Klien dapat mengajukan permintaan akses, koreksi, atau penghapusan melalui kanal resmi {{ config('firm.name') }}. Pelaksanaannya mengikuti kewajiban retensi dan ketentuan hukum yang telah disahkan firma.</p>
             </section>
 
-            <p>Naskah final akan ditinjau dengan mengacu pada <a class="font-semibold text-accent-blue hover:underline" href="https://jdih.komdigi.go.id/produk_hukum/view/id/832/t/undangundang%2Bnomor%2B27%2Btahun%2B2022" target="_blank" rel="noopener noreferrer">Undang-Undang Nomor 27 Tahun 2022 tentang Pelindungan Data Pribadi</a>.</p>
+            <p>Kebijakan ini mengacu pada <a class="font-semibold text-accent-blue hover:underline" href="https://jdih.komdigi.go.id/produk_hukum/view/id/832/t/undangundang%2Bnomor%2B27%2Btahun%2B2022" target="_blank" rel="noopener noreferrer">Undang-Undang Nomor 27 Tahun 2022 tentang Pelindungan Data Pribadi</a>.</p>
 
             <div class="rounded-lg bg-gray-50 p-4">
                 <p class="font-semibold text-navy-dark">Kontak resmi</p>
@@ -70,7 +70,7 @@
                 <p>Telepon/WhatsApp: {{ config('firm.phone') }}</p>
                 <p>Alamat: {{ config('firm.address') }}</p>
             </div>
-            <p class="text-xs text-gray-500">Dasar pemrosesan, periode retensi, mekanisme permintaan, versi, dan tanggal berlaku harus disahkan oleh pihak firma sebelum aplikasi digunakan pada production.</p>
+            <p class="text-xs text-gray-500">Dasar pemrosesan, periode retensi, mekanisme permintaan, versi, dan tanggal berlaku telah disahkan oleh pihak firma.</p>
         </div>
     </div>
 </x-guest-layout>
