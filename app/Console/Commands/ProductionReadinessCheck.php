@@ -15,7 +15,7 @@ class ProductionReadinessCheck extends Command
     protected $signature = 'app:production-readiness
         {--phase=runtime : Fase pemeriksaan: bootstrap atau runtime}
         {--external : Verifikasi koneksi read-only ke Azure Blob}
-        {--storage-roundtrip : Buat, baca, dan hapus object uji pada prefix release-gate Azure}';
+        {--storage-roundtrip : Buat, baca, dan hapus object uji pada disk readiness Azure yang terisolasi}';
 
     protected $description = 'Validate production configuration and hosting capabilities without exposing secret values';
 
@@ -180,7 +180,7 @@ class ProductionReadinessCheck extends Command
     private function runExternalChecks(): void
     {
         try {
-            Storage::disk('azure')->files('');
+            Storage::disk((string) config('filesystems.document_disk'))->files('');
             $this->check('Azure Blob dapat diakses secara read-only', true);
         } catch (Throwable) {
             $this->check('Azure Blob dapat diakses secara read-only', false, 'periksa koneksi, container, SAS, dan outbound HTTPS');
@@ -189,13 +189,21 @@ class ProductionReadinessCheck extends Command
 
     private function runStorageRoundTrip(): void
     {
-        $prefix = trim((string) config('filesystems.disks.azure.prefix'), '/');
+        $documentPrefix = trim((string) config('filesystems.disks.azure.prefix'), '/');
+        $readinessDisk = 'azure-readiness';
+        $readinessPrefix = trim((string) config("filesystems.disks.{$readinessDisk}.prefix"), '/');
 
-        if (config('filesystems.document_disk') !== 'azure' || ! str_contains(strtolower($prefix), 'release-gate')) {
+        if (
+            config('filesystems.document_disk') !== 'azure'
+            || $documentPrefix === ''
+            || $readinessPrefix === ''
+            || ! str_contains(strtolower($readinessPrefix), 'release-gate')
+            || ! $this->prefixesAreIsolated($documentPrefix, $readinessPrefix)
+        ) {
             $this->check(
                 'Azure storage round-trip',
                 false,
-                'AZURE_STORAGE_PREFIX wajib non-kosong dan memuat release-gate',
+                'AZURE_READINESS_PREFIX wajib memuat release-gate dan terpisah dari AZURE_STORAGE_PREFIX',
             );
 
             return;
@@ -205,7 +213,7 @@ class ProductionReadinessCheck extends Command
         $content = Str::random(64);
 
         try {
-            $disk = Storage::disk('azure');
+            $disk = Storage::disk($readinessDisk);
             $written = $disk->put($path, $content);
             $matches = $written && $disk->exists($path) && hash_equals($content, (string) $disk->get($path));
             $deleted = $disk->delete($path) && ! $disk->exists($path);
@@ -221,6 +229,18 @@ class ProductionReadinessCheck extends Command
                 // Kegagalan cleanup tetap tercatat sebagai kegagalan round-trip di atas.
             }
         }
+    }
+
+    private function prefixesAreIsolated(string $first, string $second): bool
+    {
+        $first = trim(strtolower($first), '/');
+        $second = trim(strtolower($second), '/');
+
+        return $first !== ''
+            && $second !== ''
+            && $first !== $second
+            && ! str_starts_with("{$first}/", "{$second}/")
+            && ! str_starts_with("{$second}/", "{$first}/");
     }
 
     private function hasTrustedHosts(): bool
