@@ -196,7 +196,7 @@
                             </span>
                         </x-primary-button>
                     </div>
-                </div>
+                </x-card>
 
             </div>
         </form>

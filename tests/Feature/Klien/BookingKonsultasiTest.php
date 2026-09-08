@@ -11,42 +11,56 @@ class BookingKonsultasiTest extends TestCase
     use CreatesTestingData;
     use RefreshDatabase;
 
-    public function test_klien_can_book_available_schedule_for_completed_files(): void
+    public function test_klien_can_open_schedule_selection_for_completed_files(): void
     {
         $klien = $this->createKlien();
         $pengajuan = $this->createPengajuan($klien, [
-            "status_pengajuan" => "berkas_lengkap",
+            'status_pengajuan' => 'berkas_lengkap',
         ]);
         $jadwal = $this->createJadwalTersedia();
 
         $this->actingAs($klien)
-            ->post(route("klien.booking-konsultasi.store", $pengajuan), [
-                "id_jadwal" => $jadwal->id_jadwal,
-                "metode_konsultasi" => "online",
-                "catatan_preferensi_klien" => "Lebih nyaman pagi.",
-            ])
-            ->assertRedirect(route("klien.pra-pendaftaran.show", $pengajuan));
+            ->get(route('klien.booking-konsultasi.create', $pengajuan))
+            ->assertOk()
+            ->assertSee($jadwal->tanggal->translatedFormat('l, d F Y'));
+    }
 
-        $this->assertDatabaseHas("booking_konsultasi", [
-            "id_pendaftaran" => $pengajuan->id_pendaftaran,
-            "id_jadwal" => $jadwal->id_jadwal,
-            "id_user" => $klien->id_user,
-            "status_booking" => "aktif",
-            "metode_konsultasi" => "online",
-            "status_konfirmasi_konsultasi" => "menunggu_konfirmasi",
+    public function test_klien_can_book_available_schedule_for_completed_files(): void
+    {
+        $klien = $this->createKlien();
+        $pengajuan = $this->createPengajuan($klien, [
+            'status_pengajuan' => 'berkas_lengkap',
         ]);
-        $this->assertDatabaseHas("jadwal_konsultasi", [
-            "id_jadwal" => $jadwal->id_jadwal,
-            "status_slot" => "terisi",
+        $jadwal = $this->createJadwalTersedia();
+
+        $this->actingAs($klien)
+            ->post(route('klien.booking-konsultasi.store', $pengajuan), [
+                'id_jadwal' => $jadwal->id_jadwal,
+                'metode_konsultasi' => 'online',
+                'catatan_preferensi_klien' => 'Lebih nyaman pagi.',
+            ])
+            ->assertRedirect(route('klien.pra-pendaftaran.show', $pengajuan));
+
+        $this->assertDatabaseHas('booking_konsultasi', [
+            'id_pendaftaran' => $pengajuan->id_pendaftaran,
+            'id_jadwal' => $jadwal->id_jadwal,
+            'id_user' => $klien->id_user,
+            'status_booking' => 'aktif',
+            'metode_konsultasi' => 'online',
+            'status_konfirmasi_konsultasi' => 'menunggu_konfirmasi',
         ]);
-        $this->assertDatabaseHas("pra_pendaftaran_perkara", [
-            "id_pendaftaran" => $pengajuan->id_pendaftaran,
-            "status_pengajuan" => "jadwal_dipilih",
+        $this->assertDatabaseHas('jadwal_konsultasi', [
+            'id_jadwal' => $jadwal->id_jadwal,
+            'status_slot' => 'terisi',
         ]);
-        $this->assertDatabaseHas("riwayat_status", [
-            "id_pendaftaran" => $pengajuan->id_pendaftaran,
-            "id_user" => $klien->id_user,
-            "status" => "jadwal_dipilih",
+        $this->assertDatabaseHas('pra_pendaftaran_perkara', [
+            'id_pendaftaran' => $pengajuan->id_pendaftaran,
+            'status_pengajuan' => 'jadwal_dipilih',
+        ]);
+        $this->assertDatabaseHas('riwayat_status', [
+            'id_pendaftaran' => $pengajuan->id_pendaftaran,
+            'id_user' => $klien->id_user,
+            'status' => 'jadwal_dipilih',
         ]);
     }
 
@@ -54,24 +68,24 @@ class BookingKonsultasiTest extends TestCase
     {
         $klien = $this->createKlien();
         $pengajuan = $this->createPengajuan($klien, [
-            "status_pengajuan" => "berkas_lengkap",
+            'status_pengajuan' => 'berkas_lengkap',
         ]);
         $jadwal = $this->createJadwalTersedia(null, [
-            "tanggal" => now()->addDays(9)->toDateString(),
-            "waktu_mulai" => "11:00",
-            "waktu_selesai" => "12:00",
+            'tanggal' => now()->addDays(9)->toDateString(),
+            'waktu_mulai' => '11:00',
+            'waktu_selesai' => '12:00',
         ]);
 
         $this->actingAs($klien)
-            ->post(route("klien.booking-konsultasi.store", $pengajuan), [
-                "id_jadwal" => $jadwal->id_jadwal,
-                "metode_konsultasi" => "offline",
+            ->post(route('klien.booking-konsultasi.store', $pengajuan), [
+                'id_jadwal' => $jadwal->id_jadwal,
+                'metode_konsultasi' => 'offline',
             ])
-            ->assertRedirect(route("klien.pra-pendaftaran.show", $pengajuan));
+            ->assertRedirect(route('klien.pra-pendaftaran.show', $pengajuan));
 
-        $this->assertDatabaseHas("booking_konsultasi", [
-            "id_pendaftaran" => $pengajuan->id_pendaftaran,
-            "metode_konsultasi" => "offline",
+        $this->assertDatabaseHas('booking_konsultasi', [
+            'id_pendaftaran' => $pengajuan->id_pendaftaran,
+            'metode_konsultasi' => 'offline',
         ]);
     }
 
@@ -80,14 +94,14 @@ class BookingKonsultasiTest extends TestCase
         $klienA = $this->createKlien();
         $klienB = $this->createKlien();
         $pengajuanB = $this->createPengajuan($klienB, [
-            "status_pengajuan" => "berkas_lengkap",
+            'status_pengajuan' => 'berkas_lengkap',
         ]);
         $jadwal = $this->createJadwalTersedia();
 
         $this->actingAs($klienA)
-            ->post(route("klien.booking-konsultasi.store", $pengajuanB), [
-                "id_jadwal" => $jadwal->id_jadwal,
-                "metode_konsultasi" => "online",
+            ->post(route('klien.booking-konsultasi.store', $pengajuanB), [
+                'id_jadwal' => $jadwal->id_jadwal,
+                'metode_konsultasi' => 'online',
             ])
             ->assertForbidden();
     }
@@ -96,46 +110,46 @@ class BookingKonsultasiTest extends TestCase
     {
         $klien = $this->createKlien();
         $pengajuanLengkap = $this->createPengajuan($klien, [
-            "status_pengajuan" => "berkas_lengkap",
+            'status_pengajuan' => 'berkas_lengkap',
         ]);
         $pengajuanMenunggu = $this->createPengajuan($klien, [
-            "status_pengajuan" => "menunggu_verifikasi",
+            'status_pengajuan' => 'menunggu_verifikasi',
         ]);
-        $jadwalTerisi = $this->createJadwalTersedia(null, ["status_slot" => "terisi"]);
+        $jadwalTerisi = $this->createJadwalTersedia(null, ['status_slot' => 'terisi']);
         $jadwalTidakAktif = $this->createJadwalTersedia(null, [
-            "tanggal" => now()->addDays(10)->toDateString(),
-            "waktu_mulai" => "15:00",
-            "waktu_selesai" => "16:00",
-            "status_slot" => "tidak_aktif",
+            'tanggal' => now()->addDays(10)->toDateString(),
+            'waktu_mulai' => '15:00',
+            'waktu_selesai' => '16:00',
+            'status_slot' => 'tidak_aktif',
         ]);
         $jadwalTersedia = $this->createJadwalTersedia(null, [
-            "tanggal" => now()->addDays(11)->toDateString(),
-            "waktu_mulai" => "08:00",
-            "waktu_selesai" => "09:00",
+            'tanggal' => now()->addDays(11)->toDateString(),
+            'waktu_mulai' => '08:00',
+            'waktu_selesai' => '09:00',
         ]);
 
         $this->actingAs($klien)
-            ->from(route("klien.booking-konsultasi.create", $pengajuanLengkap))
-            ->post(route("klien.booking-konsultasi.store", $pengajuanLengkap), [
-                "id_jadwal" => $jadwalTerisi->id_jadwal,
-                "metode_konsultasi" => "online",
+            ->from(route('klien.booking-konsultasi.create', $pengajuanLengkap))
+            ->post(route('klien.booking-konsultasi.store', $pengajuanLengkap), [
+                'id_jadwal' => $jadwalTerisi->id_jadwal,
+                'metode_konsultasi' => 'online',
             ])
-            ->assertSessionHasErrors("id_jadwal");
+            ->assertSessionHasErrors('id_jadwal');
 
         $this->actingAs($klien)
-            ->from(route("klien.booking-konsultasi.create", $pengajuanLengkap))
-            ->post(route("klien.booking-konsultasi.store", $pengajuanLengkap), [
-                "id_jadwal" => $jadwalTidakAktif->id_jadwal,
-                "metode_konsultasi" => "offline",
+            ->from(route('klien.booking-konsultasi.create', $pengajuanLengkap))
+            ->post(route('klien.booking-konsultasi.store', $pengajuanLengkap), [
+                'id_jadwal' => $jadwalTidakAktif->id_jadwal,
+                'metode_konsultasi' => 'offline',
             ])
-            ->assertSessionHasErrors("id_jadwal");
+            ->assertSessionHasErrors('id_jadwal');
 
         $this->actingAs($klien)
-            ->from(route("klien.pra-pendaftaran.show", $pengajuanMenunggu))
-            ->post(route("klien.booking-konsultasi.store", $pengajuanMenunggu), [
-                "id_jadwal" => $jadwalTersedia->id_jadwal,
-                "metode_konsultasi" => "online",
+            ->from(route('klien.pra-pendaftaran.show', $pengajuanMenunggu))
+            ->post(route('klien.booking-konsultasi.store', $pengajuanMenunggu), [
+                'id_jadwal' => $jadwalTersedia->id_jadwal,
+                'metode_konsultasi' => 'online',
             ])
-            ->assertSessionHasErrors("id_jadwal");
+            ->assertSessionHasErrors('id_jadwal');
     }
 }
