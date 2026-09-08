@@ -48,6 +48,23 @@ class EmailVerificationTest extends TestCase
         Event::assertDispatched(Verified::class);
     }
 
+    public function test_email_verification_redirects_to_policy_draft_when_privacy_is_not_ready(): void
+    {
+        config()->set('privacy.ready', false);
+        $user = User::factory()->unverified()->create();
+        $url = URL::temporarySignedRoute(
+            'verification.verify',
+            now()->addMinutes(60),
+            ['id' => $user->getKey(), 'hash' => sha1($user->getEmailForVerification())],
+        );
+
+        $this->actingAs($user)
+            ->get($url)
+            ->assertRedirect(route('privacy.policy'));
+
+        $this->assertNotNull($user->refresh()->email_verified_at);
+    }
+
     public function test_verification_link_can_be_resent_through_the_queue(): void
     {
         Notification::fake();

@@ -8,6 +8,12 @@
             @endif
         </div>
 
+        @if (session('status') === 'email-verified-policy-pending')
+            <div class="rounded-lg border border-blue-200 bg-blue-50 p-4 text-sm font-semibold text-blue-900" role="status">
+                Email Anda telah terverifikasi. Layanan Klien akan tersedia setelah kebijakan privasi disahkan.
+            </div>
+        @endif
+
         @unless (config('privacy.ready'))
             <div class="rounded-lg border border-amber-300 bg-amber-50 p-4 text-sm font-semibold text-amber-900" role="status">
                 USULAN—WAJIB DISETUJUI FIRMA. Naskah ini belum berlaku dan persetujuan tidak dapat diberikan sampai konfigurasi release diaktifkan.

@@ -9,6 +9,7 @@ use App\Notifications\RescheduleDecisionNotification;
 use App\Notifications\VerificationResultNotification;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Notifications\Messages\MailMessage;
+use Symfony\Component\Mime\Email;
 use Tests\Concerns\CreatesTestingData;
 use Tests\TestCase;
 
@@ -42,7 +43,16 @@ class NotificationMailConfigurationTest extends TestCase
             ], $message->replyTo);
         }
 
-        $this->assertStringContainsString('/brand/logo-email.png', $messages[0]->render()->toHtml());
+        $this->assertStringContainsString('cid:tny-logo@tnypartners.com', $messages[0]->render()->toHtml());
         $this->assertStringContainsString('TNY &amp; PARTNERS', $messages[0]->render()->toHtml());
+
+        $email = new Email;
+        foreach ($messages[0]->callbacks as $callback) {
+            $callback($email);
+        }
+
+        $attachments = $email->getAttachments();
+        $this->assertCount(1, $attachments);
+        $this->assertSame('tny-logo@tnypartners.com', $attachments[0]->getContentId());
     }
 }

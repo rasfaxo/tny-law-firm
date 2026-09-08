@@ -35,4 +35,19 @@ class RegistrationTest extends TestCase
             'status_akun' => 'aktif',
         ]);
     }
+
+    public function test_registration_shows_an_indonesian_message_when_password_confirmation_differs(): void
+    {
+        $response = $this->from('/register')->post('/register', [
+            'nama' => 'Test User',
+            'email' => 'test@example.com',
+            'password' => 'Password-test-123!',
+            'password_confirmation' => 'Password-test-456!',
+        ]);
+
+        $response->assertRedirect('/register');
+        $response->assertSessionHasErrors([
+            'password' => 'kata sandi dan konfirmasinya tidak cocok.',
+        ]);
+    }
 }
