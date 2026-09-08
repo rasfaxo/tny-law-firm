@@ -33,6 +33,11 @@ class PermintaanReschedule extends Model
     ];
 
     protected $casts = [
+        'id_booking' => 'integer',
+        'id_user' => 'integer',
+        'id_admin_keputusan' => 'integer',
+        'id_jadwal_baru' => 'integer',
+        'id_booking_baru' => 'integer',
         'tanggal_pengajuan' => 'datetime',
         'tanggal_keputusan' => 'datetime',
     ];

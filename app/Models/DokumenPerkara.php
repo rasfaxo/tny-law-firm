@@ -10,47 +10,51 @@ class DokumenPerkara extends Model
 {
     use HasFactory;
 
-    protected $table = "dokumen_perkara";
+    protected $table = 'dokumen_perkara';
 
-    protected $primaryKey = "id_dokumen";
+    protected $primaryKey = 'id_dokumen';
 
     public $incrementing = true;
 
-    protected $keyType = "int";
+    protected $keyType = 'int';
 
     protected $fillable = [
-        "id_pendaftaran",
-        "nama_dokumen",
-        "jenis_dokumen",
-        "file_path",
-        "status_dokumen",
+        'id_pendaftaran',
+        'nama_dokumen',
+        'jenis_dokumen',
+        'file_path',
+        'status_dokumen',
+    ];
+
+    protected $casts = [
+        'id_pendaftaran' => 'integer',
     ];
 
     public function getRouteKeyName(): string
     {
-        return "id_dokumen";
+        return 'id_dokumen';
     }
 
     public function scopeAktif(Builder $query): Builder
     {
-        return $query->whereIn("status_dokumen", [
-            "terkirim",
-            "valid",
-            "perlu_perbaikan",
+        return $query->whereIn('status_dokumen', [
+            'terkirim',
+            'valid',
+            'perlu_perbaikan',
         ]);
     }
 
     public function scopeDiganti(Builder $query): Builder
     {
-        return $query->where("status_dokumen", "diganti");
+        return $query->where('status_dokumen', 'diganti');
     }
 
     public function praPendaftaranPerkara()
     {
         return $this->belongsTo(
             PraPendaftaranPerkara::class,
-            "id_pendaftaran",
-            "id_pendaftaran",
+            'id_pendaftaran',
+            'id_pendaftaran',
         );
     }
 
@@ -58,8 +62,8 @@ class DokumenPerkara extends Model
     {
         return $this->hasMany(
             CatatanVerifikasi::class,
-            "id_dokumen",
-            "id_dokumen",
+            'id_dokumen',
+            'id_dokumen',
         );
     }
 }
