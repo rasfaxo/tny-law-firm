@@ -1,0 +1,75 @@
+# Copy to /home/tnym6311/retest-v100/tny-law-firm/.env and fill secrets only in cPanel.
+# Never upload the filled file to Git, chat, screenshots, or test evidence.
+APP_NAME="TNY Law Firm Retest"
+APP_ENV=production
+APP_KEY=
+APP_DEBUG=false
+APP_URL=https://retest.tnypartners.com
+APP_TIMEZONE=Asia/Jakarta
+APP_LOCALE=id
+APP_FALLBACK_LOCALE=id
+
+LOG_CHANNEL=stack
+LOG_STACK=daily
+LOG_LEVEL=info
+LOG_DAILY_DAYS=14
+
+DB_CONNECTION=mariadb
+DB_HOST=localhost
+DB_PORT=3306
+DB_DATABASE=tnym6311_tnyretest
+DB_USERNAME=
+DB_PASSWORD=
+
+ADMIN_NAME=
+ADMIN_EMAIL=
+ADMIN_DEFAULT_PASSWORD=
+
+SESSION_DRIVER=database
+SESSION_LIFETIME=120
+SESSION_ENCRYPT=true
+SESSION_COOKIE=tny-law-firm-retest-session
+SESSION_DOMAIN=null
+SESSION_SECURE_COOKIE=true
+SESSION_HTTP_ONLY=true
+SESSION_SAME_SITE=lax
+
+CACHE_STORE=file
+QUEUE_CONNECTION=database
+DB_QUEUE_AFTER_COMMIT=true
+DB_QUEUE_RETRY_AFTER=120
+QUEUE_FAILED_DRIVER=database-uuids
+
+MAIL_MAILER=resend
+MAIL_FROM_ADDRESS=no-reply@retest.tnypartners.com
+MAIL_FROM_NAME="TNY & PARTNERS Retest"
+MAIL_REPLY_TO_ADDRESS=
+MAIL_REPLY_TO_NAME="TNY & PARTNERS"
+RESEND_API_KEY=
+
+FILESYSTEM_DISK=local
+DOCUMENT_DISK=azure
+AZURE_STORAGE_CONTAINER=documents-retest-v100
+AZURE_STORAGE_PREFIX=retest/v1.0.0/tnypartners
+AZURE_READINESS_PREFIX=release-gate/retest/v1.0.0/tnypartners
+AZURE_STORAGE_CONNECTION_STRING=
+AZURE_STORAGE_THROW=true
+
+FIRM_NAME="TNY & PARTNERS"
+FIRM_TAGLINE="Advocates & Legal Consultants"
+FIRM_DESCRIPTION="Kantor Advokat & Konsultan Hukum"
+FIRM_ADDRESS=
+FIRM_PHONE=
+FIRM_EMAIL=
+FIRM_SECONDARY_EMAIL=
+FIRM_WEBSITE=https://retest.tnypartners.com
+FIRM_CITY="Jakarta Selatan"
+
+TRUSTED_HOSTS=retest.tnypartners.com
+TRUSTED_PROXIES=none
+SECURITY_CSP_REPORT_ONLY=false
+SECURITY_HSTS_MAX_AGE=31536000
+
+PRIVACY_POLICY_READY=true
+PRIVACY_POLICY_VERSION=v1.0
+PRIVACY_POLICY_EFFECTIVE_DATE=2026-09-08

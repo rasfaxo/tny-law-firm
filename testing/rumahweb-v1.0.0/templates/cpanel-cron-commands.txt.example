@@ -1,0 +1,31 @@
+# Use the exact PHP 8.4 CLI path that previously produced deploy-v1.0.0.log.
+# Create only one temporary cron at a time, wait for one execution, inspect its log,
+# then delete that cron before creating the next one. Do not run the next step after a failure.
+# The log directory must stay outside every web document root.
+
+# STEP 1 - generate the clone key once
+<PHP84_CLI> /home/tnym6311/retest-v100/tny-law-firm/artisan key:generate --force >> /home/tnym6311/logs/retest-v100-bootstrap.log 2>&1
+
+# STEP 2 - must pass before database migration
+<PHP84_CLI> /home/tnym6311/retest-v100/tny-law-firm/artisan app:production-readiness --phase=bootstrap --external --storage-roundtrip >> /home/tnym6311/logs/retest-v100-readiness-bootstrap.log 2>&1
+
+# STEP 3
+<PHP84_CLI> /home/tnym6311/retest-v100/tny-law-firm/artisan migrate --force >> /home/tnym6311/logs/retest-v100-migrate.log 2>&1
+
+# STEP 4
+<PHP84_CLI> /home/tnym6311/retest-v100/tny-law-firm/artisan db:seed --class=DatabaseSeeder --force >> /home/tnym6311/logs/retest-v100-seed.log 2>&1
+
+# STEP 5
+<PHP84_CLI> /home/tnym6311/retest-v100/tny-law-firm/artisan optimize >> /home/tnym6311/logs/retest-v100-optimize.log 2>&1
+
+# MANUAL GATE - log in once as bootstrap Admin, remove ADMIN_DEFAULT_PASSWORD from .env,
+# then run steps 6 and 7 one at a time.
+
+# STEP 6
+<PHP84_CLI> /home/tnym6311/retest-v100/tny-law-firm/artisan optimize >> /home/tnym6311/logs/retest-v100-optimize-runtime.log 2>&1
+
+# STEP 7 - final runtime gate
+<PHP84_CLI> /home/tnym6311/retest-v100/tny-law-firm/artisan app:production-readiness --phase=runtime --external >> /home/tnym6311/logs/retest-v100-readiness-runtime.log 2>&1
+
+# PERMANENT SCHEDULER - install only after step 7 passes
+<PHP84_CLI> /home/tnym6311/retest-v100/tny-law-firm/artisan schedule:run >> /home/tnym6311/logs/retest-v100-scheduler.log 2>&1

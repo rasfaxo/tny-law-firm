@@ -18,3 +18,5 @@ Dokumen pengujian aktif:
 - `TEST_CASES.md`: test case serta referensi evidence.
 - `TESTING_STATE.md`: status pengujian yang tercatat.
 - `FINAL_TEST_REPORT.md`: ringkasan hasil BEFORE/AFTER.
+- `RUMAHWEB_V100_RETEST_EXECUTION.md`: rancangan lama yang **tidak digunakan** setelah target retest dikunci ke Azure; tidak menjadi sumber konfigurasi atau hasil laporan.
+- `AZURE_V100_RETEST_EXECUTION.md`: runbook aktif retest v1.0.0 satu lingkungan pada Azure App Service staging; menjadi satu-satunya sumber konfigurasi dan hasil retest baru ketika staging aktif.
