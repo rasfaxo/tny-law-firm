@@ -1,0 +1,4 @@
+retest-environment.ps1
+*.private.ps1
+*.secrets.ps1
+
