@@ -70,6 +70,16 @@ return [
             'report' => true,
         ],
 
+        // Disk khusus object uji deployment. Tidak boleh dipakai oleh dokumen perkara.
+        'azure-readiness' => [
+            'driver' => 'azure-storage-blob',
+            'container' => env('AZURE_STORAGE_CONTAINER'),
+            'prefix' => env('AZURE_READINESS_PREFIX', ''),
+            'connection_string' => env('AZURE_STORAGE_CONNECTION_STRING'),
+            'throw' => env('AZURE_STORAGE_THROW', true),
+            'report' => true,
+        ],
+
     ],
 
     /*

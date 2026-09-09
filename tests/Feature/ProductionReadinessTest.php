@@ -44,13 +44,37 @@ class ProductionReadinessTest extends TestCase
         $this->configureReadiness();
         config()->set('app.admin.default_password', 'Bootstrap-Aman-123!');
         Storage::fake('azure');
+        Storage::fake('azure-readiness');
+        Storage::disk('azure')->put('documents/kept.txt', 'dokumen-perkara');
+
         $this->artisan('app:production-readiness', [
             '--phase' => 'bootstrap',
             '--external' => true,
             '--storage-roundtrip' => true,
         ])->assertSuccessful();
 
+        Storage::disk('azure')->assertExists('documents/kept.txt');
+        $this->assertSame([], Storage::disk('azure-readiness')->allFiles());
+    }
+
+    public function test_storage_round_trip_rejects_overlapping_document_and_readiness_prefixes(): void
+    {
+        $this->configureReadiness();
+        config()->set([
+            'app.admin.default_password' => 'Bootstrap-Aman-123!',
+            'filesystems.disks.azure.prefix' => 'release-gate/production/tnypartners/documents',
+            'filesystems.disks.azure-readiness.prefix' => 'release-gate/production/tnypartners',
+        ]);
+        Storage::fake('azure');
+        Storage::fake('azure-readiness');
+
+        $this->artisan('app:production-readiness', [
+            '--phase' => 'bootstrap',
+            '--storage-roundtrip' => true,
+        ])->assertFailed();
+
         $this->assertSame([], Storage::disk('azure')->allFiles());
+        $this->assertSame([], Storage::disk('azure-readiness')->allFiles());
     }
 
     private function configureReadiness(): void
@@ -72,7 +96,10 @@ class ProductionReadinessTest extends TestCase
             'filesystems.document_disk' => 'azure',
             'filesystems.disks.azure.connection_string' => 'UseDevelopmentStorage=true',
             'filesystems.disks.azure.container' => 'release-gate-test',
-            'filesystems.disks.azure.prefix' => 'release-gate/rumahweb/test',
+            'filesystems.disks.azure.prefix' => 'production/tnypartners',
+            'filesystems.disks.azure-readiness.connection_string' => 'UseDevelopmentStorage=true',
+            'filesystems.disks.azure-readiness.container' => 'release-gate-test',
+            'filesystems.disks.azure-readiness.prefix' => 'release-gate/production/tnypartners',
             'security.trusted_hosts' => ['^tnypartners\.com$', '^www\.tnypartners\.com$'],
             'security.trusted_proxy_mode' => 'none',
             'security.trusted_proxies' => [],
