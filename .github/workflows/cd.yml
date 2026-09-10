@@ -5,6 +5,15 @@ on:
     branches:
       - main
   workflow_dispatch:
+    inputs:
+      source_ref:
+        description: Source yang dikemas dan dideploy
+        required: true
+        default: development
+        type: choice
+        options:
+          - development
+          - v1.0.0
 
 concurrency:
   group: staging-cd
@@ -18,6 +27,26 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
+        with:
+          ref: ${{ inputs.source_ref || github.ref }}
+
+      - name: Verify Deployment Source
+        shell: bash
+        run: |
+          SOURCE_COMMIT="$(git rev-parse HEAD)"
+          echo "Deploying source ref: ${{ inputs.source_ref || github.ref }}"
+          echo "Deploying source commit: ${SOURCE_COMMIT}"
+
+          if [ "${{ inputs.source_ref }}" = "v1.0.0" ] && [ "${SOURCE_COMMIT}" != "3b0ae8205b6e636df275f008162b25c6c8ec5bd1" ]; then
+            echo "::error::Tag v1.0.0 tidak menunjuk commit final yang dikunci."
+            exit 1
+          fi
+
+          {
+            echo "### Deployment source"
+            echo "- Ref: ${{ inputs.source_ref || github.ref }}"
+            echo "- Commit: ${SOURCE_COMMIT}"
+          } >> "$GITHUB_STEP_SUMMARY"
 
       - name: Setup PHP
         uses: shivammathur/setup-php@v2

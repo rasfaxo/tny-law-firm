@@ -1,0 +1,17 @@
+{
+  "environment": "azure-app-service-staging",
+  "target_host": "tny-law-firm-staging-afb3fqbdfvbteea3.indonesiacentral-01.azurewebsites.net",
+  "storage_account": "tnylawfirmstorage",
+  "storage_container": "documents",
+  "storage_prefix": "retest/v1.0.0/tnypartners",
+  "helper_deployment_commit": "db788e45bea340f666c826188f4bac339f6433f7",
+  "seeded_at_utc": "2026-09-10T05:00:23.2670832Z",
+  "fixture_ids": {
+    "RETEST_CATEGORY_ID": 5,
+    "SECURITY_OTHER_CASE_ID": 1,
+    "SECURITY_REPAIR_CASE_ID": 2,
+    "SECURITY_REPAIR_OLD_DOCUMENT_ID": 2,
+    "SECURITY_REPAIR_NOTE_ID": 1
+  },
+  "source": "Azure App Service startup log"
+}
