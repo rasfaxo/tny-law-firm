@@ -33,6 +33,7 @@ DB_DATABASE=<nama database terisolasi yang mengandung kata retest>
 DOCUMENT_DISK=azure
 AZURE_STORAGE_CONTAINER=documents
 AZURE_STORAGE_PREFIX=retest/v1.0.0/tnypartners
+AZURE_STORAGE_CONNECTION_STRING=BlobEndpoint=https://tnylawfirmstorage.blob.core.windows.net/;SharedAccessSignature=<SAS container staging; jangan simpan di repository>
 PRIVACY_POLICY_READY=true
 PRIVACY_POLICY_VERSION=v1.0
 ```
@@ -47,7 +48,7 @@ RETEST_FIXTURE_PASSWORD=<buat password uji acak minimal 16 karakter>
 
 `RETEST_FIXTURE_PASSWORD` adalah satu password bersama untuk keempat akun anonim. Simpan nilainya hanya pada password manager dan file environment lokal di luar repository. Seeder tidak mencetak password tersebut.
 
-Seeder menolak berjalan apabila hostname, database retest, container, prefix, disk dokumen, consent, confirmation, atau panjang password tidak sesuai. Seluruh metadata database dibuat dalam satu transaction; blob yang baru dibuat dikompensasi jika transaction gagal.
+Seeder menolak berjalan apabila hostname aplikasi, hostname Blob Storage staging `tnylawfirmstorage`, database retest, container, prefix, disk dokumen, consent, confirmation, izin SAS, atau panjang password tidak sesuai. Akun production `tnylawfirmdocs` dilarang untuk retest. Seluruh metadata database dibuat dalam satu transaction; blob yang baru dibuat dikompensasi jika transaction gagal.
 
 ## C. Deployment dua tahap
 

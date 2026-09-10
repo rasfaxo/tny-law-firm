@@ -5,6 +5,7 @@ Status: **FIXTURE SEEDER READY / DEPLOYMENT HELPER PENDING**. Workflow run `3437
 ## 1. Lingkungan tunggal
 
 - Semua PF-01–PF-07, ST-01–ST-09, dan OWASP ZAP menargetkan hanya `https://tny-law-firm-staging-afb3fqbdfvbteea3.indonesiacentral-01.azurewebsites.net`.
+- Penyimpanan dokumen hanya menggunakan akun staging `tnylawfirmstorage` dengan endpoint `https://tnylawfirmstorage.blob.core.windows.net/`; akun production `tnylawfirmdocs` tidak boleh digunakan.
 - `tnypartners.com`, `www.tnypartners.com`, dan Rumahweb tidak menjadi target serta tidak masuk tabel konfigurasi hasil retest.
 - App Service menggunakan tier Free F1 sehingga custom domain tidak didukung. Hostname bawaan Azure menjadi satu-satunya target retest dan sudah dilindungi HTTPS bawaan Azure.
 - Lingkungan terdiri dari Azure App Service Linux, PHP 8.4, MySQL staging, dan Azure Blob non-production.

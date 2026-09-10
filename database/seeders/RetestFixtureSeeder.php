@@ -47,6 +47,8 @@ class RetestFixtureSeeder extends Seeder
 
     private const EXPECTED_PREFIX = 'retest/v1.0.0/tnypartners';
 
+    private const EXPECTED_BLOB_HOST = 'tnylawfirmstorage.blob.core.windows.net';
+
     private const PDF_CONTENT = "%PDF-1.4\n1 0 obj\n<< /Type /Catalog >>\nendobj\n%%EOF\n";
 
     /**
@@ -114,6 +116,8 @@ class RetestFixtureSeeder extends Seeder
             throw new RuntimeException('RetestFixtureSeeder ditolak: prefix Azure bukan prefix retest v1.0.0.');
         }
 
+        $this->validateAzureConnectionString();
+
         if (app()->environment('production')) {
             $databaseConnection = (string) config('database.default');
             $databaseName = (string) config("database.connections.{$databaseConnection}.database");
@@ -134,6 +138,47 @@ class RetestFixtureSeeder extends Seeder
         }
 
         return $password;
+    }
+
+    private function validateAzureConnectionString(): void
+    {
+        $connectionString = config('filesystems.disks.azure.connection_string');
+
+        if (! is_string($connectionString) || $connectionString === '') {
+            throw new RuntimeException('RetestFixtureSeeder ditolak: connection string Azure tidak tersedia.');
+        }
+
+        $segments = [];
+
+        foreach (explode(';', $connectionString) as $segment) {
+            if ($segment === '') {
+                continue;
+            }
+
+            if (! str_contains($segment, '=')) {
+                throw new RuntimeException('RetestFixtureSeeder ditolak: format connection string Azure tidak valid.');
+            }
+
+            [$key, $value] = explode('=', $segment, 2);
+            $segments[$key] = $value;
+        }
+
+        $endpoint = $segments['BlobEndpoint'] ?? null;
+        $sas = $segments['SharedAccessSignature'] ?? null;
+        $endpointHost = is_string($endpoint) ? parse_url($endpoint, PHP_URL_HOST) : null;
+
+        if ($endpointHost !== self::EXPECTED_BLOB_HOST || ! is_string($sas) || $sas === '') {
+            throw new RuntimeException('RetestFixtureSeeder ditolak: format endpoint atau SAS Azure tidak valid.');
+        }
+
+        parse_str(ltrim($sas, '?'), $sasParameters);
+        $permissions = is_string($sasParameters['sp'] ?? null) ? $sasParameters['sp'] : '';
+
+        foreach (['c', 'r', 'w', 'd', 'l'] as $requiredPermission) {
+            if (! str_contains($permissions, $requiredPermission)) {
+                throw new RuntimeException('RetestFixtureSeeder ditolak: SAS Azure tidak memiliki izin create/read/write/delete/list.');
+            }
+        }
     }
 
     /**

@@ -26,6 +26,7 @@ class RetestFixtureSeederTest extends TestCase
             'filesystems.document_disk' => 'azure',
             'filesystems.disks.azure.container' => 'documents',
             'filesystems.disks.azure.prefix' => 'retest/v1.0.0/tnypartners',
+            'filesystems.disks.azure.connection_string' => 'BlobEndpoint=https://tnylawfirmstorage.blob.core.windows.net/;SharedAccessSignature=sp=rcwdl&sig=test-signature',
             'privacy.ready' => true,
             'privacy.policy_version' => 'v1.0',
         ]);
@@ -106,6 +107,45 @@ class RetestFixtureSeederTest extends TestCase
         config()->set('retest.fixtures.enabled', false);
 
         $this->seed(RetestFixtureSeeder::class);
+
+        $this->assertDatabaseCount('users', 0);
+        Storage::disk('azure')->assertMissing(RetestFixtureSeeder::OWNERSHIP_DOCUMENT_PATH);
+    }
+
+    public function test_seeder_rejects_malformed_or_read_only_sas_without_exposing_it(): void
+    {
+        $sensitiveFragment = 'do-not-expose-this-signature';
+        config()->set(
+            'filesystems.disks.azure.connection_string',
+            'BlobEndpoint=sp=r&sig='.$sensitiveFragment,
+        );
+
+        try {
+            $this->seed(RetestFixtureSeeder::class);
+            $this->fail('Seeder seharusnya menolak connection string Azure yang tidak valid.');
+        } catch (RuntimeException $exception) {
+            $this->assertStringContainsString('endpoint atau SAS Azure', $exception->getMessage());
+            $this->assertStringNotContainsString($sensitiveFragment, $exception->getMessage());
+        }
+
+        $this->assertDatabaseCount('users', 0);
+        Storage::disk('azure')->assertMissing(RetestFixtureSeeder::OWNERSHIP_DOCUMENT_PATH);
+    }
+
+    public function test_seeder_refuses_the_production_blob_account_before_writing_anything(): void
+    {
+        config()->set(
+            'filesystems.disks.azure.connection_string',
+            'BlobEndpoint=https://tnylawfirmdocs.blob.core.windows.net/;SharedAccessSignature=sp=rcwdl&sig=production-must-not-be-used',
+        );
+
+        try {
+            $this->seed(RetestFixtureSeeder::class);
+            $this->fail('Seeder seharusnya menolak akun Blob Storage production.');
+        } catch (RuntimeException $exception) {
+            $this->assertStringContainsString('endpoint atau SAS Azure', $exception->getMessage());
+            $this->assertStringNotContainsString('production-must-not-be-used', $exception->getMessage());
+        }
 
         $this->assertDatabaseCount('users', 0);
         Storage::disk('azure')->assertMissing(RetestFixtureSeeder::OWNERSHIP_DOCUMENT_PATH);
