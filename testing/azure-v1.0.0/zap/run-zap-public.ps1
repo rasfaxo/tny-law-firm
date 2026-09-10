@@ -20,7 +20,10 @@ function Quote-Yaml([string] $Value) { return "'$($Value.Replace("'", "''"))'" }
 $zapDirectory = Join-Path $RunDirectory 'zap'
 if (Test-Path -LiteralPath (Join-Path $zapDirectory 'zap-report.json')) { throw 'ZAP evidence already exists; do not overwrite it.' }
 New-Item -ItemType Directory -Force -Path $zapDirectory | Out-Null
-$tempPlan = Join-Path ([IO.Path]::GetTempPath()) "tny-zap-$([Guid]::NewGuid().ToString('N')).yaml"
+$workDirectory = Join-Path $zapDirectory "work-$([Guid]::NewGuid().ToString('N'))"
+$zapHome = Join-Path $workDirectory 'home'
+New-Item -ItemType Directory -Force -Path $zapHome | Out-Null
+$tempPlan = Join-Path $workDirectory 'automation-plan.yaml'
 $reportDirYaml = Quote-Yaml $zapDirectory.Replace('\','/')
 $plan = @"
 env:
@@ -69,11 +72,11 @@ $sanitized = $plan
 $sanitized | Set-Content -LiteralPath (Join-Path $zapDirectory 'automation-plan.sanitized.yaml') -Encoding utf8
 [IO.File]::WriteAllText($tempPlan, $plan, [Text.UTF8Encoding]::new($false))
 try {
-    $output = & $ZapPath -cmd -autorun $tempPlan 2>&1
+    $output = & $ZapPath -cmd -dir $zapHome -autorun $tempPlan 2>&1
     $exitCode = $LASTEXITCODE
     $output | Set-Content -LiteralPath (Join-Path $zapDirectory 'zap-execution.log') -Encoding utf8
 } finally {
-    if (Test-Path -LiteralPath $tempPlan) { Remove-Item -LiteralPath $tempPlan -Force }
+    if (Test-Path -LiteralPath $workDirectory) { Remove-Item -LiteralPath $workDirectory -Recurse -Force }
 }
 
 if ($exitCode -ne 0) { throw "ZAP Automation Framework failed with exit code $exitCode." }

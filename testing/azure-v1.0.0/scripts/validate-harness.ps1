@@ -49,7 +49,7 @@ Write-Host 'OK mapping and v1.0.0 routes: ST-01 through ST-09'
 $cloneEnv = Get-Content -LiteralPath (Join-Path $suiteRoot 'templates\azure-app-settings.template') -Raw
 foreach ($requiredValue in @(
     'APP_URL=https://tny-law-firm-staging-afb3fqbdfvbteea3.indonesiacentral-01.azurewebsites.net',
-    'AZURE_STORAGE_CONTAINER=documents-retest-v100',
+    'AZURE_STORAGE_CONTAINER=documents',
     'AZURE_STORAGE_PREFIX=retest/v1.0.0/tnypartners',
     'AZURE_READINESS_PREFIX=release-gate/retest/v1.0.0/tnypartners',
     'TRUSTED_HOSTS=tny-law-firm-staging-afb3fqbdfvbteea3.indonesiacentral-01.azurewebsites.net',

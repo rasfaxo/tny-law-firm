@@ -1,4 +1,4 @@
--- Run in phpMyAdmin against tnym6311_tnyretest only.
+-- Run in the database administration UI against the isolated Azure staging/retest database only.
 -- Replace <ST07_MARKER> with marker from security/st07-probe-evidence.json.
 -- Both results must be 0 after the rejected upload.
 SELECT COUNT(*) AS st07_case_count

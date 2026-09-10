@@ -65,7 +65,15 @@ if (Test-Path -LiteralPath $output) { throw 'Preflight evidence already exists; 
     production_target = $false
     owner_authorization_reference = $authorization
     tester_location = $testerLocation
-    dns_addresses = @($dns | Where-Object IPAddress | Select-Object -ExpandProperty IPAddress -Unique)
+    dns_addresses = @(
+        $dns |
+            Where-Object {
+                $_.PSObject.Properties.Name -contains 'IPAddress' -and
+                -not [string]::IsNullOrWhiteSpace([string] $_.IPAddress)
+            } |
+            ForEach-Object { [string] $_.IPAddress } |
+            Sort-Object -Unique
+    )
     endpoints = $checks
     release_commit = $releaseCommit
     jmeter_path_present = $true

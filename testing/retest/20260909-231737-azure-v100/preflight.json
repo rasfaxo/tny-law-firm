@@ -1,0 +1,28 @@
+{
+  "status": "PASS",
+  "checked_at": "2026-09-09T23:54:46.9688409+07:00",
+  "target_host": "tny-law-firm-staging-afb3fqbdfvbteea3.indonesiacentral-01.azurewebsites.net",
+  "production_target": false,
+  "owner_authorization_reference": "project-owner-approved-20260909",
+  "tester_location": "Jakarta, Indonesia",
+  "dns_addresses": [
+    "70.153.161.2"
+  ],
+  "endpoints": {
+    "/": {
+      "status_code": 200,
+      "marker_ok": true
+    },
+    "/up": {
+      "status_code": 200,
+      "marker_ok": true
+    },
+    "/login": {
+      "status_code": 200,
+      "marker_ok": true
+    }
+  },
+  "release_commit": "3b0ae8205b6e636df275f008162b25c6c8ec5bd1",
+  "jmeter_path_present": true,
+  "zap_path_present": true
+}

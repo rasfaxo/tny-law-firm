@@ -18,5 +18,9 @@ class DatabaseSeeder extends Seeder
             AdminSeeder::class,
             KategoriPerkaraSeeder::class,
         ]);
+
+        if (config('retest.fixtures.enabled', false)) {
+            $this->call(RetestFixtureSeeder::class);
+        }
     }
 }

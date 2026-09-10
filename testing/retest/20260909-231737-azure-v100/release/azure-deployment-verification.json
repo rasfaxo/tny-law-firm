@@ -1,0 +1,8 @@
+{
+  "verified_at": "2026-09-09T23:17:37.5589152+07:00",
+  "environment": "azure-app-service-staging",
+  "target": "https://tny-law-firm-staging-afb3fqbdfvbteea3.indonesiacentral-01.azurewebsites.net",
+  "expected_tag": "v1.0.0",
+  "deployed_commit": "3b0ae8205b6e636df275f008162b25c6c8ec5bd1",
+  "workflow_run_url": "https://github.com/rasfaxo/tny-law-firm/actions/runs/34373256128"
+}

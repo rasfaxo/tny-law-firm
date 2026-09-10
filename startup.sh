@@ -18,7 +18,7 @@ if ! php /home/site/wwwroot/artisan migrate --force; then
     exit 1
 fi
 
-# 3. Seed only the required Admin account and case categories
+# 3. Seed the required baseline and explicitly enabled one-time retest fixtures
 echo "Seeding required staging bootstrap data..."
 if ! php /home/site/wwwroot/artisan db:seed --class=DatabaseSeeder --force; then
     echo "Database seeding failed; aborting startup."

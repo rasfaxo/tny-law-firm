@@ -82,7 +82,10 @@ function Invoke-JMeterRun {
 $gitSafeRoot = $repoRoot.Replace('\','/')
 $commit = (& git -c "safe.directory=$gitSafeRoot" rev-parse HEAD 2>$null)
 $tag = (& git -c "safe.directory=$gitSafeRoot" describe --tags --exact-match $commit 2>$null)
-$jmeterVersion = (& $JMeterPath --version 2>&1 | Select-Object -First 1)
+$jmeterVersionOutput = (& $JMeterPath --version 2>&1 | Out-String)
+$jmeterVersionMatch = [regex]::Matches($jmeterVersionOutput, '(?m)\b(\d+\.\d+\.\d+)\s*$') | Select-Object -Last 1
+$jmeterVersion = if ($null -ne $jmeterVersionMatch) { $jmeterVersionMatch.Groups[1].Value } else { 'NOT VERIFIED' }
+if ($jmeterVersion -eq 'NOT VERIFIED') { throw 'Unable to determine the Apache JMeter version.' }
 $manifest = [ordered]@{
     run_id = $RunId
     environment = 'azure-app-service-staging'
