@@ -1,0 +1,21 @@
+{
+  "environment": "azure-app-service-staging",
+  "target_host": "tny-law-firm-staging-afb3fqbdfvbteea3.indonesiacentral-01.azurewebsites.net",
+  "workflow_run_id": 34440604124,
+  "workflow_run_number": 34,
+  "workflow_run_url": "https://github.com/rasfaxo/tny-law-firm/actions/runs/34440604124",
+  "workflow_revision": "adf11c1919185dd6d92c86173949e35f0cf8f626",
+  "requested_source_ref": "v1.0.0",
+  "locked_source_commit": "3b0ae8205b6e636df275f008162b25c6c8ec5bd1",
+  "source_gate": "success",
+  "build": "success",
+  "deployment": "success",
+  "workflow_smoke_test": "success",
+  "workflow_completed_at_utc": "2026-09-10T05:24:36Z",
+  "independent_verification_at_utc": "2026-09-10T05:26:41.8148158Z",
+  "endpoints": {
+    "/": 200,
+    "/up": 200,
+    "/login": 200
+  }
+}
