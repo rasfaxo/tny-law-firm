@@ -81,8 +81,14 @@ jobs:
           touch release/storage/framework/views/.gitkeep
           touch release/storage/logs/.gitkeep
 
-          # Ensure clean bootstrap cache directory
-          rm -f release/bootstrap/cache/*.php
+          # Remove environment-specific framework caches, but retain Composer's
+          # package discovery manifests so third-party drivers remain registered.
+          find release/bootstrap/cache -maxdepth 1 -type f -name '*.php' \
+            ! -name 'packages.php' \
+            ! -name 'services.php' \
+            -delete
+          test -f release/bootstrap/cache/packages.php
+          test -f release/bootstrap/cache/services.php
           touch release/bootstrap/cache/.gitkeep
 
           # Validate release directory Vite build output
@@ -105,6 +111,8 @@ jobs:
           test -d release/storage/framework/cache/data
           test -d release/storage/logs
           test -d release/bootstrap/cache
+          test -f release/bootstrap/cache/packages.php
+          test -f release/bootstrap/cache/services.php
           test -f release/default
           test -f release/public/index.php
 
@@ -129,6 +137,8 @@ jobs:
           unzip -l release.zip | grep 'storage/framework/sessions'
           unzip -l release.zip | grep 'storage/framework/cache/data'
           unzip -l release.zip | grep 'bootstrap/cache'
+          unzip -l release.zip | grep 'bootstrap/cache/packages.php'
+          unzip -l release.zip | grep 'bootstrap/cache/services.php'
           unzip -l release.zip | grep 'default'
 
       - name: Upload Deployment Artifact

@@ -10,7 +10,15 @@ if [ -f /home/site/wwwroot/default ]; then
     service nginx reload || /usr/sbin/nginx -s reload || true
 fi
 
-# 2. Run Database Migrations natively within the PHP 8.4 runtime
+# 2. Rebuild Composer package discovery before commands use third-party
+# service providers, including the Azure Blob filesystem driver.
+echo "Discovering Composer packages..."
+if ! php /home/site/wwwroot/artisan package:discover --ansi; then
+    echo "Composer package discovery failed; aborting startup."
+    exit 1
+fi
+
+# 3. Run Database Migrations natively within the PHP 8.4 runtime
 echo "Running database migrations..."
 php /home/site/wwwroot/artisan cache:clear
 if ! php /home/site/wwwroot/artisan migrate --force; then
@@ -18,13 +26,13 @@ if ! php /home/site/wwwroot/artisan migrate --force; then
     exit 1
 fi
 
-# 3. Seed the required baseline and explicitly enabled one-time retest fixtures
+# 4. Seed the required baseline and explicitly enabled one-time retest fixtures
 echo "Seeding required staging bootstrap data..."
 if ! php /home/site/wwwroot/artisan db:seed --class=DatabaseSeeder --force; then
     echo "Database seeding failed; aborting startup."
     exit 1
 fi
-# 4. Cache Laravel configuration, routes, and views for performance
+# 5. Cache Laravel configuration, routes, and views for performance
 echo "Caching configuration..."
 php /home/site/wwwroot/artisan config:cache
 echo "Caching routes..."
