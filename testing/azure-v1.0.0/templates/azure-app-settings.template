@@ -40,7 +40,7 @@ AZURE_STORAGE_CONTAINER=documents
 AZURE_STORAGE_PREFIX=retest/v1.0.0/tnypartners
 AZURE_READINESS_PREFIX=release-gate/retest/v1.0.0/tnypartners
 # Staging account only; never use the tnylawfirmdocs production endpoint.
-AZURE_STORAGE_CONNECTION_STRING=BlobEndpoint=https://tnylawfirmstorage.blob.core.windows.net/;SharedAccessSignature=<secret-container-sas>
+AZURE_STORAGE_CONNECTION_STRING=
 AZURE_STORAGE_THROW=true
 TRUSTED_HOSTS=tny-law-firm-staging-afb3fqbdfvbteea3.indonesiacentral-01.azurewebsites.net
 TRUSTED_PROXIES=none

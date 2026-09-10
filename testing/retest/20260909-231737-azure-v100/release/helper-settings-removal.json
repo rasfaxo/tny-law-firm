@@ -1,0 +1,16 @@
+{
+  "environment": "azure-app-service-staging",
+  "reported_at_utc": "2026-09-10T06:29:35.0307590Z",
+  "confirmation_source": "project owner",
+  "removed_settings": [
+    "RETEST_FIXTURES_ENABLED",
+    "RETEST_FIXTURE_CONFIRMATION",
+    "RETEST_FIXTURE_PASSWORD"
+  ],
+  "verification_scope": "Removal is owner-confirmed because this session has no Azure control-plane credentials.",
+  "post_removal_smoke_check": {
+    "/": 200,
+    "/up": 200,
+    "/login": 200
+  }
+}
