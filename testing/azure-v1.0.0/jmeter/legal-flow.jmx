@@ -473,7 +473,7 @@ if (!System.getenv('RETEST_OWNER_AUTHORIZATION')) { throw new IllegalStateExcept
         <hashTree>
           <ResponseAssertion guiclass="AssertionGui" testclass="ResponseAssertion" testname="Assert 200 OK">
             <collectionProp name="Asserion.test_strings">
-              <stringProp name="-2131986682">Detail Pengajuan</stringProp>
+              <stringProp name="595315347">Riwayat Verifikasi</stringProp>
             </collectionProp>
             <stringProp name="Assertion.test_field">Assertion.response_data</stringProp>
             <intProp name="Assertion.test_type">2</intProp>

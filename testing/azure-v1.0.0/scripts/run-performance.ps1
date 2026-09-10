@@ -4,7 +4,8 @@ param(
     [string] $OutputRoot,
     [string] $RunDirectory,
     [string] $RunId = (Get-Date -Format 'yyyyMMdd-HHmmss'),
-    [ValidateRange(60, 300)] [int] $CooldownSeconds = 65
+    [ValidateRange(60, 300)] [int] $CooldownSeconds = 65,
+    [ValidateSet('All', 'Validation', 'Recorded')] [string] $Phase = 'All'
 )
 
 Set-StrictMode -Version Latest
@@ -38,10 +39,24 @@ $runDirectory = if ([string]::IsNullOrWhiteSpace($RunDirectory)) {
 } else {
     [IO.Path]::GetFullPath($RunDirectory)
 }
-if (Test-Path -LiteralPath (Join-Path $runDirectory 'performance')) { throw "Performance evidence already exists; do not overwrite it: $runDirectory" }
+$performanceDir = Join-Path $runDirectory 'performance'
 $validationDir = Join-Path $runDirectory 'performance\validation'
 $recordedDir = Join-Path $runDirectory 'performance\recorded'
-New-Item -ItemType Directory -Force -Path $validationDir, $recordedDir | Out-Null
+$environmentPath = Join-Path $runDirectory 'environment.json'
+if ($Phase -eq 'All' -and (Test-Path -LiteralPath $performanceDir)) {
+    throw "Performance evidence already exists; do not overwrite it: $runDirectory"
+}
+if ($Phase -eq 'Validation' -and (Test-Path -LiteralPath $validationDir)) {
+    throw "Validation evidence already exists; do not overwrite it: $validationDir"
+}
+if ($Phase -eq 'Recorded' -and (Test-Path -LiteralPath $recordedDir)) {
+    throw "Recorded evidence already exists; do not overwrite it: $recordedDir"
+}
+if ($Phase -eq 'Recorded' -and -not (Test-Path -LiteralPath $validationDir -PathType Container)) {
+    throw 'Recorded phase requires completed validation evidence.'
+}
+if ($Phase -in @('All', 'Validation')) { New-Item -ItemType Directory -Force -Path $validationDir | Out-Null }
+if ($Phase -in @('All', 'Recorded')) { New-Item -ItemType Directory -Force -Path $recordedDir | Out-Null }
 
 $flows = @(
     [pscustomobject]@{ Name='general'; File='general-flow.jmx'; Labels=@('POST Login Klien','GET Klien Dashboard') },
@@ -58,16 +73,30 @@ function Invoke-JMeterRun {
     $report = Join-Path $Destination "$name-report"
     $testPlan = Join-Path $suiteRoot "jmeter\$($Flow.File)"
     Write-Host "Running $name (threads=$Threads, ramp=$RampUp)..."
-    & $JMeterPath -n -t $testPlan -l $jtl -j $log -JTHREADS=$Threads -JRAMPUP=$RampUp `
-        -Jjmeter.save.saveservice.output_format=csv `
-        -Jjmeter.save.saveservice.print_field_names=true `
-        -Jjmeter.save.saveservice.timestamp_format=ms `
-        -Jjmeter.save.saveservice.successful=true `
-        -Jjmeter.save.saveservice.label=true `
-        -Jjmeter.save.saveservice.response_code=true `
-        -e -o $report
+    $jmeterArguments = @(
+        '-n',
+        '-t', $testPlan,
+        '-l', $jtl,
+        '-j', $log,
+        "-JTHREADS=$Threads",
+        "-JRAMPUP=$RampUp",
+        '-Jjmeter.save.saveservice.output_format=csv',
+        '-Jjmeter.save.saveservice.print_field_names=true',
+        '-Jjmeter.save.saveservice.timestamp_format=ms',
+        '-Jjmeter.save.saveservice.successful=true',
+        '-Jjmeter.save.saveservice.label=true',
+        '-Jjmeter.save.saveservice.response_code=true',
+        '-e',
+        '-o', $report
+    )
+    & $JMeterPath @jmeterArguments
     if ($LASTEXITCODE -ne 0) { throw "JMeter failed for $name (exit $LASTEXITCODE). Evidence retained in $Destination." }
     $rows = @(Import-Csv -LiteralPath $jtl)
+    $allFailedSamples = @($rows | Where-Object { $_.success -ne 'true' })
+    if ($Validation -and $allFailedSamples.Count -gt 0) {
+        $failedLabels = @($allFailedSamples | ForEach-Object { $_.label } | Sort-Object -Unique) -join ', '
+        throw "$name contains $($allFailedSamples.Count) failed sample(s): $failedLabels."
+    }
     foreach ($label in $Flow.Labels) {
         $samples = @($rows | Where-Object { $_.label -eq $label })
         $failedCount = @($samples | Where-Object { $_.success -ne 'true' }).Count
@@ -107,12 +136,41 @@ $manifest = [ordered]@{
         cooldown_between_runs_seconds = $CooldownSeconds
     }
 }
-$manifest | ConvertTo-Json -Depth 6 | Set-Content -LiteralPath (Join-Path $runDirectory 'environment.json') -Encoding utf8
+if ($Phase -ne 'Recorded') {
+    $manifest | ConvertTo-Json -Depth 6 | Set-Content -LiteralPath $environmentPath -Encoding utf8
+} elseif (-not (Test-Path -LiteralPath $environmentPath -PathType Leaf)) {
+    throw 'Recorded phase requires environment.json from the validation phase.'
+}
 
-foreach ($flow in $flows) {
-    Invoke-JMeterRun -Flow $flow -Threads 1 -RampUp 1 -Destination $validationDir -Validation
-    Write-Host "Cooldown $CooldownSeconds seconds to isolate throttle windows..."
-    Start-Sleep -Seconds $CooldownSeconds
+if ($Phase -in @('All', 'Validation')) {
+    foreach ($flow in $flows) {
+        Invoke-JMeterRun -Flow $flow -Threads 1 -RampUp 1 -Destination $validationDir -Validation
+        if (-not ($Phase -eq 'Validation' -and $flow.Name -eq 'legal')) {
+            Write-Host "Cooldown $CooldownSeconds seconds to isolate throttle windows..."
+            Start-Sleep -Seconds $CooldownSeconds
+        }
+    }
+
+    $manifest['validation_ended_at'] = (Get-Date).ToString('o')
+    $manifest | ConvertTo-Json -Depth 6 | Set-Content -LiteralPath $environmentPath -Encoding utf8
+    if ($Phase -eq 'Validation') {
+        Write-Host "Validation performance run completed: $runDirectory"
+        return
+    }
+} else {
+    foreach ($flow in $flows) {
+        $jtl = Join-Path $validationDir "validation-$($flow.Name).jtl"
+        if (-not (Test-Path -LiteralPath $jtl -PathType Leaf)) {
+            throw "Recorded phase requires validation evidence: $jtl"
+        }
+        $rows = @(Import-Csv -LiteralPath $jtl)
+        foreach ($label in $flow.Labels) {
+            $samples = @($rows | Where-Object { $_.label -eq $label })
+            if ($samples.Count -ne 1 -or @($samples | Where-Object { $_.success -ne 'true' }).Count -gt 0) {
+                throw "Recorded phase blocked by invalid 1 VU evidence for '$label'."
+            }
+        }
+    }
 }
 
 foreach ($threads in @(5,10,20)) {
@@ -126,6 +184,7 @@ foreach ($threads in @(5,10,20)) {
     }
 }
 
-$manifest.ended_at = (Get-Date).ToString('o')
-$manifest | ConvertTo-Json -Depth 6 | Set-Content -LiteralPath (Join-Path $runDirectory 'environment.json') -Encoding utf8
+$environment = Get-Content -LiteralPath $environmentPath -Raw | ConvertFrom-Json
+$environment | Add-Member -NotePropertyName recorded_ended_at -NotePropertyValue (Get-Date).ToString('o') -Force
+$environment | ConvertTo-Json -Depth 6 | Set-Content -LiteralPath $environmentPath -Encoding utf8
 Write-Host "Recorded performance run completed: $runDirectory"
