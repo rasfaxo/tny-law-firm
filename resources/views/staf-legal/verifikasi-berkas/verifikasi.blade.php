@@ -165,7 +165,9 @@
                                         <x-text-input tag="textarea" rows="3"
                                                   class="w-full resize-none"
                                                   placeholder="Tuliskan alasan penolakan atau catatan perbaikan dokumen ini..."
-                                                  x-model="docNotes['{{ $dokumen->id_dokumen }}']"
+                                                  data-document-id="{{ $dokumen->id_dokumen }}"
+                                                  x-bind:value="docNotes['{{ $dokumen->id_dokumen }}']"
+                                                  x-on:input="setDocumentNote"
                                                   x-bind:disabled="!isDesktop || statusVerifikasi === 'berkas_lengkap' || docStatus['{{ $dokumen->id_dokumen }}'] !== 'perlu_perbaikan'"
                                                   x-bind:required="isDesktop && statusVerifikasi === 'berkas_tidak_lengkap' && docStatus['{{ $dokumen->id_dokumen }}'] === 'perlu_perbaikan'"></x-text-input>
                                     </td>
@@ -240,7 +242,9 @@
                                 <x-text-input tag="textarea" rows="2"
                                           class="w-full resize-none"
                                           placeholder="Tuliskan alasan penolakan atau catatan perbaikan..."
-                                          x-model="docNotes['{{ $dokumen->id_dokumen }}']"
+                                          data-document-id="{{ $dokumen->id_dokumen }}"
+                                          x-bind:value="docNotes['{{ $dokumen->id_dokumen }}']"
+                                          x-on:input="setDocumentNote"
                                           x-bind:disabled="isDesktop || statusVerifikasi === 'berkas_lengkap' || docStatus['{{ $dokumen->id_dokumen }}'] !== 'perlu_perbaikan'"
                                           x-bind:required="!isDesktop && statusVerifikasi === 'berkas_tidak_lengkap' && docStatus['{{ $dokumen->id_dokumen }}'] === 'perlu_perbaikan'"></x-text-input>
                             </div>

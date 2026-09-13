@@ -68,6 +68,9 @@ Alpine.data('verificationForm', () => ({
     setDocumentStatus(event) {
         this.docStatus[event.target.dataset.documentId] = event.target.value;
     },
+    setDocumentNote(event) {
+        this.docNotes[event.target.dataset.documentId] = event.target.value;
+    },
 }));
 Alpine.data('modal', () => ({
     show: false,

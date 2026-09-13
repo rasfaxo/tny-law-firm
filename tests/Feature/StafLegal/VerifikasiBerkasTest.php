@@ -118,6 +118,15 @@ class VerifikasiBerkasTest extends TestCase
                 'name="dokumen['.$dokumen->id_dokumen.'][catatan]"',
             ),
         );
+        $this->assertSame(
+            2,
+            substr_count(
+                $html,
+                'data-document-id="'.$dokumen->id_dokumen.'" x-bind:value="docNotes[',
+            ),
+        );
+        $this->assertSame(2, substr_count($html, 'x-on:input="setDocumentNote"'));
+        $this->assertStringNotContainsString('x-model="docNotes[', $html);
     }
 
     public function test_klien_cannot_access_verification_route(): void
