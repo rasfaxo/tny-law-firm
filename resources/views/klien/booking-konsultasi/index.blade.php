@@ -14,12 +14,17 @@
                 </div>
                 
                 <div class="flex items-center gap-3">
-                    <x-select name="status_booking" data-auto-submit>
-                        <option value="">Semua Status</option>
-                        <option value="aktif" @selected(request('status_booking') === 'aktif')>Aktif</option>
-                        <option value="selesai" @selected(request('status_booking') === 'selesai')>Selesai</option>
-                        <option value="dibatalkan" @selected(request('status_booking') === 'dibatalkan')>Dibatalkan</option>
-                    </x-select>
+                    <div class="relative">
+                        <x-select name="status_booking" data-auto-submit class="appearance-none bg-none pr-10">
+                            <option value="">Semua Status</option>
+                            <option value="aktif" @selected(request('status_booking') === 'aktif')>Aktif</option>
+                            <option value="selesai" @selected(request('status_booking') === 'selesai')>Selesai</option>
+                            <option value="dibatalkan" @selected(request('status_booking') === 'dibatalkan')>Dibatalkan</option>
+                        </x-select>
+                        <svg aria-hidden="true" class="pointer-events-none absolute right-3 top-1/2 h-4 w-4 -translate-y-1/2 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+                        </svg>
+                    </div>
                     
                     @if(request('search') || request('status_booking'))
                         <x-secondary-button href="{{ route('klien.booking-konsultasi.index') }}" tag="a" class="h-11 px-4">

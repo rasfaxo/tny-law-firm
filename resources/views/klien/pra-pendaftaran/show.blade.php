@@ -15,6 +15,7 @@
         $bisaAjukanReschedule = $bookingAktif
             && $bookingAktif->status_booking === 'aktif'
             && $praPendaftaranPerkara->status_pengajuan === 'jadwal_dipilih'
+            && $bookingAktif->jadwalKonsultasi?->belumDimulai()
             && !$permintaanRescheduleMenunggu;
 
         // Logika Status Verifikasi Terakhir
@@ -160,7 +161,21 @@
                             <a href="{{ route('klien.permintaan-reschedule.show', $permintaanRescheduleTerakhir) }}" class="font-bold underline">Detail Reschedule &rarr;</a>
                         </div>
                         @if ($permintaanRescheduleTerakhir->status_reschedule === 'menunggu_persetujuan')
-                            <p class="mt-2 text-xs text-gray-500 italic">Jadwal lama di bawah ini tetap berlaku sampai Admin menyetujui permintaan reschedule.</p>
+                            <p class="mt-2 text-xs">Jadwal lama di bawah ini tetap berlaku sampai Admin memberikan keputusan.</p>
+                        @elseif ($permintaanRescheduleTerakhir->status_reschedule === 'ditolak')
+                            <p class="mt-2"><strong>Alasan Admin:</strong> {{ $permintaanRescheduleTerakhir->catatan_admin ?: 'Tidak ada alasan tambahan.' }}</p>
+                            <p class="mt-1 text-xs">Diputuskan {{ $permintaanRescheduleTerakhir->tanggal_keputusan?->translatedFormat('d M Y • H:i') ?? '-' }} WIB. Jadwal lama tetap berlaku.</p>
+                        @elseif ($permintaanRescheduleTerakhir->status_reschedule === 'disetujui')
+                            <p class="mt-2">
+                                Jadwal baru:
+                                <strong>
+                                    {{ $permintaanRescheduleTerakhir->jadwalBaru?->tanggal?->translatedFormat('l, d M Y') ?? '-' }}
+                                    @if ($permintaanRescheduleTerakhir->jadwalBaru)
+                                        • {{ substr((string) $permintaanRescheduleTerakhir->jadwalBaru->waktu_mulai, 0, 5) }} WIB
+                                    @endif
+                                </strong>
+                            </p>
+                            <p class="mt-1 text-xs">Diputuskan {{ $permintaanRescheduleTerakhir->tanggal_keputusan?->translatedFormat('d M Y • H:i') ?? '-' }} WIB.</p>
                         @endif
                     </div>
                 @endif
@@ -210,13 +225,13 @@
                         @if ($bookingTampil->catatan_preferensi_klien)
                             <div>
                                 <span class="block text-xs font-bold text-gray-400 uppercase tracking-wider">Catatan Preferensi Klien</span>
-                                <span class="block text-sm font-medium text-gray-600 mt-2 italic">"{{ $bookingTampil->catatan_preferensi_klien }}"</span>
+                                <span class="block text-sm font-medium text-gray-600 mt-2 whitespace-pre-line">{{ $bookingTampil->catatan_preferensi_klien }}</span>
                             </div>
                         @endif
                         @if ($bookingTampil->catatan_konsultasi)
                             <div>
                                 <span class="block text-xs font-bold text-gray-400 uppercase tracking-wider">Catatan Konsultasi Admin</span>
-                                <span class="block text-sm font-medium text-gray-600 mt-2 italic">"{{ $bookingTampil->catatan_konsultasi }}"</span>
+                                <span class="block text-sm font-medium text-gray-600 mt-2 whitespace-pre-line">{{ $bookingTampil->catatan_konsultasi }}</span>
                             </div>
                         @endif
                     </div>
@@ -480,8 +495,8 @@
                             </div>
                             <div>
                                 <span class="block text-xs font-bold text-gray-400 uppercase tracking-wider">Catatan Umum</span>
-                                <p class="text-xs text-gray-600 bg-[#F8FAFC] p-3 rounded-xl border border-[#E2E8F0] mt-1 leading-relaxed whitespace-pre-line italic">
-                                    "{{ $verifikasiTerakhir->catatan_verifikasi_umum ?? 'Berkas diperiksa.' }}"
+                                <p class="text-xs text-gray-600 bg-[#F8FAFC] p-3 rounded-xl border border-[#E2E8F0] mt-1 leading-relaxed whitespace-pre-line">
+                                    {{ filled($verifikasiTerakhir->catatan_umum) ? $verifikasiTerakhir->catatan_umum : 'Berkas diperiksa.' }}
                                 </p>
                             </div>
                         </div>

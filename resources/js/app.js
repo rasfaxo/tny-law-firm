@@ -44,10 +44,22 @@ Alpine.data('caseSubmission', () => ({
 Alpine.data('verificationForm', () => ({
     statusVerifikasi: 'berkas_lengkap',
     docStatus: {},
+    docNotes: {},
+    isDesktop: false,
     isSubmitting: false,
+    mediaQuery: null,
+    viewportListener: null,
     init() {
         this.statusVerifikasi = this.$el.dataset.initialStatus;
         this.docStatus = JSON.parse(this.$el.dataset.documentStatuses ?? '{}');
+        this.docNotes = JSON.parse(this.$el.dataset.documentNotes ?? '{}');
+        this.mediaQuery = window.matchMedia('(min-width: 768px)');
+        this.isDesktop = this.mediaQuery.matches;
+        this.viewportListener = (event) => { this.isDesktop = event.matches; };
+        this.mediaQuery.addEventListener('change', this.viewportListener);
+    },
+    destroy() {
+        this.mediaQuery?.removeEventListener('change', this.viewportListener);
     },
     setToLengkap() {
         this.statusVerifikasi = 'berkas_lengkap';

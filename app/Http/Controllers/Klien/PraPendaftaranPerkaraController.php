@@ -115,6 +115,7 @@ class PraPendaftaranPerkaraController extends Controller
                 'bookingKonsultasi.permintaanReschedule' => fn (
                     $query,
                 ) => $query->latest('tanggal_pengajuan'),
+                'bookingKonsultasi.permintaanReschedule.jadwalBaru',
             ]);
         }
 

@@ -2,6 +2,11 @@ name: Build Rumahweb Manual Artifact
 
 on:
   workflow_dispatch:
+    inputs:
+      release_version:
+        description: Release version recorded in the artifact manifest
+        required: true
+        default: v1.0.1
 
 permissions:
   contents: read
@@ -52,6 +57,8 @@ jobs:
 
       - name: Assemble Rumahweb packages
         shell: bash
+        env:
+          RELEASE_VERSION: ${{ inputs.release_version }}
         run: |
           set -euo pipefail
 
@@ -61,7 +68,7 @@ jobs:
 
           mkdir -p "$app_root" "$public_root"
 
-          for directory in app bootstrap config public resources routes vendor; do
+          for directory in app bootstrap config lang public resources routes vendor; do
             rsync -a "$directory/" "$app_root/$directory/"
           done
 
@@ -96,8 +103,8 @@ jobs:
 
           commit_sha="${GITHUB_SHA}"
           built_at="$(date -u +'%Y-%m-%dT%H:%M:%SZ')"
-          printf '{\n  "commit": "%s",\n  "built_at_utc": "%s",\n  "php": "8.4",\n  "node": "20",\n  "deployment": "manual-cpanel"\n}\n' \
-            "$commit_sha" "$built_at" > "$release_root/manifest.json"
+          printf '{\n  "release": "%s",\n  "commit": "%s",\n  "built_at_utc": "%s",\n  "php": "8.4",\n  "node": "20",\n  "deployment": "manual-cpanel"\n}\n' \
+            "$RELEASE_VERSION" "$commit_sha" "$built_at" > "$release_root/manifest.json"
 
           cd "$release_root/application"
           zip -q -r "$GITHUB_WORKSPACE/rumahweb-application.zip" tny-law-firm
@@ -108,6 +115,7 @@ jobs:
           cd "$GITHUB_WORKSPACE"
           sha256sum rumahweb-application.zip rumahweb-public-html.zip > rumahweb-sha256.txt
           cp "$release_root/manifest.json" rumahweb-manifest.json
+          cp docs/release/RUMAHWEB_V101_DEPLOYMENT.md rumahweb-deployment-guide.md
 
       - name: Validate package boundaries
         shell: bash
@@ -120,11 +128,15 @@ jobs:
           grep -Fxq 'tny-law-firm/vendor/autoload.php' application-entries.txt
           grep -Fxq 'tny-law-firm/public/build/manifest.json' application-entries.txt
           grep -Fxq 'tny-law-firm/public/brand/logo.svg' application-entries.txt
+          grep -Fxq 'tny-law-firm/lang/id/auth.php' application-entries.txt
+          grep -Fxq 'tny-law-firm/lang/id/passwords.php' application-entries.txt
+          grep -Fxq 'tny-law-firm/lang/id/validation.php' application-entries.txt
           grep -Fxq 'tny-law-firm/artisan' application-entries.txt
           grep -Fxq 'index.php' public-entries.txt
           grep -Fxq 'build/manifest.json' public-entries.txt
           grep -Fxq 'brand/logo.svg' public-entries.txt
           grep -Fxq '.htaccess' public-entries.txt
+          test -s rumahweb-deployment-guide.md
 
           ! grep -Eq '(^/|^[A-Za-z]:|(^|/)\.\.(/|$))' application-entries.txt
           ! grep -Eq '(^/|^[A-Za-z]:|(^|/)\.\.(/|$))' public-entries.txt
@@ -154,5 +166,6 @@ jobs:
             rumahweb-public-html.zip
             rumahweb-manifest.json
             rumahweb-sha256.txt
+            rumahweb-deployment-guide.md
           if-no-files-found: error
           retention-days: 7

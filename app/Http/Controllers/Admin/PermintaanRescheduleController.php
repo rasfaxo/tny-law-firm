@@ -43,6 +43,7 @@ class PermintaanRescheduleController extends Controller
 
         $jadwalTersedia = JadwalKonsultasi::query()
             ->where('status_slot', 'tersedia')
+            ->belumDimulai()
             ->orderBy('tanggal')
             ->orderBy('waktu_mulai')
             ->get();

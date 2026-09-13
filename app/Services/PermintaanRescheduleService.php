@@ -36,7 +36,17 @@ class PermintaanRescheduleService
                 ->lockForUpdate()
                 ->firstOrFail();
 
-            $this->ensureKlienCanRequest($booking, $pengajuan, $klienId);
+            $jadwal = JadwalKonsultasi::query()
+                ->whereKey($booking->id_jadwal)
+                ->lockForUpdate()
+                ->firstOrFail();
+
+            $this->ensureKlienCanRequest(
+                $booking,
+                $pengajuan,
+                $jadwal,
+                $klienId,
+            );
 
             return PermintaanReschedule::create([
                 'id_booking' => $booking->id_booking,
@@ -208,6 +218,7 @@ class PermintaanRescheduleService
     private function ensureKlienCanRequest(
         BookingKonsultasi $booking,
         PraPendaftaranPerkara $pengajuan,
+        JadwalKonsultasi $jadwal,
         int $klienId,
     ): void {
         if (
@@ -228,6 +239,12 @@ class PermintaanRescheduleService
         if ($pengajuan->status_pengajuan !== 'jadwal_dipilih') {
             throw ValidationException::withMessages([
                 'alasan_reschedule' => 'Reschedule hanya dapat diajukan setelah jadwal konsultasi dipilih.',
+            ]);
+        }
+
+        if (! $jadwal->belumDimulai()) {
+            throw ValidationException::withMessages([
+                'alasan_reschedule' => 'Reschedule tidak dapat diajukan setelah jadwal konsultasi dimulai.',
             ]);
         }
 
@@ -277,6 +294,18 @@ class PermintaanRescheduleService
         if ($jadwalBaru->status_slot !== 'tersedia') {
             throw ValidationException::withMessages([
                 'id_jadwal_baru' => 'Jadwal baru tidak tersedia.',
+            ]);
+        }
+
+        if (! $jadwalLama->belumDimulai()) {
+            throw ValidationException::withMessages([
+                'id_jadwal_baru' => 'Jadwal konsultasi lama sudah dimulai atau telah lewat.',
+            ]);
+        }
+
+        if (! $jadwalBaru->belumDimulai()) {
+            throw ValidationException::withMessages([
+                'id_jadwal_baru' => 'Jadwal baru sudah dimulai atau telah lewat.',
             ]);
         }
     }

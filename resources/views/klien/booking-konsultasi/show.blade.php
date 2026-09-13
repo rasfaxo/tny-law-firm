@@ -3,11 +3,13 @@
     @php
         $jadwal = $bookingKonsultasi->jadwalKonsultasi;
         $perkara = $bookingKonsultasi->praPendaftaranPerkara;
+        $permintaanTerakhir = $bookingKonsultasi->permintaanReschedule->first();
         $permintaanMenunggu = $bookingKonsultasi->permintaanReschedule
             ->firstWhere('status_reschedule', 'menunggu_persetujuan');
             
         $bisaAjukanReschedule = $bookingKonsultasi->status_booking === 'aktif' 
             && $perkara->status_pengajuan === 'jadwal_dipilih' 
+            && $jadwal?->belumDimulai()
             && !$permintaanMenunggu;
     @endphp
 
@@ -26,27 +28,40 @@
         @endif
 
         <!-- Banner status reschedule -->
-        @if($permintaanMenunggu)
+        @if($permintaanTerakhir?->status_reschedule === 'menunggu_persetujuan')
             <x-alert-banner type="warning" title="Permintaan Reschedule Menunggu Persetujuan">
-                Anda telah mengajukan reschedule untuk booking ini. Jadwal lama tetap berlaku hingga keputusan disetujui Admin.
+                <p>Jadwal lama tetap berlaku hingga Admin memberikan keputusan.</p>
+                <a href="{{ route('klien.permintaan-reschedule.show', $permintaanTerakhir) }}" class="mt-2 inline-block font-bold underline">Lihat detail permintaan &rarr;</a>
+            </x-alert-banner>
+        @elseif($permintaanTerakhir?->status_reschedule === 'ditolak')
+            <x-alert-banner type="error" title="Permintaan Reschedule Ditolak">
+                <p>Jadwal lama tetap berlaku.</p>
+                <p class="mt-2"><strong>Alasan Admin:</strong> {{ $permintaanTerakhir->catatan_admin ?: 'Tidak ada alasan tambahan.' }}</p>
+                <p class="mt-1 text-xs">Diputuskan {{ $permintaanTerakhir->tanggal_keputusan?->translatedFormat('d M Y • H:i') ?? '-' }} WIB</p>
+                <a href="{{ route('klien.permintaan-reschedule.show', $permintaanTerakhir) }}" class="mt-2 inline-block font-bold underline">Lihat detail permintaan &rarr;</a>
+            </x-alert-banner>
+        @elseif($permintaanTerakhir?->status_reschedule === 'disetujui')
+            <x-alert-banner type="success" title="Permintaan Reschedule Disetujui">
+                <p>
+                    Jadwal baru:
+                    <strong>
+                        {{ $permintaanTerakhir->jadwalBaru?->tanggal?->translatedFormat('l, d M Y') ?? '-' }}
+                        @if($permintaanTerakhir->jadwalBaru)
+                            • {{ substr((string) $permintaanTerakhir->jadwalBaru->waktu_mulai, 0, 5) }} WIB
+                        @endif
+                    </strong>
+                </p>
+                <p class="mt-1 text-xs">Diputuskan {{ $permintaanTerakhir->tanggal_keputusan?->translatedFormat('d M Y • H:i') ?? '-' }} WIB</p>
+                <a href="{{ route('klien.permintaan-reschedule.show', $permintaanTerakhir) }}" class="mt-2 inline-block font-bold underline">Lihat detail permintaan &rarr;</a>
             </x-alert-banner>
         @endif
 
         <!-- 1. Header Card -->
         <x-card>
-            <div class="flex flex-col sm:flex-row sm:justify-between sm:items-start gap-4">
+            <div>
                 <span class="inline-flex bg-blue-50 text-accent-blue font-bold font-mono text-xs px-3 py-1 rounded-lg w-max">
                     BK-{{ str_pad($bookingKonsultasi->id_booking, 3, '0', STR_PAD_LEFT) }}
                 </span>
-                
-                @if($bisaAjukanReschedule)
-                    <a href="{{ route('klien.permintaan-reschedule.create', $bookingKonsultasi) }}" class="inline-flex items-center gap-2 bg-white border border-gray-200 hover:bg-gray-50 text-gray-700 font-bold text-xs px-4 py-2 rounded-xl transition">
-                        <svg class="h-3.5 w-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path>
-                        </svg>
-                        Request Reschedule
-                    </a>
-                @endif
             </div>
 
             <h3 class="font-extrabold text-navy-dark text-2xl sm:text-3xl leading-tight mt-4">
@@ -192,13 +207,15 @@
                         </svg>
                         Request Reschedule
                     </x-primary-button>
-                @else
+                @elseif($permintaanMenunggu)
                     <button disabled class="bg-gray-100 text-gray-400 font-bold text-sm px-6 py-3 rounded-xl border border-gray-200 cursor-not-allowed inline-flex items-center justify-center gap-2 w-full sm:w-auto">
                         <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
                         </svg>
                         Reschedule Menunggu
                     </button>
+                @else
+                    <span class="text-sm font-semibold text-gray-400">Reschedule tidak tersedia.</span>
                 @endif
             </div>
         </x-card>

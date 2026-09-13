@@ -39,7 +39,8 @@ class BookingKonsultasiController extends Controller
         }
 
         $query = JadwalKonsultasi::query()
-            ->where('status_slot', 'tersedia');
+            ->where('status_slot', 'tersedia')
+            ->belumDimulai();
 
         $filters = $request->validated();
         if (isset($filters['tanggal'])) {
@@ -110,6 +111,7 @@ class BookingKonsultasiController extends Controller
             'jadwalKonsultasi',
             'praPendaftaranPerkara.kategori',
             'permintaanReschedule' => fn ($q) => $q->latest('tanggal_pengajuan'),
+            'permintaanReschedule.jadwalBaru',
         ]);
 
         return view(

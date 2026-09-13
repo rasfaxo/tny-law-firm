@@ -3,6 +3,7 @@
 namespace Tests\Feature\Klien;
 
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Carbon;
 use Tests\Concerns\CreatesTestingData;
 use Tests\TestCase;
 
@@ -151,5 +152,44 @@ class BookingKonsultasiTest extends TestCase
                 'metode_konsultasi' => 'online',
             ])
             ->assertSessionHasErrors('id_jadwal');
+    }
+
+    public function test_started_slots_are_hidden_and_rejected_when_posted_directly(): void
+    {
+        $this->travelTo(Carbon::create(2026, 9, 13, 10, 0, 0, 'Asia/Jakarta'));
+        $klien = $this->createKlien();
+        $pengajuan = $this->createPengajuan($klien, [
+            'status_pengajuan' => 'berkas_lengkap',
+        ]);
+        $started = $this->createJadwalTersedia(null, [
+            'tanggal' => '2026-09-13',
+            'waktu_mulai' => '09:00',
+            'waktu_selesai' => '10:00',
+        ]);
+        $future = $this->createJadwalTersedia(null, [
+            'tanggal' => '2026-09-13',
+            'waktu_mulai' => '11:00',
+            'waktu_selesai' => '12:00',
+        ]);
+
+        $this->actingAs($klien)
+            ->get(route('klien.booking-konsultasi.create', $pengajuan))
+            ->assertOk()
+            ->assertDontSee('09:00 – 10:00')
+            ->assertSee('11:00 – 12:00');
+
+        $this->actingAs($klien)
+            ->from(route('klien.booking-konsultasi.create', $pengajuan))
+            ->post(route('klien.booking-konsultasi.store', $pengajuan), [
+                'id_jadwal' => $started->id_jadwal,
+                'metode_konsultasi' => 'online',
+            ])
+            ->assertSessionHasErrors('id_jadwal');
+
+        $this->assertDatabaseMissing('booking_konsultasi', [
+            'id_jadwal' => $started->id_jadwal,
+        ]);
+        $this->assertSame('tersedia', $started->fresh()->status_slot);
+        $this->assertSame('tersedia', $future->fresh()->status_slot);
     }
 }

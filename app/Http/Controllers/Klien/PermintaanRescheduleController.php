@@ -35,6 +35,7 @@ class PermintaanRescheduleController extends Controller
         if (
             $bookingKonsultasi->status_booking !== 'aktif' ||
             $pengajuan?->status_pengajuan !== 'jadwal_dipilih' ||
+            ! $bookingKonsultasi->jadwalKonsultasi?->belumDimulai() ||
             $permintaanMenunggu
         ) {
             return redirect()
@@ -47,6 +48,7 @@ class PermintaanRescheduleController extends Controller
 
         $jadwalKonsultasi = JadwalKonsultasi::query()
             ->where('status_slot', 'tersedia')
+            ->belumDimulai()
             ->orderBy('tanggal')
             ->orderBy('waktu_mulai')
             ->get();

@@ -6,6 +6,11 @@
                 (string) $dokumen->id_dokumen => old("dokumen.{$dokumen->id_dokumen}.status_dokumen", 'valid'),
             ])
             ->all();
+        $initialDocumentNotes = $praPendaftaranPerkara->dokumenAktif
+            ->mapWithKeys(fn ($dokumen) => [
+                (string) $dokumen->id_dokumen => old("dokumen.{$dokumen->id_dokumen}.catatan", ''),
+            ])
+            ->all();
     @endphp
 
     <div
@@ -13,6 +18,7 @@
         x-data="verificationForm"
         data-initial-status="{{ old('status_verifikasi', 'berkas_lengkap') }}"
         data-document-statuses="{{ json_encode($initialDocumentStatuses) }}"
+        data-document-notes="{{ json_encode($initialDocumentNotes) }}"
     >
         @if ($errors->any())
             <x-alert-banner type="error">
@@ -89,7 +95,7 @@
                 <x-card class="space-y-4 h-full">
                     <div class="border-b border-[#F1F5F9] pb-4">
                         <h3 class="font-bold text-lg text-navy-dark">Catatan Umum Verifikasi</h3>
-                        <p class="text-xs text-gray-500 mt-1">Opsional jika berkas lengkap. Wajib jika berkas tidak lengkap.</p>
+                        <p class="text-xs text-gray-500 mt-1">Opsional sebagai ringkasan hasil pemeriksaan.</p>
                     </div>
 
                     <div class="space-y-2">
@@ -132,13 +138,12 @@
                                             <label class="inline-flex items-center gap-2 text-sm cursor-pointer"
                                                    :class="statusVerifikasi === 'berkas_lengkap' ? 'opacity-60 cursor-not-allowed' : ''">
                                                 <input type="radio" 
-                                                       :name="'dummy_status_' + '{{ $dokumen->id_dokumen }}'" 
                                                        value="valid" 
                                                        class="border-gray-300 text-green-600 focus:ring-green-500"
                                                        data-document-id="{{ $dokumen->id_dokumen }}"
                                                        x-bind:checked="docStatus['{{ $dokumen->id_dokumen }}'] === 'valid'"
                                                        x-on:change="setDocumentStatus"
-                                                       :disabled="statusVerifikasi === 'berkas_lengkap'">
+                                                       :disabled="!isDesktop || statusVerifikasi === 'berkas_lengkap'">
                                                 <span class="inline-flex items-center rounded-full px-2 py-0.5 text-xs font-semibold bg-green-50 text-green-700 border border-green-200">Valid</span>
                                             </label>
 
@@ -146,23 +151,23 @@
                                             <label class="inline-flex items-center gap-2 text-sm cursor-pointer"
                                                    :class="statusVerifikasi === 'berkas_lengkap' ? 'opacity-60 cursor-not-allowed' : ''">
                                                 <input type="radio" 
-                                                       :name="'dummy_status_' + '{{ $dokumen->id_dokumen }}'" 
                                                        value="perlu_perbaikan" 
                                                        class="border-gray-300 text-red-600 focus:ring-red-500"
                                                        data-document-id="{{ $dokumen->id_dokumen }}"
                                                        x-bind:checked="docStatus['{{ $dokumen->id_dokumen }}'] === 'perlu_perbaikan'"
                                                        x-on:change="setDocumentStatus"
-                                                       :disabled="statusVerifikasi === 'berkas_lengkap'">
+                                                       :disabled="!isDesktop || statusVerifikasi === 'berkas_lengkap'">
                                                 <span class="inline-flex items-center rounded-full px-2 py-0.5 text-xs font-semibold bg-red-50 text-red-700 border border-red-200">Perlu Perbaikan</span>
                                             </label>
                                         </div>
                                     </td>
                                      <td class="px-6 py-4">
-                                        <x-text-input tag="textarea" name="dokumen[{{ $dokumen->id_dokumen }}][catatan]" rows="3" 
+                                        <x-text-input tag="textarea" rows="3"
                                                   class="w-full resize-none"
                                                   placeholder="Tuliskan alasan penolakan atau catatan perbaikan dokumen ini..."
-                                                  x-bind:disabled="statusVerifikasi === 'berkas_lengkap' || docStatus['{{ $dokumen->id_dokumen }}'] !== 'perlu_perbaikan'"
-                                                  x-bind:required="statusVerifikasi === 'berkas_tidak_lengkap' && docStatus['{{ $dokumen->id_dokumen }}'] === 'perlu_perbaikan'">{{ old("dokumen.{$dokumen->id_dokumen}.catatan") }}</x-text-input>
+                                                  x-model="docNotes['{{ $dokumen->id_dokumen }}']"
+                                                  x-bind:disabled="!isDesktop || statusVerifikasi === 'berkas_lengkap' || docStatus['{{ $dokumen->id_dokumen }}'] !== 'perlu_perbaikan'"
+                                                  x-bind:required="isDesktop && statusVerifikasi === 'berkas_tidak_lengkap' && docStatus['{{ $dokumen->id_dokumen }}'] === 'perlu_perbaikan'"></x-text-input>
                                     </td>
                                     <td class="px-6 py-4 whitespace-nowrap text-right">
                                         <a href="{{ route('staf-legal.dokumen.show', $dokumen) }}" target="_blank" rel="noopener noreferrer"
@@ -174,8 +179,6 @@
                                         </a>
                                     </td>
                                 </tr>
-                                <!-- Hidden input for Laravel request binding -->
-                                <input type="hidden" name="dokumen[{{ $dokumen->id_dokumen }}][status_dokumen]" :value="docStatus['{{ $dokumen->id_dokumen }}']">
                             @empty
                                 <tr>
                                     <td colspan="4" class="px-6 py-12 text-center">
@@ -208,13 +211,12 @@
                                     <label class="inline-flex items-center gap-2 text-sm cursor-pointer"
                                            :class="statusVerifikasi === 'berkas_lengkap' ? 'opacity-60 cursor-not-allowed' : ''">
                                         <input type="radio" 
-                                               :name="'dummy_status_mobile_' + '{{ $dokumen->id_dokumen }}'" 
                                                value="valid" 
                                                class="border-gray-300 text-green-600 focus:ring-green-500"
                                                data-document-id="{{ $dokumen->id_dokumen }}"
                                                x-bind:checked="docStatus['{{ $dokumen->id_dokumen }}'] === 'valid'"
                                                x-on:change="setDocumentStatus"
-                                               :disabled="statusVerifikasi === 'berkas_lengkap'">
+                                               :disabled="isDesktop || statusVerifikasi === 'berkas_lengkap'">
                                         <span class="inline-flex items-center rounded-full px-2 py-0.5 text-xs font-semibold bg-green-50 text-green-700 border border-green-200">Valid</span>
                                     </label>
 
@@ -222,13 +224,12 @@
                                     <label class="inline-flex items-center gap-2 text-sm cursor-pointer"
                                            :class="statusVerifikasi === 'berkas_lengkap' ? 'opacity-60 cursor-not-allowed' : ''">
                                         <input type="radio" 
-                                               :name="'dummy_status_mobile_' + '{{ $dokumen->id_dokumen }}'" 
                                                value="perlu_perbaikan" 
                                                class="border-gray-300 text-red-600 focus:ring-red-500"
                                                data-document-id="{{ $dokumen->id_dokumen }}"
                                                x-bind:checked="docStatus['{{ $dokumen->id_dokumen }}'] === 'perlu_perbaikan'"
                                                x-on:change="setDocumentStatus"
-                                               :disabled="statusVerifikasi === 'berkas_lengkap'">
+                                               :disabled="isDesktop || statusVerifikasi === 'berkas_lengkap'">
                                         <span class="inline-flex items-center rounded-full px-2 py-0.5 text-xs font-semibold bg-red-50 text-red-700 border border-red-200">Perlu Perbaikan</span>
                                     </label>
                                 </div>
@@ -236,11 +237,12 @@
 
                             <div class="space-y-1.5">
                                 <span class="block text-xs font-bold text-gray-400 uppercase tracking-wider">Catatan Perbaikan</span>
-                                <x-text-input tag="textarea" name="dokumen[{{ $dokumen->id_dokumen }}][catatan]" rows="2"
+                                <x-text-input tag="textarea" rows="2"
                                           class="w-full resize-none"
                                           placeholder="Tuliskan alasan penolakan atau catatan perbaikan..."
-                                          x-bind:disabled="statusVerifikasi === 'berkas_lengkap' || docStatus['{{ $dokumen->id_dokumen }}'] !== 'perlu_perbaikan'"
-                                          x-bind:required="statusVerifikasi === 'berkas_tidak_lengkap' && docStatus['{{ $dokumen->id_dokumen }}'] === 'perlu_perbaikan'">{{ old("dokumen.{$dokumen->id_dokumen}.catatan") }}</x-text-input>
+                                          x-model="docNotes['{{ $dokumen->id_dokumen }}']"
+                                          x-bind:disabled="isDesktop || statusVerifikasi === 'berkas_lengkap' || docStatus['{{ $dokumen->id_dokumen }}'] !== 'perlu_perbaikan'"
+                                          x-bind:required="!isDesktop && statusVerifikasi === 'berkas_tidak_lengkap' && docStatus['{{ $dokumen->id_dokumen }}'] === 'perlu_perbaikan'"></x-text-input>
                             </div>
                         </div>
                     @empty
@@ -249,6 +251,11 @@
                         </div>
                     @endforelse
                 </div>
+
+                @foreach ($praPendaftaranPerkara->dokumenAktif as $dokumen)
+                    <input type="hidden" name="dokumen[{{ $dokumen->id_dokumen }}][status_dokumen]" :value="docStatus['{{ $dokumen->id_dokumen }}']">
+                    <input type="hidden" name="dokumen[{{ $dokumen->id_dokumen }}][catatan]" :value="docNotes['{{ $dokumen->id_dokumen }}']">
+                @endforeach
             </x-card>
 
             <!-- Alert Warning -->
