@@ -90,9 +90,6 @@
                             <x-input-error class="mt-2" :messages="$errors->get('file')" />
                         </div>
 
-                        <x-alert-banner type="info">
-                            Dokumen lama tidak akan ditimpa. Sistem akan menyimpan file baru sebagai dokumen pengganti yang sah secara terpisah di storage.
-                        </x-alert-banner>
                     </div>
 
                     <div class="p-6 sm:p-8 border-t border-[#F1F5F9] bg-[#F8FAFC]/50 flex items-center justify-end gap-3">

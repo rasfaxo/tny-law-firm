@@ -14,6 +14,28 @@ class PerbaikanDokumenTest extends TestCase
     use CreatesTestingData;
     use RefreshDatabase;
 
+    public function test_replacement_upload_page_does_not_show_storage_information_banner(): void
+    {
+        $klien = $this->createKlien();
+        $pengajuan = $this->createPengajuan($klien, [
+            "status_pengajuan" => "berkas_tidak_lengkap",
+        ]);
+        $dokumen = $this->createDokumen($pengajuan, [
+            "status_dokumen" => "perlu_perbaikan",
+        ]);
+        $verifikasi = $this->createVerifikasi($pengajuan, null, [
+            "status_verifikasi" => "berkas_tidak_lengkap",
+        ]);
+        $catatan = $this->createCatatan($verifikasi, $dokumen, [
+            "status_perbaikan" => "belum_diperbaiki",
+        ]);
+
+        $this->actingAs($klien)
+            ->get(route("klien.perbaikan-dokumen.create", $catatan))
+            ->assertOk()
+            ->assertDontSee("Dokumen lama tidak akan ditimpa.");
+    }
+
     public function test_klien_can_upload_replacement_document_for_repair_note(): void
     {
         // CRIT-01: dokumen perkara disimpan di disk "local" (private),
